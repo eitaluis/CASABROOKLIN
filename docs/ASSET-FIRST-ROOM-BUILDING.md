@@ -65,8 +65,8 @@ O programa textual do Grande Salão em *A Pirâmide Vermelha* inclui pé-direito
 | Mármore | [ambientCG Marble012](https://ambientcg.com/a/Marble012), CC0 | Normal/roughness sobre o albedo negro da estátua | Integrado na estátua | PBR integrado |
 | Lustre/arandelas | Geometria original sob medida | Bronze, vidro âmbar, emissive e luz quente | Acionamento de luz futuro | Primeira camada existente; refino pendente |
 | Galerias/escadas | Arquitetura original sob medida | Pedra, bronze, madeira, balaústres e corrimãos | Altura progressiva, colliders e patamares | Lógica integrada; QA físico pendente |
-| Instrumentos/armas | Harpas arqueadas, tambores de pele e lanças de ponta foliácea construídos sob medida; nenhum pack pronto com qualidade/licença adequadas foi selecionado | Walnut PBR CC0, bronze, pele e cordas; geometrias curvas de alta segmentação | Colliders em harpas/tambores e inspeção por proximidade | Integrados como geometria original, com materiais PBR abertos; validar no browser |
-| TV/manto | Moldura metálica arredondada e tela de vidro refletivo construídas sob medida | Metal escuro, clearcoat e vidro escuro; pedra PBR na parede/manto | Inspeção por proximidade | Modelo refinado e inspeção ligada; validação no browser pendente |
+| Instrumentos/armas | Harpas arqueadas, tambores de pele e lanças de ponta foliácea construídos sob medida; nenhum pack pronto com qualidade/licença adequadas foi selecionado | Walnut PBR CC0, bronze, pele e cordas; geometrias curvas de alta segmentação | Colliders em harpas/tambores e inspeção por proximidade para harpas, tambores e lanças | Integrados como geometria original, com materiais PBR abertos; validar no browser |
+| TV/manto | Moldura metálica arredondada e tela de vidro refletivo construídas sob medida | Metal escuro, clearcoat e vidro escuro; pedra PBR na parede/manto | Inspeção por proximidade a partir do piso e galerias | Modelo refinado e inspeção ligada; validação no browser pendente |
 | Estandartes/relevos | Textura e geometria local | Tecido dupla-face, cedro/bronze, relevo solar e hieróglifos | Inspeção contextual | Integrado; detalhamento pendente |
 
 ### Critérios de escala

@@ -95,3 +95,26 @@ Cada asset externo e cada conjunto de texturas precisa de registo individual em 
 | Cais e doca | Geometria original no módulo world.js, com tábuas, estacas, cabeços, defensas e argolas | Madeira envelhecida, concreto gasto, aço oxidado e borracha | Caminhabilidade e colisões conforme as superfícies já registradas no mundo | Implementado; QA de circulação e clipping pendente |
 
 **Nota de produção:** a água usa um mapa de altura procedural periódico, sem dependência de arquivo externo. A referência MIT foi estudada, mas nenhum código, textura ou shader de terceiros foi copiado. O mesmo material e a mesma geometria são usados em desktop e mobile; apenas repetição, anisotropia e intensidade do bump são ajustadas por perfil de dispositivo.
+
+
+## Matriz de assets — Biblioteca subterrânea
+
+A biblioteca é uma reconstrução interpretativa da câmara subterrânea da Casa Brooklyn. A distribuição em três faixas, os 48 nichos e os quatro shabtis são decisões atuais de composição do projeto; não devem ser apresentados como contagens canônicas do romance sem confirmação textual.
+
+| Elemento | Forma/asset | Material e visual | Interação/personagem | Desempenho/licença | Estado |
+|---|---|---|---|---|---|
+| Câmara circular e parede rochosa | Arquitetura existente em `src/world.js`; geometria sob medida, sem pacote externo importado | Pedra/plaster existente; revisar normal, roughness, profundidade e leitura interna | Colisão arquitetônica e circulação no piso inferior | Geometria própria; compartilhada desktop/mobile | Implementado; QA visual pendente |
+| Cúpula de Nut | Hemisfério interno original em `src/interior-details.js`; textura Canvas 1024×512 | Azul profundo, estrelas, constelações e traçado ornamental dourado; seed fixa para composição reproduzível | Elemento de contemplação; sem collider | Código original; textura gerada localmente, sem download/runtime externo | Implementado; QA visual pendente |
+| Piso cartográfico de Geb | Disco original em `src/interior-details.js`; textura Canvas 1024×1024 | Verde-terra, manchas minerais, anéis e linhas radiais douradas | Superfície visual sobre o piso caminhável já existente | Código original; seed fixa | Implementado; QA visual pendente |
+| Nichos e molduras (48) | Geometria própria repetida em três faixas; duas ombreiras, fundo, lintel e soleira por nicho | Pedra escurecida, cedro, bronze e papiros | 16 nichos inferiores recebem inspeção contextual por proximidade; os níveis superiores permanecem visuais | Código original; sem dependência externa | Implementado; interações inferiores adicionadas |
+| Rolos de papiro | Cilindros e ponteiras originais, dois por nicho | Papiro, madeira e cordão; variação de posição controlada pela seed | Examinar os papiros da galeria inferior; leitura narrativa inicial | Código original | Implementado; leitura detalhada/coleção futura |
+| Quatro shabtis | Figuras originais com pedestal, corpo mumiforme, cabeça, nemes, colar e ferramentas | Faiança azul/lápis-lazúli e ouro/bronze | Cada guardião tem ponto de inspeção contextual | Código original; geometria leve e compartilhada | Implementado; QA de alcance pendente |
+| Mesa de leitura | Mesa/apoio e objetos originais | Papiro aberto, marcas de escrita e recipientes de óleo | Ponto de inspeção contextual no centro da câmara | Código original | Implementado; uso/coleção futuro |
+| Placas hieroglíficas | Relevos originais repetidos nas transições da câmara | Bronze envelhecido | Elementos visuais; inspeção específica futura | Código original | Implementado; pesquisa iconográfica pendente |
+
+### Decisões e lacunas da biblioteca
+- A textura procedural da cúpula e do piso usa um gerador pseudoaleatório com seed fixa. Isso mantém a composição idêntica em recarregamentos e nos dois perfis de dispositivo.
+- A inspeção contextual é compartilhada pelo sistema de interação já existente (E no desktop e botão INTERAGIR no mobile); os itens novos não criam um segundo controlador.
+- Os textos de inspeção são descrições ambientais interpretativas, não transcrições do romance nem traduções de hieróglifos.
+- Não foi introduzido um modelo 3D externo nesta etapa. As formas atuais são peças arquitetônicas específicas da câmara; antes de substituir shabtis, papiros ou relevos por assets externos, validar modelo, escala, orientação, materiais e licença individual conforme a fase 02.
+- A validação de distância, colisão, iluminação, legibilidade e desempenho ainda depende de teste real no navegador desktop e em celular paisagem.

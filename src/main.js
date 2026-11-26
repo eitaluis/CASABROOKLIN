@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js';
-import { createCharacter } from './character.js?v=carter-stylized-20261126';
+import { createCharacter } from './character.js?v=ara-carter-20261126';
 import { createThirdPersonController } from './third-person.js?v=carter-stylized-20261126';
 
 
@@ -67,7 +67,7 @@ function toast(message) {
   toast.timer = setTimeout(() => element.classList.remove('show'), 2600);
 }
 
-const character = createCharacter({
+const character = await createCharacter({
   scene,
   ground: groundSurfaces,
   onModeChange: (mode) => {

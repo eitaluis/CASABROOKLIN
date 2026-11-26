@@ -120,6 +120,8 @@ const inventory = createInventory({ THREE, character });
 
 const controller = createThirdPersonController({
   THREE, camera, canvas, character, zones, colliders,
+  stairRamps: grandSalon.stairRamps,
+  walkablePlatforms: grandSalon.walkablePlatforms,
   onZoneChange: (name, zone) => {
     document.getElementById('zoneName').textContent = zone.label;
     document.querySelectorAll('.nav button').forEach(button =>

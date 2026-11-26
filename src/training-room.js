@@ -1014,7 +1014,7 @@ export function buildTrainingRoom({
     const centre = state.group.position.clone().add(new THREE.Vector3(0, 1.02 * state.fullScale, 0));
     state.group.updateMatrixWorld(true);
     state.group.traverse(object => {
-      if (!object.isMesh || !object.visible || object.userData?.miniatureOnly) return;
+      if (!object.isMesh || !object.visible || object.userData?.miniatureOnly || object.name === 'corpo mumiforme contínuo') return;
       object.updateWorldMatrix(true, false);
       const position = new THREE.Vector3(), quaternion = new THREE.Quaternion(), scale = new THREE.Vector3();
       object.matrixWorld.decompose(position, quaternion, scale);
@@ -1039,18 +1039,18 @@ export function buildTrainingRoom({
       });
     });
 
-    // Lasquinhas adicionais de faiança dão leitura de estilhaçamento sem depender de texturas externas.
-    for (let i = 0; i < 12; i++) {
-      const size = 0.045 + Math.random() * 0.075;
+    // O tronco contínuo se parte em lascas menores: evitamos que reste um único bloco de cerâmica.
+    for (let i = 0; i < 28; i++) {
+      const size = 0.045 + Math.random() * 0.065;
       const shard = new THREE.Mesh(
         new THREE.DodecahedronGeometry(size, 0),
         i % 2 ? faienceLight.clone() : faience.clone()
       );
-      shard.name = 'lasca de faiança do HA-DI';
+      shard.name = 'lasca de tronco de faiança do HA-DI';
       shard.position.copy(centre).add(new THREE.Vector3(
-        (Math.random() - 0.5) * 0.55,
-        (Math.random() - 0.5) * 0.8,
-        (Math.random() - 0.5) * 0.42
+        (Math.random() - 0.5) * 0.48,
+        (Math.random() - 0.5) * 1.05,
+        (Math.random() - 0.5) * 0.34
       ));
       shard.castShadow = true; shard.receiveShadow = true; scene.add(shard);
       const velocity = new THREE.Vector3(Math.random() - 0.5, 1.8 + Math.random() * 3.2, Math.random() - 0.5)

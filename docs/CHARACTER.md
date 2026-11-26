@@ -15,6 +15,7 @@ Status: **inventário Duat com oito objetos e ação de alcance integrados; revi
 - src/character.js carrega o personagem aprovado pelo link compartilhado do Ara 3D Gen.
 - Não substituir a malha humana, o rosto, o cabelo ou as proporções sem uma revisão visual e aprovação explícita.
 - O rig e o módulo de personagem são únicos e compartilhados pelo jogo desktop e mobile.
+- `createCharacter()` aceita `characterSource` e `characterName`; a mesma camada de locomoção e ações Ara pode ser reaproveitada em outro mago sem carregar os acessórios exclusivos de Carter (`attachCarterAccessories: false`).
 - O controlador de terceira pessoa continua em src/third-person.js; teclado, mouse, joystick e toque conduzem a mesma instância.
 - A escala é obtida do próprio rig, com fallback de 1,75 m.
 - As animações centrais continuam sendo idle, walk, run, jump_start, jump_air e jump_land.

@@ -36,13 +36,17 @@ function extrudedPanel(width, height, depth, radius, bevel) {
 
 function findBone(root, candidates) {
   const wanted = new Set(candidates);
-  let match = null;
+  const found = new Map();
   root.traverse((node) => {
-    if (!node.isBone || match) return;
+    if (!node.isBone) return;
     const name = String(node.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-    if (wanted.has(name)) match = node;
+    if (wanted.has(name) && !found.has(name)) found.set(name, node);
   });
-  return match;
+  // Candidate order takes precedence, so Spine2 is chosen over a lower Spine bone.
+  for (const candidate of candidates) {
+    if (found.has(candidate)) return found.get(candidate);
+  }
+  return null;
 }
 
 function createRibbonGeometry(curve, width, segments = 40) {
@@ -140,7 +144,7 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
   characterRoot.updateMatrixWorld(true);
 
   const hipsBone = findBone(characterRoot, ['hips', 'mixamorighips', 'hip']);
-  const chestBone = findBone(characterRoot, ['spine2', 'spine1', 'chest', 'spine']);
+  const chestBone = findBone(characterRoot, ['spine2', 'mixamorigspine2', 'spine1', 'mixamorigspine1', 'chest', 'spine']);
   if (hipsBone) {
     // Preserve model-space placement at rest while following pelvic movement.
     hipsBone.attach(bagRoot);

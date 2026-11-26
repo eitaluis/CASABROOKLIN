@@ -11,6 +11,7 @@ export function buildInteriorDetails({ THREE, scene }) {
   });
   const papyrus = new THREE.MeshStandardMaterial({ color: 0xd7bd83, roughness: 0.92 });
   const lapis = new THREE.MeshStandardMaterial({ color: 0x315c68, roughness: 0.48, metalness: 0.16 });
+  const nicheStone = new THREE.MeshStandardMaterial({ color: 0x85765c, roughness: 0.9, metalness: 0.02 });
   const shabtiGold = new THREE.MeshStandardMaterial({ color: 0xb89658, roughness: 0.42, metalness: 0.62 });
 
   function addBox(parent, name, pos, size, material, cast = true) {
@@ -155,7 +156,7 @@ export function buildInteriorDetails({ THREE, scene }) {
   }
 
   for (const side of [-1, 1]) {
-    for (const z of [-6.5, 0.5, 7.0]) addSconce(side * 13.75, 17.55 + (z === 0.5 ? 2.1 : 0), z, side === 1 ? -Math.PI / 2 : Math.PI / 2);
+    for (const z of [-6.5, 0.5, 7.0]) addSconce(side * 13.75, 17.55, z, side === 1 ? -Math.PI / 2 : Math.PI / 2);
   }
 
   // Frisos dourados e pequenas placas de relevo ao redor do salão.
@@ -181,31 +182,26 @@ export function buildInteriorDetails({ THREE, scene }) {
     }
   }
 
-  // Detalhes de mobiliário: almofadas, pés de madeira e pequenas mesas laterais.
-  const cushionMat = new THREE.MeshStandardMaterial({ color: 0x7a4b35, roughness: 0.95 });
-  const pillowMat = new THREE.MeshStandardMaterial({ color: 0xb08a53, roughness: 0.94 });
-  for (const sofaX of [-4, 4]) {
-    for (const dx of [-1.65, 0, 1.65]) {
-      const cushion = new THREE.Mesh(new THREE.BoxGeometry(1.42, 0.24, 1.1), cushionMat);
-      cushion.name = 'almofada de assento do sofá';
-      cushion.position.set(sofaX + dx, 14.05, 1.35);
-      cushion.castShadow = true;
-      scene.add(cushion);
-      const pillow = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.62, 0.25), pillowMat);
-      pillow.name = 'almofada decorativa bordada';
-      pillow.position.set(sofaX + dx, 14.62, 0.92);
-      pillow.rotation.z = dx === 0 ? 0 : (dx > 0 ? -0.13 : 0.13);
-      pillow.castShadow = true;
-      scene.add(pillow);
+  // Mesas laterais com luminárias e vasos para ocupar as laterais do conjunto de sofás.
+  const sideTableTop = new THREE.MeshStandardMaterial({ color: 0x62402a, roughness: 0.72 });
+  for (const side of [-1, 1]) {
+    const table = new THREE.Group();
+    table.name = 'mesa lateral do Grande Salão';
+    table.position.set(side * 7.55, 13.2, 1.35);
+    scene.add(table);
+    addBox(table, 'tampo de madeira entalhada', [0, 0.88, 0], [1.05, 0.16, 0.92], sideTableTop);
+    for (const x of [-0.39, 0.39]) for (const z of [-0.32, 0.32]) {
+      addBox(table, 'perna torneada de mesa lateral', [x, 0.42, z], [0.12, 0.82, 0.12], cedar);
     }
-    for (const dx of [-2.15, 2.15]) {
-      for (const dz of [-0.58, 0.58]) {
-        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.68, 0.22), cedar);
-        leg.name = 'pé torneado do sofá';
-        leg.position.set(sofaX + dx, 13.67, 1.5 + dz);
-        scene.add(leg);
-      }
-    }
+    const lampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 0.12, 12), brass);
+    lampBase.position.set(0, 1.02, 0);
+    table.add(lampBase);
+    const lampShade = new THREE.Mesh(new THREE.ConeGeometry(0.24, 0.42, 12, 1, true), warmGlass);
+    lampShade.position.set(0, 1.3, 0);
+    table.add(lampShade);
+    const glow = new THREE.PointLight(0xffc783, 0.3, 4);
+    glow.position.set(0, 1.35, 0);
+    table.add(glow);
   }
 
   // BIBLIOTECA — substituir as estantes genéricas por nichos escavados na rocha.
@@ -279,6 +275,7 @@ export function buildInteriorDetails({ THREE, scene }) {
   );
   dome.name = 'cúpula celeste de Nut';
   dome.position.set(0, -6.66, -0.5);
+  dome.scale.y = 0.32;
   dome.receiveShadow = true;
   scene.add(dome);
 
@@ -340,7 +337,7 @@ export function buildInteriorDetails({ THREE, scene }) {
   const scrollWood = new THREE.MeshStandardMaterial({ color: 0x765137, roughness: 0.78 });
   const scrollCord = new THREE.MeshStandardMaterial({ color: 0x9d7339, roughness: 0.78 });
   const rows = [-15.05, -11.72, -8.39];
-  const nicheCount = 16;
+  const nicheCount = 24;
   for (let row = 0; row < rows.length; row++) {
     for (let i = 0; i < nicheCount; i++) {
       const angle = i / nicheCount * Math.PI * 2;
@@ -349,7 +346,7 @@ export function buildInteriorDetails({ THREE, scene }) {
       group.position.set(Math.cos(angle) * 11.62, rows[row], Math.sin(angle) * 11.62 - 0.5);
       group.rotation.y = -angle - Math.PI / 2;
       addBox(group, 'fundo escuro do nicho', [0, 0, -0.17], [1.48, 1.55, 0.2], darkCedar, false);
-      addBox(group, 'ombreira esquerda do nicho', [-0.76, 0, 0], [0.12, 1.72, 0.36], stoneMaterial(), false);
+      addBox(group, 'ombreira esquerda do nicho', [-0.76, 0, 0], [0.12, 1.72, 0.36], nicheStone, false);
       addBox(group, 'ombreira direita do nicho', [0.76, 0, 0], [0.12, 1.72, 0.36], stoneMaterial(), false);
       addBox(group, 'lintel do nicho', [0, 0.84, 0], [1.62, 0.14, 0.38], brass, false);
       addBox(group, 'soleira do nicho', [0, -0.84, 0], [1.62, 0.14, 0.38], brass, false);
@@ -443,7 +440,3 @@ export function buildInteriorDetails({ THREE, scene }) {
   return { chandelier, dome };
 }
 
-// A pedra dos nichos recebe uma tonalidade própria para contraste com os papiros.
-function stoneMaterial() {
-  return new THREE.MeshStandardMaterial({ color: 0x85765c, roughness: 0.9, metalness: 0.02 });
-}

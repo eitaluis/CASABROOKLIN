@@ -7,7 +7,7 @@ const CARTER_SHARE_URL = 'https://ara3dgen.com/app/#c=XVDLboQwDPyVyr2iClbs87ZdqZ
 export async function createCharacter({ scene, onModeChange = () => {} }) {
   const loading = document.getElementById('loading');
   const hero = await createAraCharacter(CARTER_SHARE_URL, {
-    animations: ['idle', 'walk', 'run'],
+    animations: ['idle', 'walk', 'run', 'jump'],
     detail: 'medium',
     onProgress: (label, fraction) => {
       if (!loading || loading.classList.contains('done')) return;
@@ -19,8 +19,35 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
   });
 
   const mixer = new THREE.AnimationMixer(hero.scene);
-  const locomotion = hero.locomotion(mixer);
+  let locomotion = hero.locomotion(mixer);
+  let jumping = false;
+  let jumpAction = null;
+  let movementSpeed = 0;
   scene.add(hero.scene);
+
+  function jump() {
+    if (jumping) return;
+    const clip = hero.clip('jump');
+    if (!clip) { console.warn('A animação jump não foi carregada pelo Ara 3D.'); return; }
+    jumping = true;
+    locomotion.stop();
+    jumpAction = mixer.clipAction(clip);
+    jumpAction.reset();
+    jumpAction.setLoop(THREE.LoopOnce, 1);
+    jumpAction.clampWhenFinished = true;
+    jumpAction.enabled = true;
+    jumpAction.play();
+    const finishJump = (event) => {
+      if (event.action !== jumpAction) return;
+      mixer.removeEventListener('finished', finishJump);
+      jumpAction.stop();
+      jumpAction = null;
+      jumping = false;
+      locomotion = hero.locomotion(mixer);
+      locomotion.speed = movementSpeed;
+    };
+    mixer.addEventListener('finished', finishJump);
+  }
 
   const state = {
     model: hero.scene,
@@ -28,9 +55,11 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
     ara: hero,
     mixer,
     locomotion,
+    jump,
     locomotionName: 'Carter Kane · Ara 3D',
     updateFallback(dt, speed) {
-      locomotion.speed = speed;
+      movementSpeed = speed;
+      if (!jumping) locomotion.speed = speed;
       mixer.update(dt);
       hero.update(dt);
     },

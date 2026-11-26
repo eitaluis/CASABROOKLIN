@@ -195,3 +195,33 @@ A graphic novel de *The Red Pyramid* é ilustrada por Orpheus Collar (Disney-Hyp
 ## Varanda panorâmica — reconstrução interpretativa
 
 A descrição textual estabelece paredes envidraçadas e um terraço que contorna a casa, com piscina, jantar e fogueira. O acesso lateral de vidro e a abertura alinhada na fachada externa são decisões de level design para tornar essa área realmente caminhável. A disposição exata do terraço, sua planta e as salas atrás das portas das galerias não são fixadas pelo romance; mantê-las identificadas como interpretação.
+
+
+## Sala de Treinamento — estudo e direção visual
+
+Documento de produção: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
+
+### Referência narrativa
+
+A editora Disney descreve oficialmente a Brooklyn House como espaço de treinamento de jovens magos, e o *Brooklyn House Magician's Manual* como manual para iniciados, com quizzes, histórias e informação sobre divindades, criaturas e o Duat: https://books.disney.com/book/brooklyn-house-magicians-manual/
+
+Para a configuração específica da sala (quadra de basquete, piso de madeira, abóbada pintada, estátuas divinas e cestas formadas pelos discos solares de Rá), foi consultada a descrição secundária do universo Kane Chronicles: https://riordan.fandom.com/wiki/Brooklyn_House. A mesma referência relaciona a aula *Magic Problem-Solving 101 / Whatever Works* a um guerreiro shabti de barro. Não foi encontrada nesta pesquisa uma imagem oficial inequívoca da sala; a imagem que aparecia identificada como Great Room foi descartada como referência para este cômodo.
+
+### Programa visual da reconstrução
+
+- Quadra com piso de madeira, 15 × 28 m de marcação, área de circulação e dois aros solares a 3,05 m.
+- Abóbada curva com afresco original de temática egípcia, barca solar, discos, papiros e frisos.
+- Pilastras, nervuras metálicas, acabamento de calcário/bronze e iluminação quente por arandelas.
+- Bustos de divindades como interpretação artística; seleção atual: Anúbis, Sekhmet, Hórus, Ísis e Bastet.
+- Efígies de Rá com cabeça de falcão e discos solares vazados como cestas.
+- Bola de basquete, alvos mágicos, placar e guerreiro shabti como objetos jogáveis.
+
+### Materiais e assets
+
+As peças de destaque são geometria original em Three.js, em vez de um pacote 3D genérico low-poly. O piso usa mapas procedurais de cor e bump; o ambientCG Wood Floor 001 foi avaliado como possível referência CC0, mas ainda não foi importado: https://ambientcg.com/view?id=WoodFloor001. Para manter a direção cinematográfica, priorizar materiais PBR e detalhes próprios coerentes com a linguagem dos ambientes existentes.
+
+### Cânone versus interpretação
+
+O segundo andar, a escala de quadra, o piso de madeira, a abóbada pintada, as divindades, Rá como cesta e o exercício do shabti são os elementos narrativos que orientam a sala. A implantação a oeste do Grande Salão, o desenho exato da abóbada, as divindades selecionadas, o quadro de tiro mágico, os três alvos e as regras de combate são decisões interpretativas. As medidas 15 × 28 m seguem a FIBA 2026 como referência de basquete moderno, não como medida escrita no romance.
+
+A sala já está ligada ao inventário e ao controlador comuns; a validação real de câmera, escala, colisões e desempenho desktop/mobile permanece pendente.

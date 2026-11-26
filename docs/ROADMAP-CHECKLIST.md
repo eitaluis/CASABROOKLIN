@@ -17,11 +17,11 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Estados
 
-- [x] Implementado no código
-- [ ] Em andamento
-- [ ] Aguardando escolha/decisão
-- [ ] Aguardando teste visual
-- [ ] Próxima etapa
+- [x] Decisão visual registrada
+- [ ] Malha/rig final integrado
+- [ ] Animações retargetadas
+- [ ] Asset da bolsa integrado
+- [ ] Teste visual desktop/mobile
 
 ## Setor 01 — câmera e controles
 
@@ -32,17 +32,22 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Setor 02 — personagem e movimento
 
-- [x] Aprovar direção visual **C — Game 3D gráfico**: estilizado, com formas legíveis, materiais limpos e personalidade de videogame; sem anime e sem realismo excessivo.
-- [x] Manter rosto humano e natural: proporções faciais críveis, sem olhos de anime ou proporções chibi.
-- [x] Aprovar a bolsa transversal marrom como acessório fixo, apoiada no **quadril direito**, com alça cruzando o tronco.
-- [x] Definir a referência de movimento: agilidade, inclinação do tronco, passadas e silhueta atlética inspiradas na movimentação de Naruto; não copiar o desenho do rosto ou a estética 2D.
-- [ ] Avaliar e aprovar a malha-base/rig definitivo; a direção visual foi escolhida, mas o modelo atual ainda não foi substituído.
-- [ ] Conferir se a base preserva idade aparente jovem, rosto negro natural, cabelo crespo e boa articulação.
-- [ ] Adaptar a bolsa CC0: reposicionar no quadril direito e ajustar a alça ao ombro/peito; não usar mochila nas costas.
-- [ ] Personalizar camisa azul, calça cáqui, cabelo crespo, pele e proporções depois de aprovada a malha.
-- [ ] Retarget e refinar idle, caminhada, aceleração, frenagem, curvas, sprint, salto e aterrissagem.
+- [x] Aprovar direção visual **C — Game 3D gráfico**: personagem totalmente 3D, formas limpas e legíveis, acabamento playful de videogame; sem anime e sem realismo de escaneamento.
+- [x] Manter rosto humano natural, com proporções faciais críveis; sem olhos de anime ou proporções chibi.
+- [x] Aprovar corpo jovem, lean/atlético e ágil, sem musculatura adulta exagerada.
+- [x] Manter pele negra, cabelo crespo escuro, camisa azul e calça cáqui como direção de design.
+- [x] Aprovar a bolsa transversal marrom CC0 apoiada no **quadril direito**, com alça cruzando diagonalmente o tronco.
+- [x] Definir a referência de movimento: agilidade, inclinação do tronco, braços ativos, passadas e silhueta atlética inspiradas na movimentação de Naruto; não copiar rosto nem estética 2D.
+- [x] Preparar estudo visual conceitual com vistas de frente, perfil, costas e poses dinâmicas. **É uma referência de look-dev, não um modelo 3D rigado nem o runtime.**
+- [ ] Testar geração de personagem com detalhe baixo (5–10k triângulos) e materiais sem textura fotográfica; avaliar rosto e cabelo antes de escolher a base.
+- [ ] Avaliar o rig de jogo de 65 ossos / Mixamo e o socket WeaponR, preservando compatibilidade com o inventário.
+- [ ] Escolher e aprovar a malha-base/rig definitivo; o personagem atual continua no runtime até a aprovação.
+- [ ] Personalizar idade aparente jovem, rosto negro natural, cabelo crespo curto, proporções e figurino.
+- [ ] Adaptar o corpo da bolsa CC0 e refazer a alça para cruzar o peito; manter bolsa no quadril direito, sem mochila.
+- [ ] Retarget e refinar idle, walk, jog, aceleração, frenagem, curvas, sprint, saltos e aterrissagens.
+- [ ] Testar como referência os clips Mesh2Motion: Sprint, Run_Anime, NinjaJump_Start/Idle/Land, Land_Three_Point e Wall_Run.
 - [ ] Ajustar sprint com lean, braços ativos e passadas amplas; manter contato dos pés e transições contínuas.
-- [ ] Validar a bolsa em idle, walk, run e jump; evitar clipping com braço, roupa e armas.
+- [ ] Dar à bolsa balanço secundário discreto; evitar clipping em idle, walk, run e jump.
 - [ ] Validar rig, clips e encaixe WeaponR no novo modelo.
 
 ## Setor 03 — inventário e combate
@@ -50,7 +55,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Inventário inicial com cajado mágico e khopesh egípcio.
 - [x] Encaixe no osso WeaponR quando disponível; fallback temporário se o bone não existir.
 - [x] Equipar/guardar/usar: desktop I abre inventário e F usa; mobile tem Mochila e Usar.
-- [ ] Testar orientação/escala na mão direita em idle, walk e run.
+- [ ] Testar orientação/escala na mão direita em idle, walk e run com o novo rig.
 - [ ] Criar animações dedicadas de cajado, ataque de khopesh, defesa e troca.
 - [ ] Adicionar relíquias, papiros e itens de história em slots de inventário.
 
@@ -99,8 +104,8 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Próximas ações
 
-1. Fazer um teste comparativo de malhas-base compatíveis com a direção C (Quaternius Teen como primeiro candidato técnico; avaliar alternativas se o rosto ficar facetado demais).
-2. Conferir o GLB da bolsa transversal CC0 e adaptar a alça para uso no corpo, no quadril direito.
-3. Testar retarget da Universal Animation Library (jog, sprint e locomoção em oito direções); complementar com parkour/saltos quando necessário.
-4. Apresentar um preview do Carter completo — frente, perfil, costas e sprint — para aprovação antes de substituir o modelo em runtime.
-5. Replicar e testar a versão aprovada no desktop e no mobile.
+1. Criar um Carter-teste com base humana CC0 em detalhe baixo, materiais gráficos e proporções juvenis; comparar com o atual sem substituir o runtime.
+2. Usar Mesh2Motion para validar o conjunto de locomoção, especialmente Sprint, Run_Anime, NinjaJump e aterrissagem em três apoios.
+3. Inspecionar e adaptar o GLB da bolsa Innerscene; a malha da bolsa foi aprovada, mas a alça original fica deitada atrás dela.
+4. Apresentar um preview 3D rigado e animado — não apenas uma prancha — para aprovação final.
+5. Só então integrar o mesmo GLB, rig, bolsa e animações nas versões desktop e mobile.

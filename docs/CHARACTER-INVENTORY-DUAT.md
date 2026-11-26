@@ -1,7 +1,7 @@
 # Carter — inventário, objetos do Duat e preparação para magia
 
 Data: 26/11/2026
-Status: **oito objetos, portal no espaço do tórax, clipe use_press e bloqueio de movimento integrados; pose de palma atravessando e QA visual pendentes**
+Status: **doze objetos, portal no espaço do tórax, clipe use_press e bloqueio de movimento integrados; pose de palma atravessando e QA visual pendentes**
 
 ## 1. Princípio de desenvolvimento
 
@@ -19,7 +19,10 @@ O *As Crônicas dos Kane: Guia de Sobrevivência* descreve uma pequena caixa de 
 - cálamo / caneta;
 - tinta;
 - cera para criar shabtis;
-- amuletos de proteção.
+- amuletos de proteção;
+- paleta de escriba;
+- cordão marrom;
+- estátua de gato em ébano.
 
 O guia explica que um mago treinado pode guardar essa caixa no Duat e acessá-la quando necessário. Também descreve o cajado como ferramenta para controlar elementos, invocar espíritos e conjurar chamas, além de servir em combate; o khopesh é uma espada curva egípcia usada para desarmar o oponente; e shabtis são pequenas figuras que podem despertar ao chamado do mestre.
 
@@ -37,6 +40,10 @@ Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, seção “Hier
 | `ink` | Tinta e recipiente | Consumível/ferramenta para inscrições | Canônico; primeiro recipiente procedural integrado |
 | `protective_amulet` | Amuleto de proteção | Artefato transportável; efeito será configurado depois | Amuleto protetor é canônico; uso do wedjat como desenho é interpretação visual; primeira geometria integrada |
 | `magic_box` | Caixa de magia | Recipiente físico que reúne os instrumentos; também pode ser guardado no Duat | Canônico; primeira geometria procedural integrada; abertura/compartimentos pendentes |
+| `wax_lump` | Cera branca | Material para criar/ajustar shabtis | Canônico; modelo procedural inicial |
+| `scribe_palette` | Paleta de escriba | Suporte de pigmentos para escrita | Canônico; modelo procedural inicial |
+| `brown_twine` | Cordão marrom | Material para amarrar/organizar objetos | Canônico como conteúdo da caixa de Julius; modelo procedural inicial |
+| `ebony_cat` | Estátua de gato em ébano | Pequeno objeto guardado na caixa | Canônico como objeto descrito no kit de Julius; modelo procedural inicial |
 
 ## 3.1 Referências visuais e decisão de assets
 
@@ -44,9 +51,9 @@ Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, seção “Hier
 - **Papiro:** o fragmento do Livro dos Mortos de Henuttawy, catalogado pelo British Museum, serve como referência de proporção e pigmento: https://www.britishmuseum.org/collection/object/Y_EA10018-1
 - **Instrumentos de escriba:** a paleta de madeira EA12786, também catalogada pelo British Museum, ajuda a orientar a leitura de tinta, pigmentos e cálamos: https://www.britishmuseum.org/collection/object/Y_EA12786
 
-Os links do British Museum são referências de estudo, não arquivos importados. Nenhum GLB externo foi incorporado nesta primeira rodada: caixa, papiro, cálamo, tinta, amuleto e shabti foram montados como geometria procedural em Three.js. A forma atual é uma primeira versão técnica; escala, acabamento e leitura precisam de QA visual antes de aprovação.
+Os links do British Museum são referências de estudo, não arquivos importados. Nenhum GLB externo foi incorporado nesta primeira rodada: caixa, papiro, cálamo, tinta, amuleto, shabti, cera, paleta, cordão e gato foram montados como geometria procedural em Three.js. A forma atual é uma primeira versão técnica; escala, acabamento e leitura precisam de QA visual antes de aprovação.
 
-Os oito itens acima já têm IDs estáveis e modelos 3D iniciais no catálogo de `src/inventory.js`. A primeira rodada é procedural e ainda precisa de inspeção no navegador para aprovar escala, orientação, leitura de material e encaixe na mão. O papiro usa marcas gráficas abstratas, não hieróglifos nem palavras mágicas definitivas; a caixa ainda não abre e o amuleto não possui efeito mágico.
+Os doze itens acima já têm IDs estáveis e modelos 3D iniciais no catálogo de `src/inventory.js`. A primeira rodada é procedural e ainda precisa de inspeção no navegador para aprovar escala, orientação, leitura de material e encaixe na mão. O papiro usa marcas gráficas abstratas, não hieróglifos nem palavras mágicas definitivas; a caixa ainda não abre e o amuleto não possui efeito mágico.
 
 ## 4. Estados do inventário
 
@@ -140,7 +147,7 @@ Status de validação: implementação de código não equivale a aprovação vi
 
 ## 10. Bancada de validação no preview
 
-`character-preview.html` reutiliza `src/character.js` e `src/inventory.js` do jogo. A coluna “Inventário do Duat” permite retirar os oito itens, guardar o item ativo e observar o personagem em frente, perfil, costas e três-quartos. A ação `use_press` também pode ser acionada isoladamente no painel inferior.
+`character-preview.html` reutiliza `src/character.js` e `src/inventory.js` do jogo. A coluna “Inventário do Duat” permite retirar os doze itens, guardar o item ativo e observar o personagem em frente, perfil, costas e três-quartos. A ação `use_press` também pode ser acionada isoladamente no painel inferior.
 
 A bancada ajuda a revisar escala, orientação, clipping, posição do portal e transição de mão. Ela não substitui o teste no mundo completo: colisões, iluminação real da casa, desempenho mobile e enquadramento em terceira pessoa ainda exigem inspeção no jogo.
 

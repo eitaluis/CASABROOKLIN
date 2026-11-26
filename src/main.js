@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { buildWorld } from './world.js?v=magical-interior-shell-20261126b';
 import { buildExterior } from './exterior.js?v=magical-interior-shell-20261126b';
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-atrium-20261126a';
-import { buildGrandSalon } from './grand-salon.js?v=great-hall-atrium-20261126c';
+import { buildGrandSalon } from './grand-salon.js?v=great-hall-atrium-20261126d';
 import { buildTrainingRoom } from './training-room.js?v=training-room-sculptural-pass-20261126b';
 import { createInventory } from './inventory.js?v=duat-kit-full-20261126a';
 import { createCharacter } from './character.js?v=carter-satchel-fit-20261126i';

@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js';
+import { buildWorld } from './world.js?v=great-hall-asset-first-20261126b';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
-import { buildGrandSalon } from './grand-salon.js?v=great-hall-asset-first-20261126h';
+import { buildGrandSalon } from './grand-salon.js?v=great-hall-asset-first-20261126i';
 import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
 import { createCharacter } from './character.js?v=carter-ara-approved-restore-20261126d';
-import { createThirdPersonController } from './third-person.js?v=great-hall-collision-interactions-20261126a';
+import { createThirdPersonController } from './third-person.js?v=grand-salon-stair-navigation-20261126b';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';

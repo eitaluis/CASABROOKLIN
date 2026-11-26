@@ -48,7 +48,7 @@ export function buildInteriorDetails({ THREE, scene }) {
     cup.position.set(0, 0.22, 0.25);
     cup.rotation.x = Math.PI / 2;
     group.add(cup);
-    const flame = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), warmGlass);
+    const flame = new THREE.Mesh(new THREE.SphereGeometry(0.13, 24, 16), warmGlass);
     flame.name = 'chama da arandela';
     flame.scale.set(0.7, 1.45, 0.7);
     flame.position.set(0, 0.42, 0.25);
@@ -87,8 +87,9 @@ export function buildInteriorDetails({ THREE, scene }) {
     lamp.name = 'luz de âmbar do lustre';
     lamp.position.set(x, 24.88, z);
     chandelier.add(lamp);
-    const drop = new THREE.Mesh(new THREE.OctahedronGeometry(0.14, 0), brass);
-    drop.name = 'pingente de bronze do lustre';
+    const drop = new THREE.Mesh(new THREE.SphereGeometry(0.105, 24, 16), warmGlass);
+    drop.name = 'gota de vidro âmbar do lustre';
+    drop.scale.set(.78, 1.45, .78);
     drop.position.set(x * 0.72, 23.82, z * 0.72);
     chandelier.add(drop);
   }

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
+import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
 import { createCharacter } from './character.js?v=ara-game-jump-set-20261126c';
 import { createThirdPersonController } from './third-person.js?v=ara-collisions-camera-265-20261126f';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -17,7 +18,7 @@ const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || window.i
 renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,isTouchDevice?1.15:1.45));
 renderer.setSize(window.innerWidth,window.innerHeight);
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.18;
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x83949a);scene.fog=new THREE.FogExp2(0x87979a,.0048);
 const camera=new THREE.PerspectiveCamera(58,window.innerWidth/window.innerHeight,.1,700);
 
@@ -32,9 +33,9 @@ composer.addPass(new RenderPass(scene, camera));
 let ssaoPass = null;
 if (!isTouchDevice) {
   ssaoPass = new SSAOPass(scene, camera, window.innerWidth, window.innerHeight);
-  ssaoPass.kernelRadius = 11;
+  ssaoPass.kernelRadius = 8;
   ssaoPass.minDistance = 0.004;
-  ssaoPass.maxDistance = 0.12;
+  ssaoPass.maxDistance = 0.075;
   composer.addPass(ssaoPass);
 }
 const bloomPass = new UnrealBloomPass(
@@ -45,9 +46,9 @@ const bloomPass = new UnrealBloomPass(
 );
 composer.addPass(bloomPass);
 composer.addPass(new OutputPass());
-const hemi=new THREE.HemisphereLight(0xc2d4d7,0x30251c,1.45);scene.add(hemi);
-const sun=new THREE.DirectionalLight(0xffd7a0,2.15);sun.position.set(-42,58,35);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-90;sun.shadow.camera.right=90;sun.shadow.camera.top=90;sun.shadow.camera.bottom=-90;sun.shadow.bias=-.00025;scene.add(sun);
-const fill=new THREE.DirectionalLight(0x9dbbc7,.55);fill.position.set(50,24,-40);scene.add(fill);
+const hemi=new THREE.HemisphereLight(0xd2e0e1,0x4a382b,1.8);scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xffd7a0,2.35);sun.position.set(-42,58,35);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-90;sun.shadow.camera.right=90;sun.shadow.camera.top=90;sun.shadow.camera.bottom=-90;sun.shadow.bias=-.00025;scene.add(sun);
+const fill=new THREE.DirectionalLight(0x9dbbc7,.78);fill.position.set(50,24,-40);scene.add(fill);
 const clock=new THREE.Clock();
 const colliders=[];const animated=[];const clickable=[];
 function texCanvas(draw,w=512,h=512,repeatX=1,repeatY=1){const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');draw(g,w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(repeatX,repeatY);t.anisotropy=8;return t}
@@ -111,6 +112,8 @@ const character = await createCharacter({
 });
 character.model.position.set(...zones.dock.pos);
 if (character.human) character.human.reset();
+
+const inventory = createInventory({ THREE, character });
 
 const controller = createThirdPersonController({
   THREE, camera, canvas, character, zones, colliders,
@@ -184,11 +187,14 @@ function animate() {
       item.obj.material.opacity = 0.35 + 0.3 * (0.5 + 0.5 * Math.sin(time * 2 + item.phase));
     }
     if (item.fire) {
-      item.obj.position.y += Math.sin(time * 4 + item.phase) * 0.002;
-      item.obj.scale.y = 0.8 + 0.55 * (0.5 + 0.5 * Math.sin(time * 5 + item.phase));
-      fireLight.intensity = 1.6 + Math.sin(time * 7) * 0.45;
+      const flicker = 0.5 + 0.5 * Math.sin(time * 8.5 + item.phase);
+      item.obj.position.y = item.baseY + Math.sin(time * 5.7 + item.phase) * 0.045;
+      item.obj.scale.y = (item.baseScaleY ?? 1) * (0.88 + 0.2 * flicker);
+      item.obj.rotation.z = (item.baseRotationZ ?? 0) + Math.sin(time * 6.2 + item.phase) * 0.055;
     }
   }
+  if (fireLight) fireLight.intensity = 2.8 + Math.sin(time * 7.2) * 0.55;
+  inventory.update(dt);
   water.material.opacity = 0.9 + 0.03 * Math.sin(time * 1.2);
   drawMap();
   composer.render();

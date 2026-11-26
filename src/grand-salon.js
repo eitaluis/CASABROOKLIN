@@ -224,80 +224,153 @@ function stairFlight(scene,stone,treadMaterial,brass,wood,options) {
   return {centerX,width,startZ,endZ,bottomY:baseY,topY};
 }
 
-function addBalconyDoorRows(scene,stone,wood,brass,colliders,interactables) {
-  const dark=new THREE.MeshStandardMaterial({
-    color:0x322116,
-    map:wood.map,
-    normalMap:wood.normalMap,
-    normalScale:new THREE.Vector2(.8,.8),
-    roughness:.82
-  });
-  const metal=new THREE.MeshStandardMaterial({color:0x9f7948,metalness:.68,roughness:.38});
+function addBalconyDoorRows(scene,stone,wood,brass,colliders,interactables,groundSurfaces) {
+  const platforms=[];
   const levels=[16.875,20.625,24.375];
-  const positions=[-7.0,0,7.0];
-
-  for(const side of [-1,1]){
-    for(let levelIndex=0;levelIndex<levels.length;levelIndex++){
-      const floorY=levels[levelIndex];
-      for(let doorIndex=0;doorIndex<positions.length;doorIndex++){
-        const z=positions[doorIndex];
-        const group=new THREE.Group();
-        group.name='porta de madeira da galeria nível '+(levelIndex+1);
-        group.position.set(side*14.16,floorY,z);
-        group.rotation.y=side<0?Math.PI/2:-Math.PI/2;
-
-        const surround=new THREE.Mesh(new RoundedBoxGeometry(1.88,2.78,.26,8,.055),stone);
-        surround.position.set(0,1.39,0);
-        surround.castShadow=true;surround.receiveShadow=true;group.add(surround);
-
-        const inset=new THREE.Mesh(new RoundedBoxGeometry(1.58,2.48,.18,8,.045),dark);
-        inset.position.set(0,1.39,.17);
-        inset.castShadow=true;inset.receiveShadow=true;group.add(inset);
-
-        for(const x of [-.68,.68]){
-          const stile=new THREE.Mesh(new RoundedBoxGeometry(.12,2.29,.07,6,.025),brass);
-          stile.position.set(x,1.39,.28);group.add(stile);
-        }
-        for(const y of [.34,1.3,2.43]){
-          const rail=new THREE.Mesh(new RoundedBoxGeometry(1.34,.105,.07,6,.022),brass);
-          rail.position.set(0,y,.28);group.add(rail);
-        }
-
-        const panel=new THREE.Mesh(new RoundedBoxGeometry(1.06,1.02,.055,8,.045),dark);
-        panel.position.set(0,1.75,.29);panel.castShadow=true;group.add(panel);
-        const centralCarving=new THREE.Mesh(new THREE.TorusGeometry(.25,.018,8,40),brass);
-        centralCarving.position.set(0,1.75,.33);group.add(centralCarving);
-        const rosette=new THREE.Mesh(new THREE.SphereGeometry(.08,12,10),brass);
-        rosette.position.set(0,1.75,.35);group.add(rosette);
-
-        const handleBase=new THREE.Mesh(new THREE.SphereGeometry(.065,12,10),metal);
-        handleBase.position.set(side<0?.52:-.52,1.08,.35);group.add(handleBase);
-        const handle=new THREE.Mesh(new THREE.TorusGeometry(.072,.014,8,24),brass);
-        handle.position.set(side<0?.52:-.52,1.0,.4);group.add(handle);
-
-        const header=new THREE.Mesh(new RoundedBoxGeometry(2.0,.16,.31,8,.045),brass);
-        header.position.set(0,2.82,0);group.add(header);
-        for(const x of [-.82,.82]){
-          const foot=new THREE.Mesh(new THREE.SphereGeometry(.055,10,8),brass);
-          foot.position.set(x,.12,.22);group.add(foot);
-        }
-
-        group.userData.assetId='original-great-hall-balcony-door';
-        group.userData.level=levelIndex+1;
-        scene.add(group);
-        addBoxCollider(colliders,side*14.16,floorY+1.38,z,.42,2.7,1.88);
-
-        interactables.push({
-          name:'Porta da galeria '+(levelIndex+1)+' '+(side<0?'oeste':'leste'),
-          kind:'inspect',
-          label:'Porta de madeira da galeria',
-          description:'Uma das portas que se abrem para os cômodos ao redor do Grande Salão. O livro descreve fileiras de portas em cada nível dos balcões.',
-          position:new THREE.Vector3(side*13.0,floorY+1.1,z),
-          radius:1.6
-        });
+  const positions=[-7,0,7];
+  const wallX=14.2,baseY=13.175,topY=28.35;
+  const roomWood=new THREE.MeshStandardMaterial({
+    color:0x755638,map:wood.map,normalMap:wood.normalMap,
+    normalScale:new THREE.Vector2(.72,.72),roughnessMap:wood.roughnessMap,roughness:.78
+  });
+  for(const side of [-1,1]) {
+    const spans=[[-10.2,-7.98],[-6.02,-.98],[.98,6.02],[7.98,9.2]];
+    for(const [a,b] of spans) {
+      const h=topY-baseY;
+      const wall=new THREE.Mesh(new RoundedBoxGeometry(.55,h,b-a,8,.055),stone);
+      wall.name='trecho de alvenaria entre portas das galerias';
+      wall.position.set(side*wallX,(baseY+topY)/2,(a+b)/2);
+      wall.castShadow=true;wall.receiveShadow=true;scene.add(wall);
+      addBoxCollider(colliders,side*wallX,(baseY+topY)/2,(a+b)/2,.55,h,b-a);
+    }
+    for(const z of positions) {
+      const bands=[[baseY,levels[0]],[levels[0]+2.78,levels[1]],[levels[1]+2.78,levels[2]],[levels[2]+2.78,topY]];
+      for(const [lo,hi] of bands) {
+        const h=hi-lo;if(h<=.05)continue;
+        const band=new THREE.Mesh(new RoundedBoxGeometry(.55,h,1.9,6,.035),stone);
+        band.name='lintel e peitoril de calcário entre portas';
+        band.position.set(side*wallX,(lo+hi)/2,z);
+        band.castShadow=true;band.receiveShadow=true;scene.add(band);
+        addBoxCollider(colliders,side*wallX,(lo+hi)/2,z,.55,h,1.9);
       }
+      levels.forEach(floorY=>{
+        const roomX=side*16.08,roomWidth=3.55,roomDepth=4.35,roomHeight=3.28;
+        const floor=new THREE.Mesh(new RoundedBoxGeometry(roomWidth,.22,roomDepth,8,.045),stone);
+        floor.name='piso de calcário da sala lateral da galeria';
+        floor.position.set(roomX,floorY-.11,z);floor.receiveShadow=true;floor.castShadow=true;scene.add(floor);
+        groundSurfaces?.push(floor);
+        const back=new THREE.Mesh(new RoundedBoxGeometry(.22,roomHeight,roomDepth,8,.035),stone);
+        back.name='parede de fundo da sala lateral';
+        back.position.set(side*17.82,floorY+roomHeight/2,z);
+        back.castShadow=true;back.receiveShadow=true;scene.add(back);
+        addBoxCollider(colliders,side*17.82,floorY+roomHeight/2,z,.22,roomHeight,roomDepth);
+        for(const end of [-1,1]) {
+          const partition=new THREE.Mesh(new RoundedBoxGeometry(roomWidth,roomHeight,.18,8,.03),stone);
+          partition.name='parede divisória da sala lateral';
+          partition.position.set(roomX,floorY+roomHeight/2,z+end*(roomDepth/2));
+          partition.castShadow=true;partition.receiveShadow=true;scene.add(partition);
+          addBoxCollider(colliders,roomX,floorY+roomHeight/2,z+end*(roomDepth/2),roomWidth,roomHeight,.18);
+        }
+        const ceiling=new THREE.Mesh(new RoundedBoxGeometry(roomWidth,.16,roomDepth,6,.035),stone);
+        ceiling.name='forro de calcário da sala lateral';
+        ceiling.position.set(roomX,floorY+3.48,z);ceiling.receiveShadow=true;scene.add(ceiling);
+        const consoleBase=new THREE.Mesh(new RoundedBoxGeometry(1.45,.58,.56,8,.06),roomWood);
+        consoleBase.name='console de nogueira da sala lateral';
+        consoleBase.position.set(side*16.95,floorY+.34,z);
+        consoleBase.castShadow=true;consoleBase.receiveShadow=true;scene.add(consoleBase);
+        const consoleTop=new THREE.Mesh(new RoundedBoxGeometry(1.62,.09,.66,8,.035),brass);
+        consoleTop.position.set(side*16.95,floorY+.66,z);scene.add(consoleTop);
+        addBoxCollider(colliders,side*16.95,floorY+.36,z,1.5,.72,.62);
+        platforms.push({
+          minX:side<0?-17.82:14.30,maxX:side<0?-14.30:17.82,
+          minZ:z-roomDepth/2+.14,maxZ:z+roomDepth/2-.14,height:floorY
+        });
+        const portal=new THREE.Group();
+        portal.name='portal funcional da sala lateral';
+        portal.position.set(side*wallX,floorY,z);
+        portal.rotation.y=side<0?Math.PI/2:-Math.PI/2;scene.add(portal);
+        for(const x of [-.98,.98]) {
+          const jamb=new THREE.Mesh(new RoundedBoxGeometry(.22,2.86,.48,8,.05),stone);
+          jamb.position.set(x,1.43,0);jamb.castShadow=true;jamb.receiveShadow=true;portal.add(jamb);
+        }
+        const lintel=new THREE.Mesh(new RoundedBoxGeometry(2.16,.24,.48,8,.05),stone);
+        lintel.position.set(0,2.86,0);lintel.castShadow=true;portal.add(lintel);
+        const threshold=new THREE.Mesh(new RoundedBoxGeometry(1.9,.1,.56,8,.025),brass);
+        threshold.position.set(0,.045,0);portal.add(threshold);
+        const hinge=new THREE.Group();hinge.position.set(-.84,.11,.10);portal.add(hinge);
+        const leaf=new THREE.Mesh(new RoundedBoxGeometry(1.68,2.58,.14,10,.06),roomWood);
+        leaf.name='folha articulada de porta da galeria';leaf.position.set(.84,1.31,0);
+        leaf.castShadow=true;leaf.receiveShadow=true;hinge.add(leaf);
+        for(const x of [.22,.84,1.46]) {
+          const stile=new THREE.Mesh(new RoundedBoxGeometry(.075,2.35,.045,5,.018),brass);
+          stile.position.set(x,1.31,.095);hinge.add(stile);
+        }
+        for(const y of [.28,1.31,2.34]) {
+          const rail=new THREE.Mesh(new RoundedBoxGeometry(1.55,.07,.05,5,.02),brass);
+          rail.position.set(.84,y,.095);hinge.add(rail);
+        }
+        const medallion=new THREE.Mesh(new THREE.TorusGeometry(.23,.025,10,48),brass);
+        medallion.position.set(.84,1.34,.105);hinge.add(medallion);
+        const knob=new THREE.Mesh(new THREE.SphereGeometry(.075,20,14),brass);
+        knob.position.set(1.48,1.23,.16);hinge.add(knob);
+        const collider={
+          minX:side*wallX-.18,maxX:side*wallX+.18,
+          minY:floorY+.02,maxY:floorY+2.72,minZ:z-.9,maxZ:z+.9
+        };
+        colliders.push(collider);
+        let opened=false;
+        interactables.push({
+          name:'Porta da galeria para sala lateral',kind:'door',
+          label:'Porta de nogueira da galeria',
+          description:'Porta de madeira com ferragens de bronze. Pressione E ou INTERAGIR para abrir e atravessar.',
+          position:new THREE.Vector3(side*13.15,floorY+1.15,z),radius:2.65,
+          onInteract(){
+            opened=!opened;
+            if(opened) {
+              hinge.rotation.y=side<0?-Math.PI/2:Math.PI/2;
+              const index=colliders.indexOf(collider);if(index>=0)colliders.splice(index,1);
+              return 'A porta se abre para a sala lateral.';
+            }
+            hinge.rotation.y=0;if(!colliders.includes(collider))colliders.push(collider);
+            return 'A porta de nogueira foi fechada.';
+          }
+        });
+      });
+    }
+    for(const z of [-9.85,8.85]) {
+      const pilaster=new THREE.Mesh(new RoundedBoxGeometry(.7,15.2,.7,8,.08),stone);
+      pilaster.name='pilastra de calcário do corredor lateral';
+      pilaster.position.set(side*14.2,20.75,z);pilaster.castShadow=true;pilaster.receiveShadow=true;scene.add(pilaster);
     }
   }
+  return platforms;
+}
+
+function addGalleryWalkways(scene,stone,groundSurfaces) {
+  const platforms=[];
+  const levels=[16.875,20.625,24.375];
+  for(const floorY of levels)for(const side of [-1,1]) {
+    const pieces=[
+      {x:side*8.3,z:-.5,w:1.4,d:19.0},
+      {x:side*12.55,z:-.5,w:1.7,d:19.0},
+      {x:side*10.35,z:-5.65,w:2.7,d:7.7},
+      {x:side*10.35,z:8.55,w:2.7,d:1.3},
+      {x:side*10.35,z:-.91,w:2.72,d:1.72},
+      {x:side*10.35,z:7.35,w:2.72,d:1.72}
+    ];
+    for(const p of pieces) {
+      const slab=new THREE.Mesh(new RoundedBoxGeometry(p.w,.55,p.d,8,.07),stone);
+      slab.name='plataforma de calcário da galeria com vão de escada';
+      slab.position.set(p.x,floorY-.275,p.z);
+      slab.castShadow=true;slab.receiveShadow=true;scene.add(slab);
+      groundSurfaces?.push(slab);
+      platforms.push({
+        minX:p.x-p.w/2+.05,maxX:p.x+p.w/2-.05,
+        minZ:p.z-p.d/2+.05,maxZ:p.z+p.d/2-.05,height:floorY
+      });
+    }
+  }
+  return platforms;
 }
 
 function addBalustrades(scene,stone,brass,wood) {
@@ -306,15 +379,32 @@ function addBalustrades(scene,stone,brass,wood) {
     new THREE.Vector2(.035,0),new THREE.Vector2(.07,.08),new THREE.Vector2(.065,.17),
     new THREE.Vector2(.105,.28),new THREE.Vector2(.09,.42),new THREE.Vector2(.055,.54),
     new THREE.Vector2(.045,.72),new THREE.Vector2(.075,.82)
-  ],16);
-  for(let level=0;level<3;level++){
-    const y=16.6+level*3.75;
-    for(const side of [-1,1]){
-      const x=side*13.1,pts=[],low=[];
-      for(let i=0;i<=20;i++){const z=-8.75+i*.875;pts.push([x,y+1.03,z]);low.push([x,y+.16,z]);}
-      scene.add(tube(pts,.075,wood,72,10),tube(pts.map(p=>[p[0],p[1]-.07,p[2]]),.019,brass,72,8),tube(low,.045,brass,72,8));
-      for(let i=0;i<=22;i++){const z=-8.55+i*.78;const b=new THREE.Mesh(geo,stone);b.name='balaústre torneado da galeria';b.position.set(x,y+.17,z);b.castShadow=true;scene.add(b);}
-      for(const z of [-8.95,8.95]){const n=new THREE.Mesh(new THREE.LatheGeometry([new THREE.Vector2(.12,0),new THREE.Vector2(.16,.18),new THREE.Vector2(.11,.38),new THREE.Vector2(.2,.55),new THREE.Vector2(.23,.78),new THREE.Vector2(.13,1.02),new THREE.Vector2(.06,1.18)],20),brass);n.position.set(x,y,z);n.name='poste monumental da galeria';n.castShadow=true;scene.add(n);}
+  ],24);
+  const segments=[[-9.05,-8.18],[-5.82,-1.18],[1.18,5.82],[8.18,9.05]];
+  for(let level=0;level<3;level++)for(const side of [-1,1]) {
+    const y=16.875+level*3.75,x=side*13.08;
+    for(const [z0,z1] of segments) {
+      const pts=[],low=[],count=Math.max(2,Math.round((z1-z0)*3));
+      for(let i=0;i<=count;i++) {
+        const z=z0+(z1-z0)*i/count;pts.push([x,y+1.03,z]);low.push([x,y+.16,z]);
+      }
+      scene.add(tube(pts,.075,wood,72,12));
+      scene.add(tube(pts.map(p=>[p[0],p[1]-.075,p[2]]),.018,brass,72,8));
+      scene.add(tube(low,.042,brass,72,8));
+      for(let z=z0+.12;z<z1-.05;z+=.52) {
+        const baluster=new THREE.Mesh(geo,stone);
+        baluster.name='balaústre torneado da galeria';baluster.position.set(x,y+.16,z);
+        baluster.castShadow=true;scene.add(baluster);
+      }
+    }
+    for(const z of [-8.15,-5.85,-1.15,1.15,5.85,8.15]) {
+      const post=new THREE.Mesh(new THREE.LatheGeometry([
+        new THREE.Vector2(.12,0),new THREE.Vector2(.16,.18),new THREE.Vector2(.11,.38),
+        new THREE.Vector2(.2,.55),new THREE.Vector2(.23,.78),new THREE.Vector2(.13,1.02),
+        new THREE.Vector2(.06,1.18)
+      ],24),brass);
+      post.name='poste de interrupção do guarda-corpo para acesso às portas';
+      post.position.set(x,y,z);post.castShadow=true;scene.add(post);
     }
   }
 }

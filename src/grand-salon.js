@@ -153,75 +153,82 @@ function lotusColumn(scene,x,z,stone,pale,brass) {
 
 function stairFlight(scene,stone,treadMaterial,brass,wood,options) {
   const {
-    centerX,baseY,topY,startZ,direction,width=1.8,depth=.59,count=14
+    centerX,baseY,topY,startZ,direction,width=1.9,depth=.53,count=18,
+    landingWidth=2.45,landingDepth=1.75
   }=options;
-  const rise=(topY-baseY)/count;
-  const thick=.21;
+  const rise=(topY-baseY)/count,thick=.19;
   const left=[],right=[],lowL=[],lowR=[];
   const balusterGeo=new THREE.LatheGeometry([
-    new THREE.Vector2(.035,0),new THREE.Vector2(.055,.1),new THREE.Vector2(.11,.24),
-    new THREE.Vector2(.07,.42),new THREE.Vector2(.045,.58),new THREE.Vector2(.08,.76),
-    new THREE.Vector2(.045,.88)
-  ],16);
-
-  for(let i=0;i<count;i++){
+    new THREE.Vector2(.035,0),new THREE.Vector2(.055,.1),new THREE.Vector2(.105,.22),
+    new THREE.Vector2(.075,.4),new THREE.Vector2(.045,.58),new THREE.Vector2(.078,.76),
+    new THREE.Vector2(.045,.9)
+  ],20);
+  for(let i=0;i<count;i++) {
     const top=baseY+(i+1)*rise;
     const z=startZ+direction*(i+.5)*depth;
-    const tread=new THREE.Mesh(new RoundedBoxGeometry(width,thick,depth+.025,5,.045),i%2?stone:treadMaterial);
-    tread.name='degrau de pedra da escadaria do Grande Salão';
+    const tread=new THREE.Mesh(new RoundedBoxGeometry(width,thick,depth+.04,7,.035),i%2?stone:treadMaterial);
+    tread.name='degrau amplo de calcário da escadaria central';
     tread.position.set(centerX,top-thick/2,z);
     tread.castShadow=true;tread.receiveShadow=true;scene.add(tread);
-
-    const nosing=new THREE.Mesh(new RoundedBoxGeometry(width-.08,.035,.065,4,.014),brass);
-    nosing.name='filete de bronze no degrau';
-    nosing.position.set(centerX,top-.035,z-direction*depth*.46);
-    scene.add(nosing);
-
+    const nosing=new THREE.Mesh(new RoundedBoxGeometry(width-.08,.035,.075,5,.012),brass);
+    nosing.name='filete de bronze no degrau central';
+    nosing.position.set(centerX,top-.035,z-direction*depth*.45);scene.add(nosing);
     const xL=centerX-width*.49,xR=centerX+width*.49,railY=top+.94;
     left.push([xL,railY,z]);right.push([xR,railY,z]);
-    lowL.push([xL,top+.15,z]);lowR.push([xR,top+.15,z]);
-
-    if(i%2===0){
-      for(const x of [xL,xR]){
-        const baluster=new THREE.Mesh(balusterGeo,brass);
-        baluster.position.set(x,top+.13,z);
-        baluster.name='balaústre torneado da escadaria';
-        baluster.castShadow=true;scene.add(baluster);
-      }
+    lowL.push([xL,top+.14,z]);lowR.push([xR,top+.14,z]);
+    if(i%2===0)for(const x of [xL,xR]) {
+      const baluster=new THREE.Mesh(balusterGeo,brass);
+      baluster.name='balaústre esculpido da escadaria central';
+      baluster.position.set(x,top+.12,z);baluster.castShadow=true;scene.add(baluster);
     }
   }
-
   scene.add(
-    tube(left,.065,wood,64,10),
-    tube(right,.065,wood,64,10),
-    tube(left.map(p=>[p[0],p[1]-.065,p[2]]),.018,brass,64,8),
-    tube(right.map(p=>[p[0],p[1]-.065,p[2]]),.018,brass,64,8),
-    tube(lowL,.035,brass,64,8),
-    tube(lowR,.035,brass,64,8)
+    tube(left,.07,wood,80,12),tube(right,.07,wood,80,12),
+    tube(left.map(p=>[p[0],p[1]-.07,p[2]]),.018,brass,80,8),
+    tube(right.map(p=>[p[0],p[1]-.07,p[2]]),.018,brass,80,8),
+    tube(lowL,.03,brass,80,8),tube(lowR,.03,brass,80,8)
   );
-
   const endZ=startZ+direction*count*depth;
-  const landing=new THREE.Mesh(new RoundedBoxGeometry(width+.3,.24,1.55,5,.055),stone);
-  landing.name='patamar de mudança de nível da escadaria';
-  landing.position.set(centerX,topY-.12,endZ+direction*.33);
+  const landingZ=endZ+direction*.34;
+  const landing=new THREE.Mesh(new RoundedBoxGeometry(landingWidth,.25,landingDepth,10,.045),stone);
+  landing.name='patamar de calcário da escadaria central';
+  landing.position.set(centerX,topY-.125,landingZ);
   landing.castShadow=true;landing.receiveShadow=true;scene.add(landing);
-
   const postGeo=new THREE.LatheGeometry([
-    new THREE.Vector2(.13,0),new THREE.Vector2(.17,.16),
-    new THREE.Vector2(.12,.36),new THREE.Vector2(.21,.54),
-    new THREE.Vector2(.22,.83),new THREE.Vector2(.1,1.1),
+    new THREE.Vector2(.13,0),new THREE.Vector2(.17,.16),new THREE.Vector2(.12,.36),
+    new THREE.Vector2(.21,.54),new THREE.Vector2(.22,.83),new THREE.Vector2(.1,1.1),
     new THREE.Vector2(.06,1.23)
-  ],20);
-  for(const [z,y] of [[startZ,baseY],[endZ+direction*.15,topY]]){
-    for(const dx of [-1,1]){
-      const post=new THREE.Mesh(postGeo,brass);
-      post.position.set(centerX+dx*(width*.52),y+.08,z);
-      post.name='poste de início ou fim da escadaria';
-      post.castShadow=true;scene.add(post);
-    }
+  ],24);
+  for(const [z,y] of [[startZ,baseY],[endZ+direction*.15,topY]])for(const dx of [-1,1]) {
+    const post=new THREE.Mesh(postGeo,brass);
+    post.position.set(centerX+dx*(width*.52),y+.08,z);
+    post.name='poste de bronze da escadaria central';post.castShadow=true;scene.add(post);
   }
+  return {
+    centerX,width,startZ,endZ,bottomY:baseY,topY,
+    landingPlatform:{
+      minX:centerX-landingWidth/2+.02,maxX:centerX+landingWidth/2-.02,
+      minZ:landingZ-landingDepth/2+.02,maxZ:landingZ+landingDepth/2-.02,
+      height:topY
+    }
+  };
+}
 
-  return {centerX,width,startZ,endZ,bottomY:baseY,topY};
+function addGreatHallWarmLighting(scene) {
+  const ambient=new THREE.HemisphereLight(0xffdfbd,0x574131,.58);
+  ambient.name='luz ambiente quente difusa do Grande Salão';scene.add(ambient);
+  const sources=[
+    [-10.5,19.5,-5.0,1.05,17],
+    [10.5,19.5,-5.0,1.05,17],
+    [-10.5,19.5,5.0,.92,16],
+    [10.5,19.5,5.0,.92,16],
+    [0,20.5,-.5,.7,13]
+  ];
+  for(const [x,y,z,intensity,distance] of sources) {
+    const light=new THREE.PointLight(0xffc88b,intensity,distance,1.75);
+    light.name='luz rebatida âmbar do Grande Salão';
+    light.position.set(x,y,z);scene.add(light);
+  }
 }
 
 function addBalconyDoorRows(scene,stone,wood,brass,colliders,interactables,groundSurfaces) {
@@ -236,15 +243,15 @@ function addBalconyDoorRows(scene,stone,wood,brass,colliders,interactables,groun
   for(const side of [-1,1]) {
     const spans=[[-10.2,-7.98],[-6.02,-.98],[.98,6.02],[7.98,9.2]];
     for(const [a,b] of spans) {
-      const h=topY-baseY;
+      const h=topY-levels[0];
       const wall=new THREE.Mesh(new RoundedBoxGeometry(.55,h,b-a,8,.055),stone);
       wall.name='trecho de alvenaria entre portas das galerias';
-      wall.position.set(side*wallX,(baseY+topY)/2,(a+b)/2);
+      wall.position.set(side*wallX,(levels[0]+topY)/2,(a+b)/2);
       wall.castShadow=true;wall.receiveShadow=true;scene.add(wall);
-      addBoxCollider(colliders,side*wallX,(baseY+topY)/2,(a+b)/2,.55,h,b-a);
+      addBoxCollider(colliders,side*wallX,(levels[0]+topY)/2,(a+b)/2,.55,h,b-a);
     }
     for(const z of positions) {
-      const bands=[[baseY,levels[0]],[levels[0]+2.78,levels[1]],[levels[1]+2.78,levels[2]],[levels[2]+2.78,topY]];
+      const bands=[[levels[0]+2.78,levels[1]],[levels[1]+2.78,levels[2]],[levels[2]+2.78,topY]];
       for(const [lo,hi] of bands) {
         const h=hi-lo;if(h<=.05)continue;
         const band=new THREE.Mesh(new RoundedBoxGeometry(.55,h,1.9,6,.035),stone);
@@ -437,18 +444,31 @@ function addWallReliefs(scene,brass,wood,stone,texture) {
 }
 
 function ceilingOrnament(scene,brass,wood) {
-  const med=new THREE.Mesh(new THREE.CylinderGeometry(3.35,3.55,.14,96),wood);med.name='medalhão de cedro do teto';med.position.set(0,28.28,-.5);med.castShadow=true;scene.add(med);
-  for(const r of [2.85,3.05,3.28]){const ring=new THREE.Mesh(new THREE.TorusGeometry(r,.035,10,96),brass);ring.rotation.x=Math.PI/2;ring.position.set(0,28.19,-.5);scene.add(ring);}
-  const rosette=new THREE.Mesh(new THREE.OctahedronGeometry(.68,1),brass);rosette.position.set(0,28.08,-.5);rosette.scale.set(1,.17,1);scene.add(rosette);
-  for(let i=0;i<24;i++){const a=i/24*Math.PI*2;const bead=new THREE.Mesh(new THREE.SphereGeometry(.055,12,8),brass);bead.position.set(Math.cos(a)*2.45,28.06,Math.sin(a)*2.45-.5);scene.add(bead);}
+  const med=new THREE.Mesh(new THREE.CylinderGeometry(3.35,3.55,.14,96),wood);
+  med.name='medalhão de cedro do teto';med.position.set(0,28.28,-.5);med.castShadow=true;scene.add(med);
+  for(const r of [2.85,3.05,3.28]) {
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(r,.035,10,96),brass);
+    ring.rotation.x=Math.PI/2;ring.position.set(0,28.19,-.5);scene.add(ring);
+  }
+  const petalMaterial=new THREE.MeshStandardMaterial({color:0xc3a36b,metalness:.62,roughness:.34});
+  for(let i=0;i<12;i++) {
+    const angle=i*Math.PI/6;
+    const petal=new THREE.Mesh(new THREE.SphereGeometry(.48,24,16),petalMaterial);
+    petal.name='pétala de lótus arredondada do medalhão do teto';
+    petal.scale.set(.42,.12,.88);
+    petal.position.set(Math.cos(angle)*.4,28.08,Math.sin(angle)*.4-.5);
+    petal.rotation.y=-angle;scene.add(petal);
+  }
+  const core=new THREE.Mesh(new THREE.SphereGeometry(.34,32,20),petalMaterial);
+  core.name='núcleo arredondado do medalhão de lótus';
+  core.scale.set(1,.22,1);core.position.set(0,28.08,-.5);scene.add(core);
 }
-
 function createSofa(scene,x,z,rotation,upholstery,wood,brass) {
   const group=new THREE.Group();
   group.name='sofá de reserva do Grande Salão';
   group.position.set(x,13.175,z);
   group.rotation.y=rotation;
-  group.scale.set(.58,.78,.62);
+  group.scale.set(.9,.86,.86);
 
   const base=new THREE.Mesh(new RoundedBoxGeometry(4.65,.34,1.95,8,.15),wood);
   base.position.y=.25;base.castShadow=true;base.receiveShadow=true;group.add(base);
@@ -485,8 +505,8 @@ function loadSofaAssets(scene, fallbacks, colliders, interactables) {
   loader.setMeshoptDecoder(MeshoptDecoder);
   const source=assetUrl('models/polyhaven-sofa-03.glb');
   const placements=[
-    {x:-4.75,z:-4.6,rotation:Math.PI/2,side:'oeste'},
-    {x:4.75,z:-4.6,rotation:-Math.PI/2,side:'leste'}
+    {x:-4.85,z:-4.6,rotation:Math.PI/2,side:'oeste'},
+    {x:4.85,z:-4.6,rotation:-Math.PI/2,side:'leste'}
   ];
 
   loader.load(source,gltf=>{
@@ -502,7 +522,7 @@ function loadSofaAssets(scene, fallbacks, colliders, interactables) {
       placements.forEach((place,index)=>{
         const model=sourceRoot.clone(true);
         model.name='sofá Poly Haven Sofa 03 · '+place.side;
-        model.scale.setScalar(1.05);
+        model.scale.setScalar(1.45);
         model.rotation.y=place.rotation;
         model.updateMatrixWorld(true);
 
@@ -533,7 +553,7 @@ function loadSofaAssets(scene, fallbacks, colliders, interactables) {
         model.userData.assetId='polyhaven-sofa-03';
         model.userData.license='CC0-1.0';
         model.userData.nativeDimensions=[2.731,.925,1.118];
-        model.userData.appliedScale=1.05;
+        model.userData.appliedScale=1.45;
         model.userData.interaction={
           type:'inspect',
           label:'Sofá de couro',
@@ -555,7 +575,7 @@ function loadSofaAssets(scene, fallbacks, colliders, interactables) {
   });
 
   placements.forEach(place=>{
-    addBoxCollider(colliders,place.x,13.68,place.z,1.42,1.08,3.18);
+    addBoxCollider(colliders,place.x,13.68,place.z,2.05,1.2,4.25);
     interactables.push({
       name:'Sofá de couro '+place.side,
       kind:'inspect',
@@ -636,7 +656,7 @@ function centerTable(scene,wood,brass) {
   const group=new THREE.Group();
   group.name='mesa baixa circular de nogueira e bronze do Grande Salão';
   group.position.set(0,13.175,-4.6);
-  group.scale.set(1.34,1,1.34);
+  group.scale.set(1.82,1,1.82);
 
   const base=new THREE.Mesh(new THREE.LatheGeometry([
     new THREE.Vector2(.18,0),new THREE.Vector2(.27,.05),new THREE.Vector2(.34,.12),
@@ -677,36 +697,138 @@ function centerTable(scene,wood,brass) {
   return group;
 }
 
-function addFireplaceHearth(scene,stone,brass) {
-  const dark=new THREE.MeshStandardMaterial({color:0x24201b,roughness:.96});
-  const ash=new THREE.MeshStandardMaterial({color:0x55483b,roughness:.94});
-  const base=new THREE.Mesh(new RoundedBoxGeometry(5.35,.3,2.25,10,.1),stone);
-  base.name='base de calcário maciço da lareira';base.position.set(0,13.31,-8.18);
-  base.castShadow=true;base.receiveShadow=true;scene.add(base);
-  const firebed=new THREE.Mesh(new RoundedBoxGeometry(4.35,.14,1.2,8,.04),dark);
-  firebed.name='câmara profunda de fogo da lareira';firebed.position.set(0,13.49,-8.38);
-  firebed.receiveShadow=true;scene.add(firebed);
-  const rear=new THREE.Mesh(new RoundedBoxGeometry(4.55,2.0,.22,8,.045),ash);
-  rear.name='fundo escuro refratário da lareira';rear.position.set(0,14.45,-9.02);
-  rear.castShadow=true;scene.add(rear);
+function addGreatHallRearWall(scene,stone,brass) {
+  const wallZ=-9.58,wallDepth=.78;
+  const addBlock=(x,y,w,h,name='bloco de calcário aparelhado da parede posterior')=>{
+    if(w<.08||h<.08)return;
+    const mesh=new THREE.Mesh(new RoundedBoxGeometry(w,h,wallDepth,6,.035),stone);
+    mesh.name=name;mesh.position.set(x,y,wallZ);
+    mesh.castShadow=true;mesh.receiveShadow=true;scene.add(mesh);
+  };
+  // Lower wall wings contain two real openings; the middle bay is reserved for the fireplace.
   for(const side of [-1,1]) {
-    const cheek=new THREE.Mesh(new RoundedBoxGeometry(.28,1.85,1.15,8,.055),stone);
-    cheek.name='ombreira lateral de pedra da lareira';
-    cheek.position.set(side*2.15,14.36,-8.42);
-    cheek.castShadow=true;cheek.receiveShadow=true;scene.add(cheek);
-    const inner=new THREE.Mesh(new RoundedBoxGeometry(.08,1.55,.93,6,.02),dark);
-    inner.position.set(side*1.99,14.32,-8.42);scene.add(inner);
+    const wingStart=side<0?-14.5:3.05,wingEnd=side<0?-3.05:14.5;
+    const passageX=side*8.45,openWidth=2.85;
+    const lowerBands=[[13.2,14.65],[14.72,16.18]];
+    for(const [y0,y1] of lowerBands) {
+      const openA=passageX-openWidth/2,openB=passageX+openWidth/2;
+      const spans=[[wingStart,openA],[openB,wingEnd]];
+      for(const [a,b] of spans) {
+        const span=b-a;if(span<.15)continue;
+        const count=Math.max(1,Math.ceil(span/2.15)),gap=.045;
+        const each=(span-gap*(count-1))/count;
+        for(let i=0;i<count;i++)addBlock(a+each/2+i*(each+gap),(y0+y1)/2,each,y1-y0-.06);
+      }
+    }
+    const upperBottom=16.24,upperTop=28.35,upperH=upperTop-upperBottom,columns=5,rows=8;
+    const blockW=(wingEnd-wingStart)/columns-.05,blockH=upperH/rows-.06;
+    for(let row=0;row<rows;row++)for(let col=0;col<columns;col++) {
+      const x=wingStart+(col+.5)*(wingEnd-wingStart)/columns+(row%2?.12:0);
+      addBlock(THREE.MathUtils.clamp(x,wingStart+blockW/2,wingEnd-blockW/2),
+        upperBottom+(row+.5)*upperH/rows,blockW,blockH);
+    }
   }
-  const frontLip=new THREE.Mesh(new RoundedBoxGeometry(4.35,.23,.25,8,.05),brass);
-  frontLip.name='soleira frontal da lareira';frontLip.position.set(0,13.52,-7.79);
-  frontLip.castShadow=true;scene.add(frontLip);
+  // Solid upper masonry and the lintel bridge above the monumental fireplace.
+  const upperBottom=17.34,upperTop=28.35,columns=3,rows=8;
+  const blockW=6.1/columns-.045,blockH=(upperTop-upperBottom)/rows-.06;
+  for(let row=0;row<rows;row++)for(let col=0;col<columns;col++) {
+    addBlock(-3.05+(col+.5)*6.1,upperBottom+(row+.5)*(upperTop-upperBottom)/rows,
+      blockW,blockH,'bloco superior de calcário sobre a lareira');
+  }
+  const trim=new THREE.MeshStandardMaterial({
+    color:0x9a8768,map:stone.map,normalMap:stone.normalMap,
+    normalScale:new THREE.Vector2(.48,.48),roughnessMap:stone.roughnessMap,roughness:.9
+  });
+  // Recessed fireplace jambs and lintel are embedded in the wall plane.
+  for(const side of [-1,1]) {
+    const jamb=new THREE.Mesh(new RoundedBoxGeometry(.32,4.05,.92,8,.045),trim);
+    jamb.name='ombreira integrada do nicho da lareira';
+    jamb.position.set(side*2.88,15.18,-9.08);jamb.castShadow=true;jamb.receiveShadow=true;scene.add(jamb);
+  }
+  const header=new THREE.Mesh(new RoundedBoxGeometry(6.05,.25,.9,8,.045),trim);
+  header.name='verga integrada do nicho da lareira';
+  header.position.set(0,17.43,-9.1);header.castShadow=true;scene.add(header);
 }
+
+function addLowerPassages(scene,stone,brass,colliders,walkablePlatforms,groundSurfaces) {
+  const trim=new THREE.MeshStandardMaterial({color:0x9a8058,metalness:.38,roughness:.58});
+  for(const centre of [-8.45,8.45]) {
+    const archZ=-9.08;
+    const pierMat=stone;
+    for(const x of [centre-1.48,centre+1.48]) {
+      const pier=new THREE.Mesh(new RoundedBoxGeometry(.28,2.82,.82,8,.05),pierMat);
+      pier.name='pilar do arco das passagens inferiores';
+      pier.position.set(x,14.58,archZ);pier.castShadow=true;scene.add(pier);
+      const base=new THREE.Mesh(new RoundedBoxGeometry(.48,.22,1.0,8,.04),trim);
+      base.position.set(x,13.28,archZ+.02);scene.add(base);
+      const capital=new THREE.Mesh(new RoundedBoxGeometry(.46,.2,.94,8,.04),trim);
+      capital.position.set(x,15.96,archZ+.02);scene.add(capital);
+    }
+    const curvePoints=[
+      [centre-1.48,16.02,archZ],[centre-1.35,16.38,archZ],
+      [centre-.92,16.64,archZ],[centre,16.76,archZ],
+      [centre+.92,16.64,archZ],[centre+1.35,16.38,archZ],
+      [centre+1.48,16.02,archZ]
+    ];
+    scene.add(tube(curvePoints,.13,trim,72,14));
+    const corridorFloor=new THREE.Mesh(new RoundedBoxGeometry(2.85,.22,2.85,8,.035),stone);
+    corridorFloor.name='piso de calcário da passagem inferior';
+    corridorFloor.position.set(centre,13.08,-11.25);corridorFloor.receiveShadow=true;scene.add(corridorFloor);
+    groundSurfaces?.push(corridorFloor);
+    walkablePlatforms.push({
+      minX:centre-1.38,maxX:centre+1.38,minZ:-12.65,maxZ:-9.82,height:13.175
+    });
+    for(const side of [-1,1]) {
+      const wall=new THREE.Mesh(new RoundedBoxGeometry(.16,2.82,2.85,6,.025),stone);
+      wall.name='parede lateral da passagem inferior';
+      wall.position.set(centre+side*1.4,14.48,-11.25);
+      wall.castShadow=true;wall.receiveShadow=true;scene.add(wall);
+      const collider={minX:centre+side*1.4-.08,maxX:centre+side*1.4+.08,
+        minY:13.25,maxY:15.72,minZ:-12.68,maxZ:-9.82};
+      colliders.push(collider);
+    }
+    const endHeader=new THREE.Mesh(new RoundedBoxGeometry(2.85,.2,.24,8,.035),trim);
+    endHeader.name='verga do portal no fim da passagem';
+    endHeader.position.set(centre,16.0,-12.72);scene.add(endHeader);
+    for(const x of [centre-1.42,centre+1.42]) {
+      const endPier=new THREE.Mesh(new RoundedBoxGeometry(.18,2.8,.24,6,.025),stone);
+      endPier.position.set(x,14.55,-12.72);scene.add(endPier);
+    }
+    const glow=new THREE.PointLight(0xffc783,.42,5,1.8);
+    glow.position.set(centre,15.0,-12.2);scene.add(glow);
+  }
+}
+
+function addFireplaceHearth(scene,stone,brass) {
+  const dark=new THREE.MeshStandardMaterial({color:0x26221d,roughness:.96});
+  const refractory=new THREE.MeshStandardMaterial({color:0x514538,roughness:.96});
+  const sill=new THREE.Mesh(new RoundedBoxGeometry(5.55,.25,.9,10,.07),stone);
+  sill.name='soleira espessa embutida da lareira';
+  sill.position.set(0,13.30,-9.02);sill.castShadow=true;sill.receiveShadow=true;scene.add(sill);
+  const bed=new THREE.Mesh(new RoundedBoxGeometry(4.38,.13,.58,8,.03),dark);
+  bed.name='câmara profunda embutida da lareira';
+  bed.position.set(0,13.47,-9.28);bed.receiveShadow=true;scene.add(bed);
+  const backing=new THREE.Mesh(new RoundedBoxGeometry(4.45,1.9,.13,8,.025),refractory);
+  backing.name='fundo refratário dentro do nicho';
+  backing.position.set(0,14.47,-9.69);backing.castShadow=true;scene.add(backing);
+  for(const side of [-1,1]) {
+    const cheek=new THREE.Mesh(new RoundedBoxGeometry(.26,1.92,.74,8,.045),stone);
+    cheek.name='ombreira de pedra integrada da lareira';
+    cheek.position.set(side*2.18,14.34,-9.05);cheek.castShadow=true;cheek.receiveShadow=true;scene.add(cheek);
+    const inner=new THREE.Mesh(new RoundedBoxGeometry(.07,1.58,.54,6,.02),dark);
+    inner.position.set(side*2.0,14.33,-9.17);scene.add(inner);
+  }
+  const lip=new THREE.Mesh(new RoundedBoxGeometry(4.34,.18,.16,8,.03),brass);
+  lip.name='filete de bronze da soleira embutida';
+  lip.position.set(0,13.49,-8.72);scene.add(lip);
+}
+
 function addFire(scene,animated,camera,isTouchDevice=false) {
   const logMat=woodMaterial();
   for(let i=0;i<5;i++){
     const log=new THREE.Mesh(new THREE.CylinderGeometry(.075,.105,1.16,20),logMat);
     log.name='lenha de nogueira carbonizada da lareira';
-    log.position.set(-.78+i*.39,13.62+(i%2)*.075,-8.30);
+    log.position.set(-.78+i*.39,13.62+(i%2)*.075,-9.12);
     log.rotation.z=Math.PI/2+(i%2?.15:-.12);log.rotation.x=i%2?.23:-.18;
     log.castShadow=true;log.receiveShadow=true;scene.add(log);
   }
@@ -714,7 +836,7 @@ function addFire(scene,animated,camera,isTouchDevice=false) {
     color:0x35150b,emissive:0xb23808,emissiveIntensity:1.2,roughness:.9
   }));
   ember.name='leito de brasas incandescentes';
-  ember.scale.set(1.55,.13,.34);ember.position.set(0,13.53,-8.34);scene.add(ember);
+  ember.scale.set(1.55,.13,.28);ember.position.set(0,13.53,-9.25);scene.add(ember);
 
   const textureLoader=new THREE.TextureLoader();
   const noise=textureLoader.load(assetUrl('fire/nzw.png'));
@@ -735,7 +857,7 @@ function addFire(scene,animated,camera,isTouchDevice=false) {
     debug:false
   });
   volume.name='fogo volumétrico com ruído procedural da lareira';
-  volume.position.set(0,14.58,-8.37);
+  volume.position.set(0,14.58,-8.98);
   volume.material.uniforms.magnitude.value=1.42;
   volume.material.uniforms.lacunarity.value=2.05;
   volume.material.uniforms.gain.value=.54;
@@ -753,7 +875,7 @@ function addFire(scene,animated,camera,isTouchDevice=false) {
     const mat=new THREE.MeshBasicMaterial({color:i%5===0?0xffe4a3:0xffa13b,transparent:true,opacity:.82,blending:THREE.AdditiveBlending});
     const spark=new THREE.Mesh(new THREE.SphereGeometry(.016+(i%3)*.009,10,8),mat);
     spark.name='faísca ascendente da lareira';
-    spark.position.set((Math.random()-.5)*2.65,13.78+Math.random()*.85,-8.1+Math.random()*.24);
+    spark.position.set((Math.random()-.5)*2.65,13.78+Math.random()*.85,-8.78+Math.random()*.2);
     scene.add(spark);
     animated.push({obj:spark,phase:i*.77,particle:true,baseX:spark.position.x,baseY:spark.position.y,baseZ:spark.position.z});
   }
@@ -767,11 +889,11 @@ function addFire(scene,animated,camera,isTouchDevice=false) {
   const glow=new THREE.Mesh(new THREE.PlaneGeometry(4.5,2.7),new THREE.MeshBasicMaterial({
     map:halo,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide
   }));
-  glow.name='reflexo volumétrico quente da lareira';glow.position.set(0,14.62,-8.65);scene.add(glow);
+  glow.name='reflexo volumétrico quente da lareira';glow.position.set(0,14.62,-9.24);scene.add(glow);
 
   const light=new THREE.PointLight(0xff7b25,4.6,17,1.55);
-  light.name='luz dinâmica do fogo da lareira';light.position.set(0,14.45,-7.45);scene.add(light);
-  const fill=new THREE.PointLight(0xffa54d,1.8,10,1.9);fill.position.set(0,13.95,-8.05);scene.add(fill);
+  light.name='luz dinâmica do fogo da lareira';light.position.set(0,14.45,-8.5);scene.add(light);
+  const fill=new THREE.PointLight(0xffa54d,1.8,10,1.9);fill.position.set(0,13.95,-8.85);scene.add(fill);
 
   return {
     fireLight:light,
@@ -1165,104 +1287,73 @@ function createWallFluteRack(scene,side,wood,brass,iron,colliders,interactables)
   return group;
 }
 
-function addTerraceGlassWall(scene,brass,colliders,interactables) {
+function addSideTerraceGlassDoors(scene,brass,stone,colliders,interactables) {
   const glass=new THREE.MeshPhysicalMaterial({
-    color:0xb8d2d3,metalness:.035,roughness:.08,transmission:.72,
-    thickness:.08,transparent:true,opacity:.28,side:THREE.DoubleSide,depthWrite:false
+    color:0xc7d8d5,metalness:.025,roughness:.1,transmission:.58,
+    thickness:.1,transparent:true,opacity:.24,side:THREE.DoubleSide,depthWrite:false
   });
-  const frame=new THREE.MeshStandardMaterial({color:0x544331,metalness:.72,roughness:.38});
-  const wallY=20.6,wallZ=9.15;
+  const bronze=new THREE.MeshStandardMaterial({color:0x654b32,metalness:.68,roughness:.4});
+  const wallX=14.2,baseY=13.175,wallTop=16.875,centreY=(baseY+wallTop)/2;
   for(const side of [-1,1]) {
-    const start=3.0,span=10.65,panelWidth=3.35,gap=(span-panelWidth*3)/2;
-    for(let i=0;i<3;i++) {
-      const localX=start+panelWidth*.5+i*(panelWidth+gap);
-      const x=side*localX;
-      if(side===1&&i===1) {
-        // Lower centre-right panel is a real double-leaf terrace door.
-        const upper=new THREE.Mesh(new THREE.PlaneGeometry(panelWidth,11.58),glass);
-        upper.name='bandeira panorâmica superior da porta da varanda';
-        upper.position.set(x,22.21,wallZ);upper.renderOrder=2;scene.add(upper);
-        addBoxCollider(colliders,x,22.21,wallZ,panelWidth,11.58,.12);
-        const doors=new THREE.Group();
-        doors.name='portas duplas de vidro para a varanda';
-        doors.position.set(x,13.19,wallZ);scene.add(doors);
-        const leaves=[];
-        for(const sideLeaf of [-1,1]) {
-          const hinge=new THREE.Group();
-          hinge.position.set(sideLeaf*panelWidth*.5,0,0);doors.add(hinge);
-          const leaf=new THREE.Mesh(new THREE.PlaneGeometry(panelWidth*.5,3.0),glass);
-          leaf.name='folha de vidro da porta da varanda';
-          leaf.position.set(-sideLeaf*panelWidth*.25,1.5,0);
-          leaf.renderOrder=3;hinge.add(leaf);
-          const stile=new THREE.Mesh(new RoundedBoxGeometry(.075,3.0,.12,6,.025),frame);
-          stile.position.set(-sideLeaf*panelWidth*.5,1.5,.035);hinge.add(stile);
-          const topRail=new THREE.Mesh(new RoundedBoxGeometry(panelWidth*.5,.075,.12,6,.025),brass);
-          topRail.position.set(-sideLeaf*panelWidth*.25,2.96,.035);hinge.add(topRail);
-          const bottomRail=new THREE.Mesh(new RoundedBoxGeometry(panelWidth*.5,.075,.12,6,.025),brass);
-          bottomRail.position.set(-sideLeaf*panelWidth*.25,.045,.035);hinge.add(bottomRail);
-          leaves.push(hinge);
+    for(const segment of [{z:-5.7,length:8.85},{z:5.7,length:8.85}]) {
+      const panel=new THREE.Mesh(new THREE.PlaneGeometry(segment.length,3.56),glass);
+      panel.name='painel de vidro panorâmico da parede lateral';
+      panel.position.set(side*wallX,centreY,segment.z);
+      panel.rotation.y=side<0?Math.PI/2:-Math.PI/2;
+      panel.renderOrder=2;panel.receiveShadow=true;scene.add(panel);
+      addBoxCollider(colliders,side*wallX,centreY,segment.z,.14,3.56,segment.length);
+    }
+    const doorWidth=2.55,doorHeight=3.55;
+    const doors=new THREE.Group();
+    doors.name='porta dupla de vidro lateral para o terraço';
+    doors.position.set(side*wallX,baseY,0);
+    doors.rotation.y=side<0?Math.PI/2:-Math.PI/2;scene.add(doors);
+    const leaves=[];
+    for(const leafSide of [-1,1]) {
+      const hinge=new THREE.Group();hinge.position.set(leafSide*doorWidth/2,0,0);doors.add(hinge);
+      const leaf=new THREE.Mesh(new THREE.PlaneGeometry(doorWidth/2,doorHeight),glass);
+      leaf.name='folha de vidro articulada da varanda lateral';
+      leaf.position.set(-leafSide*doorWidth/4,doorHeight/2,0);
+      leaf.renderOrder=3;hinge.add(leaf);
+      const stile=new THREE.Mesh(new RoundedBoxGeometry(.07,doorHeight,.12,6,.02),bronze);
+      stile.position.set(-leafSide*doorWidth/2,doorHeight/2,.035);hinge.add(stile);
+      const rail=new THREE.Mesh(new RoundedBoxGeometry(doorWidth/2-.06,.075,.12,6,.02),bronze);
+      rail.position.set(-leafSide*doorWidth/4,.08,.035);hinge.add(rail);
+      leaves.push(hinge);
+    }
+    for(const z of [-10.12,-1.3,1.3,10.12]) {
+      const post=new THREE.Mesh(new RoundedBoxGeometry(.18,3.68,.18,8,.035),stone);
+      post.name='montante de calcário da vidraça lateral';
+      post.position.set(side*wallX,centreY,z);post.castShadow=true;scene.add(post);
+    }
+    for(const y of [13.22,16.82]) {
+      const rail=new THREE.Mesh(new RoundedBoxGeometry(.2,.12,20.4,8,.025),bronze);
+      rail.position.set(side*wallX,y,0);scene.add(rail);
+    }
+    const sill=new THREE.Mesh(new RoundedBoxGeometry(.58,.1,doorWidth,8,.025),stone);
+    sill.name='soleira de calcário da porta lateral do terraço';
+    sill.position.set(side*wallX,13.21,0);scene.add(sill);
+    const collider={minX:side*wallX-.12,maxX:side*wallX+.12,minY:13.2,maxY:16.75,minZ:-doorWidth/2,maxZ:doorWidth/2};
+    colliders.push(collider);
+    let opened=false;
+    interactables.push({
+      name:'Porta lateral de vidro para o terraço',kind:'door',
+      label:'Porta lateral para o terraço',
+      description:'Porta dupla de vidro na parede lateral panorâmica. Pressione E ou INTERAGIR para abrir e acessar o terraço.',
+      position:new THREE.Vector3(side*13.0,14.7,0),radius:3.0,
+      onInteract() {
+        opened=!opened;
+        leaves[0].rotation.y=opened?-Math.PI*.48:0;
+        leaves[1].rotation.y=opened?Math.PI*.48:0;
+        if(opened) {
+          const i=colliders.indexOf(collider);if(i>=0)colliders.splice(i,1);
+          return 'As portas laterais de vidro se abriram para o terraço.';
         }
-        const threshold=new THREE.Mesh(new RoundedBoxGeometry(panelWidth,.09,.55,8,.025),brass);
-        threshold.name='soleira de bronze das portas do terraço';
-        threshold.position.set(x,13.21,wallZ);scene.add(threshold);
-        for(const px of [-panelWidth*.5,panelWidth*.5]) {
-          const jamb=new THREE.Mesh(new RoundedBoxGeometry(.14,3.06,.18,6,.03),frame);
-          jamb.position.set(x+px,14.7,wallZ-.025);scene.add(jamb);
-        }
-        const doorCollider={
-          minX:x-panelWidth*.5,maxX:x+panelWidth*.5,
-          minY:13.2,maxY:16.2,minZ:wallZ-.12,maxZ:wallZ+.12
-        };
-        colliders.push(doorCollider);
-        let opened=false;
-        interactables.push({
-          name:'Portas de vidro para a varanda',kind:'door',
-          label:'Portas de vidro da varanda',
-          description:'Portas de vidro duplas que dão acesso ao terraço com piscina, mesa de jantar e fogueira. Pressione E ou INTERAGIR.',
-          position:new THREE.Vector3(x,14.55,8.0),radius:3.15,
-          onInteract() {
-            opened=!opened;
-            leaves[0].rotation.y=opened?-Math.PI*.49:0;
-            leaves[1].rotation.y=opened?Math.PI*.49:0;
-            if(opened) {
-              const index=colliders.indexOf(doorCollider);if(index>=0)colliders.splice(index,1);
-              return 'As duas folhas de vidro se abrem para o terraço.';
-            }
-            if(!colliders.includes(doorCollider))colliders.push(doorCollider);
-            return 'As portas de vidro foram fechadas.';
-          }
-        });
-      } else {
-        const panel=new THREE.Mesh(new THREE.PlaneGeometry(panelWidth,14.8),glass);
-        panel.name='painel panorâmico de vidro para o terraço';
-        panel.position.set(x,wallY,wallZ);panel.renderOrder=2;panel.receiveShadow=true;scene.add(panel);
-        addBoxCollider(colliders,x,wallY,wallZ,panelWidth,14.8,.12);
+        if(!colliders.includes(collider))colliders.push(collider);
+        return 'As portas laterais de vidro foram fechadas.';
       }
-    }
-    for(let i=0;i<4;i++) {
-      const localX=start+i*(span/3);
-      const mullion=new THREE.Mesh(new RoundedBoxGeometry(.13,15.25,.22,6,.035),frame);
-      mullion.name='montante de bronze da parede envidraçada';
-      mullion.position.set(side*localX,wallY,wallZ-.02);mullion.castShadow=true;scene.add(mullion);
-    }
-    for(const y of [13.08,20.6,28.12]) {
-      const rail=new THREE.Mesh(new RoundedBoxGeometry(span,.13,.2,6,.035),brass);
-      rail.name='travessa de bronze da parede envidraçada';
-      rail.position.set(side*(start+span*.5),y,wallZ-.03);scene.add(rail);
-    }
+    });
   }
-  const transom=new THREE.Mesh(new THREE.PlaneGeometry(4.42,9.25),glass);
-  transom.name='bandeira de vidro sobre as portas principais';
-  transom.position.set(0,23.12,wallZ);transom.renderOrder=2;scene.add(transom);
-  addBoxCollider(colliders,0,23.12,wallZ,4.42,9.25,.12);
-  for(const x of [-2.36,2.36]) {
-    const pier=new THREE.Mesh(new RoundedBoxGeometry(.28,15.2,.42,8,.055),brass);
-    pier.name='pilastra de bronze entre portas e envidraçado';
-    pier.position.set(x,wallY,wallZ-.06);pier.castShadow=true;scene.add(pier);
-  }
-  const topStone=new THREE.Mesh(new RoundedBoxGeometry(29,.25,.6,8,.06),brass);
-  topStone.name='coroamento da parede envidraçada';
-  topStone.position.set(0,28.26,9.16);scene.add(topStone);
 }
 
 function addTerraceExitFacade(scene,stone,colliders) {
@@ -1318,6 +1409,8 @@ function addTerrace(scene,stone,wood,brass,colliders,interactables,groundSurface
     {x:10.9,z:29.75,w:17.8,d:3.5},
     // Narrow perimeter walks connect both sides and the rear of the mansion.
     {x:0,z:13.25,w:42,d:2.5},
+    {x:16.65,z:0,w:5.3,d:24},
+    {x:-16.65,z:0,w:5.3,d:24},
     {x:19.5,z:0,w:3,d:24},
     {x:-19.5,z:0,w:3,d:24},
     {x:0,z:-13.25,w:42,d:2.5}
@@ -1424,7 +1517,7 @@ function addTerrace(scene,stone,wood,brass,colliders,interactables,groundSurface
 }
 
 function addFireplaceSurround(scene,stone,brass,wood) {
-  const z=-8.93;
+  const z=-9.02;
   const darkBronze=new THREE.MeshStandardMaterial({color:0x59432b,metalness:.62,roughness:.38});
 
   for(const side of [-1,1]){
@@ -1479,12 +1572,12 @@ function addFireplaceSurround(scene,stone,brass,wood) {
 
   const mantle=new THREE.Mesh(new RoundedBoxGeometry(6.15,.42,1.18,10,.13),stone);
   mantle.name='manto moldurado de calcário da lareira';
-  mantle.position.set(0,17.16,-8.85);
+  mantle.position.set(0,17.16,-9.02);
   mantle.castShadow=true;mantle.receiveShadow=true;scene.add(mantle);
 
   const mantleInlay=new THREE.Mesh(new RoundedBoxGeometry(5.72,.035,.08,8,.015),brass);
   mantleInlay.name='filete de bronze do manto da lareira';
-  mantleInlay.position.set(0,17.3,-8.22);
+  mantleInlay.position.set(0,17.3,-8.57);
   scene.add(mantleInlay);
 
   for(const side of [-1,1]){
@@ -1494,9 +1587,57 @@ function addFireplaceSurround(scene,stone,brass,wood) {
       new THREE.Vector2(.32,.38),new THREE.Vector2(.18,.48)
     ],32),darkBronze);
     corbel.name='mísula de bronze escuro da lareira';
-    corbel.position.set(side*2.72,16.95,-8.47);
+    corbel.position.set(side*2.72,16.95,-8.78);
     corbel.castShadow=true;scene.add(corbel);
   }
+}
+
+function addThothBaseSeating(scene,stone,marble,wood,brass,colliders,interactables) {
+  const leather=new THREE.MeshStandardMaterial({color:0x624235,roughness:.9});
+  const edge=new THREE.MeshStandardMaterial({color:0x9e855f,metalness:.34,roughness:.62});
+  const lower=new THREE.Mesh(new THREE.CylinderGeometry(3.42,3.58,.22,96),stone);
+  lower.name='base circular de calcário do pedestal de Thoth';
+  lower.position.set(0,13.285,-.5);lower.castShadow=true;lower.receiveShadow=true;scene.add(lower);
+  const upper=new THREE.Mesh(new THREE.CylinderGeometry(3.12,3.2,.12,96),marble);
+  upper.name='degrau circular de mármore negro do pedestal de Thoth';
+  upper.position.set(0,13.44,-.5);upper.castShadow=true;upper.receiveShadow=true;scene.add(upper);
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(3.2,.055,12,96),brass);
+  rim.rotation.x=Math.PI/2;rim.position.set(0,13.51,-.5);scene.add(rim);
+
+  for(let i=0;i<8;i++) {
+    const angle=i*Math.PI/4;
+    const radius=4.08;
+    const x=Math.sin(angle)*radius,z=-.5+Math.cos(angle)*radius;
+    const bench=new THREE.Group();
+    bench.name='banco curvo de madeira e couro ao redor da estátua de Thoth';
+    bench.position.set(x,13.175,z);bench.rotation.y=angle;scene.add(bench);
+    const stoneBase=new THREE.Mesh(new RoundedBoxGeometry(2.35,.42,.86,10,.12),stone);
+    stoneBase.position.y=.22;stoneBase.castShadow=true;stoneBase.receiveShadow=true;bench.add(stoneBase);
+    const seat=new THREE.Mesh(new RoundedBoxGeometry(2.23,.14,.82,10,.06),leather);
+    seat.position.set(0,.49,.02);seat.castShadow=true;seat.receiveShadow=true;bench.add(seat);
+    const back=new THREE.Mesh(new RoundedBoxGeometry(2.18,.72,.22,10,.07),leather);
+    back.position.set(0,.91,-.29);back.castShadow=true;bench.add(back);
+    for(const side of [-1,1]) {
+      const arm=new THREE.Mesh(new RoundedBoxGeometry(.22,.62,.84,8,.08),wood);
+      arm.position.set(side*1.05,.63,-.02);arm.castShadow=true;bench.add(arm);
+      const finial=new THREE.Mesh(new THREE.SphereGeometry(.065,16,12),brass);
+      finial.position.set(side*1.05,.99,.25);bench.add(finial);
+    }
+    const inlay=new THREE.Mesh(new THREE.RoundedBoxGeometry(1.85,.025,.045,4,.01),edge);
+    inlay.position.set(0,.715,.42);bench.add(inlay);
+    bench.updateMatrixWorld(true);
+    const bounds=new THREE.Box3().setFromObject(bench);
+    colliders.push({
+      minX:bounds.min.x,maxX:bounds.max.x,minY:bounds.min.y,maxY:bounds.max.y,
+      minZ:bounds.min.z,maxZ:bounds.max.z
+    });
+  }
+  interactables.push({
+    name:'Assentos circulares ao redor de Thoth',kind:'inspect',
+    label:'Bancos ao redor de Thoth',
+    description:'Assentos integrados ao pedestal circular de calcário e mármore negro, voltados para a estátua central.',
+    position:new THREE.Vector3(0,13.8,-.5),radius:4.7
+  });
 }
 
 function addThoth(scene,marble,pale,brass,reliefTex,wood) {
@@ -1910,6 +2051,41 @@ function addModernTelevision(scene,brass,colliders,interactables) {
   return group;
 }
 
+function addCentralCrossBridge(scene,stone,wood,brass,groundSurfaces,walkablePlatforms) {
+  const deck=new THREE.Mesh(new RoundedBoxGeometry(16.4,.48,2.1,12,.055),stone);
+  deck.name='passarela elevada central entre as duas alas';
+  deck.position.set(0,16.635,-4.28);
+  deck.castShadow=true;deck.receiveShadow=true;scene.add(deck);groundSurfaces?.push(deck);
+  walkablePlatforms.push({
+    minX:-8.16,maxX:8.16,minZ:-5.31,maxZ:-3.25,height:16.875
+  });
+  for(const side of [-1,1]) {
+    const railZ=-4.28+side*.94;
+    for(let x=-7.9;x<=7.91;x+=1.65) {
+      const post=new THREE.Mesh(new THREE.LatheGeometry([
+        new THREE.Vector2(.045,0),new THREE.Vector2(.065,.16),
+        new THREE.Vector2(.04,.42),new THREE.Vector2(.08,.62),
+        new THREE.Vector2(.045,.82)
+      ],16),brass);
+      post.name='poste torneado da passarela elevada';
+      post.position.set(x,16.9,railZ);post.castShadow=true;scene.add(post);
+    }
+    scene.add(tube([[-8.1,17.78,railZ],[8.1,17.78,railZ]],.065,wood,80,12));
+    scene.add(tube([[-8.1,17.71,railZ],[8.1,17.71,railZ]],.018,brass,80,8));
+  }
+  for(const side of [-1,1]) {
+    const connector=new THREE.Mesh(new RoundedBoxGeometry(3.25,.34,1.75,8,.04),stone);
+    connector.name='patamar de ligação da escadaria central à passarela';
+    connector.position.set(side*5.72,16.705,-3.0);
+    connector.castShadow=true;connector.receiveShadow=true;scene.add(connector);
+    groundSurfaces?.push(connector);
+    walkablePlatforms.push({
+      minX:side<0?-7.36:4.1,maxX:side<0?-4.1:7.36,
+      minZ:-3.88,maxZ:-2.12,height:16.875
+    });
+  }
+}
+
 export function buildGrandSalon({
   THREE: T,
   scene,
@@ -1955,7 +2131,7 @@ export function buildGrandSalon({
       'coroa ritual','TV de plasma','tela da TV','moldura da lareira','manto de pedra'
     ].includes(o.name)) o.visible=false;
 
-    if(o.name==='parede interna do salão' && o.position.z>0) o.visible=false;
+    if(o.name==='parede interna do salão' || o.name==='parede da lareira') o.visible=false;
     if(o.name==='parede lateral do salão' || o.name==='sacada de calcário' ||
        o.name==='lateral oeste da mansão' || o.name==='lateral leste da mansão' ||
        o.name==='lintel da passagem para ala' ||
@@ -2000,21 +2176,57 @@ export function buildGrandSalon({
     }
   }
 
-  addBalustrades(scene,stone,brass,darkWood);
+  const railWood=new T.MeshStandardMaterial({
+    color:0x92704b,map:walnut.map,normalMap:walnut.normalMap,
+    normalScale:new T.Vector2(.68,.68),roughnessMap:walnut.roughnessMap,roughness:.78
+  });
+  // Remove all original transverse balcony beams that visually ran into Thoth.
+  scene.traverse(object=>{
+    if(['viga sacada','guarda-corpo da sacada','balaústre'].includes(object.name))object.visible=false;
+  });
+  addBalustrades(scene,stone,brass,railWood);
+  addGreatHallWarmLighting(scene);
 
   const stairRamps=[];
   const walkablePlatforms=addGalleryWalkways(scene,stone,groundSurfaces);
   walkablePlatforms.push(...addBalconyDoorRows(
     scene,stone,darkWood,brass,colliders,interactables,groundSurfaces
   ));
-  for(const side of [-1,1]){
-    const flights=[
-      {centerX:side*10.35,baseY:13.175,topY:16.875,startZ:7.35,direction:-1,width:2.38},
-      {centerX:side*10.35,baseY:16.875,topY:20.625,startZ:-.91,direction:1,width:2.38},
-      {centerX:side*10.35,baseY:20.625,topY:24.375,startZ:7.35,direction:-1,width:2.38}
-    ];
-    for(const flight of flights) stairRamps.push(stairFlight(scene,stone,pale,brass,darkWood,flight));
+  addGreatHallRearWall(scene,stone,brass);
+  addLowerPassages(scene,stone,brass,colliders,walkablePlatforms,groundSurfaces);
+
+  for(const side of [-1,1]) {
+    // Ground floor to first gallery: broad central pair that flanks the statue.
+    const central=stairFlight(scene,stone,pale,brass,railWood,{
+      centerX:side*5.65,baseY:13.175,topY:16.875,startZ:7.95,
+      direction:-1,width:1.9,depth:.53,count:18,landingWidth:2.45
+    });
+    stairRamps.push(central);walkablePlatforms.push(central.landingPlatform);
+
+    // First to second gallery: a separate upper flight in the open bay, not above the first stair.
+    const upper=stairFlight(scene,stone,pale,brass,railWood,{
+      centerX:side*9.65,baseY:16.875,topY:20.625,startZ:-1.95,
+      direction:1,width:1.72,depth:.53,count:18,landingWidth:2.35
+    });
+    stairRamps.push(upper);walkablePlatforms.push(upper.landingPlatform);
+    const lowerConnector=new THREE.Mesh(new RoundedBoxGeometry(3.9,.34,1.55,8,.04),stone);
+    lowerConnector.name='ligação de calcário entre galeria e escadaria superior';
+    lowerConnector.position.set(side*8.78,16.705,-1.95);
+    lowerConnector.castShadow=true;lowerConnector.receiveShadow=true;scene.add(lowerConnector);
+    groundSurfaces?.push(lowerConnector);
+    walkablePlatforms.push({
+      minX:side<0?-10.75:6.82,maxX:side<0?-6.82:10.75,
+      minZ:-2.73,maxZ:-1.17,height:16.875
+    });
+
+    // Second to third gallery: the outermost flight meets the side balcony walk.
+    const topFlight=stairFlight(scene,stone,pale,brass,railWood,{
+      centerX:side*12.0,baseY:20.625,topY:24.375,startZ:7.8,
+      direction:-1,width:1.65,depth:.53,count:18,landingWidth:2.45
+    });
+    stairRamps.push(topFlight);walkablePlatforms.push(topFlight.landingPlatform);
   }
+  addCentralCrossBridge(scene,stone,railWood,brass,groundSurfaces,walkablePlatforms);
 
   // Musical instruments and ceremonial weapons: bespoke high-detail forms,
   // because no compatible licensed Egyptian instrument pack was verified.
@@ -2033,7 +2245,7 @@ export function buildGrandSalon({
   addFireplaceSurround(scene,stone,brass,darkWood);
 
   // Sourced iconography enriches the existing physical props without duplicating them.
-  addTerraceGlassWall(scene,brass,colliders,interactables);
+  addSideTerraceGlassDoors(scene,brass,stone,colliders,interactables);
   walkablePlatforms.push(...addTerrace(scene,stone,walnut,brass,colliders,interactables,groundSurfaces));
   addGreatHallDoors(scene,stone,darkWood,brass,colliders,interactables);
   addIconPlaque(scene,'harp',[-11.65,16.02,-9.84],0,darkWood,brass,.42);
@@ -2062,14 +2274,14 @@ export function buildGrandSalon({
 
   const rug=createRug(scene);
   const table=centerTable(scene,walnut,brass);
-  addBoxCollider(colliders,0,13.47,-4.6,1.58,.62,1.58);
+  addBoxCollider(colliders,0,13.47,-4.6,2.75,.72,2.75);
   interactables.push({
     name:'Mesa de centro de nogueira',
     kind:'inspect',
     label:'Mesa de centro entalhada',
     description:'Mesa circular baixa de nogueira, com medalhão solar e filetes de bronze',
     position:new T.Vector3(0,13.62,-4.6),
-    radius:1.55
+    radius:2.1
   });
 
   addFireplaceHearth(scene,stone,brass);
@@ -2086,6 +2298,7 @@ export function buildGrandSalon({
   });
 
   addThoth(scene,marble,pale,brass,relief,walnut);
+  addThothBaseSeating(scene,stone,marble,walnut,brass,colliders,interactables);
   addBoxCollider(colliders,0,17.75,-.5,2.7,9.2,2.7);
   interactables.push({
     name:'Estátua de Thoth',

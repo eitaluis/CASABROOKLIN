@@ -1,7 +1,7 @@
 # Carter — inventário, objetos do Duat e preparação para magia
 
 Data: 26/11/2026
-Status: **primeiro catálogo integrado: cajado, khopesh, shabti, caixa, papiro, cálamo, tinta e amuleto; animação corporal e QA visual pendentes**
+Status: **oito objetos, portal no espaço do tórax, clipe use_press e bloqueio de movimento integrados; pose de palma atravessando e QA visual pendentes**
 
 ## 1. Princípio de desenvolvimento
 
@@ -70,13 +70,13 @@ Regras:
 A sequência pretendida para retirar um objeto é:
 
 1. Carter orienta o braço e aproxima a mão de um ponto no ar.
-2. Uma superfície oval translúcida se abre à frente da mão, como uma membrana entre o mundo físico e o Duat.
+2. Uma superfície oval translúcida se abre no ar à frente do tórax, no ponto em que a mão direita vai alcançar, como uma membrana entre o mundo físico e o Duat.
 3. A borda recebe luz azul-dourada e sinais hieroglíficos breves; o interior apresenta profundidade e distorção, não deve parecer um menu plano.
 4. A mão atravessa a abertura.
-5. O objeto surge parcialmente dentro da membrana, é puxado para fora e se encaixa na mão.
+5. O objeto surge parcialmente na membrana, é puxado para fora e se encaixa no socket da mão direita.
 6. A abertura se fecha e os sinais desaparecem.
 
-Para guardar, a sequência acontece ao contrário. **Já está implementado:** portal oval procedural junto ao socket da mão, transição de escala/posição do objeto e retorno ao estado guardado. **Pendente:** pose corporal de alcançar e atravessar a membrana, sincronização fina dos dedos, e inspeção visual da orientação do portal no rig real. O rig aprovado do Carter não será substituído.
+Para guardar, a sequência acontece ao contrário. **Já está implementado:** portal oval procedural ancorado em Spine2/Spine1/Chest/Spine; clipe Ara `use_press` de 1,65 s; transição de escala/posição sincronizada com o contato da mão por volta de 0,88 s; e retorno ao estado guardado. O controlador bloqueia movimento, salto e joystick durante a ação. **Pendente:** refinar a pose para a palma inteira atravessar a membrana (o clipe existente estende o indicador como se tocasse um ponto), ajustar a orientação e a posição real do portal após inspeção do rig e revisar o timing visual. O rig aprovado do Carter não será substituído.
 
 ## 6. Arquitetura técnica
 

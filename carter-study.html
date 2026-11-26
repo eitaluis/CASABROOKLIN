@@ -550,6 +550,10 @@ function animate(now) {
    leanApplied.copy(lean);
   }
  }
+ if (bagPivot) {
+  const activeRun = ninjaSprint || (currentAction && currentAction.getClip().name.toLowerCase().includes('run'));
+  bagPivot.rotation.z = activeRun ? Math.sin(now * 0.008) * 0.035 : Math.sin(now * 0.0015) * 0.006;
+ }
  controls.update();
  renderer.render(scene, camera);
 }

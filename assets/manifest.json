@@ -1,88 +1,55 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "runtimeAssets": [
-    {
-      "id": "human-base-mixamo-rig",
-      "file": "human_mix_propio.glb",
-      "source": "https://github.com/PabloMesquida/three-procedural-locomotion/blob/v0.9.0/modelos/human_mix_propio.glb",
-      "runtimeUrl": "https://cdn.jsdelivr.net/gh/PabloMesquida/three-procedural-locomotion@v0.9.0/modelos/human_mix_propio.glb",
-      "role": "player-character",
-      "meshOrigin": "Blender Studio Human Base Meshes",
-      "meshLicense": "CC0-1.0",
-      "rigOrigin": "PabloMesquida/three-procedural-locomotion",
-      "notes": "Base mesh and Mixamo-compatible rig. Confirm the source repository's current notices before offline redistribution."
-    },
-    {
-      "id": "procedural-locomotion",
-      "source": "https://github.com/PabloMesquida/three-procedural-locomotion/tree/v0.9.0",
-      "runtimeUrl": "https://esm.sh/gh/PabloMesquida/three-procedural-locomotion@v0.9.0/src/index.ts?external=three",
-      "role": "humanoid-gait-and-inverse-kinematics",
-      "license": "MIT",
-      "notes": "Procedural walk/run, foot placement, two-bone IK, acceleration, turns, crouch and jump."
-    },
     {
       "id": "three-js",
       "source": "https://github.com/mrdoob/three.js",
-      "role": "3d-renderer-and-gltf-loader",
+      "role": "3d-renderer-and-geometry",
       "license": "MIT"
     }
   ],
   "localGeneratedAssets": [
     {
-      "id": "procedural-materials",
-      "path": "src/main.js",
-      "role": "canvas-generated masonry, stone, wood, metal and textile textures",
-      "license": "project-original-code"
-    },
-    {
-      "id": "player-outfit",
+      "id": "carter-kane-stylized-teen",
       "path": "src/character.js",
-      "role": "runtime-generated clothing shells, backpack, shoes and accessories",
+      "role": "original smooth humanoid mesh, face, curly hair, clothing, satchel and articulated rig",
       "license": "project-original-code"
     },
     {
-      "id": "cinematic-waterfront-exterior",
-      "path": "src/world.js",
-      "role": "original procedural geometry for loading canopy, roof trusses, industrial props, dock moorings, spiral-stair inner rail and quay protection",
-      "license": "project-original-code",
-      "notes": "Low-poly scene details inspired by CC0 reference packs; no third-party model binaries or external texture downloads are loaded at runtime."
+      "id": "carter-locomotion",
+      "path": "src/character.js",
+      "role": "procedural idle, walk and run cycle with gait blending, body lean, arm swing and bag inertia",
+      "license": "project-original-code"
     }
   ],
-  "sceneReferences": [
+  "openSourceReferences": [
     {
-      "id": "kenney-city-kit-industrial",
-      "source": "https://kenney.nl/assets/city-kit-industrial",
+      "id": "grab3d-character-mixer",
+      "source": "https://grab3d.com/tools/character-mixer/",
       "license": "CC0-1.0",
-      "role": "visual-and-scale-reference-for-industrial-architecture",
+      "role": "reference-for-modular-stylized-humanoid-assets-and-animation-rig",
       "runtimeImported": false
     },
     {
-      "id": "kenney-factory-kit",
-      "source": "https://kenney.nl/assets/factory-kit",
+      "id": "grab3d-teenager",
+      "source": "https://grab3d.com/models/characters/teen-character/",
       "license": "CC0-1.0",
-      "role": "visual-reference-for-industrial-props-and-machinery",
+      "role": "reference-for-teen-proportions-and-rigged-walk-run-asset-pipeline",
       "runtimeImported": false
     },
     {
-      "id": "poly-haven-pbr-textures",
-      "source": "https://polyhaven.com/textures",
-      "license": "CC0-1.0",
-      "role": "material-reference-for-weathered-brick-concrete-wood-and-metal",
+      "id": "three-procedural-locomotion",
+      "source": "https://github.com/PabloMesquida/three-procedural-locomotion",
+      "license": "MIT",
+      "role": "reference-for-human-gait-and-dynamic-locomotion",
       "runtimeImported": false
     },
     {
-      "id": "poly-haven-docklands-01",
-      "source": "https://polyhaven.com/a/docklands_01",
-      "license": "CC0-1.0",
-      "role": "lighting-and-waterfront-atmosphere-reference",
-      "runtimeImported": false
-    },
-    {
-      "id": "poly-haven-factory-yard",
-      "source": "https://polyhaven.com/a/factory_yard",
-      "license": "CC0-1.0",
-      "role": "industrial-lighting-reference",
+      "id": "procedural-3d-characters",
+      "source": "https://github.com/giaBaoJS/procedural-3d-characters",
+      "license": "MIT",
+      "role": "reference-for-procedural-skinned-character-and-keyframe-architecture",
       "runtimeImported": false
     }
   ]

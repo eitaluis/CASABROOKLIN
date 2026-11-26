@@ -66,8 +66,8 @@ No impacto:
 4. Cada peça permanece visível por pelo menos 10 segundos contados a partir do impacto.
 5. Depois dos 10 segundos, cada peça inicia um fade individual, com início e duração levemente variados; a opacidade cai gradualmente durante aproximadamente 1,5–2,2 segundos, evitando que tudo desapareça ao mesmo tempo.
 6. Ao concluir o fade, fragmentos e materiais temporários são removidos.
-6. O mesmo estado de Shabti é reposicionado em uma localização aleatória segura da quadra.
-7. A miniatura reaparece, cresce na coluna de invocação já existente e volta a avançar contra Carter.
+7. O mesmo estado de Shabti é reposicionado em uma localização aleatória segura da quadra.
+8. A miniatura reaparece, cresce na coluna de invocação já existente e volta a avançar contra Carter.
 
 O ciclo de HA-DI não reduz a contagem da prova: isso permite testar o feitiço repetidamente sem encerrar a atividade com o primeiro acerto.
 

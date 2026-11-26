@@ -32,11 +32,17 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Setor 02 — personagem e movimento
 
-- [x] Inclinação frontal sutil no sprint e inclinação lateral nas mudanças de direção.
-- [ ] Escolher base de personagem (ver CHARACTER-OPTIONS.md).
-- [ ] Personalizar idade aparente, rosto, cabelo, pele, proporções e figurino após a escolha.
-- [ ] Refinar idle, pisadas, transferência de peso, aceleração, frenagem e curvas.
-- [ ] Ajustar corrida com lean estilo anime/ninja sem exagero e sem perder contato dos pés.
+- [x] Aprovar direção visual **C — Game 3D gráfico**: estilizado, com formas legíveis, materiais limpos e personalidade de videogame; sem anime e sem realismo excessivo.
+- [x] Manter rosto humano e natural: proporções faciais críveis, sem olhos de anime ou proporções chibi.
+- [x] Aprovar a bolsa transversal marrom como acessório fixo, apoiada no **quadril direito**, com alça cruzando o tronco.
+- [x] Definir a referência de movimento: agilidade, inclinação do tronco, passadas e silhueta atlética inspiradas na movimentação de Naruto; não copiar o desenho do rosto ou a estética 2D.
+- [ ] Avaliar e aprovar a malha-base/rig definitivo; a direção visual foi escolhida, mas o modelo atual ainda não foi substituído.
+- [ ] Conferir se a base preserva idade aparente jovem, rosto negro natural, cabelo crespo e boa articulação.
+- [ ] Adaptar a bolsa CC0: reposicionar no quadril direito e ajustar a alça ao ombro/peito; não usar mochila nas costas.
+- [ ] Personalizar camisa azul, calça cáqui, cabelo crespo, pele e proporções depois de aprovada a malha.
+- [ ] Retarget e refinar idle, caminhada, aceleração, frenagem, curvas, sprint, salto e aterrissagem.
+- [ ] Ajustar sprint com lean, braços ativos e passadas amplas; manter contato dos pés e transições contínuas.
+- [ ] Validar a bolsa em idle, walk, run e jump; evitar clipping com braço, roupa e armas.
 - [ ] Validar rig, clips e encaixe WeaponR no novo modelo.
 
 ## Setor 03 — inventário e combate
@@ -93,6 +99,8 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Próximas ações
 
-1. Escolher A, B ou C em CHARACTER-OPTIONS.md.
-2. Testar câmera, biblioteca, lareira, iluminação e inventário.
-3. Corrigir os erros visuais encontrados antes de avançar para novos setores.
+1. Fazer um teste comparativo de malhas-base compatíveis com a direção C (Quaternius Teen como primeiro candidato técnico; avaliar alternativas se o rosto ficar facetado demais).
+2. Conferir o GLB da bolsa transversal CC0 e adaptar a alça para uso no corpo, no quadril direito.
+3. Testar retarget da Universal Animation Library (jog, sprint e locomoção em oito direções); complementar com parkour/saltos quando necessário.
+4. Apresentar um preview do Carter completo — frente, perfil, costas e sprint — para aprovação antes de substituir o modelo em runtime.
+5. Replicar e testar a versão aprovada no desktop e no mobile.

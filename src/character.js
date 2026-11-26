@@ -299,7 +299,7 @@ export async function createCharacter({
     cancelAction();
     jumping = true;
     locomotion.stop();
-    jumpSequence = hero.playSequence(mixer, 'jump_start, jump_air 0.45s, jump_land', {
+    jumpSequence = hero.playSequence(mixer, 'jump_start 0.32s, jump_air 0.22s, jump_land', {
       repeat: false,
       fade: 0.22
     });

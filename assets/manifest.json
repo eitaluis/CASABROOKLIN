@@ -262,6 +262,28 @@
       "license": "CC0-1.0",
       "role": "Kenney slash sprite used for the fast luminous cutting arc at the HA-DI impact. The file is a Base64 text representation of the source PNG and is decoded to a Three.js texture at runtime; Canvas fallback is available.",
       "runtimeImported": true
+    },
+    {
+      "id": "three-quarks-ha-di-particle-lifetime-study",
+      "source": "https://github.com/Alchemist0823/three.quarks",
+      "license": "MIT",
+      "role": "Technical study for particle lifetime, emitters, trails, smoke and GPU batching; no library code or runtime dependency imported.",
+      "runtimeImported": false
+    },
+    {
+      "id": "three-procedural-locomotion-ha-di-pose-study",
+      "source": "https://github.com/PabloMesquida/three-procedural-locomotion",
+      "license": "MIT",
+      "role": "Technical study for procedural crouch, pelvis, torso, leg and head posture; project uses rig-specific quaternion offsets instead of importing the library.",
+      "runtimeImported": false
+    },
+    {
+      "id": "kenney-smoke-particles-ha-di-reference",
+      "source": "https://kenney.nl/assets/smoke-particles",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "role": "Reference pack for smoke and explosion texture direction; no separate Smoke Particles pack sprites imported in this iteration.",
+      "runtimeImported": false
     }
   ],
   "openSourceReferences": [

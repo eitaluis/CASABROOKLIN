@@ -53,7 +53,7 @@ Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, páginas impres
 
 Os links do British Museum são referências de estudo, não arquivos importados. Nenhum GLB externo foi incorporado nesta primeira rodada: caixa, papiro, cálamo, tinta, amuleto, shabti, cera, paleta, cordão e gato foram montados como geometria procedural em Three.js. A forma atual é uma primeira versão técnica; escala, acabamento e leitura precisam de QA visual antes de aprovação.
 
-O cajado foi redesenhado como uma haste reta de madeira escura, com a ponta superior apenas um pouco mais grossa e arredondada. Não possui cabeça de leão, anéis metálicos, disco dourado, pedra, halo ou outros adornos. Essa é uma decisão visual para o modelo de Carter, não uma afirmação de que essa aparência seja uma descrição textual canônica.\n\nOs doze itens acima já têm IDs estáveis e modelos 3D iniciais no catálogo de `src/inventory.js`. A primeira rodada é procedural e ainda precisa de inspeção no navegador para aprovar escala, orientação, leitura de material e encaixe na mão. O papiro usa marcas gráficas abstratas, não hieróglifos nem palavras mágicas definitivas; a caixa ainda não abre e o amuleto não possui efeito mágico.
+O cajado foi redesenhado como uma haste reta de madeira escura, com a ponta superior apenas um pouco mais grossa e arredondada. A escala técnica foi ajustada para 2,00 m, acima da altura de referência de Carter no rig Ara (1,75 m), para que ultrapasse a cabeça do personagem. A medida de dois metros aparece explicitamente na descrição de cajados de Zia/Sadie nos romances; não é apresentada como medida textual específica do cajado pessoal de Carter. Não possui cabeça de leão, anéis metálicos, disco dourado, pedra, halo ou outros adornos. Essa é uma decisão visual para o modelo de Carter, não uma afirmação de que essa aparência seja uma descrição textual canônica.\n\nOs doze itens acima já têm IDs estáveis e modelos 3D iniciais no catálogo de `src/inventory.js`. A primeira rodada é procedural e ainda precisa de inspeção no navegador para aprovar escala, orientação, leitura de material e encaixe na mão. O papiro usa marcas gráficas abstratas, não hieróglifos nem palavras mágicas definitivas; a caixa ainda não abre e o amuleto não possui efeito mágico.
 
 ## 4. Estados do inventário
 
@@ -134,7 +134,7 @@ Não fixar a magia a um botão ou a um tipo de dispositivo. Desktop e mobile cha
 ## 9. Critérios de QA
 
 - [ ] Cada um dos doze objetos tem escala, orientação, origem e ponto de pega revisados no rig real.
-- [ ] Cajado simples de madeira e khopesh mantêm empunhadura coerente durante idle, walk, run, turn e stop.\n- [ ] Cajado: haste reta, ponta superior discretamente alargada e sem ornamentos; validar leitura visual em close e à distância.
+- [ ] Cajado simples de madeira e khopesh mantêm empunhadura coerente durante idle, walk, run, turn e stop.\n- [ ] Cajado: 2,00 m (acima dos 1,75 m de referência do rig Ara), haste reta, ponta superior discretamente alargada e sem ornamentos; validar leitura visual em close e à distância.
 - [ ] Objetos pequenos, planos e compridos usam poses de pega adequadas, sem parecerem presos à ponta dos dedos.
 - [ ] Dedos e polegar fecham de forma convincente por clip de mão compatível com o rig.
 - [ ] O objeto não atravessa mão, braço, tronco, pernas ou cenário durante a locomoção.

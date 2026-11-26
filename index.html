@@ -86,8 +86,8 @@
  #mobile .joystick{width:116px;height:116px;display:grid;place-items:center;touch-action:none;pointer-events:auto}
  #mobile .joystick-ring{width:108px;height:108px;border:1px solid rgba(226,194,133,.58);border-radius:50%;background:radial-gradient(circle,rgba(25,34,35,.52),rgba(8,14,15,.72));box-shadow:0 5px 24px #0007,inset 0 0 24px #0008;display:grid;place-items:center;backdrop-filter:blur(7px)}
  #mobile .joystick-knob{width:48px;height:48px;border:1px solid rgba(245,222,177,.9);border-radius:50%;background:linear-gradient(145deg,rgba(211,177,112,.88),rgba(103,76,43,.88));box-shadow:0 3px 12px #0008;transform:translate(0,0);pointer-events:none}
- #mobile .actions{display:flex;margin:0 2px 7px 0;gap:9px}
- #mobile .actions button{width:62px;height:54px;border-radius:50%;font-size:9px;letter-spacing:.08em;background:rgba(10,17,19,.72);color:#f1dfbd;border:1px solid rgba(208,173,105,.6);font:600 9px "DM Sans";backdrop-filter:blur(8px);touch-action:none;box-shadow:0 3px 14px #0005}
+ #mobile .actions{display:flex;flex-wrap:wrap;justify-content:flex-end;align-content:flex-end;width:160px;margin:0 2px 7px 0;gap:5px}
+ #mobile .actions button{width:46px;height:48px;border-radius:50%;font-size:8px;letter-spacing:.05em;background:rgba(10,17,19,.72);color:#f1dfbd;border:1px solid rgba(208,173,105,.6);font:600 9px "DM Sans";backdrop-filter:blur(8px);touch-action:none;box-shadow:0 3px 14px #0005}
  #mobile .actions button:active{background:rgba(208,173,105,.4);transform:scale(.96)}
  #mobile [data-action="jump"]{border-color:rgba(240,215,160,.85);color:#f0d7a0}
  #mobile [data-action="run"]{background:rgba(125,77,42,.78)}
@@ -200,7 +200,7 @@
   }
 }
 </script>
-<script type="module" src="./src/main.js?v=grand-salon-finish-20261126g"></script>
+<script type="module" src="./src/main.js?v=great-hall-asset-refine-20261126b"></script>
 <script>
   window.__brooklynWatchdog = setTimeout(() => {
     if (document.documentElement.dataset.appReady === 'true') return;

@@ -364,14 +364,17 @@ export function buildInteriorDetails({ THREE, scene, interactables = [] }) {
       addBox(group, 'soleira do nicho', [0, -0.84, 0], [1.62, 0.14, 0.38], brass, false);
       const lowerScrolls = [];
       for (let n = 0; n < 2; n++) {
-        const roll = addCylinder(group, 'rolo de papiro', [-0.22 + n * 0.44, -0.18 + n * 0.48, 0.1], 0.105, 0.105, 0.98, papyrus, 12);
+        const scrollGroup = new THREE.Group();
+        scrollGroup.name = 'conjunto de rolo de papiro';
+        group.add(scrollGroup);
+        const roll = addCylinder(scrollGroup, 'rolo de papiro', [-0.22 + n * 0.44, -0.18 + n * 0.48, 0.1], 0.105, 0.105, 0.98, papyrus, 12);
         roll.rotation.z = Math.PI / 2;
-        if (row === 0) lowerScrolls.push(roll);
+        if (row === 0) lowerScrolls.push(scrollGroup);
         for (const end of [-0.5, 0.5]) {
-          const cap = addCylinder(group, 'ponteira de madeira do papiro', [-0.22 + n * 0.44 + end * 0.97, -0.18 + n * 0.48, 0.1], 0.112, 0.112, 0.035, scrollWood, 10);
+          const cap = addCylinder(scrollGroup, 'ponteira de madeira do papiro', [-0.22 + n * 0.44 + end * 0.97, -0.18 + n * 0.48, 0.1], 0.112, 0.112, 0.035, scrollWood, 10);
           cap.rotation.z = Math.PI / 2;
         }
-        addBox(group, 'cordão do papiro', [-0.22 + n * 0.44, -0.18 + n * 0.48, 0.205], [0.06, 0.25, 0.025], scrollCord, false);
+        addBox(scrollGroup, 'cordão do papiro', [-0.22 + n * 0.44, -0.18 + n * 0.48, 0.205], [0.06, 0.25, 0.025], scrollCord, false);
       }
       scene.add(group);
       if (row === 0 && interactables) {

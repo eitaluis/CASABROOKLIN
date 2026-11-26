@@ -224,6 +224,87 @@ function stairFlight(scene,stone,treadMaterial,brass,wood,options) {
   return {centerX,width,startZ,endZ,bottomY:baseY,topY};
 }
 
+function addBalconyDoorRows(scene,wood,brass,colliders,interactables) {
+  const dark=new THREE.MeshStandardMaterial({
+    color:0x322116,
+    map:wood.map,
+    normalMap:wood.normalMap,
+    normalScale:new THREE.Vector2(.8,.8),
+    roughness:.82
+  });
+  const metal=new THREE.MeshStandardMaterial({color:0x9f7948,metalness:.68,roughness:.38});
+  const levels=[16.875,20.625,24.375];
+  const positions=[-7.0,0,7.0];
+
+  for(const side of [-1,1]){
+    for(let levelIndex=0;levelIndex<levels.length;levelIndex++){
+      const floorY=levels[levelIndex];
+      for(let doorIndex=0;doorIndex<positions.length;doorIndex++){
+        const z=positions[doorIndex];
+        const group=new THREE.Group();
+        group.name='porta de madeira da galeria nível '+(levelIndex+1);
+        group.position.set(side*14.16,floorY,z);
+        group.rotation.y=side<0?Math.PI/2:-Math.PI/2;
+
+        const frameSide=new THREE.MeshStandardMaterial({
+          color:0xb9a47f,
+          map:null,
+          roughness:.88
+        });
+        const surround=new THREE.Mesh(new RoundedBoxGeometry(1.88,2.78,.26,8,.055),frameSide);
+        surround.position.set(0,1.39,0);
+        surround.castShadow=true;surround.receiveShadow=true;group.add(surround);
+
+        const inset=new THREE.Mesh(new RoundedBoxGeometry(1.58,2.48,.18,8,.045),dark);
+        inset.position.set(0,1.39,.17);
+        inset.castShadow=true;inset.receiveShadow=true;group.add(inset);
+
+        for(const x of [-.68,.68]){
+          const stile=new THREE.Mesh(new RoundedBoxGeometry(.12,2.29,.07,6,.025),brass);
+          stile.position.set(x,1.39,.28);group.add(stile);
+        }
+        for(const y of [.34,1.3,2.43]){
+          const rail=new THREE.Mesh(new RoundedBoxGeometry(1.34,.105,.07,6,.022),brass);
+          rail.position.set(0,y,.28);group.add(rail);
+        }
+
+        const panel=new THREE.Mesh(new RoundedBoxGeometry(1.06,1.02,.055,8,.045),dark);
+        panel.position.set(0,1.75,.29);panel.castShadow=true;group.add(panel);
+        const centralCarving=new THREE.Mesh(new THREE.TorusGeometry(.25,.018,8,40),brass);
+        centralCarving.position.set(0,1.75,.33);group.add(centralCarving);
+        const rosette=new THREE.Mesh(new THREE.SphereGeometry(.08,12,10),brass);
+        rosette.position.set(0,1.75,.35);group.add(rosette);
+
+        const handleBase=new THREE.Mesh(new THREE.SphereGeometry(.065,12,10),metal);
+        handleBase.position.set(side<0?.52:-.52,1.08,.35);group.add(handleBase);
+        const handle=new THREE.Mesh(new THREE.TorusGeometry(.072,.014,8,24),brass);
+        handle.position.set(side<0?.52:-.52,1.0,.4);group.add(handle);
+
+        const header=new THREE.Mesh(new RoundedBoxGeometry(2.0,.16,.31,8,.045),brass);
+        header.position.set(0,2.82,0);group.add(header);
+        for(const x of [-.82,.82]){
+          const foot=new THREE.Mesh(new THREE.SphereGeometry(.055,10,8),brass);
+          foot.position.set(x,.12,.22);group.add(foot);
+        }
+
+        group.userData.assetId='original-great-hall-balcony-door';
+        group.userData.level=levelIndex+1;
+        scene.add(group);
+        addBoxCollider(colliders,side*14.16,floorY+1.38,z,.42,2.7,1.88);
+
+        interactables.push({
+          name:'Porta da galeria '+(levelIndex+1)+' '+(side<0?'oeste':'leste'),
+          kind:'inspect',
+          label:'Porta de madeira da galeria',
+          description:'Uma das portas que se abrem para os cômodos ao redor do Grande Salão. O livro descreve fileiras de portas em cada nível dos balcões.',
+          position:new THREE.Vector3(side*13.0,floorY+1.1,z),
+          radius:1.6
+        });
+      }
+    }
+  }
+}
+
 function addBalustrades(scene,stone,brass,wood) {
   scene.traverse(o=>{if(o.name==='guarda-corpo da sacada'||o.name==='balaústre'||o.name==='viga sacada')o.visible=false;});
   const geo=new THREE.LatheGeometry([
@@ -1602,6 +1683,7 @@ export function buildGrandSalon({
   }
 
   addBalustrades(scene,stone,brass,darkWood);
+  addBalconyDoorRows(scene,darkWood,brass,colliders,interactables);
 
   const stairRamps=[];
   const walkablePlatforms=[];

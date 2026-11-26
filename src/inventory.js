@@ -1,6 +1,6 @@
 // Inventário inicial do Carter: cajado mágico e khopesh egípcio.
 // Props procedurais originais, encaixados no osso WeaponR quando o rig o oferece.
-export function createInventory({ THREE, character }) {
+export function createInventory({ THREE, character, onUse = () => {} }) {
   const brass = new THREE.MeshStandardMaterial({ color: 0xb98b4d, metalness: 0.78, roughness: 0.28 });
   const darkBrass = new THREE.MeshStandardMaterial({ color: 0x654322, metalness: 0.68, roughness: 0.38 });
   const wood = new THREE.MeshStandardMaterial({ color: 0x3a251c, roughness: 0.74 });
@@ -146,6 +146,7 @@ export function createInventory({ THREE, character }) {
     }
     attackDuration = equipped === 'khopesh' ? 0.4 : 0.52;
     attackRemaining = attackDuration;
+    onUse(equipped);
   };
 
   document.getElementById('inventoryToggle')?.addEventListener('click', () => toggle());

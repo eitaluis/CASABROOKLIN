@@ -111,8 +111,39 @@ const grandSalon = buildGrandSalon({
   THREE, scene:magicalInteriorGroup, animated, camera, isTouchDevice, colliders, interactables, groundSurfaces
 });
 const fireLight = grandSalon.fireLight;
+
+// Estado de jogo global: a vida persiste entre ambientes e a energia recarrega em tempo real.
+const playerVitals = { health: 100, maxHealth: 100, energy: 100, maxEnergy: 100, energyRegen: 8 };
+const damageOverlay = document.createElement('div');
+damageOverlay.id = 'damageOverlay';
+damageOverlay.style.cssText = [
+  'position:fixed','inset:0','z-index:9','pointer-events:none','opacity:0',
+  'background:radial-gradient(ellipse at center,rgba(80,0,0,0) 38%,rgba(155,5,5,.18) 65%,rgba(105,0,0,.78) 100%)',
+  'transition:opacity .16s ease-out'
+].join(';');
+document.body.appendChild(damageOverlay);
+let damageFlashTimer = null;
+function flashPlayerDamage() {
+  clearTimeout(damageFlashTimer);
+  damageOverlay.style.opacity = '0.92';
+  damageFlashTimer = setTimeout(() => { damageOverlay.style.opacity = '0.28'; }, 100);
+  damageFlashTimer = setTimeout(() => { damageOverlay.style.opacity = '0'; }, 520);
+}
+function handlePlayerHit(hit) {
+  const damage = Math.round((playerVitals.maxHealth / (hit.maxHealth || 5)) * (hit.damage || 1));
+  playerVitals.health = Math.max(0, playerVitals.health - damage);
+  character.setInjured?.(playerVitals.health <= 50);
+  character.playReaction?.('front');
+  controller.triggerHit?.();
+  flashPlayerDamage();
+  if (playerVitals.health <= 50 && playerVitals.health + damage > 50) {
+    toast('Carter está ferido. Os movimentos ficam mais pesados.');
+  }
+}
+
 const trainingRoom = buildTrainingRoom({
-  THREE, scene:magicalInteriorGroup, zones, groundSurfaces, colliders, interactables, animated
+  THREE, scene:magicalInteriorGroup, zones, groundSurfaces, colliders, interactables, animated,
+  onPlayerHit: handlePlayerHit
 });
 
 const trainingHud = document.createElement('aside');
@@ -135,7 +166,7 @@ const trainingHudHealth = document.createElement('strong');
 trainingHudHealth.style.cssText = 'font:600 15px Georgia,serif;letter-spacing:.12em;color:#f0d7a0';
 const trainingHudInfo = document.createElement('span');
 trainingHudInfo.style.color = '#c5c7bd';
-trainingHud.append(trainingHudTitle, trainingHudHealth, trainingHudInfo);
+trainingHud.append(trainingHudTitle, trainingHudInfo);
 document.body.appendChild(trainingHud);
 const trainingHudStyle = document.createElement('style');
 trainingHudStyle.textContent = [
@@ -144,6 +175,57 @@ trainingHudStyle.textContent = [
   '@media(max-width:560px){#trainingHud{max-width:calc(100vw - 24px);white-space:normal!important;justify-content:center;flex-wrap:wrap}}'
 ].join('');
 document.head.appendChild(trainingHudStyle);
+
+// Barras persistentes de vitalidade e energia, usadas em todos os ambientes.
+const vitalsHud = document.createElement('aside');
+vitalsHud.id = 'playerVitalsHud';
+vitalsHud.style.cssText = [
+  'position:fixed','z-index:8','top:82px','left:50%','transform:translateX(-50%)',
+  'width:min(350px,calc(100vw - 36px))','display:flex','flex-direction:column','gap:8px',
+  'padding:10px 13px','border:1px solid rgba(208,173,105,.42)',
+  'background:rgba(8,15,17,.78)','backdrop-filter:blur(12px)',
+  'box-shadow:0 7px 24px rgba(0,0,0,.28)','pointer-events:none'
+].join(';');
+function makeVitalBar(label, id, color) {
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;align-items:center;gap:9px;min-width:0';
+  const name = document.createElement('span');
+  name.textContent = label;
+  name.style.cssText = 'width:76px;flex:none;color:#d8c9a9;font:600 8px DM Sans,sans-serif;letter-spacing:.14em';
+  const track = document.createElement('div');
+  track.style.cssText = 'height:7px;flex:1;min-width:30px;overflow:hidden;border:1px solid rgba(235,220,190,.22);background:rgba(0,0,0,.48);border-radius:8px';
+  const fill = document.createElement('div');
+  fill.id = id;
+  fill.style.cssText = 'width:100%;height:100%;border-radius:8px;background:' + color + ';transition:width .18s ease';
+  track.appendChild(fill);
+  const value = document.createElement('span');
+  value.id = id + 'Value';
+  value.style.cssText = 'width:31px;flex:none;text-align:right;color:#efe4cc;font:600 9px DM Sans,sans-serif;font-variant-numeric:tabular-nums';
+  value.textContent = '100';
+  row.append(name, track, value);
+  vitalsHud.appendChild(row);
+  return { fill, value };
+}
+const healthBar = makeVitalBar('VITALIDADE', 'healthFill', 'linear-gradient(90deg,#8e2023,#df5147)');
+const energyBar = makeVitalBar('ENERGIA', 'energyFill', 'linear-gradient(90deg,#126b79,#6bd0d2)');
+const vitalsHudStyle = document.createElement('style');
+vitalsHudStyle.textContent = [
+  '@media(max-width:900px) and (pointer:coarse){#playerVitalsHud{top:55px!important;width:min(300px,calc(100vw - 250px));padding:7px 9px;gap:6px}#playerVitalsHud span{font-size:7px!important}}',
+  '@media(max-width:560px){#playerVitalsHud{top:8px!important;left:50%!important;width:min(260px,calc(100vw - 24px));padding:6px 8px}}'
+].join('');
+document.head.appendChild(vitalsHudStyle);
+document.body.appendChild(vitalsHud);
+
+function updateVitalsHud(dt) {
+  playerVitals.energy = Math.min(playerVitals.maxEnergy, playerVitals.energy + playerVitals.energyRegen * dt);
+  const healthPercent = Math.max(0, playerVitals.health / playerVitals.maxHealth * 100);
+  const energyPercent = Math.max(0, playerVitals.energy / playerVitals.maxEnergy * 100);
+  healthBar.fill.style.width = healthPercent + '%';
+  energyBar.fill.style.width = energyPercent + '%';
+  healthBar.value.textContent = String(Math.round(healthPercent));
+  energyBar.value.textContent = String(Math.round(energyPercent));
+  healthBar.fill.style.filter = playerVitals.health <= 25 ? 'brightness(.78) saturate(1.3)' : 'none';
+}
 
 const interactionPrompt=document.createElement('aside');
 interactionPrompt.id='interactionPrompt'; interactionPrompt.hidden=true;
@@ -182,6 +264,7 @@ const character = await createCharacter({
   }
 });
 character.model.position.set(...zones.dock.pos);
+character.setInjured?.(playerVitals.health <= 50);
 if (character.human) character.human.reset();
 
 const controller = createThirdPersonController({
@@ -219,7 +302,14 @@ const controller = createThirdPersonController({
 revealCameraCue=()=>controller.focusOnRoof();
 
 const magicSystem = createMagicSystem({
-  scene, camera, character, controller, trainingRoom
+  scene, camera, character, controller, trainingRoom,
+  canSpendEnergy: (amount) => playerVitals.energy >= amount,
+  spendEnergy: (amount) => {
+    if (playerVitals.energy < amount) return false;
+    playerVitals.energy = Math.max(0, playerVitals.energy - amount);
+    return true;
+  },
+  spellCost: 30
 });
 const haDiButton = document.getElementById('haDiButton');
 function castHaDi() {
@@ -366,6 +456,7 @@ function animate() {
   if (trainingMessage) toast(trainingMessage);
   // Atualiza a magia depois da simulação da sala: os 10 s dos fragmentos começam no impacto real.
   magicSystem.update(dt);
+  updateVitalsHud(dt);
   const trainingStatus = trainingRoom.getStatus();
   let nearbyTrainingItem=null, nearbyTrainingDistance=Infinity;
   if(controller.zone==='training'){
@@ -398,8 +489,7 @@ function animate() {
     && (trainingStatus.challengeActive || trainingStatus.targetPracticeActive);
   trainingHud.hidden = !showTrainingHud;
   if (showTrainingHud) {
-    trainingHudHealth.textContent = '♥ '.repeat(trainingStatus.playerHealth).trim()
-      + ' ' + '♡ '.repeat(trainingStatus.maxPlayerHealth - trainingStatus.playerHealth).trim();
+    trainingHudHealth.textContent = '';
     trainingHudInfo.textContent = trainingStatus.challengeActive
       ? 'SHABTI · ' + trainingStatus.shabtiRemaining + '/' + trainingStatus.totalShabti + ' · G / HA-DI'
       : 'ALVOS · ' + trainingStatus.targetHits + ' ACERTOS';

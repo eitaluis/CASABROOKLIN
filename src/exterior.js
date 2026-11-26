@@ -3,13 +3,50 @@
    a mansão permanece em Brooklyn; Manhattan é apenas a margem distante. */
 export function buildExterior({ THREE, scene, world, interactables, isTouchDevice = false }) {
   const water = world.water;
+
+  // Mapa procedural de altura, periódico e leve: cria micro-ondas no East River
+  // sem uma simulação GPU separada ou custo de render targets.
+  let waterHeightMap = null;
+  if (water) {
+    const size = 256;
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = size;
+    const context = canvas.getContext('2d');
+    const pixels = context.createImageData(size, size);
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        const u = x / size * Math.PI * 2;
+        const v = y / size * Math.PI * 2;
+        const wave =
+          Math.sin(u * 3 + v * 2) * 0.24 +
+          Math.sin(u * 7 - v * 3) * 0.16 +
+          Math.cos(u * 2 - v * 5) * 0.19 +
+          Math.sin(u * 11 + v * 8) * 0.08 +
+          Math.cos(u * 5 + v * 9) * 0.11;
+        const value = Math.max(0, Math.min(255, Math.round(128 + wave * 92)));
+        const index = (y * size + x) * 4;
+        pixels.data[index] = value;
+        pixels.data[index + 1] = value;
+        pixels.data[index + 2] = value;
+        pixels.data[index + 3] = 255;
+      }
+    }
+    context.putImageData(pixels, 0, 0);
+    waterHeightMap = new THREE.CanvasTexture(canvas);
+    waterHeightMap.wrapS = waterHeightMap.wrapT = THREE.RepeatWrapping;
+    waterHeightMap.repeat.set(isTouchDevice ? 5 : 8, isTouchDevice ? 3 : 4);
+    waterHeightMap.anisotropy = isTouchDevice ? 2 : 8;
+  }
+
   if (water) {
     water.geometry.dispose();
     water.geometry = new THREE.BoxGeometry(560, 0.34, 260);
     water.position.set(310, -0.66, 60);
     water.material.color.setHex(0x36545d);
     water.material.metalness = 0.22;
-    water.material.roughness = 0.19;
+    water.material.roughness = 0.25;
+    water.material.bumpMap = waterHeightMap;
+    water.material.bumpScale = isTouchDevice ? 0.018 : 0.032;
     water.material.opacity = 0.94;
     water.material.transparent = true;
     water.receiveShadow = true;
@@ -476,6 +513,10 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
       }
       if (water) {
         water.material.opacity = 0.93 + Math.sin(time * 0.9) * 0.018;
+        if (waterHeightMap) {
+          waterHeightMap.offset.x = time * (isTouchDevice ? 0.0018 : 0.0028);
+          waterHeightMap.offset.y = -time * (isTouchDevice ? 0.0011 : 0.0017);
+        }
       }
     }
   };

@@ -93,3 +93,17 @@ Abra character-preview.html para conferir o mesmo módulo usado pelo jogo. O pre
 ## Regra de produção
 
 O preview deve importar o mesmo src/character.js do jogo. Toda alteração de personagem e movimento deve funcionar nas versões desktop e mobile. Diferenças só são permitidas na interface e nos controles específicos de cada dispositivo. Marcar como testado somente após inspeção real no navegador.
+## Vitalidade, energia e reação a dano
+
+O estado global do jogador vive em `src/main.js` e não é reiniciado ao sair da sala de treinamento:
+
+- VITALIDADE começa em 100; cada acerto de espada do Shabti remove 20 pontos. O evento aplica a reação `hit_front`, microtremor da câmera e vinheta vermelha periférica.
+- A 50 pontos ou menos, Carter passa a usar `crouch` parado e `walk_slouch` em movimento, com velocidade reduzida e sprint bloqueado.
+- ENERGIA começa em 100 e recupera 8 pontos por segundo. HA-DI consome 30 pontos; o orbe de treino do cajado consome 12.
+- A HUD permanece visível fora da sala de treinamento e adapta-se ao layout desktop/mobile.
+
+## Estudo de animações externas de combate
+
+O repositório KinemIQ Free Game Animations disponibiliza 35 animações humanoides CC0 1.0 em FBX/GLB, incluindo sword slash, sword idle/block, crouch e hit reactions. A opção foi registrada como fonte pesquisada, mas não foi inserida no Carter ainda: os clips precisam ser retargetados/testados no rig Ara e a mão deve permanecer corretamente presa ao cajado/khopesh. A documentação oficial Ara permite esse fluxo por content pack. Já os Shabtis atuais não usam rig humanoide; seus ataques são articulados diretamente nos pivôs autorais do modelo procedural.
+
+Fontes: https://github.com/Kinemiq/free-game-animations · https://ara3dgen.com/docs/packs/

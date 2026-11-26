@@ -472,32 +472,74 @@ export function buildTrainingRoom({
 
   // Bustos de divindades nas laterais: a seleção e o desenho são interpretação artística.
   function addWallDeity(x,z,name,facing){
-    const group=new THREE.Group(); group.position.set(x,floorY+1.36,z); group.rotation.y=facing;
-    const backing=new THREE.Mesh(new THREE.BoxGeometry(1.22,2.72,.18),reliefStone); backing.position.set(0,0,-.18); group.add(backing);
-    for(const side of [-1,1]){const border=new THREE.Mesh(new THREE.BoxGeometry(.075,2.76,.14),bronze);border.position.set(side*.61,0,-.055);group.add(border);const cap=new THREE.Mesh(new THREE.SphereGeometry(.12,14,10),limestoneShade);cap.scale.set(1.5,.55,.7);cap.position.set(side*.61,1.34,-.02);group.add(cap);}
-    const foot=new THREE.Mesh(new THREE.BoxGeometry(.92,.18,.46),limestoneShade);foot.position.set(0,-1.28,.02);group.add(foot);
-    const kilt=new THREE.Mesh(new THREE.CylinderGeometry(.22,.38,.66,4,1),faienceLight);kilt.position.set(0,-.82,.04);kilt.rotation.y=Math.PI/4;group.add(kilt);
-    const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.27,.56,8,18),limestone);torso.position.set(0,-.02,.02);torso.scale.set(1.18,1,.8);group.add(torso);
-    const shoulders=new THREE.Mesh(new THREE.SphereGeometry(.34,20,16),limestone);shoulders.position.set(0,.24,.02);shoulders.scale.set(1.32,.56,.82);group.add(shoulders);
-    const collar=new THREE.Mesh(new THREE.TorusGeometry(.32,.075,10,32),bronze);collar.position.set(0,.28,.19);collar.rotation.x=Math.PI/2;group.add(collar);
-    for(const side of [-1,1]){const arm=new THREE.Mesh(new THREE.CapsuleGeometry(.09,.54,6,12),limestone);arm.position.set(side*.39,-.12,.08);arm.rotation.z=side*.12;group.add(arm);const hand=new THREE.Mesh(new THREE.SphereGeometry(.10,12,10),faienceLight);hand.position.set(side*.43,-.48,.13);group.add(hand);const leg=new THREE.Mesh(new THREE.CapsuleGeometry(.105,.48,6,12),reliefStone);leg.position.set(side*.15,-1.08,.03);group.add(leg);}
+    const group=new THREE.Group();group.name='alto-relevo de '+name+' em calcário';group.position.set(x,floorY+1.38,z);group.rotation.y=facing;
+    const panelShape=new THREE.Shape();panelShape.moveTo(-.62,-1.25);panelShape.lineTo(.62,-1.25);panelShape.lineTo(.62,.92);panelShape.quadraticCurveTo(.6,1.32,0,1.38);panelShape.quadraticCurveTo(-.6,1.32,-.62,.92);panelShape.closePath();
+    const panel=new THREE.Mesh(new THREE.ExtrudeGeometry(panelShape,{depth:.17,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.028,bevelThickness:.025}),reliefStone);panel.name='placa arqueada de calcário';panel.position.set(0,0,-.23);group.add(panel);
+    const inset=new THREE.Mesh(new THREE.ShapeGeometry(panelShape),new THREE.MeshStandardMaterial({color:0xb59a70,roughness:.94}));inset.position.set(0,0,-.045);group.add(inset);
+    for(const side of [-1,1]){
+      const border=new THREE.Mesh(new THREE.BoxGeometry(.055,2.62,.12),raGold);border.position.set(side*.62,0,.015);group.add(border);
+      const lotus=new THREE.Mesh(new THREE.CylinderGeometry(.12,.18,.13,10),raGold);lotus.position.set(side*.62,1.29,.04);group.add(lotus);
+    }
+    const plinth=new THREE.Mesh(new THREE.BoxGeometry(.9,.15,.34),limestoneShade);plinth.position.set(0,-1.2,.12);group.add(plinth);
+    // Shendyt: forma trapezoidal de tecido com pregas talhadas, não um cilindro genérico.
+    const kiltShape=new THREE.Shape();kiltShape.moveTo(-.34,0);kiltShape.lineTo(.34,0);kiltShape.lineTo(.29,.62);kiltShape.quadraticCurveTo(0,.74,-.29,.62);kiltShape.closePath();
+    const kilt=new THREE.Mesh(new THREE.ExtrudeGeometry(kiltShape,{depth:.12,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.015,bevelThickness:.015}),faienceLight);kilt.position.set(0,-.95,.23);group.add(kilt);
+    for(let i=-4;i<=4;i++){const xx=i*.065;addTube('prega vertical do shendyt',[[xx,-.91,.36],[xx*1.05,-.62,.37],[xx*1.1,-.31,.34]],.009,raGold,group,14);}
+    const torso=new THREE.Mesh(new THREE.LatheGeometry([
+      new THREE.Vector2(.22,0),new THREE.Vector2(.29,.08),new THREE.Vector2(.33,.26),
+      new THREE.Vector2(.37,.51),new THREE.Vector2(.43,.76),new THREE.Vector2(.46,.91),
+      new THREE.Vector2(.35,1.04),new THREE.Vector2(.2,1.14)
+    ],48),limestone);torso.name='tronco esculpido em alto-relevo';torso.position.set(0,-.34,.18);torso.scale.z=.68;group.add(torso);
+    const shoulders=new THREE.Mesh(new THREE.BoxGeometry(.78,.22,.2),limestoneShade);shoulders.position.set(0,.55,.2);group.add(shoulders);
+    // Braços fechados e próximos do tronco, típicos da escultura monumental em pedra.
+    for(const side of [-1,1]){
+      addTube('braço em relevo de '+name,[[side*.38,.5,.22],[side*.42,.23,.3],[side*.35,-.05,.37],[side*.25,-.28,.4]],.085,limestone,group,24);
+      const hand=new THREE.Mesh(new THREE.BoxGeometry(.12,.13,.08),faienceLight);hand.position.set(side*.25,-.32,.43);group.add(hand);
+      const leg=new THREE.Mesh(new THREE.LatheGeometry([new THREE.Vector2(.08,0),new THREE.Vector2(.11,.12),new THREE.Vector2(.1,.34),new THREE.Vector2(.08,.55)],24),limestoneShade);leg.position.set(side*.14,-1.03,.18);group.add(leg);
+      const sandal=new THREE.Mesh(new THREE.BoxGeometry(.18,.08,.27),raGold);sandal.position.set(side*.14,-1.12,.31);group.add(sandal);
+    }
     const headMat=name==='Anúbis'?darkBronze:limestoneShade;
-    const head=new THREE.Mesh(new THREE.SphereGeometry(.25,24,18),headMat);head.position.set(0,.67,.06);head.scale.set(.88,1.18,.78);group.add(head);
-    if(name==='Anúbis'){const muzzle=new THREE.Mesh(new THREE.ConeGeometry(.11,.42,4),darkBronze);muzzle.rotation.x=Math.PI/2;muzzle.position.set(0,.56,.31);group.add(muzzle);for(const side of [-1,1]){const ear=new THREE.Mesh(new THREE.ConeGeometry(.09,.43,4),darkBronze);ear.position.set(side*.16,1.02,.02);ear.rotation.z=side*-.18;group.add(ear);}}
-    else if(name==='Hórus'){const beak=new THREE.Mesh(new THREE.ConeGeometry(.10,.34,4),bronze);beak.rotation.x=Math.PI/2;beak.position.set(0,.57,.34);group.add(beak);for(const side of [-1,1]){const brow=new THREE.Mesh(new THREE.TorusGeometry(.065,.018,6,18),darkBronze);brow.position.set(side*.16,.72,.25);group.add(brow);}}
-    else if(name==='Sekhmet'||name==='Bastet'){const muzzle=new THREE.Mesh(new THREE.SphereGeometry(.14,16,12),limestoneShade);muzzle.position.set(0,.52,.24);muzzle.scale.set(1,.68,.8);group.add(muzzle);for(const side of [-1,1]){const ear=new THREE.Mesh(new THREE.ConeGeometry(.105,.32,4),limestoneShade);ear.position.set(side*.16,.96,.02);ear.rotation.z=side*-.12;group.add(ear);}if(name==='Sekhmet'){const mane=new THREE.Mesh(new THREE.SphereGeometry(.31,18,14),bronze);mane.position.set(0,.65,-.02);mane.scale.set(1.15,1.2,.8);group.add(mane);}}
-    else{const crown=new THREE.Mesh(new THREE.CylinderGeometry(.12,.21,.42,8),lapis);crown.position.set(0,1.01,0);group.add(crown);const disk=new THREE.Mesh(new THREE.TorusGeometry(.16,.03,8,24),bronze);disk.position.set(0,1.28,0);disk.rotation.x=Math.PI/2;group.add(disk);}
-    const wig=new THREE.Mesh(new THREE.SphereGeometry(.29,20,14),lapis);wig.position.set(0,.71,-.09);wig.scale.set(1.22,1.16,.82);group.add(wig);
-    for(const side of [-1,1]){const flap=new THREE.Mesh(new THREE.BoxGeometry(.17,.58,.18),lapis);flap.position.set(side*.27,.28,.02);flap.rotation.z=side*.09;group.add(flap);const eye=new THREE.Mesh(new THREE.SphereGeometry(.035,12,10),darkBronze);eye.position.set(side*.12,.7,.275);group.add(eye);}
-    const namePlate=new THREE.Mesh(new THREE.BoxGeometry(.74,.16,.08),bronze);namePlate.position.set(0,-1.18,.18);group.add(namePlate);
+    const head=new THREE.Mesh(new THREE.SphereGeometry(.22,32,24),headMat);head.name='cabeça iconográfica de '+name;head.position.set(0,.78,.22);head.scale.set(.84,1.16,.7);group.add(head);
+    if(name==='Anúbis'){
+      addTube('focinho alongado de Anúbis',[[0,.79,.36],[0,.72,.52],[0,.61,.58],[0,.56,.53]],.075,darkBronze,group,24);
+      for(const side of [-1,1]){
+        const ear=new THREE.Mesh(new THREE.ConeGeometry(.075,.5,6),darkBronze);ear.position.set(side*.15,1.16,.16);ear.rotation.z=side*-.13;group.add(ear);
+        const eye=new THREE.Mesh(new THREE.SphereGeometry(.028,12,10),raGold);eye.position.set(side*.13,.84,.38);group.add(eye);
+      }
+    }else if(name==='Hórus'){
+      addTube('bico de falcão de Hórus',[[0,.8,.39],[0,.72,.51],[0,.6,.58],[0,.55,.52]],.072,raGold,group,22);
+      for(const side of [-1,1]){const eye=new THREE.Mesh(new THREE.TorusGeometry(.065,.018,8,24),raGold);eye.position.set(side*.14,.84,.39);group.add(eye);}
+    }else if(name==='Sekhmet'||name==='Bastet'){
+      const muzzle=new THREE.Mesh(new THREE.BoxGeometry(.25,.16,.13),limestoneShade);muzzle.position.set(0,.68,.37);group.add(muzzle);
+      for(const side of [-1,1]){
+        const ear=new THREE.Mesh(new THREE.ConeGeometry(.075,.28,6),limestoneShade);ear.position.set(side*.16,1.04,.16);ear.rotation.z=side*-.12;group.add(ear);
+        const eye=new THREE.Mesh(new THREE.SphereGeometry(.03,12,10),darkBronze);eye.position.set(side*.13,.82,.385);group.add(eye);
+      }
+      if(name==='Sekhmet'){
+        const mane=new THREE.Mesh(new THREE.TorusGeometry(.27,.07,10,40),raGold);mane.position.set(0,.79,.11);mane.scale.set(1.1,1.15,.65);group.add(mane);
+      }
+    }else{
+      for(const side of [-1,1]){const horn=new THREE.Mesh(new THREE.ConeGeometry(.055,.36,8),raGold);horn.position.set(side*.2,1.12,.05);horn.rotation.z=side*-.35;group.add(horn);}
+      const sun=new THREE.Mesh(new THREE.TorusGeometry(.18,.035,8,28),raGold);sun.position.set(0,1.18,.12);group.add(sun);
+    }
+    // Peruca estriada e abas laterais, em planos sobrepostos à cabeça.
+    const wig=new THREE.Mesh(new THREE.SphereGeometry(.27,32,20,0,Math.PI*2,0,Math.PI*.62),lapis);wig.position.set(0,.88,.08);wig.scale.set(1.12,.86,.72);group.add(wig);
+    for(const side of [-1,1]){
+      const flap=new THREE.Mesh(new THREE.BoxGeometry(.16,.54,.1),lapis);flap.position.set(side*.25,.34,.16);flap.rotation.z=side*.06;group.add(flap);
+      for(let stripe=0;stripe<4;stripe++)addTube('filete do nemes de '+name,[[side*(.19+stripe*.026),.56,.225],[side*(.2+stripe*.026),.32,.225],[side*(.21+stripe*.026),.12,.225]],.008,raGold,group,12);
+    }
+    const collar=new THREE.Mesh(new THREE.TorusGeometry(.31,.052,8,40),raGold);collar.position.set(0,.45,.31);collar.scale.set(1.15,.95,.8);group.add(collar);
+    const namePlaque=new THREE.Mesh(new THREE.BoxGeometry(.7,.13,.05),raGold);namePlaque.position.set(0,-1.17,.29);group.add(namePlaque);
     group.traverse(obj=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;}});scene.add(group);
-    addInteractable({name:'Relevo de '+name,label:name+' — relevo de calcário',description:'Figura em alto-relevo de '+name+', esculpida em calcário e pigmentada com azul, ocre e bronze. A seleção das divindades é uma composição artística da reconstrução.',prompt:'E · examinar o relevo de '+name,position:group.position,radius:2.0});
+    addInteractable({name:'Relevo de '+name,label:name+' — relevo esculpido',description:'Figura em alto-relevo de '+name+', com atributos iconográficos, nemes estriado e pigmentos minerais. A seleção das divindades é uma composição artística da reconstrução.',prompt:'E · examinar o relevo de '+name,position:group.position,radius:2.0});
   }
-  addWallDeity(westWallX + 0.72, -9.4, 'Anúbis', Math.PI / 2);
-  addWallDeity(westWallX + 0.72, -1.0, 'Sekhmet', Math.PI / 2);
-  addWallDeity(westWallX + 0.72, 7.8, 'Hórus', Math.PI / 2);
-  addWallDeity(eastWallX - 0.72, -9.4, 'Ísis', -Math.PI / 2);
-  addWallDeity(eastWallX - 0.72, 7.8, 'Bastet', -Math.PI / 2);
+  const westReliefX=westWallX+1.25;
+  const eastReliefX=eastWallX-1.25;
+  addWallDeity(westReliefX,-9.4,'Anúbis',Math.PI/2);
+  addWallDeity(westReliefX,-1.0,'Sekhmet',Math.PI/2);
+  addWallDeity(westReliefX,7.8,'Hórus',Math.PI/2);
+  addWallDeity(eastReliefX,-9.4,'Ísis',-Math.PI/2);
+  addWallDeity(eastReliefX,7.8,'Bastet',-Math.PI/2);
 
   // Efígies de Rá: cabeças de falcão, discos solares vazados e redes de aro.
   const hoops = [];

@@ -1,39 +1,23 @@
 # Fontes abertas e proveniência
 
-## Personagem Carter — runtime atual
-
+## Personagem Carter — runtime ativo
 **Ara 3D Gen** — https://github.com/ara3d/ara3d — pacote JavaScript MIT.
-- O jogo voltou a usar a base humana contínua, com rig de jogo e skin weights, em vez do protótipo procedural de cápsulas/esferas/caixas que foi rejeitado após inspeção visual.
-- A configuração mantém o rosto humano, cabelo crespo curto e proporções juvenis do Carter anterior. Figurino: camisa azul, calça cargo cáqui e tênis escuros; sem mochila automática.
-- A malha é gerada pelo Ara no navegador. O pacote fornece os clips de idle, walk, run e jump usados no controlador. O movimento de jogo continua compartilhado entre desktop e mobile.
-- O asset original da Innerscene é apenas referência de forma e acabamento; ele não foi incorporado como arquivo binário.
+- O runtime voltou à implementação compartilhada do Carter que já estava aprovada antes das tentativas de redesign.
+- O código ativo em `src/character.js` utiliza o share salvo do Ara 3D Gen, detalhe médio e clips de idle, walk, run e jump.
+- A implementação local de bolsa transversal e o candidato Quaternius Casual_2 foram retirados do caminho ativo.
+- Não afirmar que o estudo experimental foi integrado ao jogo: ele foi rejeitado e removido da publicação.
 
-O Ara documenta que a malha humana recebe skin weights CC0 MakeHuman, roupas e cabelo também recebem pesos, e o game rig tem 65 ossos, nomes Mixamo e socket WeaponR na mão direita. A biblioteca mistura idle/walk/run pela velocidade e atualiza expressões/blinks com `hero.update(dt)`.
+## Movimento
+O controlador de terceira pessoa é comum ao desktop e mobile. A movimentação e os clips atuais continuam vindo da base Ara aprovada.
 
-## Bolsa transversal
+## Ferramentas para uma fase futura
+- Mesh2Motion: https://github.com/Mesh2Motion/mesh2motion-app — ferramenta aberta para rigging/retarget de GLB; ainda não integrada.
+- Quaternius Universal Animation Library: https://quaternius.itch.io/universal-animation-library — clips CC0, possível fonte futura de movimentos; não integrada.
 
-**Referência:** [Innerscene Crossbody Bag](https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2), CC0.
-- Referência estética: couro conhaque, aba frontal pespontada, fecho de latão e argolas laterais.
-- O GLB original não foi obtido pelo ambiente de edição. O runtime usa geometria local própria para o corpo da bolsa e para uma alça plana vestível, ajustada sobre o peito.
-- Posição aprovada: quadril direito; alça diagonal do ombro esquerdo ao quadril direito. A bolsa tem balanço secundário leve.
-- Não creditar a geometria local como arquivo original da Innerscene.
+## Ambiente e materiais
+- Three.js — https://github.com/mrdoob/three.js — MIT.
+- Poly Haven — https://polyhaven.com — modelos, materiais e HDRIs CC0; consultar o asset individual e o manifesto antes de integrar.
+- ambientCG — https://ambientcg.com — materiais PBR CC0.
 
-## Animações e locomoção
-
-**Ara 3D Gen** — clips atuais: `idle`, `walk`, `run`, `jump_start`, `jump_air`, `jump_land`.
-- `hero.locomotion(mixer)` mistura idle/walk/run conforme velocidade.
-- O controlador de terceira pessoa inclina o pivô do personagem para a frente durante sprint, aplica direção e curva, e funciona da mesma forma em desktop e mobile.
-- A referência Naruto continua limitada à linguagem corporal de corrida ágil; não são usados modelos, rostos ou animações extraídos da franquia.
-
-**Mesh2Motion**
-- https://github.com/Mesh2Motion/mesh2motion-app
-- https://github.com/Mesh2Motion/mesh2motion-assets
-- Referência futura para clips atléticos e retargeting; ainda não integrada.
-
-**Quaternius Universal Animation Library**
-- https://quaternius.itch.io/universal-animation-library
-- Alternativa futura CC0 para mais ciclos baked; ainda não integrada.
-
-## Motor
-
-**Three.js** — https://github.com/mrdoob/three.js — MIT.
+## Esculturas e referências históricas
+- Thoth, c. 644 BCE–30 CE, Minneapolis Institute of Art / Sketchfab: https://sketchfab.com/3d-models/thoth-c-644-bce-30-ce-394a94722862460e8cefab54b4bed7bf — referência visual de escultura de Thoth com cabeça de íbis; licença CC0 identificada na página. O arquivo não foi importado para o jogo.

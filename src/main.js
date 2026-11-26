@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=great-hall-final-pass-20261126b';
-import { buildExterior } from './exterior.js?v=brooklyn-east-river-surface-20261126c';
+import { buildWorld } from './world.js?v=warehouse-only-perception-20261126a';
+import { buildExterior } from './exterior.js?v=warehouse-only-perception-20261126a';
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-final-pass-20261126a';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-final-pass-20261126c';
 import { buildTrainingRoom } from './training-room.js?v=training-room-combat-20261126a';
 import { createInventory } from './inventory.js?v=duat-inventory-20261126c';
 import { createCharacter } from './character.js?v=carter-side-satchel-20261126f';
-import { createThirdPersonController } from './third-person.js?v=great-hall-final-pass-20261126a';
+import { createThirdPersonController } from './third-person.js?v=warehouse-only-perception-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
@@ -93,7 +93,11 @@ const world = buildWorld({
   cedarMat, darkGlass, plaster
 });
 const { zones, groundSurfaces, water } = world;
-const exterior = buildExterior({ THREE, scene, world, interactables, isTouchDevice });
+let revealCameraCue=()=>{};
+const exterior = buildExterior({
+  THREE, scene, world, interactables, isTouchDevice,
+  onReveal:()=>revealCameraCue()
+});
 
 // Interior passes are shared by desktop and mobile.
 buildInteriorDetails({ THREE, scene, interactables });
@@ -180,7 +184,8 @@ const controller = createThirdPersonController({
   walkablePlatforms: [
     ...(grandSalon.walkablePlatforms || []),
     ...(trainingRoom.walkablePlatforms || []),
-    { minX: -2.4, maxX: 21.2, minZ: 10.0, maxZ: 22.0, height: 13.15 },
+    { minX: 22.2, maxX: 27.8, minZ: 10.2, maxZ: 15.8, height: 13.05 },
+    { minX: -0.2, maxX: 25.2, minZ: 10.7, maxZ: 13.5, height: 13.05 },
     { minX: -14.4, maxX: 14.4, minZ: -10.4, maxZ: 9.7, height: 13.175 }
   ],
   zonePortals: trainingRoom.zonePortals,
@@ -200,6 +205,7 @@ const controller = createThirdPersonController({
     toast(notices[name] || zone.label);
   }
 });
+revealCameraCue=()=>controller.focusOnRoof();
 
 const inventory = createInventory({
   THREE, character,

@@ -20,11 +20,17 @@ Também pode ser executado por um servidor estático local. Abrir o HTML diretam
 | WASD / setas | Caminhar |
 | Mouse | Girar a câmera em terceira pessoa |
 | Shift | Correr |
-| Espaço | Saltar (quando disponível) |
+| Espaço | Saltar |
 | Esc | Liberar o mouse |
 | I | Abrir/fechar inventário |
 | F | Usar arma equipada |
 | 1–4 | Teleportar entre áreas |
+
+## Personagem — Carter Kane
+
+A primeira versão local do Carter já está integrada em `src/character.js`: Game 3D gráfico, rosto humano natural, corpo jovem e ágil, cabelo crespo curto, camiseta azul, calça cargo cáqui, tênis e bolsa transversal no quadril direito. O movimento é procedural e compartilhado entre desktop e mobile, com caminhada, sprint inclinado, salto e aterrissagem.
+
+Use [Abrir preview 3D do Carter](./character-preview.html) para inspecionar o mesmo modelo do jogo, orbitar a câmera e testar as poses. A bolsa é uma recriação procedural local baseada na referência CC0 Innerscene; o GLB original não foi integrado. Veja [docs/CHARACTER.md](docs/CHARACTER.md) para limites técnicos e validação.
 
 ## Estrutura do repositório
 

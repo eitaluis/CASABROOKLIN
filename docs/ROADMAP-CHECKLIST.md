@@ -35,20 +35,17 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Aprovar direção visual **C — Game 3D gráfico**: personagem totalmente 3D, formas limpas e legíveis, acabamento playful de videogame; sem anime e sem realismo de escaneamento.
 - [x] Manter rosto humano natural, com proporções faciais críveis; sem olhos de anime ou proporções chibi.
 - [x] Aprovar corpo jovem, lean/atlético e ágil, sem musculatura adulta exagerada.
-- [x] Manter pele negra, cabelo crespo escuro, camisa azul e calça cáqui como direção de design.
-- [x] Aprovar a bolsa transversal marrom CC0 apoiada no **quadril direito**, com alça cruzando diagonalmente o tronco.
-- [x] Definir a referência de movimento: agilidade, inclinação do tronco, braços ativos, passadas e silhueta atlética inspiradas na movimentação de Naruto; não copiar rosto nem estética 2D.
-- [x] Preparar estudo visual conceitual com vistas de frente, perfil, costas e poses dinâmicas. **É uma referência de look-dev, não um modelo 3D rigado nem o runtime.**
-- [ ] Testar geração de personagem com detalhe baixo (5–10k triângulos) e materiais sem textura fotográfica; avaliar rosto e cabelo antes de escolher a base.
-- [ ] Avaliar o rig de jogo de 65 ossos / Mixamo e o socket WeaponR, preservando compatibilidade com o inventário.
-- [ ] Escolher e aprovar a malha-base/rig definitivo; o personagem atual continua no runtime até a aprovação.
-- [ ] Personalizar idade aparente jovem, rosto negro natural, cabelo crespo curto, proporções e figurino.
-- [ ] Adaptar o corpo da bolsa CC0 e refazer a alça para cruzar o peito; manter bolsa no quadril direito, sem mochila.
-- [ ] Retarget e refinar idle, walk, jog, aceleração, frenagem, curvas, sprint, saltos e aterrissagens.
-- [ ] Testar como referência os clips Mesh2Motion: Sprint, Run_Anime, NinjaJump_Start/Idle/Land, Land_Three_Point e Wall_Run.
-- [x] Implementar lean frontal, braços ativos, passadas amplas e transições de intensidade contínuas; [ ] validar visualmente contato dos pés.
-- [x] Implementar balanço secundário discreto da bolsa; [ ] validar clipping em idle, walk, run e jump.
-- [x] Criar bone WeaponR na mão direita e manter compatibilidade com inventário; [ ] validar visualmente posição de cajado e khopesh.
+- [x] Manter pele negra, cabelo crespo escuro, camiseta azul, calça cargo cáqui e tênis azul-marinho.
+- [x] Criar a primeira versão local do Carter em `src/character.js` e substituir o carregamento Ara remoto no runtime.
+- [x] Criar rig articulado com bones humanoides e socket `WeaponR` na mão direita; inventário existente segue conectado.
+- [x] Recriar localmente corpo, aba, ferragens e alça vestível da bolsa de referência Innerscene; quadril direito e alça cruzando peito. **O GLB original não foi integrado; a geometria atual é uma recriação procedural local.**
+- [x] Implementar idle, caminhada, sprint, lean frontal, braços recuados no sprint, salto, aterrissagem e balanço secundário da bolsa.
+- [x] Criar `character-preview.html` com o mesmo módulo de personagem do jogo, controles de animação e vistas frontal, lateral e traseira.
+- [ ] Testar a aparência do modelo no navegador real: rosto, proporção, cabelo, costuras, roupa, alça e bolsa.
+- [ ] Observar articulações/possíveis junções entre meshes durante curvas, sprint e saltos. A primeira versão usa peças parentadas aos bones, não um único SkinnedMesh com skin weights.
+- [ ] Confirmar posição de cajado e khopesh no socket `WeaponR` em idle, walk e sprint.
+- [ ] Validar o mesmo modelo e as mesmas animações no desktop e no celular em modo paisagem.
+- [ ] Avaliar em fase futura retarget dos clips Mesh2Motion (Sprint, Run_Anime, NinjaJump, Land_Three_Point e Wall_Run) se o movimento procedural precisar de mais variedade.
 
 ## Setor 03 — inventário e combate
 
@@ -107,5 +104,5 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 1. Abrir character-preview.html e ajustar proporções, rosto e leitura da bolsa; o primeiro Carter local já está no runtime.
 2. Testar o jogo real no desktop e mobile: walk, sprint, giros, saltos, teleporte e armas. Depois comparar clips Mesh2Motion para eventual refinamento.
 3. A integração inicial usa uma recriação procedural da bolsa Innerscene; avaliar se o GLB original pode ser baixado/importado posteriormente.
-4. Apresentar um preview 3D rigado e animado — não apenas uma prancha — para aprovação final.
+4. Usar character-preview.html para aprovar visualmente o modelo 3D e ajustar a primeira versão.
 5. Após teste visual, refinar articulações/skin weights se necessário; o modelo e a animação atuais já são compartilhados entre desktop e mobile.

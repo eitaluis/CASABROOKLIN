@@ -175,6 +175,12 @@
       "path": "src/main.js",
       "role": "shared canvas map with Brooklyn warehouse, pier, East River, Williamsburg Bridge and Manhattan shore",
       "license": "project-original-code"
+    },
+    {
+      "id": "training-room-interactive-second-floor",
+      "path": "src/training-room.js",
+      "role": "second-floor training wing with a 15x28m marked basketball court, procedural hardwood color/bump maps, vaulted original fresco, deity busts, Ra falcon-headed solar-disc hoops, basketball physics and scoring, target-practice magic orbs, clay shabti challenge, interactive doors, colliders and shared desktop/mobile gameplay",
+      "license": "project-original-code; no third-party model imported"
     }
   ],
   "openSourceReferences": [
@@ -418,6 +424,13 @@
       "source": "https://books.disney.com/book/the-red-pyramid-the-graphic-novel/",
       "license": "publisher bibliographic reference only; no panel image imported",
       "role": "official graphic novel edition confirmed; no public verifiable exterior Brooklyn House panel found",
+      "runtimeImported": false
+    },
+    {
+      "id": "ambientcg-wood-floor-001-training-room-candidate",
+      "source": "https://ambientcg.com/view?id=WoodFloor001",
+      "license": "CC0-1.0",
+      "role": "reviewed PBR wood-floor candidate for the training room; not downloaded or imported, current floor uses original procedural canvas color and bump maps",
       "runtimeImported": false
     }
   ]

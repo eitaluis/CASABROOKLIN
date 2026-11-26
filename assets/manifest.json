@@ -59,7 +59,7 @@
     {
       "id": "great-hall-volumetric-fire",
       "path": "src/grand-salon.js + src/vendor/volumetric-fire.js",
-      "role": "Housz view-aligned volumetric flame mesh with local CC0 fire noise/profile textures, increased sampling density (desktop slice spacing 0.042, 38 lattice segments; mobile 0.085, 22 segments), logs, ember bed, rising sparks and animated point lights",
+      "role": "Housz view-aligned volumetric flame mesh with local CC0 fire noise/profile textures, denser sampling (desktop slice spacing 0.024 / 66 lattice segments; mobile 0.052 / 34 segments), logs, ember bed, rising sparks, halo and animated point lights",
       "license": "MIT-vendor-adaptation + project-original-code; textures from upstream example"
     },
     {
@@ -71,7 +71,7 @@
     {
       "id": "great-hall-object-interactions",
       "path": "src/grand-salon.js + src/main.js + src/third-person.js",
-      "role": "inspection prompts and physical colliders for Sofa 03, centre table, Thoth statue and fireplace; shared desktop/mobile controller",
+      "role": "inspection prompts/colliders for sofa GLBs, centre table, Thoth, fireplace, doors, balcony room doors, harp/drum/flutes/weapons and interactable plasma TV power toggle; shared desktop/mobile controller",
       "license": "project-original-code"
     },
     {
@@ -89,7 +89,7 @@
     {
       "id": "great-hall-modern-television",
       "path": "src/grand-salon.js",
-      "role": "rounded metal TV bezel and reflective dark glass screen above the fireplace; inspection prompt",
+      "role": "original flat plasma-screen bezel and reflective emissive glass above fireplace; interactable power toggle on E / INTERAGIR, with subtle blue screen light",
       "license": "project-original-code"
     },
     {
@@ -107,7 +107,7 @@
     {
       "id": "great-hall-double-eye-doors",
       "path": "src/grand-salon.js",
-      "role": "original double-leaf paneled wood door, carved stone surround, Eye of Horus SVG medallion, interlinked iron chain, six padlocks and physical blocking collider; inspect prompt reports locked state",
+      "role": "original double-leaf panelled wood door, carved stone surround, Eye of Horus SVG medallion, iron chain, six padlocks, blocking collider and locked-state inspection prompt",
       "license": "project-original-code geometry; Game-icons SVG CC-BY-3.0"
     },
     {
@@ -133,6 +133,12 @@
       "path": "assets/decor/per-ankh.svg",
       "role": "project-original vector representing the O1 house + S34 ankh sign composition for the open papyrus held by Thoth; illustrative emblem, not an attested epigraphic transcription",
       "license": "project-original-code"
+    },
+    {
+      "id": "great-hall-gallery-door-rows",
+      "path": "src/grand-salon.js",
+      "role": "three inspectable timber doors per side and each of the three balcony levels (18 total), with limestone PBR surrounds, walnut PBR panels, brass rails/handles and physical colliders; quantity/layout is an interpretive level-design choice because the novel gives no exact count",
+      "license": "project-original-code using CC0 Poly Haven PBR maps"
     }
   ],
   "openSourceReferences": [
@@ -183,7 +189,7 @@
       "source": "https://polyhaven.com/a/sofa_03",
       "license": "CC0-1.0",
       "author": "Fran Calvente",
-      "role": "runtime GLB in assets/models/polyhaven-sofa-03.glb; native dimensions 2.731 x 0.925 x 1.118 m, 8,004 triangles, two PBR materials; scaled to 0.78 and placed as a pair flanking the monumental fireplace",
+      "role": "runtime GLB in assets/models/polyhaven-sofa-03.glb; native dimensions 2.731 x 0.925 x 1.118 m, 8,004 triangles, two PBR materials; normalized by bounding box, scaled to 0.72 (~1.97 m long), placed as a pair around the fireplace, with proportional visible fallback on load failure",
       "runtimeImported": true
     },
     {
@@ -218,7 +224,7 @@
       "id": "housz-three-volumetric-fire",
       "source": "https://github.com/Housz/ThreeVolumetricFire",
       "license": "MIT",
-      "role": "source for the vendored volumetric shader class; source modified to GLSL3/WebGL2 for Three.js r165; original MIT license retained in licenses/THREE-VOLUMETRIC-FIRE-MIT.txt",
+      "role": "source for vendored volumetric shader class; adapted to GLSL3/WebGL2 with local CC0 noise/profile textures, higher sampling for soft organic edges; original MIT license retained in licenses/THREE-VOLUMETRIC-FIRE-MIT.txt",
       "runtimeImported": true
     },
     {
@@ -282,6 +288,22 @@
       "source": "https://github.com/kevinelliott/giza/blob/claude/giza-plateau-game-7h00a5/js/inscriptions.js",
       "license": "MIT",
       "role": "reference to the Gardiner sign mapping for house O1 and ankh S34; no code or font file copied into the runtime",
+      "runtimeImported": false
+    },
+    {
+      "id": "polyhaven-television-01-not-used",
+      "source": "https://polyhaven.com/a/Television_01",
+      "license": "CC0-1.0",
+      "author": "Gabriel Radić",
+      "role": "reviewed but not imported: vintage CRT television; rejected because The Red Pyramid describes a plasma screen",
+      "runtimeImported": false
+    },
+    {
+      "id": "polyhaven-television-02-not-used",
+      "source": "https://polyhaven.com/a/television_02",
+      "license": "CC0-1.0",
+      "author": "Benny Weimer",
+      "role": "reviewed but not imported: retro CRT television; rejected because The Red Pyramid describes a plasma screen",
       "runtimeImported": false
     }
   ]

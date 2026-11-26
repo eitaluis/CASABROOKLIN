@@ -834,6 +834,12 @@ function addGreatHallDoors(scene, stone, wood, brass, colliders, interactables) 
   );
   chainMedallion.position.set(0, 1.18, -0.59);
   group.add(chainMedallion);
+  const padlockMark=new THREE.Mesh(
+    new THREE.PlaneGeometry(0.42,0.42),
+    gameIconMaterial('padlock')
+  );
+  padlockMark.position.set(0,0.88,-0.59);
+  group.add(padlockMark);
 
   scene.add(group);
   group.userData.assetId = 'great-hall-double-eye-door';
@@ -851,299 +857,6 @@ function addGreatHallDoors(scene, stone, wood, brass, colliders, interactables) 
     description: 'O Olho de Hórus foi gravado acima das correntes. Seis cadeados prendem as duas folhas; não há passagem aberta neste momento.',
     position: new THREE.Vector3(0, 15.35, 6.8),
     radius: 2.7
-  });
-  return group;
-}
-
-function ironMaterial() {
-  return new THREE.MeshStandardMaterial({color:0x292a29,metalness:.86,roughness:.36});
-}
-
-function plasterMaterialFrom(base) {
-  return new THREE.MeshStandardMaterial({color:0xd7c59a,roughness:.96,bumpMap:base.bumpMap,bumpScale:.016});
-}
-
-function darkWoodFrom(base, color) {
-  return new THREE.MeshStandardMaterial({
-    color,
-    map: base.map || null,
-    normalMap: base.normalMap || null,
-    normalScale: new THREE.Vector2(0.7, 0.7),
-    roughnessMap: base.roughnessMap || null,
-    roughness: 0.78
-  });
-}
-
-function createWallHarp(scene, side, wood, brass, colliders, interactables) {
-  const group = new THREE.Group();
-  group.name = 'harpa de madeira do Grande Salão';
-  group.position.set(side * 13.48, 13.35, -7.3);
-  group.rotation.y = side < 0 ? Math.PI / 2 : -Math.PI / 2;
-
-  const soundbox = new THREE.Mesh(
-    new RoundedBoxGeometry(0.54, 0.42, 0.3, 8, 0.11),
-    wood
-  );
-  soundbox.position.set(-0.12, 0.37, 0.04);
-  soundbox.castShadow = true;
-  soundbox.receiveShadow = true;
-  group.add(soundbox);
-
-  const base = new THREE.Mesh(
-    new RoundedBoxGeometry(0.88, 0.16, 0.32, 7, 0.05),
-    wood
-  );
-  base.position.set(0.12, 0.13, 0.03);
-  base.castShadow = true;
-  group.add(base);
-
-  group.add(tube([
-    [-0.38, 0.22, 0.06],
-    [-0.46, 0.75, 0.06],
-    [-0.40, 1.38, 0.06],
-    [-0.12, 1.95, 0.06],
-    [0.28, 2.13, 0.06],
-    [0.62, 2.02, 0.06]
-  ], 0.075, wood, 64, 12));
-
-  group.add(tube([
-    [-0.35, 1.76, 0.07],
-    [0.02, 1.97, 0.07],
-    [0.42, 2.06, 0.07]
-  ], 0.055, brass, 32, 8));
-
-  const stringMaterial = new THREE.MeshStandardMaterial({
-    color: 0xd9c89f,
-    metalness: 0.42,
-    roughness: 0.5
-  });
-  for (let i = 0; i < 16; i++) {
-    const t = i / 15;
-    const x1 = -0.31 + t * 0.34;
-    const x2 = -0.1 + t * 0.68;
-    group.add(tube([
-      [x1, 0.56, 0.19],
-      [x2, 1.27 + t * 0.06, 0.15],
-      [x2 + 0.04, 1.91, 0.1]
-    ], 0.0065, stringMaterial, 18, 5));
-
-    const pin = new THREE.Mesh(new THREE.SphereGeometry(0.026, 8, 6), brass);
-    pin.position.set(x2 + 0.04, 1.91, 0.1);
-    group.add(pin);
-  }
-
-  const rosette = new THREE.Mesh(new THREE.TorusGeometry(0.095, 0.018, 8, 32), brass);
-  rosette.position.set(-0.12, 0.37, 0.21);
-  group.add(rosette);
-
-  scene.add(group);
-  addIconPlaque(scene, 'harp', [side * 13.92, 15.85, -7.3], side < 0 ? Math.PI / 2 : -Math.PI / 2, wood, brass, 0.42);
-  addBoxCollider(colliders, side * 13.2, 14.45, -7.3, 0.75, 2.4, 0.75);
-  interactables.push({
-    name: 'Harpa de madeira ' + (side < 0 ? 'oeste' : 'leste'),
-    kind: 'inspect',
-    label: 'Instrumento de cordas',
-    description: 'Harpa de madeira, com caixa de ressonância esculpida, cordas individuais e ferragens em bronze.',
-    position: new THREE.Vector3(side * 12.35, 14.3, -7.3),
-    radius: 1.8
-  });
-  return group;
-}
-
-function createWallDrum(scene, side, wood, brass, plaster, colliders, interactables) {
-  const group = new THREE.Group();
-  group.name = 'tambor de pele do Grande Salão';
-  group.position.set(side * 11.3, 13.175, -5.15);
-
-  const shell = new THREE.Mesh(
-    new THREE.LatheGeometry([
-      new THREE.Vector2(0.28, 0),
-      new THREE.Vector2(0.34, 0.12),
-      new THREE.Vector2(0.39, 0.28),
-      new THREE.Vector2(0.37, 0.62),
-      new THREE.Vector2(0.31, 0.86),
-      new THREE.Vector2(0.28, 0.94)
-    ], 48),
-    wood
-  );
-  shell.name = 'corpo torneado de nogueira do tambor';
-  shell.position.y = 0.1;
-  shell.castShadow = true;
-  shell.receiveShadow = true;
-  group.add(shell);
-
-  for (const y of [0.18, 0.37, 0.79, 0.98]) {
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.025, 10, 48), brass);
-    ring.rotation.x = Math.PI / 2;
-    ring.position.y = y;
-    group.add(ring);
-  }
-
-  const drumHead = new THREE.Mesh(
-    new THREE.CircleGeometry(0.3, 64),
-    new THREE.MeshStandardMaterial({
-      color: 0xd7c59a,
-      roughness: 0.94,
-      bumpMap: plaster.bumpMap,
-      bumpScale: 0.018,
-      side: THREE.DoubleSide
-    })
-  );
-  drumHead.rotation.x = -Math.PI / 2;
-  drumHead.position.y = 1.055;
-  drumHead.receiveShadow = true;
-  group.add(drumHead);
-
-  const rope = new THREE.MeshStandardMaterial({ color: 0xb69a6b, roughness: 0.9 });
-  for (let i = 0; i < 12; i++) {
-    const a = i / 12 * Math.PI * 2;
-    const x = Math.cos(a) * 0.34;
-    const z = Math.sin(a) * 0.34;
-    group.add(tube([
-      [x * 0.95, 0.22, z * 0.95],
-      [x * 1.08, 0.56, z * 1.08],
-      [x * 0.95, 0.92, z * 0.95]
-    ], 0.014, rope, 14, 5));
-  }
-
-  for (let i = 0; i < 8; i++) {
-    const a = i / 8 * Math.PI * 2;
-    const lug = new THREE.Mesh(new THREE.SphereGeometry(0.035, 10, 8), brass);
-    lug.position.set(Math.cos(a) * 0.38, 0.57, Math.sin(a) * 0.38);
-    group.add(lug);
-  }
-
-  scene.add(group);
-  addIconPlaque(scene, 'drum', [side * 13.92, 15.4, -5.1], side < 0 ? Math.PI / 2 : -Math.PI / 2, wood, brass, 0.4);
-  addBoxCollider(colliders, side * 11.3, 13.72, -5.15, 0.95, 1.2, 0.95);
-  interactables.push({
-    name: 'Tambor ' + (side < 0 ? 'oeste' : 'leste'),
-    kind: 'inspect',
-    label: 'Tambor de pele e nogueira',
-    description: 'Tambor de pele esticada, aro de bronze e cordas de tensão. Uma interpretação de instrumento musical antigo para a decoração descrita no livro.',
-    position: new THREE.Vector3(side * 11.3, 14.0, -4.45),
-    radius: 1.8
-  });
-  return group;
-}
-
-function createWallFluteRack(scene,side,wood,brass,iron,colliders,interactables) {
-  const group=new THREE.Group();
-  group.name='estojo de flautas de madeira do Grande Salão';
-  group.position.set(side*13.48,14.0,5.65);
-  group.rotation.y=side<0?Math.PI/2:-Math.PI/2;
-
-  const backing=new THREE.Mesh(new RoundedBoxGeometry(1.48,.82,.16,7,.055),wood);
-  backing.position.set(0,.62,0);
-  backing.castShadow=true;backing.receiveShadow=true;group.add(backing);
-
-  for(const y of [.27,1.02]){
-    const rail=new THREE.Mesh(new RoundedBoxGeometry(1.36,.075,.22,6,.025),brass);
-    rail.position.set(0,y,.055);group.add(rail);
-  }
-
-  const lengths=[.94,.82,.7,.58];
-  for(let i=0;i<lengths.length;i++){
-    const length=lengths[i],x=-.48+i*.32;
-    const flute=new THREE.Mesh(
-      new THREE.CylinderGeometry(.035,.043,length,24,1),
-      i%2?wood:darkWoodFrom(wood,0x6b482d)
-    );
-    flute.name='flauta egípcia de madeira';
-    flute.position.set(x,.65,.12);
-    flute.castShadow=true;group.add(flute);
-
-    for(let h=0;h<4;h++){
-      const y=.65-length*.28+h*.135;
-      const hole=new THREE.Mesh(new THREE.CircleGeometry(.017,12),iron);
-      hole.position.set(x+.043,y,.155);
-      group.add(hole);
-    }
-    const ring=new THREE.Mesh(new THREE.TorusGeometry(.045,.012,8,18),brass);
-    ring.position.set(x,.65-length*.45,.12);group.add(ring);
-  }
-
-  scene.add(group);
-  addIconPlaque(scene,'flute',[side*13.92,15.35,5.65],side<0?Math.PI/2:-Math.PI/2,wood,brass,.38);
-  addBoxCollider(colliders,side*13.2,14.63,5.65,.85,1.1,.65);
-  interactables.push({
-    name:'Estojo de flautas '+(side<0?'oeste':'leste'),
-    kind:'inspect',
-    label:'Flautas de madeira',
-    description:'Quatro flautas de madeira com orifícios de afinação e anéis de bronze. Uma interpretação de instrumentos antigos para completar a coleção musical do salão.',
-    position:new THREE.Vector3(side*12.35,14.65,5.65),
-    radius:1.7
-  });
-  return group;
-}
-
-function createSpearDisplay(scene, side, wood, brass, iron, colliders, interactables) {
-  const group = new THREE.Group();
-  group.name = 'suporte de armas egípcias do Grande Salão';
-  group.position.set(side * 8.1, 13.175, 9.15);
-  group.rotation.y = Math.PI;
-
-  const backboard = new THREE.Mesh(
-    new RoundedBoxGeometry(1.65, 3.35, 0.18, 8, 0.06),
-    wood
-  );
-  backboard.position.set(0, 1.83, 0.18);
-  backboard.castShadow = true;
-  backboard.receiveShadow = true;
-  group.add(backboard);
-
-  for (const y of [0.64, 2.98]) {
-    const rail = new THREE.Mesh(new RoundedBoxGeometry(1.58, 0.13, 0.16, 6, 0.03), brass);
-    rail.position.set(0, y, 0.02);
-    group.add(rail);
-  }
-
-  for (let i = 0; i < 3; i++) {
-    const x = -0.48 + i * 0.48;
-    const shaft = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.035, 0.048, 2.64, 20, 1),
-      wood
-    );
-    shaft.name = 'haste torneada de lança';
-    shaft.position.set(x, 1.98, 0.31);
-    shaft.castShadow = true;
-    group.add(shaft);
-
-    const tip = new THREE.Mesh(
-      new THREE.LatheGeometry([
-        new THREE.Vector2(0.075, 0),
-        new THREE.Vector2(0.105, 0.1),
-        new THREE.Vector2(0.075, 0.24),
-        new THREE.Vector2(0.04, 0.42),
-        new THREE.Vector2(0, 0.58)
-      ], 20),
-      iron
-    );
-    tip.position.set(x, 3.29, 0.31);
-    tip.castShadow = true;
-    group.add(tip);
-
-    const ferrule = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.12, 18), brass);
-    ferrule.position.set(x, 0.66, 0.31);
-    group.add(ferrule);
-
-    for (const y of [1.0, 2.8]) {
-      const wrap = new THREE.Mesh(new THREE.TorusGeometry(0.047, 0.012, 8, 18), brass);
-      wrap.position.set(x, y, 0.31);
-      group.add(wrap);
-    }
-  }
-
-  scene.add(group);
-  addIconPlaque(scene, 'spears', [side * 8.1, 17.2, 8.43], Math.PI, wood, brass, 0.48);
-  addBoxCollider(colliders, side * 8.1, 15.1, 8.45, 1.95, 3.55, 0.55);
-  interactables.push({
-    name: 'Suporte de lanças ' + (side < 0 ? 'oeste' : 'leste'),
-    kind: 'inspect',
-    label: 'Armas egípcias antigas',
-    description: 'Três lanças de madeira e bronze em um suporte de parede. As armas antigas são parte da decoração do Grande Salão descrita no livro.',
-    position: new THREE.Vector3(side * 7.3, 14.5, 6.8),
-    radius: 2.0
   });
   return group;
 }
@@ -1567,13 +1280,15 @@ export function buildGrandSalon({
   addWallReliefs(scene,brass,darkWood,stone,relief);
   ceilingOrnament(scene,brass,darkWood);
 
-  // Replaced legacy block props with sourced SVG iconography and bespoke 3D models.
+  // Sourced iconography enriches the existing physical props without duplicating them.
   addGreatHallDoors(scene,stone,darkWood,brass,colliders,interactables);
+  addIconPlaque(scene,'harp',[-11.65,15.82,-9.84],0,darkWood,brass,.42);
+  addIconPlaque(scene,'harp',[11.65,15.82,-9.84],0,darkWood,brass,.42);
+  addIconPlaque(scene,'drum',[-13.92,15.25,1.2],Math.PI/2,darkWood,brass,.4);
+  addIconPlaque(scene,'drum',[13.92,15.25,1.2],-Math.PI/2,darkWood,brass,.4);
   for(const side of [-1,1]){
-    createWallHarp(scene,side,darkWood,brass,colliders,interactables);
-    createWallDrum(scene,side,darkWood,brass,plasterMaterialFrom(stone),colliders,interactables);
+    addIconPlaque(scene,'spears',[side*11.8,18.2,8.52],Math.PI,darkWood,brass,.42);
     createWallFluteRack(scene,side,darkWood,brass,ironMaterial(),colliders,interactables);
-    createSpearDisplay(scene,side,darkWood,brass,ironMaterial(),colliders,interactables);
   }
 
   const upholstery=new T.MeshStandardMaterial({

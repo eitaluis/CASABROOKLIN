@@ -210,9 +210,22 @@ box('boca escura da lareira',[0,15.4,-8.48],[4.1,2.5,.08],new THREE.MeshStandard
 box('manto de pedra',[0,17.15,-8.85],[6.3,.42,1.15],stone,false);
 box('TV de plasma',[0,19.0,-9.05],[4.6,2.55,.2],new THREE.MeshStandardMaterial({color:0x090f12,metalness:.35,roughness:.15,emissive:0x101e22,emissiveIntensity:.75}),false);
 box('tela da TV',[0,19.0,-8.91],[4.35,2.3,.025],new THREE.MeshBasicMaterial({color:0x15242b}),false,false);
-const fireLight=new THREE.PointLight(0xff7d30,2.3,12);fireLight.position.set(0,15.7,-7.7);scene.add(fireLight);
-const fireMat=new THREE.MeshBasicMaterial({color:0xff8b3d,transparent:true,opacity:.85});
-for(let i=0;i<14;i++){const f=new THREE.Mesh(new THREE.SphereGeometry(.14+Math.random()*.18,8,8),fireMat);f.position.set((Math.random()-.5)*2.8,14.4+Math.random()*1.8,-8.1);scene.add(f);animated.push({obj:f,fire:true,phase:Math.random()*6.28})}
+const fireLight=new THREE.PointLight(0xff7d30,3.0,15,1.7);fireLight.position.set(0,15.0,-7.45);scene.add(fireLight);
+const fireOuterMat=new THREE.MeshBasicMaterial({color:0xf05a1a,transparent:true,opacity:.94,depthWrite:false});
+const fireInnerMat=new THREE.MeshBasicMaterial({color:0xffb32e,transparent:true,opacity:.96,depthWrite:false});
+const fireCoreMat=new THREE.MeshBasicMaterial({color:0xffe39a,transparent:true,opacity:.96,depthWrite:false});
+function addFireTongue(name,x,baseY,z,height,radius,material,tilt=0){
+ const flame=new THREE.Mesh(new THREE.ConeGeometry(radius,height,12,3),material);
+ flame.name=name;flame.position.set(x,baseY+height/2,z);flame.rotation.z=tilt;
+ flame.castShadow=false;flame.receiveShadow=false;scene.add(flame);
+ animated.push({obj:flame,fire:true,phase:Math.random()*Math.PI*2,baseY:flame.position.y,baseRotationZ:tilt,baseScaleY:1});
+ return flame;
+}
+addFireTongue('chama principal da lareira',0,14.28,-8.15,1.62,.48,fireOuterMat,0);
+addFireTongue('chama lateral esquerda',-.62,14.30,-8.1,1.12,.34,fireOuterMat,.18);
+addFireTongue('chama lateral direita',.58,14.30,-8.12,1.28,.34,fireOuterMat,-.2);
+addFireTongue('núcleo amarelo da lareira',0,14.29,-8.0,.92,.23,fireInnerMat,0);
+addFireTongue('língua de fogo central',.08,14.3,-7.98,.64,.13,fireCoreMat,-.08);
 
 // Estátua central de Tot: figura de mármore negro com aproximadamente nove metros.
 const blackMarble=new THREE.MeshStandardMaterial({color:0x17191a,roughness:.32,metalness:.18,map:texCanvas((g,w,h)=>{g.fillStyle='#17191a';g.fillRect(0,0,w,h);for(let i=0;i<260;i++){g.strokeStyle=i%3?'#343638':'#786c5d';g.globalAlpha=.13;g.lineWidth=Math.random()*2+.3;g.beginPath();let x=Math.random()*w,y=Math.random()*h;g.moveTo(x,y);g.lineTo(x+Math.random()*80,y+Math.random()*16);g.stroke()}g.globalAlpha=1},256,256,1,1)});
@@ -259,7 +272,7 @@ for(let x of [-12,12]){instrument(x,19.5,-9.35,'harp');instrument(x,21.0,9.1,'sp
 for(let z of [-7,7]){addStatue(-12,13.1,z,0);addStatue(12,13.1,z,1)}
 // Biblioteca circular subterrânea, escavada na rocha.
 const libCenterY=-12.5,libFloor= -17.4,libRadius=12.5;
-const rockMat=new THREE.MeshStandardMaterial({color:0x554b3d,map:concrete,roughness:1});
+const rockMat=new THREE.MeshStandardMaterial({color:0x82735e,map:concrete,roughness:.94,side:THREE.DoubleSide});
 const cylWall=new THREE.Mesh(new THREE.CylinderGeometry(libRadius,libRadius,11.4,64,1,true),rockMat);cylWall.position.set(0,libCenterY,-.5);cylWall.receiveShadow=true;scene.add(cylWall);
 const libFloorMesh=new THREE.Mesh(new THREE.CircleGeometry(libRadius,64),new THREE.MeshStandardMaterial({color:0x33484b,roughness:.8}));libFloorMesh.rotation.x=-Math.PI/2;libFloorMesh.position.set(0,libFloor,-.5);libFloorMesh.receiveShadow=true;scene.add(libFloorMesh);groundSurfaces.push(libFloorMesh);
 const mosaic=texCanvas((g,w,h)=>{g.fillStyle='#23383a';g.fillRect(0,0,w,h);for(let i=0;i<12;i++){g.strokeStyle=i%2?'#b28c52':'#71908a';g.lineWidth=7;g.beginPath();g.arc(w/2,h/2,30+i*17,0,Math.PI*2);g.stroke()}for(let i=0;i<12;i++){g.save();g.translate(w/2,h/2);g.rotate(i*Math.PI/6);g.fillStyle=i%2?'#bb9b64':'#71938a';g.fillRect(-7,-195,14,38);g.restore()}},512,512,1,1);

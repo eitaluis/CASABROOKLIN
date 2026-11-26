@@ -375,10 +375,31 @@ export function createInventory({
   buildInk();
   buildProtectiveAmulet();
 
-  // Portal procedural do Duat, preso ao mesmo socket da mão que recebe os objetos.
+  // The portal stays in chest space while the right hand reaches through it.
+  // Ara's use_press clip places the right-hand contact at (-0.20, -0.16, 0.46)
+  // in chest-space coordinates for a 1.8 m reference character.
+  const chestBoneNames = new Set(['spine2', 'mixamorispine2', 'spine1', 'mixamorispine1', 'chest', 'spine']);
+  let chestBone = null;
+  character.model.traverse((node) => {
+    if (!node.isBone || chestBone) return;
+    const name = String(node.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (chestBoneNames.has(name)) chestBone = node;
+  });
+  const duatUnit = (character.height || character.ara?.height || 1.75) / 1.8;
+  const portalAnchor = new THREE.Group();
+  portalAnchor.name = 'DuatChestSpaceAnchor';
+  if (chestBone) {
+    chestBone.add(portalAnchor);
+    portalAnchor.position.set(-0.20 * duatUnit, -0.16 * duatUnit, 0.46 * duatUnit);
+  } else {
+    const characterVisualRoot = character.ara?.scene || character.model;
+    characterVisualRoot.add(portalAnchor);
+    portalAnchor.position.set(-0.20 * duatUnit, 0.78 * (character.height || 1.75), 0.46 * duatUnit);
+  }
+
   const portal = new THREE.Group();
   portal.name = 'DuatHandPortal';
-  portal.position.set(0, 0.17, 0.19);
+  portal.position.set(0, 0, 0);
   const portalGold = new THREE.MeshStandardMaterial({
     color: 0xd5ad62, emissive: 0x8b5a1d, emissiveIntensity: 1.15,
     metalness: 0.48, roughness: 0.38, transparent: true, opacity: 0
@@ -409,7 +430,7 @@ export function createInventory({
   portalArc.position.z = 0.014;
   portal.add(portalArc);
   portal.visible = false;
-  socket.add(portal);
+  portalAnchor.add(portal);
 
   let activeItem = null;
   let transition = null;
@@ -462,33 +483,34 @@ export function createInventory({
       .forEach((button) => { if (button) button.disabled = !usable || Boolean(transition); });
   };
 
-  function beginRetrieve(name) {
+  function beginDuatReach() {
     attackRemaining = 0;
     socket.rotation.copy(restRotation);
-    const group = items.get(name);
-    if (!group) return;
-    group.visible = true;
-    group.scale.setScalar(0.025);
-    group.position.copy(group.userData.restPosition).add(new THREE.Vector3(0, 0, 0.19));
-    transition = { name, mode: 'retrieve', elapsed: 0, duration: 0.72 };
+    // The interaction is locked for the full body clip on desktop and mobile.
+    setControlsLocked(true);
+    character.playAction?.('use_press', { fade: 0.18 });
     portal.visible = true;
-    portal.scale.setScalar(0.15);
+    portal.scale.setScalar(0.2);
     portalGold.opacity = 0;
     portalBlue.opacity = 0;
     portalCoreMaterial.opacity = 0;
+  }
+
+  function beginRetrieve(name) {
+    const group = items.get(name);
+    if (!group || transition) return;
+    beginDuatReach();
+    group.visible = true;
+    group.scale.setScalar(0.025);
+    group.position.copy(group.userData.restPosition).add(new THREE.Vector3(0, 0, 0.19));
+    transition = { name, mode: 'retrieve', elapsed: 0, duration: 1.65 };
     refresh();
   }
 
   function beginStore() {
     if (!activeItem || transition) return;
-    attackRemaining = 0;
-    socket.rotation.copy(restRotation);
-    transition = { name: activeItem, mode: 'store', elapsed: 0, duration: 0.62 };
-    portal.visible = true;
-    portal.scale.setScalar(0.92);
-    portalGold.opacity = 0.85;
-    portalBlue.opacity = 0.72;
-    portalCoreMaterial.opacity = 0.24;
+    beginDuatReach();
+    transition = { name: activeItem, mode: 'store', elapsed: 0, duration: 1.65 };
     refresh();
   }
 
@@ -549,21 +571,29 @@ export function createInventory({
       if (transition) {
         transition.elapsed = Math.min(transition.duration, transition.elapsed + dt);
         const progress = transition.elapsed / transition.duration;
-        const eased = progress * progress * (3 - 2 * progress);
+        const smoothstep = (edge0, edge1, value) => {
+          const t = THREE.MathUtils.clamp((value - edge0) / (edge1 - edge0), 0, 1);
+          return t * t * (3 - 2 * t);
+        };
+        const opening = smoothstep(0.12, 0.42, progress);
+        const closing = 1 - smoothstep(0.78, 1.0, progress);
+        const portalStrength = opening * closing;
         const item = items.get(transition.name);
 
-        portal.scale.set(0.58 + eased * 0.42, 0.72 + eased * 0.28, 1);
-        portal.rotation.z += dt * (transition.mode === 'retrieve' ? 1.3 : -1.1);
-        portalGold.opacity = Math.sin(progress * Math.PI) * 0.92;
-        portalBlue.opacity = Math.sin(progress * Math.PI) * 0.76;
-        portalCoreMaterial.opacity = Math.sin(progress * Math.PI) * 0.28;
+        portal.scale.set(0.62 + opening * 0.38, 0.76 + opening * 0.24, 1);
+        portal.rotation.z += dt * (transition.mode === 'retrieve' ? 0.72 : -0.62);
+        portalGold.opacity = portalStrength * 0.92;
+        portalBlue.opacity = portalStrength * 0.78;
+        portalCoreMaterial.opacity = portalStrength * 0.3;
 
         if (item) {
+          const itemProgress = smoothstep(0.52, 0.94, progress);
           const from = transition.mode === 'retrieve' ? 0.025 : 1;
           const to = transition.mode === 'retrieve' ? 1 : 0.025;
-          item.scale.setScalar(THREE.MathUtils.lerp(from, to, eased));
+          const itemEase = transition.mode === 'retrieve' ? itemProgress : itemProgress;
+          item.scale.setScalar(THREE.MathUtils.lerp(from, to, itemEase));
           const rest = item.userData.restPosition;
-          const offset = transition.mode === 'retrieve' ? (1 - eased) * 0.19 : eased * 0.19;
+          const offset = transition.mode === 'retrieve' ? (1 - itemProgress) * 0.19 : itemProgress * 0.19;
           item.position.copy(rest).add(new THREE.Vector3(0, 0, offset));
         }
 
@@ -591,12 +621,16 @@ export function createInventory({
           portalBlue.opacity = 0;
           portalCoreMaterial.opacity = 0;
           socket.rotation.copy(restRotation);
-          if (queuedItem && queuedItem !== activeItem) {
+          if (finished.mode === 'retrieve' && queuedItem && queuedItem !== activeItem) {
+            // Finish the current retrieval, then store that item before fetching the queued one.
+            beginStore();
+          } else if (finished.mode === 'store' && queuedItem) {
             const next = queuedItem;
             queuedItem = null;
             beginRetrieve(next);
           } else {
             queuedItem = null;
+            setControlsLocked(false);
           }
           refresh();
         }

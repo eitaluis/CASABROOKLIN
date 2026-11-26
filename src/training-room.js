@@ -488,7 +488,7 @@ export function buildTrainingRoom({
     const steleInset=new THREE.Mesh(new THREE.ShapeGeometry(steleShape),new THREE.MeshStandardMaterial({color:0x6f5540,roughness:.93}));
     steleInset.position.set(0,.12,-1.862);group.add(steleInset);
     const solarPanel=new THREE.Mesh(new THREE.TorusGeometry(.52,.035,8,56),bronze);
-    solarPanel.position.set(0,2.68,-1.84);solarPanel.rotation.x=Math.PI/2;group.add(solarPanel);
+    solarPanel.position.set(0,2.68,-1.84);group.add(solarPanel);
     const throne=new THREE.Mesh(new THREE.BoxGeometry(1.04,.64,.88),limestoneShade); throne.position.set(0,.36,-.16); group.add(throne);
     const throneBack=new THREE.Mesh(new THREE.BoxGeometry(.98,1.7,.22),limestoneShade); throneBack.position.set(0,1.1,-.46); group.add(throneBack);
     const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.36,.72,8,24),limestone); torso.position.set(0,1.48,.05); torso.scale.set(1.2,1,.82); group.add(torso);
@@ -517,18 +517,19 @@ export function buildTrainingRoom({
     const uraeus=new THREE.Mesh(new THREE.TorusGeometry(.09,.028,8,24),bronze);uraeus.position.set(0,2.55,.23);uraeus.rotation.x=Math.PI/2;group.add(uraeus);
     // Disco solar vazado: aro interno com 47 cm de diâmetro, dentro do disco cerimonial.
     const sunCenter=new THREE.Vector3(0,2.761,.2);
-    const sunOuter=new THREE.Mesh(new THREE.TorusGeometry(.47,.055,12,64),bronze);sunOuter.position.copy(sunCenter);sunOuter.rotation.x=Math.PI/2;group.add(sunOuter);
-    const rim=new THREE.Mesh(new THREE.TorusGeometry(.257,.032,12,64),darkBronze);rim.position.copy(sunCenter);rim.rotation.x=Math.PI/2;group.add(rim);
-    const innerHighlight=new THREE.Mesh(new THREE.TorusGeometry(.247,.012,8,64),bronze);innerHighlight.position.copy(sunCenter);innerHighlight.position.y-=.035;innerHighlight.rotation.x=Math.PI/2;group.add(innerHighlight);
-    for(let i=0;i<16;i++){const a=i/16*Math.PI*2;const ray=new THREE.Mesh(new THREE.ConeGeometry(.052,.2,8),faienceLight);ray.position.set(Math.cos(a)*.43,2.761,.2+Math.sin(a)*.43);ray.rotation.z=Math.PI/2-a;group.add(ray);}
-    const netRing=new THREE.Mesh(new THREE.TorusGeometry(.15,.018,8,40),bronze);netRing.position.set(0,2.62,.2);netRing.rotation.x=Math.PI/2;group.add(netRing);
-    for(let i=0;i<12;i++){const a=i/12*Math.PI*2;addTube('corda da rede do disco solar',[[Math.cos(a)*.257,2.733,.2+Math.sin(a)*.257],[Math.cos(a+.08)*.19,2.70,.2+Math.sin(a+.08)*.19],[Math.cos(a+.16)*.15,2.55,.2+Math.sin(a+.16)*.15]],.009,limestoneShade,group,10);}
+    const sunOuter=new THREE.Mesh(new THREE.TorusGeometry(.47,.055,12,64),bronze);sunOuter.position.copy(sunCenter);group.add(sunOuter);
+    const rim=new THREE.Mesh(new THREE.TorusGeometry(.257,.032,12,64),darkBronze);rim.position.copy(sunCenter);group.add(rim);
+    const innerHighlight=new THREE.Mesh(new THREE.TorusGeometry(.247,.012,8,64),bronze);innerHighlight.position.copy(sunCenter);innerHighlight.position.y-=.035;group.add(innerHighlight);
+    for(let i=0;i<16;i++){const a=i/16*Math.PI*2;const ray=new THREE.Mesh(new THREE.ConeGeometry(.052,.2,8),faienceLight);ray.position.set(Math.cos(a)*.43,2.761+Math.sin(a)*.43,.2);ray.rotation.z=a-Math.PI/2;group.add(ray);}
+    const netRing=new THREE.Mesh(new THREE.TorusGeometry(.15,.018,8,40),bronze);netRing.position.set(0,2.40,.2);group.add(netRing);
+    for(let i=0;i<12;i++){const a=i/12*Math.PI*2;addTube('corda da rede do disco solar',[[Math.cos(a)*.257,2.761+Math.sin(a)*.257,.2],[Math.cos(a+.08)*.19,2.56+Math.sin(a+.08)*.19,.2],[Math.cos(a+.16)*.15,2.40+Math.sin(a+.16)*.15,.2]],.009,limestoneShade,group,10);}
     const cartouche=new THREE.Mesh(new THREE.BoxGeometry(.72,.34,.06),darkBronze);cartouche.position.set(0,.5,.54);group.add(cartouche);
     const glyphCanvas=document.createElement('canvas');glyphCanvas.width=256;glyphCanvas.height=128;const gg=glyphCanvas.getContext('2d');gg.fillStyle='#193b49';gg.fillRect(0,0,256,128);gg.strokeStyle='#c99b51';gg.lineWidth=6;gg.strokeRect(5,5,246,118);gg.fillStyle='#f0d49a';gg.font='bold 46px Georgia';gg.textAlign='center';gg.fillText('RA',128,83);
     const glyphTex=new THREE.CanvasTexture(glyphCanvas);glyphTex.colorSpace=THREE.SRGBColorSpace;
     const glyphPlate=new THREE.Mesh(new THREE.PlaneGeometry(.62,.28),new THREE.MeshBasicMaterial({map:glyphTex}));glyphPlate.position.set(0,.5,.575);group.add(glyphPlate);
     group.traverse(obj=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;}});scene.add(group);
-    const hoopPosition=new THREE.Vector3(centerX,floorY+2.761,baselineZ+(facing===0?.2:-.2));hoops.push({position:hoopPosition,label:name});
+    const hoopPosition=new THREE.Vector3(centerX,floorY+2.761,baselineZ+(facing===0?.2:-.2));
+    hoops.push({position:hoopPosition,label:name,approachDirection:facing===0?-1:1});
     addInteractable({name,label:'Rá — disco solar / cesta',description:'Figura humana de cabeça de falcão representa Rá. O disco solar vazado acima da cabeça funciona como cesta de basquete; a abertura interna tem 45 cm, com a borda superior a 3,05 m do piso.',prompt:'CESTA DE RÁ · E para examinar · arremesse a bola pelo disco solar',position:group.position,radius:2.6});
   }
   addRaHoop(nearZ + 0.55, 0, 'Rá — cesta norte');
@@ -979,7 +980,7 @@ export function buildTrainingRoom({
       ball.rotation.x += dt * 1.2;
       ball.rotation.z += dt * 0.8;
     } else if (ballVelocity.lengthSq() > 0.02) {
-      const previousY = ball.position.y;
+      const previousZ = ball.position.z;
       ballVelocity.y -= 9.81 * dt;
       ball.position.addScaledVector(ballVelocity, dt);
       ballAge += dt;
@@ -1001,18 +1002,18 @@ export function buildTrainingRoom({
         const head=state.group.position.clone().add(new THREE.Vector3(0,1.92*state.fullScale,0));
         if(ball.position.distanceTo(head)<.31){
           message=completeShabti(state,'A bola acertou a cabeça do shabti. Ele perdeu o equilíbrio e se quebrou em faiança.');
-          ballVelocity.multiplyScalar(-.18);ballVelocity.y=Math.max(1.4,Math.abs(ballVelocity.y)*.35);break;
+          ballHitShabti=true;ballVelocity.multiplyScalar(-.18);ballVelocity.y=Math.max(1.4,Math.abs(ballVelocity.y)*.35);break;
         }
       }
-      // Aro em plano horizontal: contabiliza a passagem descendente pelo nível do aro,
-      // com o centro da bola dentro da abertura livre do disco solar.
+      // O disco solar fica vertical, voltado para a quadra. A bola precisa cruzar seu plano em Z,
+      // com o centro dentro da abertura circular no plano X/Y (45 cm livres menos o raio da bola).
+      let ballHitShabti=false;
       for (const hoop of hoops) {
-        const crossedDown = previousY > hoop.position.y && ball.position.y <= hoop.position.y && ballVelocity.y < 0;
-        const radialDistance = Math.hypot(
-          ball.position.x - hoop.position.x,
-          ball.position.z - hoop.position.z
-        );
-        if (crossedDown && radialDistance < 0.105) {
+        const crossedPlane=hoop.approachDirection<0
+          ? previousZ>hoop.position.z&&ball.position.z<=hoop.position.z&&ballVelocity.z<0
+          : previousZ<hoop.position.z&&ball.position.z>=hoop.position.z&&ballVelocity.z>0;
+        const radialDistance=Math.hypot(ball.position.x-hoop.position.x,ball.position.y-hoop.position.y);
+        if(!ballHitShabti&&crossedPlane&&radialDistance<0.105){
           baskets += 1; drawScoreboard(baskets, targetHits, targetPracticeActive);
           message = 'Cesta! A bola atravessou o disco solar de Rá. Total: ' + baskets + '.';
           ballVelocity.multiplyScalar(0.28);

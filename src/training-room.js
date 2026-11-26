@@ -848,10 +848,6 @@ export function buildTrainingRoom({
 
   function onWeaponUse({ weapon: weaponName, position, forward, zone }) {
     if (zone !== 'training') return null;
-    if (targetPracticeActive && weaponName === 'staff') {
-      firePracticeOrb(position, forward);
-      return 'Orbe lançado. Acerte um dos três alvos na parede oposta.';
-    }
     if (shabtiActive) {
       const nearest = shabtiWarriors
         .filter(state => state.active)
@@ -863,6 +859,10 @@ export function buildTrainingRoom({
         if (direction.dot(aim) > -0.18) return hitShabti(nearest.state, weaponName);
         return 'Vire-se na direção do guerreiro para acertá-lo.';
       }
+    }
+    if (targetPracticeActive && weaponName === 'staff') {
+      firePracticeOrb(position, forward);
+      return 'Orbe lançado. Acerte um dos três alvos na parede oposta.';
     }
     if (weaponName === 'staff') return 'O cajado vibra com energia. Leia o quadro de alvos para iniciar a prática de mira.';
     return 'O khopesh está pronto. Aproxime-se do alvo ou do guerreiro shabti.';

@@ -170,6 +170,8 @@ Na próxima etapa, esses objetos devem deixar de responder apenas ao sistema de 
 
 O manequim arcano será uma **interpretação de gameplay**, não um objeto confirmado no romance. Deve ser modelado como asset final, com materiais coerentes com a sala, articulações e peças separáveis; não será apresentado como um cilindro ou boneco placeholder.
 
-**Levitação:** a lista de oito feitiços favoritos do *Guia de Sobrevivência* não inclui uma palavra identificada como “levitar”. O efeito pode ser testado no manequim, mas seu nome mágico só será associado ao cânone depois de localizar uma passagem específica nos romances ou no material oficial.
+**Levitação:** o efeito é explicitamente mencionado em *The Throne of Fire*: Sadie sugere lançar um feitiço de levitação sobre uma estátua grande para movê-la. O trecho não identifica a Divine Word usada. O efeito, portanto, é canônico, mas o nome do comando permanece sem transliteração confirmada; não inventar uma palavra.
 
 A sala de treinamento serve para demonstrar os efeitos, mas a magia não ficará restrita a ela. Qualquer alvo no Grande Salão, biblioteca, exterior ou outra área poderá reagir quando declarar a capacidade correspondente.
+
+O catálogo inicial e a separação entre feitiços canônicos, exemplos narrativos e adaptações de gameplay estão em [docs/MAGIC-SPELLS-STUDY.md](MAGIC-SPELLS-STUDY.md). A implementação de conjuração ainda não começou; a prioridade permanece validar os objetos do Duat antes de programar os feitiços.

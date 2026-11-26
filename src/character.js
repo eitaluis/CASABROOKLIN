@@ -217,6 +217,17 @@ export async function createCharacter({
       if (hand) return hand.getWorldQuaternion(target);
       return root.getWorldQuaternion(target);
     },
+    faceTarget(target) {
+      if (!target || disposed) return;
+      const direction = target.clone().sub(root.position).setY(0);
+      if (direction.lengthSq() < 0.0001) return;
+      root.rotation.y = Math.atan2(-direction.x, -direction.z);
+      root.rotation.x = 0;
+      root.rotation.z = 0;
+    },
+    getForward(target = new THREE.Vector3()) {
+      return target.set(0, 0, -1).applyQuaternion(root.getWorldQuaternion(new THREE.Quaternion())).normalize();
+    },
     lookAt(target, options) {
       if (!disposed && typeof hero.lookAt === 'function') hero.lookAt(target, options);
     },

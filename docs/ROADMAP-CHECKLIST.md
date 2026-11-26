@@ -17,12 +17,11 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Estados
 
-- [x] Direção visual e posição da bolsa registradas
-- [x] Base humana contínua e rig Ara restaurados no runtime
-- [x] Bolsa transversal local integrada no quadril direito; GLB original não incorporado
-- [ ] Teste visual do rosto, roupa, alça e bolsa em navegador real
-- [ ] Teste de locomoção, clipping e sincronização desktop/mobile
-- [ ] Animações atléticas adicionais retargetadas
+- [x] Carter Ara 3D Gen anterior restaurado; redesigns experimentais descartados
+- [x] Nova camada visual do Grande Salão implementada no módulo compartilhado
+- [x] Escadarias laterais, corrimãos, colunas de lótus, estátua de Thoth e fogo orgânico criados
+- [ ] Teste visual do Grande Salão em navegador real
+- [ ] Ajustes de enquadramento, proporção e circulação após inspeção desktop/mobile
 
 ## Setor 01 — câmera e controles
 
@@ -33,30 +32,13 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Setor 02 — personagem e movimento
 
-### Brief visual atual aprovado para estudo
-- [x] Visual **C — Playful 3D de aventura**: personagem humano estilizado, carismático, inteiramente 3D; sem anime e sem realismo fotográfico.
-- [x] Movimento **B — Atlético ninja**: inclinação frontal no sprint, braços ativos/recuados, passadas amplas, mudanças de direção com transferência de peso e saltos com aterrissagem forte.
-- [x] Roupa **A**: camisa azul casual, calça cáqui reta e tênis discretos.
-- [x] Cabelo **A**: crespo curto, cachos definidos e laterais baixas.
-- [x] Bolsa transversal conhaque permanece no quadril direito, com alça diagonal sobre o peito.
+- [x] Restaurar exatamente a implementação Ara 3D Gen que precedeu o protótipo procedural, considerada mais interessante pelo usuário.
+- [x] Remover do runtime a construção rejeitada de cápsulas/esferas/caixas.
+- [x] Descartar o estudo Quaternius Casual_2 e pausar qualquer redesign.
+- [x] Manter o carregamento Ara, rig humano e clips já aprovados anteriormente.
+- [ ] Não alterar novamente o personagem até solicitação específica do usuário.
 
-### Estudo e protótipo isolado — não integra o runtime
-- [x] Gerar uma prancha conceitual de frente, perfil, costas e poses atléticas para orientar a identidade visual.
-- [x] Pesquisar bases open-source personalizáveis e verificar a origem/licença dos modelos.
-- [x] Escolher provisoriamente Quaternius Ultimate Modular Men / `Casual_2` como primeiro candidato técnico, carregado do repositório Ducz Character Creator; os modelos de origem são CC0 1.0.
-- [x] Criar `carter-study.html`, preview independente com órbita, vistas, animações, recoloração e controles para ajustar bolsa/alça.
-- [x] Registrar o estudo em `docs/CARTER-DESIGN-STUDY.md`.
-- [x] Manter o GLB como dependência externa fixa por commit SHA. Não copiar o código do construtor Ducz; apenas visualizar o asset Quaternius CC0.
-- [x] Confirmar que `index.html`, `src/main.js` e `src/character.js` do jogo não foram alterados nesta etapa.
-- [ ] Conferir o modelo em navegador real e decidir se sua linguagem low-poly alcança o Playful 3D C ou se é angular demais.
-- [ ] Conferir rosto, expressão e cabelo curto crespo. Substituir a peça de cabeça/cabelo se não corresponder ao brief.
-- [ ] Conferir se a recoloração do Casual_2 produz o corte de camisa e calça adequado; se não, trocar as peças modulares.
-- [ ] Ajustar bolsa e alça usando as vistas frontal, 3/4 e perfil; confirmar que o volume fica do lado externo do quadril direito.
-- [ ] Testar sprint ninja, corrida lateral e rolamento; selecionar/retargetar depois clips adequados de salto e aterrissagem.
-- [ ] Aprovar explicitamente a malha, o figurino, o cabelo, a bolsa e a locomoção antes de criar um GLB final.
-- [ ] Após a aprovação, decidir se o asset deve ser armazenado localmente e só então planejar a integração compartilhada desktop/mobile.
-
-**Regra desta etapa:** não substituir o Carter no jogo, não alterar o mundo, não alterar o inventário e não marcar o personagem como aprovado até receber feedback do preview isolado.
+**Prioridade atual:** cenário e interiores; não integrar personagem novo nesta fase.
 
 ## Setor 03 — inventário e combate
 
@@ -69,12 +51,27 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Setor 04 — Grande Salão
 
-- [x] Primeira decoração: lustre, arandelas, estandartes, placas, frisos e sofá refinado.
-- [x] Substituir esferas soltas da lareira por chamas em camadas com flicker.
-- [x] Clarear exposição e luz ambiente, reduzir força do SSAO.
-- [ ] Testar visualmente lareira, iluminação, sombras e estátua de Thoth.
-- [ ] Refinar instrumentos, armas, tapete e mobiliário.
-- [ ] Integrar modelos Poly Haven CC0 com licenças e arquivos conferidos.
+### Arquitetura e materiais
+- [x] Aplicar textura procedural de calcário em blocos com variação tonal, bump e desgaste sutil nas paredes, piso, sacadas e colunas.
+- [x] Aplicar textura de madeira com veios e bump às peças novas de mobiliário.
+- [x] Substituir o eixo visual das quatro colunas por shafts com caneluras e capitéis de lótus esculpidos.
+- [x] Acrescentar medalhão de cedro, frisos, relevos solares alados e pilastras junto à lareira.
+- [x] Substituir os antigos balaústres cilíndricos por balaústres torneados, corrimãos curvos e filetes de latão.
+- [x] Construir duas escadarias laterais com degraus de pedra arredondados, espelhos, filetes de bronze, corrimãos e patamares para as galerias.
+
+### Peças de destaque
+- [x] Substituir a estátua central geométrica por uma escultura de Thoth com túnica esculpida, cabeça e bico de íbis, olhos, braços, cetro, papiro e coroa lunar.
+- [x] Recriar a lareira com lenha, brasas, várias línguas orgânicas de fogo em gradiente, faíscas e luz dinâmica.
+- [x] Substituir os sofás quadrados por estofados de cantos suaves, almofadas, costuras e estrutura em madeira.
+- [x] Substituir o tapete e a mesa de centro por versões ovais/circulares com motivos solares e detalhes de bronze.
+- [x] Manter lustre, arandelas e estandartes da decoração anterior.
+
+### QA ainda pendente
+- [ ] Conferir a leitura de fogo, estátua, degraus, capitéis e mobiliário no navegador desktop.
+- [ ] Conferir sombras, texturas, z-fighting e orientação dos relevos em visão 3/4 e de dentro do salão.
+- [ ] Testar a circulação e confirmar se as escadas podem ser subidas; a primeira implementação é visual e ainda não faz a locomoção do controlador mudar de altura.
+- [ ] Ajustar desempenho e densidade visual em mobile paisagem.
+- [ ] Fazer a aprovação visual final antes de marcar o Grande Salão como concluído.
 
 ## Setor 05 — Biblioteca subterrânea
 
@@ -112,8 +109,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Próximas ações
 
-1. Abrir character-preview.html e ajustar proporções, rosto e leitura da bolsa; o primeiro Carter local já está no runtime.
-2. Testar o jogo real no desktop e mobile: walk, sprint, giros, saltos, teleporte e armas. Depois comparar clips Mesh2Motion para eventual refinamento.
-3. A integração inicial usa uma recriação procedural da bolsa Innerscene; avaliar se o GLB original pode ser baixado/importado posteriormente.
-4. Usar character-preview.html para aprovar visualmente o modelo 3D e ajustar a primeira versão.
-5. Após teste visual, refinar articulações/skin weights se necessário; o modelo e a animação atuais já são compartilhados entre desktop e mobile.
+1. Abrir o Grande Salão no navegador e avaliar o novo conjunto: escadas, estátua de Thoth, fogo, colunas e mobiliário.
+2. Corrigir quaisquer problemas de escala, câmera, clipping, materiais ou circulação identificados nessa inspeção.
+3. Testar desktop e mobile em modo paisagem, mantendo o mesmo mundo e os mesmos assets.
+4. Somente após a inspeção visual, marcar o Grande Salão como aprovado e passar à próxima área.

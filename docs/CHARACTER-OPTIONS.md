@@ -1,135 +1,75 @@
-# Carter Kane — direção visual e base técnica
+# Carter Kane — direção visual, modelo e movimento
 
-Status: **direção visual e bolsa aprovadas; base 3D final em avaliação.** O Carter atual continua no runtime até que o novo modelo rigado seja apresentado e aprovado.
+Status: **primeira versão local criada e inserida no jogo; aguarda teste visual real em desktop e mobile.**
 
 ## 1. Direção visual aprovada
 
 **C — Game 3D gráfico.**
 
-A escolha C refere-se à linguagem visual, não a uma escolha automática de um pacote pronto.
-
-- Personagem totalmente 3D, concebido para jogo em tempo real.
-- Formas claras, silhueta atlética e reconhecível, volumes simplificados e materiais limpos.
-- Aparência playful e expressiva, sem parecer infantil ou chibi.
-- Rosto humano natural, com proporções faciais críveis; não anime, não olhos exagerados e não contornos 2D.
-- Menos detalhes de pele/poros e menos realismo de escaneamento; mais acabamento de personagem de videogame.
+- Personagem totalmente 3D, pensado para um jogo de exploração em terceira pessoa.
+- Formas claras, volumes suaves e legíveis, silhueta atlética e acabamento playful.
+- Rosto humano natural, com proporções faciais críveis; sem estética anime, olhos exagerados ou proporções chibi.
+- Menos detalhes fotográficos de pele/poros e mais acabamento de personagem de videogame.
 - Corpo jovem, lean e ágil; sem musculatura adulta exagerada.
-- Pele negra, cabelo crespo escuro, camisa azul, calça cáqui e tênis azul/branco.
-- Não usar mochila nas costas.
+- Pele negra, cabelo crespo curto, camiseta azul, calça cargo cáqui e tênis azul-marinho.
+- Bolsa transversal de couro conhaque no quadril direito, com alça cruzando o peito.
 
-A prancha visual de conceito foi preparada na conversa como guia de look-dev (frente, perfil, costas, sprint e cenas de jogo). Ela não representa um GLB real, não foi integrada ao repositório e não deve ser confundida com um personagem já animado.
+## 2. Implementação no jogo
 
-## 2. Bolsa transversal aprovada
+**Arquivo:** `src/character.js`
 
-**Innerscene — Crossbody Bag**
-- Página e GLB: https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2
-- Formato: GLB, 3,5 MB.
-- Licença: CC0 (domínio público; uso, modificação e redistribuição, inclusive comercial).
-- Corpo em couro conhaque, aba frontal costurada, fecho de latão e argolas laterais.
-- Dimensões aproximadas do corpo: 230 × 86 × 180 mm.
-- **Posição aprovada:** quadril direito do Carter; alça atravessando diagonalmente peito e ombro.
-- Nota técnica: a descrição do asset diz que a alça está disposta atrás da bolsa em laço no chão, não pronta para vestir. O corpo da bolsa é a peça aprovada; a alça precisará ser remodelada/reposicionada ou substituída por uma curva skinned/rigged ajustada ao tronco.
-- O GLB ainda não foi baixado nem integrado no runtime.
+- Geometria original local, produzida com Three.js; o personagem não depende mais de um modelo remoto Ara/CDN.
+- Cabeça com mandíbula, olhos, nariz, boca e orelhas discretos.
+- Cabelo crespo com base volumétrica e cachos instanciados para reduzir draw calls.
+- Camiseta, mangas, calça cargo, bolsos, cinto, tênis e cadarços.
+- Rig hierárquico com ossos humanoides de nomes padronizados e socket `WeaponR` na mão direita.
+- O inventário existente continua usando o socket da mão direita para cajado e khopesh.
+- Os elementos visuais são meshes separados parentados aos bones, não uma única malha com skin weights. O primeiro protótipo prioriza clareza visual, articulação leve e desempenho; movimentos extremos podem mostrar junções entre segmentos.
 
-## 3. Bases e geradores avaliados
+## 3. Bolsa transversal
 
-### Ara 3D Gen / 3d-gen-TU — primeiro candidato para um teste controlado
+A direção foi baseada na peça **Innerscene Crossbody Bag**:
+https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2
 
-- App: https://ara3dgen.com/
-- Repositório de código/fork avaliado: https://github.com/TuriaArt/3d-gen-TU
-- Código MIT; dados de personagem MakeHuman CC0-1.0 (ver LICENSE e scripts/ASSETS_LICENSE.txt).
-- 935 morph targets, 219 sliders de detalhe facial/corporal, diferentes idades, etnias e proporções; cabelo, roupa e acessórios modulares.
-- Níveis de detalhe declarados: Low ~5–10k triângulos; Medium ~30–40k; High ~100–120k.
-- Game rig de 65 ossos com nomes Mixamo, compatível com Unity Humanoid/Unreal/Mixamo, e socket WeaponR.
-- **Risco:** o pipeline gera humanos realistas e skins foto-baseadas; o Carter atual foi percebido como realista demais. Testar Low + materiais gráficos sem textura de pele fotográfica, proporções juvenis e volumes simplificados. Não basta reduzir polígonos e deixar o rosto facetado.
-- É uma via de teste, não a aprovação automática do modelo atual.
+- Referência CC0: couro conhaque, aba frontal, fecho de latão e argolas.
+- O GLB original não pôde ser baixado pelo ambiente de edição: o endpoint redireciona para um host de arquivos que não ficou acessível.
+- Para inserir a bolsa agora, o corpo, a aba, as ferragens e a alça vestível foram recriados como geometria Three.js local em `src/character.js`. Portanto, a primeira versão **não é o binário original Innerscene**.
+- Posição: quadril direito; alça diagonal do ombro esquerdo ao quadril direito.
+- A bolsa recebe um balanço secundário pequeno durante corrida e salto.
 
-### Mesh2Motion — ferramenta e acervo de animações
+## 4. Movimento
 
-- App: https://mesh2motion.org/
-- Repositórios: https://github.com/Mesh2Motion/mesh2motion-app e https://github.com/Mesh2Motion/mesh2motion-assets
-- Código MIT; modelos, rigs e animações do acervo CC0-1.0.
-- Importa GLB/GLTF/DAE/FBX, permite mapear um rig humanoide, pré-visualizar animações e exportar GLB/FBX com vários clips.
-- O app usa um rig humano de 66 ossos. É uma fonte de locomoção para retarget, não o modelo final do Carter.
-- Clips relevantes encontrados no manifesto humano: Walk, Jog, Sprint, Run_Anime, Jump_Start, Jump_air, Jump_Land, NinjaJump_Start, NinjaJump_Idle, NinjaJump_Land, Land_Three_Point e Wall_Run.
-- Usar Sprint como ciclo de velocidade; avaliar Run_Anime como gesto/referência (clip não-loop); usar NinjaJump e Land_Three_Point para saltos/aterrissagem.
-- Ainda não integrado. Retarget, nomenclatura dos ossos, root motion e alinhamento dos pés precisam de teste no rig escolhido.
+As animações da primeira versão são calculadas localmente em `src/character.js`, mantendo a mesma implementação em desktop e mobile.
 
-### Blender Studio — Snow (referência visual secundária)
+- **Idle:** respiração sutil, movimento de cabeça e oscilação leve da bolsa.
+- **Walk:** passos alternados, flexão de joelho e balanço oposto dos braços.
+- **Sprint:** inclinação do tronco para frente, passadas mais amplas e braços puxados para trás com cotovelos flexionados, inspirados na silhueta corporal de corrida de Naruto — sem copiar rosto ou estilo anime.
+- **Jump:** impulso vertical, recolhimento das pernas e pose aérea.
+- **Landing:** amortecimento do tronco e retorno gradual à locomoção.
+- A velocidade é dirigida pelo controlador de terceira pessoa: WASD/Shift no desktop e joystick/botão Correr no mobile.
 
-- Página: https://studio.blender.org/characters/snow/v4/
-- Personagem masculino 3D estilizado com rosto articulado e rig completo; gratuito para Blender 4.1+.
-- Licença CC-BY; crédito exigido: “Snow Rig (CC) Blender Foundation | studio.blender.org”.
-- Direção visual útil como referência de personagem 3D playful com rosto humano, não anime.
-- Exige exportação/adaptação do rig Blender para GLB e ajuste visual de pele/cabelo/roupas; não está integrado.
+## 5. Preview e validação
 
-### Quaternius — Universal Base Characters
+Página independente: `character-preview.html`
 
-- Página oficial: https://quaternius.com/packs/universalbasecharacters.html
-- Seis bases no pacote completo: proporções Teen/Regular/Superhero, vinte cabelos, rig humanoide, FBX/glTF.
-- Licença CC0-1.0.
-- **Atenção:** a versão Standard gratuita consultada disponibiliza apenas as bases Superhero masculinas/femininas; Teen/Regular estão no Source pago. Como o Carter não deve parecer musculoso, não usar a base Superhero como substituição imediata.
-- O pacote continua útil como referência de malha/rig e pode ser reconsiderado se a base Teen estiver disponível.
+Permite orbitar o modelo e alternar entre parado, caminhada, sprint, salto, frente, perfil e costas. Ela carrega o mesmo `src/character.js` usado no jogo.
 
-### MPFB 2 / MakeHuman Community
+Ainda precisa de verificação em navegador real:
+1. Conferir proporção, rosto, cabelo, roupas e bolsa.
+2. Observar junções de braços/pernas durante corrida e salto.
+3. Confirmar que a alça cruza o peito sem atravessar a camiseta.
+4. Testar cajado e khopesh na mão direita.
+5. Testar o mesmo jogo em desktop e celular paisagem.
 
-- Add-on: https://extensions.blender.org/add-ons/mpfb/
-- Repositório: https://github.com/makehumancommunity/mpfb2
-- Documentação: https://static.makehumancommunity.org/mpfb.html
-- Código do add-on GPL-3.0; assets centrais do sistema MakeHuman CC0-1.0.
-- Controle de rosto, corpo, assimetria, cabelo, roupas, material, rigging Rigify e exportação.
-- Alternativa de maior controle facial, mas exige Blender e trabalho de look development.
+## 6. Fontes futuras de animação
 
-### CharacterCreator — kblood
+**Mesh2Motion**
+- https://github.com/Mesh2Motion/mesh2motion-app
+- https://github.com/Mesh2Motion/mesh2motion-assets
+- Código MIT e acervo de rigs/animações CC0 segundo o repositório.
+- Clips a avaliar em uma próxima fase: Sprint, Run_Anime, NinjaJump_Start/Idle/Land, Land_Three_Point e Wall_Run.
+- Ainda não integrado; a primeira versão usa animação procedural local.
 
-- Repositório: https://github.com/kblood/CharacterCreator
-- Viewer: https://dionysus.dk/webxr/charactercreator/
-- Código GPL-3.0-or-later; o projeto declara CC0-1.0 para GLBs gerados apenas de fontes CC0 e dados próprios.
-- Sliders corporais/faciais, cabelos, roupas, rig e exportação GLB.
-- Projeto relativamente recente; roupas são descritas como protótipo e retarget ainda precisa ser testado.
-
-## 4. Movimento aprovado como requisito de design
-
-A inspiração Naruto é de **mecânica corporal e silhueta em movimento**, não de rosto ou estética 2D.
-
-- Idle: transferência de peso, respiração e microajustes, sem pose rígida.
-- Walk: passos naturais com peso e contato claro dos pés.
-- Run: tronco ligeiramente projetado, braços alternando e passadas mais amplas.
-- Sprint: inclinação mais evidente, aceleração, braços ativos e silhueta atlética; sem copiar literalmente o gesto de Naruto se isso prejudicar a biomecânica.
-- Mudanças de direção: inclinação do tronco e ajuste dos pés, sem deslizar.
-- Jump/land: impulso, recolhimento das pernas, antecipação e aterrissagem amortecida.
-- A bolsa transversal tem balanço secundário discreto; não deve flutuar, atravessar o corpo ou girar sem peso.
-
-### Mesh2Motion — clips específicos para teste
-
-- Sprint (loop) para o ciclo rápido.
-- Run_Anime (não-loop) como referência para gesto/silhueta; não assumir que funciona como ciclo de corrida.
-- NinjaJump_Start, NinjaJump_Idle e NinjaJump_Land para salto dinâmico.
-- Land_Three_Point para aterrissagem em três apoios.
-- Wall_Run para avaliar um recurso futuro de mobilidade.
-- Walk, Jog, Jump_Start, Jump_air e Jump_Land para transições gerais.
-
-### Outras bibliotecas
-
-**Quaternius — Universal Animation Library**
+**Quaternius Universal Animation Library**
 - https://quaternius.itch.io/universal-animation-library
-- Licença CC0-1.0; 120+ clips humanoides, locomoção em oito direções, jog, sprint, combate e emotes; opções com/sem root motion.
-- Alternativa caso o retarget Mesh2Motion não funcione no rig final.
-
-**KinemIQ — Free Game Animations**
-- https://github.com/Kinemiq/free-game-animations
-- Licença anunciada CC0-1.0; 35 clips GLB/FBX, rig humanoide de 66 ossos a 30 fps.
-- Fonte complementar para idle, walk, run, sprint, jump, climb, roll e ações com espada.
-
-**three-procedural-locomotion**
-- https://github.com/PabloMesquida/three-procedural-locomotion
-- MIT. Referência de cadência, contato dos pés, IK, aceleração, curvas e transições procedurais.
-
-## 5. Plano de validação
-
-1. Gerar uma base humana de detalhe baixo e testar face/pele sem material fotográfico, com proporções juvenis.
-2. Testar o rig de 65 ossos, mão direita e WeaponR no Three.js.
-3. Retarget dos clips Mesh2Motion, em particular Walk, Jog, Sprint, Run_Anime, NinjaJump e Land_Three_Point.
-4. Incorporar a bolsa Innerscene no quadril direito e reconstruir a alça diagonal; validar balanço e clipping.
-5. Apresentar preview 3D rigado com frente, perfil, costas e animações.
-6. Só depois da aprovação explícita substituir src/character.js e integrar o mesmo asset/rig/animador no desktop e mobile.
+- CC0; alternativa futura para clips baked e retarget humanoide.

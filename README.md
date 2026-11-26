@@ -43,3 +43,9 @@ A escada metálica em caracol, o armazém na margem do East River, os blocos de 
 ## Licenças
 
 Consulte [docs/OPEN-SOURCES.md](docs/OPEN-SOURCES.md) e [assets/manifest.json](assets/manifest.json). Assets remotos permanecem nos seus repositórios de origem; confirme as licenças antes de redistribuir binários offline.
+
+
+## Personagem — Carter Kane
+
+A primeira versão local do Carter está em `src/character.js`, com direção Game 3D gráfico, rosto humano natural, rig articulado, bolsa transversal no quadril direito e locomoção procedural. A página `character-preview.html` permite inspecionar o mesmo modelo em 3D antes de testar a cena completa.
+

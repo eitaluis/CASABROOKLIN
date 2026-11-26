@@ -426,10 +426,13 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
     legRig.Left.toe.rotation.x = gait * 0.08;
     legRig.Right.toe.rotation.x = -gait * 0.08;
 
-    armRig.Left.upper.rotation.x = -sin * armSwing - airPose * 0.25;
-    armRig.Right.upper.rotation.x = sin * armSwing - airPose * 0.25;
-    armRig.Left.upper.rotation.z = -0.035 - gait * 0.035;
-    armRig.Right.upper.rotation.z = 0.035 + gait * 0.035;
+    const ninjaSprint = THREE.MathUtils.smoothstep(speed, 2.7, 4.0);
+    armRig.Left.upper.rotation.x = (-sin * armSwing) * (1 - ninjaSprint) - 0.62 * ninjaSprint - airPose * 0.25;
+    armRig.Right.upper.rotation.x = (sin * armSwing) * (1 - ninjaSprint) - 0.62 * ninjaSprint - airPose * 0.25;
+    armRig.Left.upper.rotation.z = -0.035 - gait * 0.035 - ninjaSprint * 0.035;
+    armRig.Right.upper.rotation.z = 0.035 + gait * 0.035 + ninjaSprint * 0.035;
+    armRig.Left.elbow.rotation.x = 0.68 * ninjaSprint + airPose * 0.12;
+    armRig.Right.elbow.rotation.x = 0.68 * ninjaSprint + airPose * 0.12;
     armRig.Left.elbow.rotation.z = 0.12 + Math.max(0, sin) * gait * 0.2 + airPose * 0.12;
     armRig.Right.elbow.rotation.z = -0.12 - Math.max(0, -sin) * gait * 0.2 - airPose * 0.12;
 

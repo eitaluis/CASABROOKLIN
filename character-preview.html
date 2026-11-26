@@ -18,9 +18,18 @@ p{font-size:11px;color:#bbc3c1;margin:0}
 button{border:1px solid var(--line);background:#263034;color:#f0eee7;padding:11px 14px;font-size:10px;letter-spacing:.08em;cursor:pointer}
 button.active,button:hover{background:#9b7542;color:#111}
 #note{position:fixed;right:20px;top:20px;z-index:2;color:#d6d0c1;font-size:10px;text-align:right;line-height:1.6}
+#duat-preview{position:fixed;right:18px;top:72px;z-index:3;width:238px;max-width:calc(100vw - 24px);max-height:calc(100vh - 240px);overflow:auto;padding:12px;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(15px)}
+#duat-preview .duat-kicker{font-size:8px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
+#duat-preview h2{font:500 16px Georgia,serif;margin:4px 0 8px}
+#duat-preview-status{padding:7px 8px;margin-bottom:8px;background:rgba(212,178,115,.1);color:#e5d3ad;font-size:8px;letter-spacing:.08em;line-height:1.5}
+#duat-preview .duat-items{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+#duat-preview button{min-width:0;width:100%;padding:8px 6px;text-align:left;font-size:8px;letter-spacing:.04em}
+#duat-preview #preview-store{margin-top:7px;text-align:center;background:rgba(155,117,66,.28)}
+#duat-preview button:disabled,#controls button:disabled{opacity:.4;cursor:wait}
+
 #loading{position:fixed;inset:0;display:grid;place-items:center;background:#111719;color:var(--gold);font:12px Georgia,serif;letter-spacing:.18em;z-index:5}
 #loading.done{display:none}#loading.error{display:grid;color:#f0c28a;letter-spacing:.08em;text-align:center;padding:24px;line-height:1.7}
-@media(max-width:600px){header{top:10px;left:12px}h1{font-size:19px}#note{right:12px;top:12px;font-size:8px}#controls{bottom:8px;padding:7px;gap:5px}button{padding:9px 10px;font-size:9px}}
+@media(max-width:600px){header{top:10px;left:12px}h1{font-size:19px}#note{right:12px;top:12px;font-size:8px}#duat-preview{right:8px;top:63px;width:190px;max-height:calc(100vh - 190px);padding:8px}#controls{bottom:8px;padding:7px;gap:5px}button{padding:9px 10px;font-size:9px}}
 </style>
 </head>
 <body>
@@ -28,6 +37,22 @@ button.active,button:hover{background:#9b7542;color:#111}
 <div id="loading">CARREGANDO CARTER · MALHA HUMANA RIGADA</div>
 <header><div class="eyebrow">Brooklyn House · Preview independente</div><h1>CARTER KANE</h1><p>Direção C · mochila removida · bolsa lateral posterior · medalhão ajustado ao tórax</p></header>
 <div id="note">Arraste para orbitar · scroll para aproximar<br>Mesmo modelo do jogo · <span id="action-status">PRONTO</span></div>
+<aside id="duat-preview" aria-label="Bancada de teste do inventário do Duat">
+  <div class="duat-kicker">Objetos do mago · teste 3D</div>
+  <h2>Inventário do Duat</h2>
+  <div id="duat-preview-status">MÃOS LIVRES · ITENS GUARDADOS</div>
+  <div class="duat-items">
+    <button data-preview-equip="staff">CAJADO</button>
+    <button data-preview-equip="khopesh">KHOPESH</button>
+    <button data-preview-equip="wax_shabti">SHABTI DE CERA</button>
+    <button data-preview-equip="magic_box">CAIXA DE MAGIA</button>
+    <button data-preview-equip="papyrus">PAPIRO</button>
+    <button data-preview-equip="reed_pen">CÁLAMO</button>
+    <button data-preview-equip="ink">TINTA</button>
+    <button data-preview-equip="protective_amulet">AMULETO</button>
+  </div>
+  <button id="preview-store" type="button">GUARDAR NO DUAT</button>
+</aside>
 <div id="controls">
   <button data-mode="idle" class="active">PARADO</button>
   <button data-mode="walk">CAMINHAR</button>
@@ -53,6 +78,7 @@ button.active,button:hover{background:#9b7542;color:#111}
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createCharacter } from './src/character.js?v=carter-satchel-fit-20261126h';
+import { createInventory } from './src/inventory.js?v=duat-preview-20261126a';
 
 const canvas = document.getElementById('stage');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -130,8 +156,49 @@ try {
 let speed = 0;
 let previous = performance.now();
 let disposed = false;
+let interactionLocked = false;
+const previewStatus = document.getElementById('duat-preview-status');
+const previewButtons = [
+  ...document.querySelectorAll('#controls button'),
+  ...document.querySelectorAll('#duat-preview button')
+];
+
+const inventory = createInventory({
+  THREE,
+  character,
+  setControlsLocked: (locked) => {
+    interactionLocked = locked;
+    if (locked) speed = 0;
+    for (const button of previewButtons) {
+      if (locked) {
+        button.dataset.disabledBeforeLock = String(button.disabled);
+        button.disabled = true;
+      } else {
+        button.disabled = button.dataset.disabledBeforeLock === 'true';
+        delete button.dataset.disabledBeforeLock;
+      }
+    }
+  }
+});
+
+document.querySelectorAll('[data-preview-equip]').forEach(button => {
+  button.addEventListener('click', () => inventory.equip(button.dataset.previewEquip));
+});
+document.getElementById('preview-store').addEventListener('click', () => inventory.unequip());
+
+const previewItemNames = {
+  staff: 'CAJADO MÁGICO',
+  khopesh: 'KHOPESH',
+  wax_shabti: 'SHABTI DE CERA',
+  magic_box: 'CAIXA DE MAGIA',
+  papyrus: 'PAPIRO',
+  reed_pen: 'CÁLAMO',
+  ink: 'TINTA',
+  protective_amulet: 'AMULETO DE PROTEÇÃO'
+};
 
 function setMode(mode) {
+  if (interactionLocked) return;
   character.stopAction?.();
   document.querySelectorAll('[data-mode]').forEach(button => button.classList.toggle('active', button.dataset.mode === mode));
   if (mode === 'idle') speed = 0;
@@ -153,6 +220,7 @@ document.querySelectorAll('[data-action]').forEach(button => {
     button.title = 'Ação não disponibilizada pelo catálogo Ara atual';
   }
   button.addEventListener('click', () => {
+    if (interactionLocked) return;
     if (action === 'stop') {
       character.stopAction?.();
       return;
@@ -187,6 +255,17 @@ function animate(now) {
   const dt = Math.min((now - previous) / 1000, 0.04);
   previous = now;
   character.updateFallback(dt, speed);
+  inventory.update(dt);
+  if (previewStatus) {
+    if (inventory.isTransitioning) {
+      previewStatus.textContent = (inventory.transitionMode === 'retrieve' ? 'RETIRANDO DO DUAT · ' : 'GUARDANDO NO DUAT · ')
+        + (previewItemNames[inventory.transitionItem] || 'OBJETO');
+    } else if (inventory.activeItem) {
+      previewStatus.textContent = 'NA MÃO · ' + previewItemNames[inventory.activeItem];
+    } else {
+      previewStatus.textContent = 'MÃOS LIVRES · ITENS GUARDADOS';
+    }
+  }
   controls.update();
   renderer.render(scene, camera);
 }

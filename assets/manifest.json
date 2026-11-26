@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -13,7 +13,7 @@
       "id": "ara3d-js",
       "source": "https://github.com/ara3d/ara3d",
       "version": "0.18.1",
-      "role": "geração local no navegador da malha humana contínua, game rig, skin weights e clips de locomoção do Carter",
+      "role": "geração local no navegador da malha humana contínua, game rig, skin weights e clips de locomoção e ações cinematográficas do Carter; Ara ANIMATIONS é consultado para filtrar os IDs disponíveis",
       "license": "MIT-library-CC0-MakeHuman-base-and-animations"
     },
     {
@@ -181,6 +181,18 @@
       "path": "src/training-room.js",
       "role": "second-floor training wing with a 15x28m marked basketball court, procedural hardwood color/bump maps, vaulted original fresco, deity busts, Ra falcon-headed solar-disc hoops, basketball pickup/throw with aim-assisted arc and downward hoop scoring, target-practice magic orbs, four growing clay shabti warriors with swords and shields for the Whatever Works challenge, interactive doors, colliders and shared desktop/mobile gameplay",
       "license": "project-original-code; no third-party model imported"
+    },
+    {
+      "id": "carter-crossbody-satchel-and-medallion",
+      "path": "src/character-accessories.js",
+      "role": "geometria e materiais originais Three.js para bolsa transversal de couro conhaque posicionada no quadril direito, alça do ombro esquerdo ao quadril direito, ferragens em latão e medalhão dourado; anexação ao Hips com fallback no root e movimento secundário sutil; compartilhado desktop/mobile",
+      "license": "project-original-code"
+    },
+    {
+      "id": "carter-cinematic-actions-and-motion",
+      "path": "src/character.js + src/third-person.js",
+      "role": "integração de ações look_around, talk_gestures, wave, point e bow após consulta ao catálogo Ara; suavização da aceleração, desaceleração, rotação corporal, inclinação lateral e easing da câmera no controlador comum desktop/mobile",
+      "license": "project-original-code; os clips do personagem permanecem sujeitos aos termos de Ara/CMU descritos em openSourceReferences"
     }
   ],
   "openSourceReferences": [
@@ -195,7 +207,7 @@
       "id": "ara3d-character-generator",
       "source": "https://github.com/ara3d/ara3d",
       "license": "MIT-library-CC0-MakeHuman-base-and-animations",
-      "role": "runtime: geração de malha humana contínua, skin weights, game rig, WeaponR e clips idle/walk/run/jump",
+      "role": "runtime: geração de malha humana contínua, skin weights, game rig, WeaponR e clips de locomoção/salto e ações cinematográficas selecionadas do catálogo ANIMATIONS",
       "runtimeImported": true
     },
     {

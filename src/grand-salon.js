@@ -1380,8 +1380,7 @@ function addTerrace(scene,stone,wood,brass,colliders,interactables,groundSurface
       leg.position.set(x+dx,13.35,z+dz);leg.castShadow=true;scene.add(leg);
     }
   }
-  for(const side of [-1,1]) {
-    const x=side*19.45;
+  for(const x of [2.25,19.45]) {
     for(let z=13.0;z<=30.5;z+=3.5) {
       const post=new THREE.Mesh(new RoundedBoxGeometry(.16,1.12,.16,8,.04),brass);
       post.position.set(x,13.72,z);post.castShadow=true;scene.add(post);

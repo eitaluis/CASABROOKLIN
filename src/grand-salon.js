@@ -288,8 +288,23 @@ function addFire(scene,animated) {
     group.position.set(0,14.3,0);scene.add(group);
     animated.push({obj:group,fire:true,phase,baseY:14.3,baseRotationZ:(i-tongues.length/2)*.012,baseScaleY:1});
   }
-  const sparkMat=new THREE.MeshBasicMaterial({color:0xffa337,transparent:true,opacity:.82,blending:THREE.AdditiveBlending});
-  for(let i=0;i<18;i++){const s=new THREE.Mesh(new THREE.SphereGeometry(.018+(i%3)*.009,8,6),sparkMat);s.name='faísca de fogo';s.position.set((Math.random()-.5)*2.7,14.55+Math.random()*.8,-8.12+Math.random()*.25);scene.add(s);animated.push({obj:s,phase:i*.82,particle:true});}
+  for(let i=0;i<18;i++){
+    const sparkMat=new THREE.MeshBasicMaterial({color:i%4===0?0xffdf8a:0xffa337,transparent:true,opacity:.82,blending:THREE.AdditiveBlending});
+    const s=new THREE.Mesh(new THREE.SphereGeometry(.018+(i%3)*.009,8,6),sparkMat);
+    s.name='faísca de fogo';s.position.set((Math.random()-.5)*2.7,14.55+Math.random()*.8,-8.12+Math.random()*.25);scene.add(s);
+    animated.push({obj:s,phase:i*.82,particle:true,baseX:s.position.x,baseY:s.position.y,baseZ:s.position.z});
+  }
+
+  const glowMap=tex((g,w,h)=>{
+    const gradient=g.createRadialGradient(w/2,h/2,8,w/2,h/2,w*.48);
+    gradient.addColorStop(0,'rgba(255,220,128,0.42)');
+    gradient.addColorStop(.22,'rgba(255,123,35,0.24)');
+    gradient.addColorStop(.58,'rgba(238,65,12,0.08)');
+    gradient.addColorStop(1,'rgba(238,65,12,0)');
+    g.fillStyle=gradient;g.fillRect(0,0,w,h);
+  },256,256,1,1);
+  const glow=new THREE.Mesh(new THREE.PlaneGeometry(4.4,2.6),new THREE.MeshBasicMaterial({map:glowMap,transparent:true,opacity:.72,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
+  glow.name='halo quente da chama';glow.position.set(0,15.35,-8.57);scene.add(glow);
   const light=new THREE.PointLight(0xff7b25,4.8,17,1.55);light.name='luz dinâmica da lareira';light.position.set(0,15.05,-7.35);scene.add(light);
   const fill=new THREE.PointLight(0xffa54d,1.7,10,1.9);fill.position.set(0,14.55,-8);scene.add(fill);
   return light;

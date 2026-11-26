@@ -367,6 +367,171 @@ export function createInventory({
     return registerItem('protective_amulet', group, 'artifact', 'Amuleto de faiança azul inspirado no olho wedjat');
   }
 
+
+  function buildWaxLump() {
+    const group = new THREE.Group();
+    const waxLumpMaterial = new THREE.MeshStandardMaterial({
+      color: 0xe9dfc5, roughness: 0.93, metalness: 0.0
+    });
+    const geometry = new THREE.IcosahedronGeometry(0.075, 2);
+    const positions = geometry.attributes.position;
+    for (let i = 0; i < positions.count; i++) {
+      const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
+      const ripple = 1 + 0.075 * Math.sin(x * 34 + z * 17) * Math.cos(y * 27 - x * 11);
+      positions.setXYZ(i, x * ripple * 1.15, y * ripple * 0.82, z * ripple);
+    }
+    geometry.computeVertexNormals();
+    const lump = new THREE.Mesh(geometry, waxLumpMaterial);
+    lump.name = 'WhiteWaxLump';
+    lump.position.y = 0.075;
+    lump.rotation.set(0.18, 0.4, -0.12);
+    lump.castShadow = true;
+    lump.receiveShadow = true;
+    group.add(lump);
+
+    const thumbMark = new THREE.Mesh(
+      new THREE.SphereGeometry(0.018, 12, 8),
+      new THREE.MeshStandardMaterial({ color: 0xd9cba9, roughness: 0.98 })
+    );
+    thumbMark.scale.set(1.25, 0.28, 0.82);
+    thumbMark.position.set(-0.018, 0.115, 0.045);
+    group.add(thumbMark);
+    group.position.set(0, -0.055, 0.08);
+    return registerItem('wax_lump', group, 'material', 'Pequeno pedaço irregular de cera branca para modelar shabtis');
+  }
+
+  function buildScribePalette() {
+    const group = new THREE.Group();
+    const ebony = new THREE.MeshStandardMaterial({ color: 0x30251d, roughness: 0.78 });
+    const edge = new THREE.MeshStandardMaterial({ color: 0x59412c, roughness: 0.88 });
+    const pigmentBlack = new THREE.MeshStandardMaterial({ color: 0x161a1a, roughness: 0.38 });
+    const pigmentRed = new THREE.MeshStandardMaterial({ color: 0x7c3025, roughness: 0.72 });
+
+    const shape = new THREE.Shape();
+    shape.moveTo(-0.092, -0.118);
+    shape.lineTo(0.092, -0.118);
+    shape.lineTo(0.075, 0.068);
+    shape.quadraticCurveTo(0.07, 0.12, 0.028, 0.128);
+    shape.lineTo(-0.028, 0.128);
+    shape.quadraticCurveTo(-0.07, 0.12, -0.075, 0.068);
+    shape.closePath();
+    const plateGeo = new THREE.ExtrudeGeometry(shape, {
+      depth: 0.014, bevelEnabled: true, bevelSegments: 3,
+      bevelSize: 0.004, bevelThickness: 0.003, curveSegments: 12
+    });
+    const plate = new THREE.Mesh(plateGeo, ebony);
+    plate.name = 'ScribePaletteWood';
+    plate.castShadow = true;
+    group.add(plate);
+
+    for (const [x, material] of [[-0.043, pigmentBlack], [0.043, pigmentRed]]) {
+      const well = new THREE.Mesh(new THREE.CylinderGeometry(0.027, 0.027, 0.006, 24), material);
+      well.rotation.x = Math.PI / 2;
+      well.position.set(x, 0.065, 0.018);
+      group.add(well);
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.029, 0.0035, 7, 28), edge);
+      rim.position.set(x, 0.065, 0.02);
+      group.add(rim);
+    }
+    for (const y of [-0.075, -0.045, -0.015]) {
+      const groove = new THREE.Mesh(new THREE.BoxGeometry(0.105, 0.0022, 0.0018), edge);
+      groove.position.set(0, y, 0.015);
+      group.add(groove);
+    }
+    const handleHole = new THREE.Mesh(new THREE.TorusGeometry(0.014, 0.003, 7, 20), edge);
+    handleHole.position.set(0, 0.108, 0.021);
+    group.add(handleHole);
+    group.position.set(0, -0.085, 0.075);
+    return registerItem('scribe_palette', group, 'tool', 'Paleta de escriba com dois poços de pigmento');
+  }
+
+  function buildBrownTwine() {
+    const group = new THREE.Group();
+    const fiber = new THREE.MeshStandardMaterial({ color: 0x987247, roughness: 0.98 });
+    const cordPoints = [];
+    for (let i = 0; i <= 120; i++) {
+      const angle = (i / 120) * Math.PI * 6;
+      const radius = 0.052 + 0.003 * Math.sin(angle * 2);
+      const y = 0.05 + 0.0035 * Math.sin(angle * 1.4);
+      cordPoints.push(new THREE.Vector3(Math.cos(angle) * radius, y, Math.sin(angle) * radius));
+    }
+    const coil = new THREE.Mesh(
+      new THREE.TubeGeometry(new THREE.CatmullRomCurve3(cordPoints), 120, 0.006, 7, false),
+      fiber
+    );
+    coil.name = 'BrownTwineCoil';
+    group.add(coil);
+
+    const looseEnd = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0.048, 0.05, -0.01),
+      new THREE.Vector3(0.078, 0.043, -0.02),
+      new THREE.Vector3(0.092, 0.023, -0.045),
+      new THREE.Vector3(0.12, 0.015, -0.055)
+    ]);
+    group.add(new THREE.Mesh(new THREE.TubeGeometry(looseEnd, 24, 0.0055, 7, false), fiber));
+    group.position.set(0, -0.035, 0.085);
+    return registerItem('brown_twine', group, 'tool', 'Pequeno rolo de cordão marrom');
+  }
+
+  function buildEbonyCat() {
+    const group = new THREE.Group();
+    const ebony = new THREE.MeshStandardMaterial({ color: 0x171719, roughness: 0.38, metalness: 0.12 });
+    const ebonySoft = new THREE.MeshStandardMaterial({ color: 0x242326, roughness: 0.52, metalness: 0.08 });
+    const bronze = new THREE.MeshStandardMaterial({ color: 0xb28b4e, roughness: 0.42, metalness: 0.7 });
+
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.095, 0.024, 28), ebonySoft);
+    base.position.y = 0.012;
+    group.add(base);
+
+    const haunch = new THREE.Mesh(new THREE.SphereGeometry(0.073, 20, 16), ebony);
+    haunch.scale.set(0.9, 1.14, 0.88);
+    haunch.position.set(0, 0.105, -0.018);
+    group.add(haunch);
+
+    const chest = new THREE.Mesh(new THREE.SphereGeometry(0.057, 18, 14), ebony);
+    chest.scale.set(0.82, 1.52, 0.82);
+    chest.position.set(0, 0.17, 0.035);
+    group.add(chest);
+
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.052, 20, 16), ebonySoft);
+    head.scale.set(1.02, 0.96, 0.92);
+    head.position.set(0, 0.285, 0.048);
+    group.add(head);
+
+    for (const x of [-0.032, 0.032]) {
+      const ear = new THREE.Mesh(new THREE.ConeGeometry(0.022, 0.06, 4), ebony);
+      ear.position.set(x, 0.33, 0.045);
+      ear.rotation.z = x < 0 ? -0.12 : 0.12;
+      group.add(ear);
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.006, 10, 8), bronze);
+      eye.position.set(x * 0.62, 0.29, 0.094);
+      group.add(eye);
+    }
+
+    for (const x of [-0.041, 0.041]) {
+      const foreleg = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.017, 0.11, 12), ebony);
+      foreleg.position.set(x, 0.075, 0.072);
+      group.add(foreleg);
+      const paw = new THREE.Mesh(new THREE.SphereGeometry(0.021, 12, 10), ebonySoft);
+      paw.scale.set(1.3, 0.72, 1.5);
+      paw.position.set(x, 0.028, 0.08);
+      group.add(paw);
+    }
+
+    const tailCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0.05, 0.09, -0.07),
+      new THREE.Vector3(0.095, 0.045, -0.11),
+      new THREE.Vector3(0.12, 0.09, -0.135),
+      new THREE.Vector3(0.115, 0.15, -0.12),
+      new THREE.Vector3(0.08, 0.16, -0.105)
+    ]);
+    group.add(new THREE.Mesh(new THREE.TubeGeometry(tailCurve, 36, 0.011, 9, false), ebony));
+    group.scale.setScalar(0.92);
+    group.position.set(0, -0.02, 0.08);
+    group.traverse(obj => { if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; } });
+    return registerItem('ebony_cat', group, 'artifact', 'Pequena estátua sentada de gato em ébano');
+  }
+
   buildStaff();
   buildKhopesh();
   buildWaxShabti();
@@ -375,6 +540,10 @@ export function createInventory({
   buildReedPen();
   buildInk();
   buildProtectiveAmulet();
+  buildWaxLump();
+  buildScribePalette();
+  buildBrownTwine();
+  buildEbonyCat();
 
   // The portal stays in chest space while the right hand reaches through it.
   // Ara's use_press clip places the right-hand contact at (-0.20, -0.16, 0.46)
@@ -452,7 +621,11 @@ export function createInventory({
     papyrus: 'PAPIRO',
     reed_pen: 'CÁLAMO',
     ink: 'TINTA',
-    protective_amulet: 'AMULETO DE PROTEÇÃO'
+    protective_amulet: 'AMULETO DE PROTEÇÃO',
+    wax_lump: 'CERA BRANCA',
+    scribe_palette: 'PALETA DE ESCRIBA',
+    brown_twine: 'CORDÃO MARROM',
+    ebony_cat: 'ESTÁTUA DE GATO EM ÉBANO'
   };
 
   const toggle = (force) => {

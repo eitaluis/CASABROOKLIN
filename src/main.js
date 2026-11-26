@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=warehouse-only-perception-20261126a';
-import { buildExterior } from './exterior.js?v=warehouse-only-perception-20261126a';
+import { buildWorld } from './world.js?v=magical-interior-shell-20261126b';
+import { buildExterior } from './exterior.js?v=magical-interior-shell-20261126b';
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-final-pass-20261126a';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-final-pass-20261126c';
 import { buildTrainingRoom } from './training-room.js?v=training-room-polish-20261126d';
 import { createInventory } from './inventory.js?v=duat-inventory-20261126c';
 import { createCharacter } from './character.js?v=carter-side-satchel-20261126f';
-import { createThirdPersonController } from './third-person.js?v=warehouse-only-perception-20261126a';
+import { createThirdPersonController } from './third-person.js?v=magical-interior-shell-20261126b';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
@@ -92,21 +92,22 @@ const world = buildWorld({
   canvasSign, rugTex, limestone, concrete, metal, gold, stone, brickMat, darkBrick, woodMat,
   cedarMat, darkGlass, plaster
 });
-const { zones, groundSurfaces, water } = world;
+const { zones, groundSurfaces, water, magicalInteriorGroup } = world;
 let revealCameraCue=()=>{};
+let mansionPerceived=false;
 const exterior = buildExterior({
   THREE, scene, world, interactables, isTouchDevice,
-  onReveal:()=>revealCameraCue()
+  onReveal:()=>{mansionPerceived=true;revealCameraCue();}
 });
 
 // Interior passes are shared by desktop and mobile.
-buildInteriorDetails({ THREE, scene, interactables });
+buildInteriorDetails({ THREE, scene:magicalInteriorGroup, interactables });
 const grandSalon = buildGrandSalon({
-  THREE, scene, animated, camera, isTouchDevice, colliders, interactables, groundSurfaces
+  THREE, scene:magicalInteriorGroup, animated, camera, isTouchDevice, colliders, interactables, groundSurfaces
 });
 const fireLight = grandSalon.fireLight;
 const trainingRoom = buildTrainingRoom({
-  THREE, scene, zones, groundSurfaces, colliders, interactables, animated
+  THREE, scene:magicalInteriorGroup, zones, groundSurfaces, colliders, interactables, animated
 });
 
 const trainingHud = document.createElement('aside');
@@ -188,15 +189,20 @@ const controller = createThirdPersonController({
     { minX: -0.2, maxX: 25.2, minZ: 10.7, maxZ: 13.5, height: 13.05 },
     { minX: -14.4, maxX: 14.4, minZ: -10.4, maxZ: 9.7, height: 13.175 }
   ],
-  zonePortals: trainingRoom.zonePortals,
+  zonePortals: [
+    ...(trainingRoom.zonePortals || []),
+    { from:'dock', to:'hall', axis:'z', direction:'lt', threshold:11.8, rangeMin:-2.15, rangeMax:2.15 },
+    { from:'hall', to:'dock', axis:'z', direction:'gt', threshold:12.15, rangeMin:-2.15, rangeMax:2.15 }
+  ],
   spiralStair: world.spiralStair,
   onZoneChange: (name, zone) => {
+    magicalInteriorGroup.visible = name !== 'dock';
     document.getElementById('zoneName').textContent = zone.label;
     document.querySelectorAll('.nav button').forEach(button =>
       button.classList.toggle('active', button.dataset.zone === name)
     );
     const notices = {
-      dock: 'Margem do Brooklyn — o East River e Manhattan ficam além do cais; a mansão está oculta sobre o armazém.',
+      dock: 'Margem do Brooklyn — do lado de fora, o que se vê é apenas o antigo galpão industrial.',
       hall: 'Grande Salão — quatro alturas, três níveis de balcões e Tot ao centro.',
       library: 'Biblioteca subterrânea — câmara circular escavada na rocha.',
       bedroom: 'Ala residencial — reconstrução interpretativa dos quartos.',
@@ -282,11 +288,17 @@ function drawMap() {
   g.fillStyle = '#d7c18e'; g.font = '7px DM Sans'; g.fillText('WILLIAMSBURG BR.', 185, 91);
   g.fillStyle = '#d4d8d4'; g.font = '7px DM Sans'; g.fillText('MANHATTAN', 214, 208);
   g.fillStyle = '#738178'; g.fillRect(72, 70, 112, 104);
-  g.fillStyle = '#b29a72'; g.fillRect(93, 91, 67, 62);
-  g.strokeStyle = '#dfc38c'; g.strokeRect(93, 91, 67, 62);
-  g.fillStyle = '#9a835e'; g.fillRect(111, 107, 31, 29);
   g.fillStyle = '#d7c18e'; g.font = '9px DM Sans';
-  g.fillText('ARMAZÉM', 77, 65); g.fillText('CASA', 111, 87);
+  g.fillText('GALPÃO', 77, 65);
+  if (mansionPerceived || magicalInteriorGroup.visible) {
+    g.fillStyle = '#b29a72'; g.fillRect(93, 91, 67, 62);
+    g.strokeStyle = '#dfc38c'; g.strokeRect(93, 91, 67, 62);
+    g.fillStyle = '#d7c18e'; g.font = '8px DM Sans';
+    g.fillText('MANSÃO', 111, 87);
+  }
+  if (magicalInteriorGroup.visible) {
+    g.fillStyle = '#9a835e'; g.fillRect(111, 107, 31, 29);
+  }
   g.fillStyle = '#9eb5b3'; g.fillRect(183, 0, 2, 216);
   g.fillStyle = '#9da8a1'; g.font = '8px DM Sans'; g.fillText('EAST RIVER', 190, 18);
   g.fillStyle = '#c5a66b'; g.beginPath(); g.arc(171, 140, 3, 0, Math.PI * 2); g.fill();

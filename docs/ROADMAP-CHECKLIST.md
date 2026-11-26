@@ -261,3 +261,16 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [x] Colocar o barco sob o vão, junto ao extremo do cais.
 - [ ] QA visual da revelação e da oclusão dos ambientes internos em desktop/mobile.
 - [ ] QA de percurso completo, escada, ponte, barco e porta em desktop/mobile.
+
+
+## Regra de exterior e interior mágico — 26/11/2026
+
+- [x] Manter o galpão antigo como a única silhueta vista na percepção comum.
+- [x] Manter a mansão de cinco pavimentos e a escada apenas na camada de percepção mágica ativada na doca.
+- [x] Isolar salas legadas, biblioteca, quartos, sala de treinamento e anexos modulares em um grupo interno separado.
+- [x] Impedir que os anexos apareçam na doca; ativar o grupo ao entrar e ocultá-lo ao sair.
+- [x] Incluir os objetos carregados assincronamente no grupo interno, evitando que modelos GLB apareçam do lado de fora.
+- [x] Aplicar a mesma regra ao minimapa.
+- [x] Manter a Williamsburg Bridge sobre o East River e o barco sob o vão, sem colocar o tabuleiro sobre o telhado.
+- [ ] Inspecionar a silhueta exterior em 360° no navegador, desktop e mobile.
+- [ ] Confirmar que todas as salas e interações internas continuam visíveis e funcionais após a entrada.

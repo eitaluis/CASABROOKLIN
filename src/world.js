@@ -212,6 +212,8 @@ mansionRevealGroup.traverse(node=>{
   }
 });
 scene.add(mansionRevealGroup);
+// Salas e anexos mágicos: não fazem parte da silhueta exterior do galpão.
+const interiorBuildStart=scene.children.length;
 // O rio em escala, a Williamsburg Bridge e o skyline de Manhattan são montados
 // no módulo src/exterior.js para manter a área externa independente dos interiores.
 // Grande Salão: salão de quatro alturas, pilares, sacadas e teto de cedro.
@@ -327,5 +329,15 @@ for(let x of [-8,0,8])for(let z of [-6,5]){const lamp=new THREE.PointLight(0xffd
  library:{label:'BIBLIOTECA SUBTERRÂNEA',pos:[0,-17.4,2.5],yaw:0,bounds:[-10.8,10.8,-10.8,10.8],base:-17.4},
  bedroom:{label:'ALA DOS QUARTOS',pos:[25,17.275,2.5],yaw:0,bounds:[19.3,32.2,-5.5,5.5],base:17.275}
 };
-return {zones,groundSurfaces,water,fireLight,mansionRevealGroup,spiralStair:{centerX:stairCenter.x,centerZ:stairCenter.y,radius:stairRadius,bottomY:.08,topY:.08+stairRise,startAngle:stairStartAngle,totalAngle:stairTotalAngle}};
+// Todo conteúdo criado depois da fachada pertence ao espaço mágico interno.
+const magicalInteriorGroup=new THREE.Group();
+magicalInteriorGroup.name='BrooklynHouseMagicalInterior';
+for(const child of scene.children.slice(interiorBuildStart)){
+  scene.remove(child);
+  magicalInteriorGroup.add(child);
+}
+scene.add(magicalInteriorGroup);
+magicalInteriorGroup.visible=false;
+
+return {zones,groundSurfaces,water,fireLight,mansionRevealGroup,magicalInteriorGroup,spiralStair:{centerX:stairCenter.x,centerZ:stairCenter.y,radius:stairRadius,bottomY:.08,topY:.08+stairRise,startAngle:stairStartAngle,totalAngle:stairTotalAngle}};
 }

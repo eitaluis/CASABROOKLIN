@@ -134,3 +134,15 @@ A matriz exterior anterior continua válida. Este complemento registra a expans�
 | Percurso exterior | Escada helicoidal calculada pela posição angular e altura atual, patamar e passarela conectados ao piso do Grande Salão | Controlador de movimento compartilhado | Implementado no código; teste real de subida/descida ainda pendente |
 
 **Fidelidade textual:** a escada que contorna a lateral do armazém é canônica; a forma helicoidal exata é uma interpretação do projeto. Manhattan é a margem oposta, não o local da Brooklyn House.
+
+
+## Regra de silhueta exterior e espaço mágico interno — 26/11/2026
+
+- [x] Separar a percepção externa da mansão (`mansionRevealGroup`) dos espaços internos.
+- [x] Agrupar os interiores legados e modulares em `magicalInteriorGroup`, incluindo objetos carregados de forma assíncrona.
+- [x] Manter o grupo interno invisível na doca; revelá-lo somente ao entrar em um ambiente da casa; ocultá-lo novamente ao sair para a doca.
+- [x] Ajustar o minimapa para não mostrar o contorno da mansão antes da percepção nem a planta interna antes da entrada.
+- [ ] Verificar em navegador desktop e mobile, de todos os ângulos externos, que nenhum anexo ou sala interna atravessa a silhueta do galpão.
+- [ ] Verificar que as salas permanecem completas e interativas depois de entrar, inclusive portas, colisores, pisos, luzes e modelos GLB assíncronos.
+
+A regra é estrutural, não cosmética: as salas podem ocupar coordenadas além da caixa física do armazém porque são espaços mágicos internos, mas sua renderização fica desligada enquanto o personagem está fora.

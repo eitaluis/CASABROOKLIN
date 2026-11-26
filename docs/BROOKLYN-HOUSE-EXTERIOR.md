@@ -79,3 +79,20 @@ A primeira leitura do local deve ser apenas um galpão/fábrica antigo na margem
 **Williamsburg Bridge:** a ponte cruza o East River acima do corredor do barco. O texto diz que a embarcação passa sob a ponte e depois para junto à doca no lado do Brooklyn; não descreve a ponte como cobertura sobre a mansão. A estrutura foi agrupada e afastada da projeção do telhado, permanecendo alinhada sobre a água. O barco fica sob o vão, próximo ao extremo do cais.
 
 **QA ainda necessário:** validar ângulo de aproximação, escala aparente, passagem do barco sob o tabuleiro, distância visual entre ponte e armazém, subida da escada e entrada no portal nas versões desktop e mobile.
+
+
+## Regra reforçada: galpão externo, interiores mágicos
+
+A silhueta externa deve permanecer a de um único galpão/fábrica industrial antigo. Nenhum cômodo construído dentro da Brooklyn House pode criar um volume visível do lado de fora: sem alas laterais, torres, claraboias, telhados extras, janelas novas ou anexos denunciando a biblioteca, o Grande Salão, os quartos ou a sala de treinamento.
+
+A mansão de cinco pavimentos sobre o telhado é uma exceção narrativa, mas apenas depois do comando de percepção de Amos. Antes dele, a leitura visual é somente o galpão. Depois dele, a mansão e a escada lateral tornam-se perceptíveis. Os ambientes internos continuam ocultos mesmo após essa revelação e só aparecem quando o jogador cruza o portal.
+
+**Implementação:** `mansionRevealGroup` contém apenas a camada externa mágica (mansão, escada e efeitos de revelação). `magicalInteriorGroup` reúne a arquitetura interna original, a biblioteca, o mobiliário, os ambientes laterais e as salas modulares, inclusive carregamentos assíncronos. O grupo começa invisível na doca, torna-se visível ao entrar em `hall`, `library`, `bedroom` ou `training`, e volta a ficar invisível ao sair para `dock`. O minimapa segue a mesma regra e não entrega a planta interna antes da entrada.
+
+## Williamsburg Bridge — leitura correta da relação espacial
+
+O capítulo 5 descreve Carter e Sadie navegando sob a Williamsburg Bridge e, em seguida, parando numa pequena doca do lado do Brooklyn. O texto não afirma que a ponte passa sobre o telhado da Brooklyn House. Portanto, a ponte deve atravessar o East River acima do canal de navegação, e a doca/armazém devem permanecer na margem do Brooklyn, fora da projeção do tabuleiro.
+
+No layout atual do projeto, o tabuleiro fica centrado em `z=58`, com largura de 25 unidades (`z=45,5..70,5`); o telhado da mansão ocupa aproximadamente `z=-12,5..11,5`. A separação evita que a ponte pareça pousada sobre o galpão. O barco está em `z=52`, sob o vão, encostado ao extremo do cais. A sequência visual desejada é: barco cruza sob a ponte → aproxima-se da doca do Brooklyn → o galpão é visto à frente → Amos chama atenção para o telhado.
+
+**Cânone versus interpretação:** a passagem sob a ponte e a doca no Brooklyn são canônicas; a distância exata entre ponte, doca e armazém é uma decisão de composição e deve preservar essa relação sem inventar uma ponte sobre a casa.

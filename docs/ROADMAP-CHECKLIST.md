@@ -1,6 +1,6 @@
 # CASABROOKLIN — checklist de produção por setores
 
-Atualizado: 26/11/2026 — refinamento técnico do Carter iniciado; exterior East River aprimorado; padrão asset-first aplicado
+Atualizado: 26/11/2026 — reestruturação do Grande Salão em átrio central; refinamento do Carter e exterior East River
 
 Este documento é a fonte de verdade do andamento. A cada nova solicitação, classificar os setores afetados, trabalhar neles isoladamente, atualizar este checklist e manter desktop/mobile sincronizados.
 
@@ -23,10 +23,12 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Expor altura retornada pelo Ara e usá-la para calibrar hitbox vertical e alvo da câmera no controlador compartilhado
 - [x] Preview informa falha de carregamento do Ara em vez de ficar preso no loading
 - [x] Nova camada visual do Grande Salão implementada no módulo compartilhado
-- [x] Escadarias laterais, corrimãos e colunas de lótus criados
+- [x] Layout estrutural do Grande Salão refeito: escadarias centrais simétricas até a primeira galeria, voos laterais escalonados para os outros níveis e passarela elevada entre as alas
+- [x] Assentos curvos integrados ao pedestal circular de Thoth e passagens inferiores abertas na parede posterior
+- [x] Lareira reposicionada em nicho de alvenaria; vigas transversais antigas removidas do vão central
 - [x] GLB Poly Haven Sofa 03 (CC0), texturas PBR CC0 e fogo volumétrico Housz (MIT) adicionados ao runtime
 - [x] Collider e interação por proximidade implementados para sofás, mesa, estátua e lareira; E no desktop e INTERAGIR no mobile
-- [ ] Teste visual do Grande Salão em navegador real
+- [ ] Teste visual do Grande Salão em navegador real, com verificação de todas as transições e passagens em desktop e mobile
 - [ ] Ajustes de enquadramento, proporção e circulação após inspeção desktop/mobile
 
 ## Setor 01 — câmera e controles

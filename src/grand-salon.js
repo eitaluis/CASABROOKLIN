@@ -171,7 +171,7 @@ function ceilingOrnament(scene,brass,wood) {
   for(let i=0;i<24;i++){const a=i/24*Math.PI*2;const bead=new THREE.Mesh(new THREE.SphereGeometry(.055,12,8),brass);bead.position.set(Math.cos(a)*2.45,28.06,Math.sin(a)*2.45-.5);scene.add(bead);}
 }
 
-function createSofa(scene,x,z,upholstery,wood,brass) {
+function createSofa(scene,x,z,rotation,upholstery,wood,brass) {
   const group=new THREE.Group();group.name='sofá estofado do Grande Salão';group.position.set(x,13.18,z);
   const base=new THREE.Mesh(new RoundedBoxGeometry(4.65,.46,1.95,6,.18),wood);base.position.y=.47;base.castShadow=true;base.receiveShadow=true;group.add(base);
   const seat=new THREE.Mesh(new RoundedBoxGeometry(4.44,.42,1.72,8,.17),upholstery);seat.position.set(0,.88,.04);seat.castShadow=true;group.add(seat);

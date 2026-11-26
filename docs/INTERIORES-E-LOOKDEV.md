@@ -117,7 +117,9 @@ A cena já usa ACES tone mapping e sombras suaves. O próximo passo de lookdev �
 - Materiais PBR: Walnut Veneer 02 (Poly Haven), Beige Wall 001 (Poly Haven), Tiles139 e Marble012 (ambientCG), com mapas color/normal/roughness locais.
 - Estátua de Thoth: mantém malha original figurativa e brilho; adicionados mapas de normal/roughness reais sobre albedo de basalto escuro.
 - Tapete: novo padrão de escamas de serpente com bump procedimental; mesa circular redimensionada para escala de mesa baixa e materiais de nogueira/bronze.
-- Interação: tecla E no desktop e botão INTERAGIR no mobile mostram descrição contextual para sofá, mesa, estátua e lareira; colliders foram adicionados aos objetos sólidos.
+- Instrumentos e armas: as harpas quadradas e lanças cônicas antigas foram removidas; foram criadas harpas arqueadas com cordas individuais, tambores com pele/amarras e lanças de ponta foliácea em bronze. As peças usam nogueira/bronze PBR e descrições próprias.
+- TV: a caixa antiga foi substituída por moldura metálica de cantos arredondados e painel escuro de vidro refletivo.
+- Interação: tecla E no desktop e botão INTERAGIR no mobile mostram descrição contextual para sofá, mesa, estátua, lareira, harpas, tambores, lanças e TV; colliders foram adicionados aos objetos sólidos.
 - Exposição e luz ambiente elevadas moderadamente; SSAO reduzido para evitar escurecimento excessivo.
 - Validação visual final ainda pendente de navegador.
 
@@ -165,4 +167,5 @@ A partir de agora, cada sala é construída segundo [docs/ASSET-FIRST-ROOM-BUILD
 - Comparar o assento do sofá com a altura do Carter, e validar o collider para não bloquear passagem útil.
 - Verificar a estatua com iluminação em movimento e o efeito de normal/roughness; o reflexo visual deve continuar presente.
 - Conferir a leitura do tapete como pele de serpente em vista de jogo, não apenas visto de cima.
-- Verificar interação E/INTERAGIR e o comportamento das colisões nos dois perfis.
+- Verificar interação E/INTERAGIR para todos os elementos hero e o comportamento das colisões nos dois perfis.
+- Confirmar que os instrumentos originais têm proporção e silhueta convincentes em escala humana; caso sejam aprovados, registar as suas fichas como assets locais originais no manifesto.

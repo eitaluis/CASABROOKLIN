@@ -180,7 +180,8 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
 
   function update(dt) {
     const input = inputDirection();
-    const forward = new THREE.Vector3(-Math.sin(cameraYaw), 0, -Math.cos(cameraYaw));
+    // Ara Carter está orientado para +Z: o avanço deve acompanhar a frente visível do modelo.
+    const forward = new THREE.Vector3(Math.sin(cameraYaw), 0, Math.cos(cameraYaw));
     const right = new THREE.Vector3(Math.cos(cameraYaw), 0, -Math.sin(cameraYaw));
     const direction = forward.multiplyScalar(input.forward).add(right.multiplyScalar(input.strafe));
     if (direction.lengthSq() > 0.0001) direction.normalize();
@@ -212,7 +213,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       if (next.z >= bounds[2] && next.z <= bounds[3]) current.z = next.z;
       fallbackSpeed = smoothVelocity.length();
       if (direction.lengthSq() > 0.0001) {
-        const targetHeading = Math.atan2(-direction.x, -direction.z);
+        const targetHeading = Math.atan2(direction.x, direction.z);
         character.model.rotation.y = THREE.MathUtils.damp(character.model.rotation.y, targetHeading, 13.5, dt);
       }
       character.updateFallback(dt, fallbackSpeed);

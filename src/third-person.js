@@ -36,27 +36,30 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     return character.human ? character.human.position : character.model.position;
   }
 
-  function getWalkingSurface(x, z) {
+  function getWalkingSurface(x, z, currentY = zones[zoneName].base ?? 0) {
     const ramp = stairRamps.find(item =>
       Math.abs(x - item.centerX) <= item.width * 0.5 &&
-      z <= item.startZ && z >= item.endZ
+      z >= Math.min(item.startZ, item.endZ) &&
+      z <= Math.max(item.startZ, item.endZ)
     );
     if (ramp) {
-      const t = THREE.MathUtils.clamp((ramp.startZ - z) / (ramp.startZ - ramp.endZ), 0, 1);
+      const t = THREE.MathUtils.clamp((z - ramp.startZ) / (ramp.endZ - ramp.startZ), 0, 1);
       return {
         height: ramp.bottomY + (ramp.topY - ramp.bottomY) * t,
         raised: true
       };
     }
 
-    const platform = walkablePlatforms.find(item =>
-      x >= item.minX && x <= item.maxX &&
-      z >= item.minZ && z <= item.maxZ
-    );
-    if (platform) return { height: platform.height, raised: true };
+    const platforms = walkablePlatforms
+      .filter(item =>
+        x >= item.minX && x <= item.maxX &&
+        z >= item.minZ && z <= item.maxZ &&
+        item.height <= currentY + 0.24
+      )
+      .sort((a, b) => Math.abs(a.height - currentY) - Math.abs(b.height - currentY));
+    if (platforms.length) return { height: platforms[0].height, raised: true };
     return { height: zones[zoneName].base ?? 0, raised: false };
   }
-
 
   function teleport(name) {
     const zone = zones[name];
@@ -265,7 +268,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       }
       // As escadarias laterais elevam o Carter gradualmente até a galeria;
       // fora da plataforma, ele retorna ao piso principal sob gravidade.
-      const walkingSurface = getWalkingSurface(current.x, current.z);
+      const walkingSurface = getWalkingSurface(current.x, current.z, current.y);
       if (walkingSurface.raised) {
         current.y = walkingSurface.height;
       } else if (current.y > walkingSurface.height) {
@@ -296,7 +299,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       lookTarget.y + Math.sin(cameraPitch) * cameraDistance + 0.15,
       lookTarget.z + Math.cos(cameraYaw) * horizontalDistance
     );
-    const floorY = getWalkingSurface(p.x, p.z).height;
+    const floorY = getWalkingSurface(p.x, p.z, p.y).height;
     desiredCamera.y = Math.max(desiredCamera.y, floorY + 0.28);
     if (firstCameraFrame) {
       camera.position.copy(desiredCamera);

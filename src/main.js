@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
-import { buildGrandSalon } from './grand-salon.js?v=great-hall-asset-first-20261126e';
+import { buildGrandSalon } from './grand-salon.js?v=great-hall-asset-first-20261126f';
 import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
 import { createCharacter } from './character.js?v=carter-ara-approved-restore-20261126d';
 import { createThirdPersonController } from './third-person.js?v=great-hall-collision-interactions-20261126a';
@@ -150,8 +150,12 @@ function interactWithNearby() {
       nearestDistance = distance;
     }
   }
-  if (nearest) toast(nearest.description || nearest.label || nearest.name);
-  else toast('Não há nenhum objeto próximo para examinar.');
+  if (nearest) {
+    const result = typeof nearest.onInteract === 'function' ? nearest.onInteract() : null;
+    toast(result || nearest.description || nearest.label || nearest.name);
+  } else {
+    toast('Não há nenhum objeto próximo para examinar.');
+  }
 }
 window.addEventListener('keydown', event => {
   if (event.code === 'KeyE' && !event.repeat && document.getElementById('startscreen').classList.contains('hidden')) {

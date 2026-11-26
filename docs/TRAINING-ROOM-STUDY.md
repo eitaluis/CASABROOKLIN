@@ -60,19 +60,31 @@ O módulo `src/training-room.js` cria a sala como um passe independente do mundo
 | Piso de madeira | Tábuas esportivas de carvalho/nogueira em tom mel, mapa de cor procedural, micro-relevo PBR local, roughness, verniz leve e moldura perimetral | Refinado no código; QA visual pendente |
 | Marcações da quadra | Linhas perimetrais, centrais, círculo e garrafões | Implementado |
 | Abóbada | Malha curva segmentada, afresco panorâmico original e nervuras de bronze | Implementado |
-| Paredes e frisos | Reboco mineral bege-creme com mapas locais PBR CC0, alvenaria de calcário procedural como fallback, rodapés, cornijas, pilastras e filetes de bronze | Refinado no código; QA visual pendente |
+| Paredes e frisos | Reboco mineral bege-creme PBR, paredes de fundo em calcário quente, cornijas e relevos afastados das faces para evitar superfícies coplanares | Corrigida a geometria sobreposta; QA visual pendente |
 | Arandelas | Suporte de bronze, aplique de lótus, taça de óleo, pavio, chama animada e luz quente | Refinado no código |
-| Relevos de divindades | Figuras de corpo inteiro em nichos rasos, com atributos animais, pigmentos e molduras de bronze; seleção artística não canônica | Refinado no código |
-| Efígies de Rá | Figura humana sentada, cabeça de falcão com bico e olhos, nemes listrado, colar, kilt, trono e estela arqueada; disco solar vazado com rede adaptado como cesta | Reconstruído no código; QA visual pendente |
+| Relevos de divindades | Alto-relevos em placas arqueadas, com anatomia humana, cabeças animais específicas, nemes, shendyt, pigmentos e molduras; seleção artística não canônica | Reposicionados para fora da espessura das paredes |
+| Efígies de Rá | Escultura sentada em perfil contínuo de diorito escuro, pernas, braços, kilt, colar, cabeça falconiforme, nemes e disco solar vertical vazado | Reconstruídas e afastadas das paredes; QA visual pendente |
 | Bola de basquete | Esfera de couro com 24 cm de diâmetro, canais, gravidade, quique, assistência de mira para cestas e shabtis | Redimensionada e integrada |
 | Placar | Textura de canvas atualizada por pontuação | Implementado |
-| Quatro shabtis | Miniaturas mumiformes em faiança vitrificada, nemes, inscrição, espada curva e escudo oval; crescimento animado, membros articulados, perseguição, golpes, SA-PER e reação à bola | Reconstruídos no código; QA de combate pendente |
+| Quatro shabtis | Miniaturas mumiiformes de faiança azul-esverdeada com textura mineral, rosto estreito, barba postiça, nemes estriado, uraeus, braços cruzados, pilar dorsal e inscrição; ao despertar abrem os braços e revelam pernas, khopesh e escudo | Reconstruídos; movimento limitado à área útil da quadra; QA visual/combate pendente |
 | Alvos mágicos | Três alvos com resposta visual ao acerto | Implementado |
 | Quadros de instrução | Quadro da prática de alvos e quadro “Whatever Works” | Implementado |
 | Portas duplas | Folhas articuladas que abrem e fecham por interação | Implementado |
 | Passarela e portal | Conexão física com a galeria, colisões e troca de zona | Implementado |
 
-As peças tridimensionais principais continuam como geometria original sob medida em Three.js, evitando um pack low-poly incompatível com a direção cinematográfica híbrida. Nesta revisão, as tábuas mantêm mapa de cor e juntas próprios, mas recebem mapas PBR locais CC0 de normal/roughness da coleção Poly Haven Walnut Veneer 02 (`assets/textures/wood-walnut`). As paredes usam os mapas locais de cor/normal/roughness de Poly Haven Beige Wall 001 (`assets/textures/plaster-smooth-beige`), com uma textura procedural de alvenaria de calcário como fallback. A referência Wood Floor 001 do ambientCG continua apenas como referência de aparência, não como textura runtime: https://ambientcg.com/view?id=WoodFloor001.
+As peças tridimensionais principais continuam como geometria original sob medida em Three.js. A escultura de Rá usa perfis contínuos e materiais de diorito polido, em lugar de uma composição de esferas; os shabtis são novas esculturas mumiiformes de faiança e os relevos laterais foram esculpidos com atributos animais distintos. Nenhum scan ou modelo externo foi importado: as fontes históricas são referências de silhueta e material, não assets runtime. As tábuas mantêm mapa de cor/juntas próprios e recebem mapas PBR locais CC0 de normal/roughness da coleção Poly Haven Walnut Veneer 02 (assets/textures/wood-walnut). As paredes usam mapas locais de cor/normal/roughness de Poly Haven Beige Wall 001 (assets/textures/plaster-smooth-beige), com alvenaria de calcário procedural como fallback. A referência Wood Floor 001 do ambientCG continua apenas como referência de aparência: https://ambientcg.com/view?id=WoodFloor001.
+
+## 3A. Correção de interseções e revisão escultórica (26/11/2026)
+
+- A cintilação vinha de superfícies arquitetônicas sobrepostas: a fachada da mansão e a lateral do Grande Salão eram recortadas/reconstruídas para a passagem da sala, mas permaneciam visíveis ou ganhavam um segundo conjunto de caixas. As fachadas que atravessavam o volume da sala agora são ocultadas e a parede leste é reconstruída uma única vez, com o vão do portal.
+- As paredes norte/sul usam um material de calcário quente separado do restante do reboco. Frisos, rodapés, cornijas, placas e letreiros foram afastados dos planos da alvenaria para reduzir z-fighting.
+- As placas de divindades foram movidas para dentro do ambiente, fora da espessura física dos muros.
+- As efígies de Rá foram remodeladas como esculturas sentadas de diorito escuro: tronco contínuo em perfil, pernas, kilt, braços, colar, cabeça de falcão, nemes e disco solar vertical. O aro esportivo está no mesmo plano vertical do disco e voltado para a quadra.
+- Os shabtis agora começam como estatuetas mumiiformes de faiança, com rosto, barba postiça, nemes estriado, uraeus, braços cruzados, pilar dorsal e inscrição. Ao despertar, os braços se abrem e as pernas aparecem, deixando espada curva e escudo em postura de combate.
+- A IA usa uma área segura central e colisores proporcionais à forma desperta. As faixas de decoração junto às paredes e às efígies de Rá não fazem parte do percurso de perseguição.
+- A bola de basquete não foi alterada nesta revisão, conforme a avaliação do usuário.
+
+**Validação desta revisão:** o módulo da sala e o motor principal passaram por verificação estática de sintaxe. A aprovação visual, a verificação real do z-fighting, sombras e colisões ainda depende de inspeção no navegador, no desktop e no celular em paisagem.
 
 ## 4. Interações e controles
 

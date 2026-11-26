@@ -1,29 +1,51 @@
-# Carter Kane — modelo procedural local
+# Carter Kane — modelo e acessórios
 
-O personagem jogável foi implementado em `src/character.js` como um modelo 3D original, criado localmente com geometrias do Three.js e um rig articulado de bones.
+## Pipeline aprovado
 
-## Direção visual aprovada
-- **C — Game 3D gráfico:** totalmente 3D, formas limpas, volumes legíveis e materiais sem pele fotográfica.
+O corpo e o rosto do personagem jogável permanecem no modelo humano contínuo e rigado aprovado no Ara 3D Gen, carregado em src/character.js. O projeto segue uma abordagem híbrida: Ara para malha, rig e animações; geometria autoral Three.js e futura edição Blender para acessórios e refinamentos.
+
+Não substituir o modelo Ara por um avatar procedural, placeholder ou personagem low-poly.
+
+## Direção visual
+
+- **C — Game 3D gráfico:** totalmente tridimensional, volumes limpos, materiais estilizados e leitura clara em movimento.
 - Rosto humano natural; sem anime, olhos exagerados ou proporções chibi.
-- Adolescente negro, cabelo crespo curto, corpo lean/atlético.
-- Camiseta azul, calça cargo cáqui e tênis azul-marinho.
-- Mesma malha/rig no desktop e no mobile.
+- Carter adolescente negro, cabelo crespo curto, corpo esguio/atlético.
+- Camisa azul, calça cáqui e calçado escuro/marrom.
+- Referência principal: Carter do lado esquerdo na arte de Karen de la Vega (link em docs/CHARACTER.md).
+- Mesmo corpo, rosto, rig, bolsa e medalhão no desktop e no mobile.
 
-## Bolsa transversal
-- Corpo em couro conhaque e aba frontal, com ferragens em latão.
-- Posicionamento no quadril direito; alça diagonal do ombro esquerdo ao quadril direito.
-- O desenho segue a referência do asset CC0 [Innerscene Crossbody Bag](https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2).
-- **Limitação de integração:** o arquivo GLB original do Innerscene não pôde ser obtido pelo ambiente de edição (o endpoint redireciona para um host de arquivo GLB não acessível pela ferramenta). Para não bloquear a integração, o corpo e a alça foram recriados como geometria Three.js local, seguindo a descrição e a escala da peça. Não é o binário original do Innerscene.
+## Acessórios já implementados
 
-## Rig e acessórios
-- Hierarquia humanoide com ossos Hips, Spine, Spine1, Neck, Head, Left/RightArm, Left/RightForeArm, Left/RightHand, Left/RightUpLeg, Left/RightLeg, Left/RightFoot e WeaponR.
-- O socket `WeaponR` está na mão direita e mantém compatibilidade com o inventário atual.
-- Os segmentos visuais são objetos parentados aos bones, com articulação procedural no runtime. Não são uma única malha deformada por skin weights.
+Módulo: src/character-accessories.js.
 
-## Animação local
-- Idle respirado, caminhada, corrida/sprint, balanço de braços e pernas, inclinação frontal, flexão dos joelhos e pequeno balanço da bolsa.
-- Salto com impulso, pose aérea, gravidade e aterrissagem.
-- Animações geradas localmente para manter um mesmo comportamento no desktop e no mobile; clips externos ficam como referência futura.
+- Bolsa em couro conhaque com corpo estruturado, aba, bolso, costura e ferragens em latão.
+- Alça diagonal do ombro esquerdo ao quadril direito.
+- A bolsa acompanha o movimento do quadril e recebe oscilação secundária proporcional à velocidade.
+- Medalhão dourado com corrente e relevo egípcio simplificado.
+- Os objetos são geometrias e materiais originais do projeto, criados no runtime; não dependem de um GLB externo.
+
+## Rig e compatibilidade
+
+- O módulo localiza o osso Hips pelo nome do rig; se não encontrar, mantém o acessório no root do modelo.
+- O corpo, a bolsa e o medalhão compartilham o mesmo root e a mesma origem.
+- O socket WeaponR do inventário deve permanecer intacto.
+- A integração usa a malha e o rig do Ara; não é um segundo esqueleto.
+
+## Blender — próxima etapa
+
+Ainda não há um arquivo .blend autoral neste commit. A etapa Blender deve usar o Carter Ara como referência de proporção e rig, para refinar:
+- costuras e espessura da alça;
+- couro e ferragens da bolsa;
+- medalhão/corrente;
+- eventuais detalhes de roupa aprovados após comparar com a ilustração.
+
+O arquivo Blender deve ser fonte editável; a exportação para jogo deve ser GLB com materiais PBR e, se necessário, acessórios separados para preservar a animação do rig.
 
 ## Preview
-Abra `/character-preview.html` para ver o modelo em 3D, orbitar a câmera e alternar entre parado, caminhada, sprint, salto, frente, perfil e costas.
+
+Abra /character-preview.html para orbitar o modelo, conferir frente, perfil e costas e testar locomoção e ações cinematográficas.
+
+## QA
+
+A posição anatômica da bolsa e do medalhão ainda requer inspeção visual em navegador real. Não marcar o acessório como final até confirmar o quadril direito do personagem, a alça no ombro correto e ausência de clipping nas animações.

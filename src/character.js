@@ -270,7 +270,13 @@ export async function createCharacter({ scene, ground }) {
         bodyScale: 'auto',
         speedScale: 'auto',
         seed: 27,
-        config: { naturalness: 1.15, armSwing: 1.05, hipSway: 1.0 }
+        config: locomotion.applyBasicControls(locomotion.defaultConfig, {
+          naturalness: 1.15,
+          armSwing: 1.05,
+          hipSway: 1.0,
+          looseness: 1.08,
+          stride: 0.98
+        })
       });
       if (human.warnings?.length) console.info('[Brooklyn House] Rig notes:', human.warnings);
       locomotionName = 'locomoção CMU / IK';

@@ -161,7 +161,9 @@ box('caixa de ferramentas',[24,1.05,22],[2.2,1.9,1.5],new THREE.MeshStandardMate
 // Mansão oculta no telhado: cinco pavimentos, blocos de calcário e caixilhos de aço.
 const mansionBase=box('base elevada da mansão',[0,12.55,-.5],[32,.5,23],stone,false);
 const houseY=21.45,houseH=17.6;
-box('fachada frontal da mansão',[0,houseY,11.0],[32,houseH,.85],stone,true);
+box('fachada frontal da mansão esquerda',[-9,houseY,11.0],[14,houseH,.85],stone,true);
+box('fachada frontal da mansão direita',[9,houseY,11.0],[14,houseH,.85],stone,true);
+box('lintel monumental do portal',[0,19.0,11.0],[4.2,.85,.85],stone,false);
 box('fachada posterior da mansão',[0,houseY,-12.0],[32,houseH,.85],stone,true);
 box('lateral oeste da mansão',[-15.6,houseY,-.5],[.85,houseH,23],stone,true);
 for(const z of [-8.2,8.2])box('lateral leste da mansão',[15.6,houseY,z],[.85,houseH,6.6],stone,true);box('lintel da passagem para ala',[15.6,20.65,-.5],[.85,.55,6.0],stone,true);
@@ -187,9 +189,9 @@ for(let i=0;i<5;i++){glyphPanel(-.75+(i%2)*1.5,14.9+Math.floor(i/2)*.9,12.13,0,.
 box('soleira monumental',[0,13.65,12.1],[4.3,.35,1.2],stone,false);
 for(let side of [-1,1]){box('pilar do portal',[side*2.35,16.1,11.7],[.55,6.3,.75],stone);for(let y=13.5;y<19;y+=.85)box('detalhe dourado do portal',[side*2.35,y,12.12],[.62,.06,.06],gold)}
 // Escadaria metálica externa até a entrada, com patamar.
-for(let i=0;i<18;i++){const y=.55+i*.69,z=24-i*.68;const s=box('degrau de aço da entrada',[18,y,z],[4,.18,1.0],metal,false);s.rotation.x=0}
-for(let side of [16.1,19.9]){line([[side,.8,25],[side,7,18],[side,12.8,12]],metal,.11);for(let i=0;i<7;i++)cyl('poste do corrimão',[side,.9+i*1.8,24-i*1.05],.07,.07,1.2,metal,8)}
-box('patamar da entrada',[18,12.5,11],[5,.3,4],metal,false);
+for(let i=0;i<18;i++){const y=.55+i*.69,z=24-i*.68;box('degrau de aço da entrada',[0,y,z],[4,.18,1.0],metal,false)}
+for(let side of [-2.0,2.0]){line([[side,.8,25],[side,7,18],[side,12.8,12]],metal,.11);for(let i=0;i<7;i++)cyl('poste do corrimão',[side,.9+i*1.8,24-i*1.05],.07,.07,1.2,metal,8)}
+box('patamar da entrada',[0,12.5,11],[5,.3,4],metal,false);
 line([[18,12.7,13],[18,13.5,12],[18,14.0,11]],gold,.04);
 // Sinais discretos da camuflagem mágica.
 const magicMat=new THREE.MeshBasicMaterial({color:0xdab96f,transparent:true,opacity:.42,wireframe:true});
@@ -234,6 +236,23 @@ box('tela da TV',[0,19.0,-8.91],[4.35,2.3,.025],new THREE.MeshBasicMaterial({col
 const fireLight=new THREE.PointLight(0xff7d30,2.3,12);fireLight.position.set(0,15.7,-7.7);scene.add(fireLight);
 const fireMat=new THREE.MeshBasicMaterial({color:0xff8b3d,transparent:true,opacity:.85});
 for(let i=0;i<14;i++){const f=new THREE.Mesh(new THREE.SphereGeometry(.14+Math.random()*.18,8,8),fireMat);f.position.set((Math.random()-.5)*2.8,14.4+Math.random()*1.8,-8.1);scene.add(f);animated.push({obj:f,fire:true,phase:Math.random()*6.28})}
+
+// Estátua central de Tot: figura de mármore negro com aproximadamente nove metros.
+const blackMarble=new THREE.MeshStandardMaterial({color:0x17191a,roughness:.32,metalness:.18,map:texCanvas((g,w,h)=>{g.fillStyle='#17191a';g.fillRect(0,0,w,h);for(let i=0;i<260;i++){g.strokeStyle=i%3?'#343638':'#786c5d';g.globalAlpha=.13;g.lineWidth=Math.random()*2+.3;g.beginPath();let x=Math.random()*w,y=Math.random()*h;g.moveTo(x,y);g.lineTo(x+Math.random()*80,y+Math.random()*16);g.stroke()}g.globalAlpha=1},256,256,1,1)});
+box('pedestal da estátua de Tot',[0,13.65,-.5],[3.0,.8,3.0],stone,false);
+const totBody=box('corpo de Tot em mármore negro',[0,16.45,-.5],[1.55,4.7,1.0],blackMarble,false);
+const totShoulders=box('ombros de Tot',[0,18.2,-.5],[2.1,.55,1.0],blackMarble,false);
+const totHead=new THREE.Mesh(new THREE.SphereGeometry(.78,20,16),blackMarble);totHead.position.set(0,19.15,-.5);totHead.scale.set(.78,1.1,.68);scene.add(totHead);
+const ibisNeck=cyl('pescoço de íbis de Tot',[0,20.1,-.5],.32,.38,1.25,blackMarble,16); 
+const ibisHead=new THREE.Mesh(new THREE.SphereGeometry(.43,16,12),blackMarble);ibisHead.position.set(0,20.8,-.48);ibisHead.scale.set(.78,.8,1.05);scene.add(ibisHead);
+const beak=cyl('bico longo de íbis',[0,20.55,.25],.16,.035,1.05,blackMarble,12);beak.rotation.x=Math.PI/2;beak.position.set(0,20.55,.22);
+const eyeMat=new THREE.MeshStandardMaterial({color:0xc6a45f,metalness:.55,roughness:.25,emissive:0x4b3412,emissiveIntensity:.3});
+for(const side of [-1,1]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.09,12,8),eyeMat);eye.position.set(side*.27,20.86,.05);scene.add(eye);const arm=box('braço ritual de Tot',[side*1.0,17.5,-.22],[.42,2.4,.42],blackMarble,false);arm.rotation.z=side*.28;}
+box('pergaminho na mão de Tot',[.95,16.9,.12],[.35,1.1,.28],new THREE.MeshStandardMaterial({color:0xd4c397,roughness:.9}),false);
+box('tábua de escrita na mão de Tot',[-1.0,17.0,.15],[.45,.85,.12],gold,false);
+const crown=cyl('coroa de Tot',[0,21.75,-.5],.56,.3,.42,gold,12);
+const totSpot=new THREE.SpotLight(0xe3c68e,32,24,Math.PI/5,.65,1.2);totSpot.position.set(-3,27,3);totSpot.target.position.set(0,17,-.5);scene.add(totSpot,totSpot.target);
+
 // Sofás de couro e tapete com padrão de escamas.
 const leather=new THREE.MeshStandardMaterial({color:0x59402f,roughness:.58});
 function sofa(x,z,rot=0){const group=new THREE.Group();group.position.set(x,13.45,z);group.rotation.y=rot;const b=new THREE.Mesh(new THREE.BoxGeometry(5.2,1.0,1.8),leather);b.position.y=.55;group.add(b);const back=new THREE.Mesh(new THREE.BoxGeometry(5.2,1.2,.38),leather);back.position.set(0,1.3,-.72);group.add(back);for(let xx of [-1.65,0,1.65]){const c=new THREE.Mesh(new THREE.BoxGeometry(1.4,.2,1.2),new THREE.MeshStandardMaterial({color:0x80634a,roughness:.7}));c.position.set(xx,1.12,-.1);group.add(c)}scene.add(group);return group}
@@ -285,16 +304,16 @@ const info=box('placa de identificação',[ -22,2.3,24],[.08,2.3,3.2],metal,fals
 for(let x of [-8,0,8])for(let z of [-6,5]){const lamp=new THREE.PointLight(0xffd39a,.45,12);lamp.position.set(x,25.5,z);scene.add(lamp)}
 // Áreas de exploração e navegação.
 const zones={
- dock:{label:'DOCA INDUSTRIAL',pos:[0,2.0,37],yaw:0,bounds:[-34,34,25,65],base:1.7},
+ dock:{label:'DOCA INDUSTRIAL',pos:[0,2.0,37],yaw:0,bounds:[-34,34,8,65],base:1.7},
  hall:{label:'GRANDE SALÃO',pos:[0,14.7,3.8],yaw:Math.PI,bounds:[-12.8,12.8,-8.3,8.5],base:13.0},
  library:{label:'BIBLIOTECA SUBTERRÂNEA',pos:[0,-15.4,3.5],yaw:Math.PI,bounds:[-10.8,10.8,-10.8,10.8],base:-17.4},
  bedroom:{label:'ALA DOS QUARTOS',pos:[21,18.8,3.8],yaw:Math.PI,bounds:[15,27,-5.8,5.2],base:17.3}
 };
 let currentZone='dock',yaw=0,pitch=0,locked=false,vertical=0,vy=0;
-function setZone(name){const z=zones[name];if(!z)return;currentZone=name;camera.position.set(...z.pos);yaw=z.yaw;pitch=0;camera.rotation.set(pitch,yaw,0);document.getElementById('zoneName').textContent=z.label;document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.zone===name));toast(name==='library'?'A biblioteca fica abaixo da casa, escavada na rocha.':name==='bedroom'?'Ala dos quartos: composição de interiores interpretativa.':name==='hall'?'O teto de cedro sobe quatro pavimentos.':'Você está na margem do East River, diante do armazém.');}
+function setZone(name){const previous=currentZone;const z=zones[name];if(!z)return;currentZone=name;if(name==='dock'&&previous==='hall')camera.position.set(0,12.8,14.2);else camera.position.set(...z.pos);yaw=z.yaw;pitch=0;camera.rotation.set(pitch,yaw,0);document.getElementById('zoneName').textContent=z.label;document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.zone===name));toast(name==='library'?'A biblioteca fica abaixo da casa, escavada na rocha.':name==='bedroom'?'Ala dos quartos: composição de interiores interpretativa.':name==='hall'?'O teto de cedro sobe quatro pavimentos.':'Você está na margem do East River, diante do armazém.');}
 function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),3000)}
 document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>{setZone(b.dataset.zone);if(!locked)document.getElementById('startscreen').classList.add('hidden')}));
-const keys={};window.addEventListener('keydown',e=>{keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(e.code==='Digit1')setZone('dock');if(e.code==='Digit2')setZone('hall');if(e.code==='Digit3')setZone('library');if(e.code==='Digit4')setZone('bedroom');if(e.code==='Space'&&Math.abs(vertical)<.02)vy=5.4;});
+const keys={};window.addEventListener('keydown',e=>{keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(e.code==='Digit1')setZone('dock');if(e.code==='Digit2')setZone('hall');if(e.code==='Digit3')setZone('library');if(e.code==='Digit4')setZone('bedroom');if(e.code==='KeyE'){if(currentZone==='dock'&&Math.abs(camera.position.x)<3.2&&camera.position.z<13.8&&camera.position.y>11.5)setZone('hall');else if(currentZone==='hall'&&camera.position.z>7.5)setZone('dock');else if(currentZone==='hall'&&Math.abs(camera.position.x)<3.2&&camera.position.z< -6)setZone('library');else if(currentZone==='library'&&camera.position.z>7.5)setZone('hall')}if(e.code==='Space'&&Math.abs(vertical)<.02)vy=5.4;});
 window.addEventListener('keyup',e=>keys[e.code]=false);
 document.getElementById('enter').addEventListener('click',()=>{document.getElementById('startscreen').classList.add('hidden');if(canvas.requestPointerLock)canvas.requestPointerLock();});
 canvas.addEventListener('click',()=>{if(!locked&&document.getElementById('startscreen').classList.contains('hidden')&&canvas.requestPointerLock)canvas.requestPointerLock()});
@@ -302,7 +321,7 @@ document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockEl
 document.addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0021;pitch-=e.movementY*.0017;pitch=Math.max(-1.35,Math.min(1.35,pitch));camera.rotation.set(pitch,yaw,0)});
 const touchKeys={};document.querySelectorAll('#mobile button').forEach(b=>{b.addEventListener('touchstart',e=>{e.preventDefault();touchKeys[b.dataset.move]=true},{passive:false});b.addEventListener('touchend',()=>touchKeys[b.dataset.move]=false)});
 function blocked(x,z){const zone=zones[currentZone];if(x<zone.bounds[0]||x>zone.bounds[1]||z<zone.bounds[2]||z>zone.bounds[3])return true;return false}
-function updatePlayer(dt){let f=(keys.KeyW||keys.ArrowUp||touchKeys.forward?1:0)-(keys.KeyS||keys.ArrowDown||touchKeys.back?1:0);let s=(keys.KeyD||keys.ArrowRight||touchKeys.right?1:0)-(keys.KeyA||keys.ArrowLeft||touchKeys.left?1:0);const len=Math.hypot(f,s)||1;f/=len;s/=len;const speed=(keys.ShiftLeft||keys.ShiftRight?10:5.2)*dt;const nx=camera.position.x+(-Math.sin(yaw)*f+Math.cos(yaw)*s)*speed;const nz=camera.position.z+(-Math.cos(yaw)*f-Math.sin(yaw)*s)*speed;if(!blocked(nx,camera.position.z))camera.position.x=nx;if(!blocked(camera.position.x,nz))camera.position.z=nz;vertical+=vy*dt;vy-=13*dt;if(vertical<0){vertical=0;vy=0}camera.position.y=zones[currentZone].pos[1]+vertical;}
+function updatePlayer(dt){let f=(keys.KeyW||keys.ArrowUp||touchKeys.forward?1:0)-(keys.KeyS||keys.ArrowDown||touchKeys.back?1:0);let s=(keys.KeyD||keys.ArrowRight||touchKeys.right?1:0)-(keys.KeyA||keys.ArrowLeft||touchKeys.left?1:0);const len=Math.hypot(f,s)||1;f/=len;s/=len;const speed=(keys.ShiftLeft||keys.ShiftRight?10:5.2)*dt;const nx=camera.position.x+(-Math.sin(yaw)*f+Math.cos(yaw)*s)*speed;const nz=camera.position.z+(-Math.cos(yaw)*f-Math.sin(yaw)*s)*speed;if(!blocked(nx,camera.position.z))camera.position.x=nx;if(!blocked(camera.position.x,nz))camera.position.z=nz;vertical+=vy*dt;vy-=13*dt;if(vertical<0){vertical=0;vy=0}let floorY=zones[currentZone].pos[1];if(currentZone==='dock'){floorY=1.7;if(Math.abs(camera.position.x)<2.9&&camera.position.z<=25&&camera.position.z>=12.1)floorY=1.7+(25-camera.position.z)/12.9*10.9;}camera.position.y=floorY+vertical;}
 const map=document.getElementById('map'),mg=map.getContext('2d');
 function drawMap(){mg.clearRect(0,0,264,216);mg.fillStyle='#172326';mg.fillRect(0,0,264,216);mg.strokeStyle='rgba(208,173,105,.3)';mg.lineWidth=1;for(let x=18;x<264;x+=24){mg.beginPath();mg.moveTo(x,0);mg.lineTo(x,216);mg.stroke()}for(let y=12;y<216;y+=24){mg.beginPath();mg.moveTo(0,y);mg.lineTo(264,y);mg.stroke()}mg.fillStyle='#34545a';mg.fillRect(185,0,79,216);mg.fillStyle='#738178';mg.fillRect(74,82,102,83);mg.fillStyle='#b29a72';mg.fillRect(95,96,59,54);mg.strokeStyle='#dfc38c';mg.strokeRect(95,96,59,54);mg.fillStyle='#9a835e';mg.fillRect(111,108,27,28);mg.fillStyle='#d7c18e';mg.font='9px DM Sans';mg.fillText('ARMAZÉM',77,77);mg.fillText('CASA',111,92);mg.fillStyle='#9eb5b3';mg.fillRect(183,0,2,216);mg.fillStyle='#9da8a1';mg.font='8px DM Sans';mg.fillText('EAST RIVER',190,18);mg.fillStyle='#c5a66b';mg.beginPath();mg.arc(230,42,3,0,Math.PI*2);mg.fill();mg.fillText('PÍER',218,34);mg.fillStyle='#eee0bd';mg.beginPath();mg.arc(132,127,5,0,Math.PI*2);mg.fill();mg.fillStyle='#b9b7a9';mg.font='8px DM Sans';mg.fillText('VOCÊ',142,130)}
 drawMap();

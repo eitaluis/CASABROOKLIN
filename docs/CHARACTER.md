@@ -25,7 +25,7 @@ Status: **base Ara 3D Gen aprovada preservada; refinamento técnico autorizado e
 - Listener do evento `finished` removido ao terminar ou descartar o salto.
 - Sequência de salto interrompida com segurança durante o descarte.
 - Mixer parado e pivô removido da cena no `dispose()`.
-- Altura aproximada do modelo exposta no estado para futuras calibrações de câmera e colisão.
+- Altura aproximada do modelo exposta no estado e usada pelo controlador compartilhado para calibrar a altura da cápsula de colisão e o alvo vertical da câmera.
 - Preview independente mostra mensagem explícita quando o carregamento do Ara falha, em vez de permanecer indefinidamente no estado de loading.
 
 ## Não considerar concluído sem teste real

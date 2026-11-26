@@ -123,7 +123,7 @@ function cyl(name,pos,r1,r2,h,mat,segments=24,collide=false){const m=new THREE.M
 function line(points,mat,r=.06){const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));const mesh=new THREE.Mesh(new THREE.TubeGeometry(curve,Math.max(24,points.length*5),r,6,false),mat);scene.add(mesh);return mesh}
 function canvasSign(text,color='#d2b276'){const t=texCanvas((g,w,h)=>{g.clearRect(0,0,w,h);g.fillStyle='rgba(8,15,16,.86)';g.fillRect(0,0,w,h);g.strokeStyle=color;g.lineWidth=5;g.strokeRect(8,8,w-16,h-16);g.fillStyle=color;g.textAlign='center';g.font='bold 34px Cinzel,serif';g.fillText(text,w/2,h/2+12)},512,128);return new THREE.MeshBasicMaterial({map:t,transparent:true,side:THREE.DoubleSide})}
 function glyphPanel(x,y,z,rotY=0,scale=1){const c=document.createElement('canvas');c.width=256;c.height=512;const g=c.getContext('2d');g.clearRect(0,0,256,512);g.fillStyle='#b08b4f';g.globalAlpha=.9;for(let i=0;i<11;i++){let yy=18+i*43;g.strokeStyle='#c9a568';g.lineWidth=3;g.beginPath();g.moveTo(16,yy+4);g.lineTo(240,yy+4);g.stroke();g.font='30px serif';g.fillText(['𓂀','𓇳','𓆣','𓅓','𓊹','𓈖','𓉐','𓃭'][i%8],24,yy+35);g.fillText(['𓋹','𓆑','𓏏','𓄿','𓊖','𓎛'][i%6],112,yy+35);g.fillText(['𓁹','𓅱','𓇋','𓂋','𓆓'][i%5],190,yy+35)}const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;const m=new THREE.Mesh(new THREE.PlaneGeometry(1.05*scale,2.1*scale),new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide,opacity:.92}));m.position.set(x,y,z);m.rotation.y=rotY;scene.add(m);return m}
-function addWindow(x,y,z,w,h,face='front'){const group=new THREE.Group();group.position.set(x,y,z);if(face==='front'||face==='back'){box('steel window frame',[0,0,0],[w+.28,h+.28,.18],metal,false);const pane=new THREE.Mesh(new THREE.PlaneGeometry(w,h),darkGlass);pane.position.z=face==='front'?.105:-.105;if(face==='back')pane.rotation.y=Math.PI;group.add(pane);for(let xx of [-w/2,0,w/2]){const v=box('mullion',[xx,0,.02],[.075,h,.16],gold,false);group.add(v)}for(let yy of [-h/2,h/2]){const v=box('mullion',[0,yy,.02],[w,.07,.16],metal,false);group.add(v)}if(face==='back')group.rotation.y=Math.PI;}else{box('steel window frame',[0,0,0],[.18,h,w+.28],metal,false);const pane=new THREE.Mesh(new THREE.PlaneGeometry(w,h),darkGlass);pane.rotation.y=Math.PI/2;pane.position.x=.1;group.add(pane);for(let zz of [-w/2,0,w/2]){const v=box('mullion',[.02,0,zz],[.16,h,.07],gold,false);group.add(v)}}scene.add(group);return group}
+function addWindow(x,y,z,w,h,face='front'){const group=new THREE.Group();group.position.set(x,y,z);const side=face==='side';const back=face==='back';if(!side){const depth=back?-.02:.02;box('steel window frame',[x,y,z],[w+.28,h+.28,.18],metal,false);const pane=new THREE.Mesh(new THREE.PlaneGeometry(w,h),darkGlass);pane.position.z=back?-.105:.105;if(back)pane.rotation.y=Math.PI;group.add(pane);for(let xx of [-w/2,0,w/2])box('mullion',[x+xx,y,z+depth],[.075,h,.16],gold,false);for(let yy of [-h/2,h/2])box('mullion',[x,y+yy,z+depth],[w,.07,.16],metal,false);if(back)group.rotation.y=Math.PI;}else{box('steel window frame',[x,y,z],[.18,h,w+.28],metal,false);const pane=new THREE.Mesh(new THREE.PlaneGeometry(w,h),darkGlass);pane.rotation.y=Math.PI/2;pane.position.x=.1;group.add(pane);for(let zz of [-w/2,0,w/2])box('mullion',[x+.02,y,z+zz],[.16,h,.07],gold,false);for(let yy of [-h/2,h/2])box('mullion',[x+.02,y+yy,z],[.16,.07,w],metal,false)}scene.add(group);return group}
 function makeGraffiti(x,y,z,rot=0){const c=document.createElement('canvas');c.width=512;c.height=256;const g=c.getContext('2d');g.clearRect(0,0,512,256);g.save();g.translate(256,128);g.rotate(-.12);g.font='italic 900 100px sans-serif';g.lineWidth=14;g.strokeStyle='#182022';g.strokeText('EAST',-210,-4);g.fillStyle='#bf815e';g.fillText('EAST',-210,-4);g.font='bold 46px sans-serif';g.fillStyle='#d5b16b';g.fillText('RIVER',-115,62);g.restore();const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;const m=new THREE.Mesh(new THREE.PlaneGeometry(5.3,2.65),new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false}));m.position.set(x,y,z);m.rotation.y=rot;scene.add(m)}
 function addStatue(x,y,z,variant=0){const body=cyl('estátua de cerâmica',[x,y+1,z],.42,.7,2.0,new THREE.MeshStandardMaterial({color:variant?0xb7a486:0x8e8878,roughness:.82}),12);const head=cyl('cabeça de estátua',[x,y+2.18,z],.38,.34,.55,stone,12);const face=box('face da estátua',[x,y+2.15,z+.28],[.38,.25,.12],gold);const plinth=box('pedestal de pedra',[x,y+.25,z],[1.25,.5,1.25],stone);cyl('coroa ritual',[x,y+2.57,z],.44,.28,.2,gold,12);return body}
 function addColumn(x,z,y0,height,capital=true){cyl('coluna de calcário',[x,y0+height/2,z],.72,.78,height,stone,20,true);for(let y=y0+.3;y<y0+height-.2;y+=.42){const tor=cyl('anel esculpido',[x,y,z],.735,.735,.055,gold,20);tor.material=new THREE.MeshStandardMaterial({color:0xa88d62,metalness:.25,roughness:.68})}if(capital){cyl('capitel',[x,y0+height-.25,z],1.05,.75,.5,stone,16);const slab=box('ábaco',[x,y0+height,z],[2.05,.28,2.05],stone);for(let a=0;a<8;a++){const g=glyphPanel(x-1.15+(a%4)*.72,y0+height*.54,z+1.0,0,.48);}}}
@@ -164,7 +164,7 @@ const houseY=21.45,houseH=17.6;
 box('fachada frontal da mansão',[0,houseY,11.0],[32,houseH,.85],stone,true);
 box('fachada posterior da mansão',[0,houseY,-12.0],[32,houseH,.85],stone,true);
 box('lateral oeste da mansão',[-15.6,houseY,-.5],[.85,houseH,23],stone,true);
-box('lateral leste da mansão',[15.6,houseY,-.5],[.85,houseH,23],stone,true);
+for(const z of [-8.2,8.2])box('lateral leste da mansão',[15.6,houseY,z],[.85,houseH,6.6],stone,true);box('lintel da passagem para ala',[15.6,20.65,-.5],[.85,.55,6.0],stone,true);
 box('telhado da mansão',[0,30.45,-.5],[33,.8,24],cedarMat,false);
 for(let floor=0;floor<5;floor++){
  const yy=13.9+floor*3.35;
@@ -175,10 +175,10 @@ for(let floor=0;floor<5;floor++){
   box('lintel de janela',[x,yy+1.12,11.7],[3,.18,.28],gold,false);
   glyphPanel(x-1.65,yy,11.58,0,.38);glyphPanel(x+1.65,yy,11.58,0,.38);
  }
- for(let z=-8;z<=8;z+=5.5){addWindow(16.08,yy,z,2.3,1.8,'side')}
+ for(let z of [-8,8]){addWindow(16.08,yy,z,2.3,1.8,'side')}
  box('friso de pavimento',[0,yy-1.7,11.54],[31.8,.16,.24],gold,false);
 }
-for(let x of [-15.6,15.6])for(let y=13.4;y<30;y+=3.3)box('pilastra de canto',[x,y,-.5],[1.05,3.1,1.05],stone);
+for(let x of [-15.6])for(let y=13.4;y<30;y+=3.3)box('pilastra de canto',[x,y,-.5],[1.05,3.1,1.05],stone);
 for(let x=-14;x<15;x+=3.5){box('moldura superior',[x,30.0,11.5],[2.5,.22,.28],gold)}
 // Porta sem maçaneta: um bloco maciço de madeira gravada.
 box('portal de pedra',[0,16.1,11.42],[4.1,6.2,.8],darkBrick,false);
@@ -266,7 +266,10 @@ for(let a=0;a<6;a++){const ang=a*Math.PI/3;glyphPanel(Math.cos(ang)*12,-12.7,Mat
 // Ala dos quartos: composição interpretativa com conforto moderno e peças antigas.
 const roomFloor=box('piso da ala dos quartos',[21.0,17.1,-.5],[13.3,.35,12.5],woodMat,false);
 for(let z of [-6.7,5.7])box('parede do quarto',[21,19,-.5+z],[13.3,4.2,.35],plaster,false);
-for(let x of [14.4,27.6])box('parede lateral do quarto',[x,19,-.5],[.35,4.2,12.5],plaster,false);
+for(let z of [-4.35,4.35])box('parede lateral do quarto',[14.4,19,z],[.35,4.2,3.8],plaster,false);
+box('lintel da passagem do quarto',[14.4,20.55,-.5],[.35,.5,5.0],plaster,false);
+box('parede lateral externa do quarto',[27.6,19,-.5],[.35,4.2,12.5],plaster,false);
+for(let z of [-2.6,2.6])box('ombreira de calcário da ala',[15.25,18.7,z],[.55,3.6,.5],stone,false);
 box('parede divisória do quarto',[21,19,-.5],[.25,4.2,12.5],plaster,false);
 box('cama de madeira',[17.8,17.85,-1.2],[4.3,.7,5.4],cedarMat,false);box('colchão',[17.8,18.35,-1.2],[4.1,.45,5.1],new THREE.MeshStandardMaterial({color:0xd1c5ae,roughness:1}),false);for(let x of [16.6,19.0])box('travesseiro',[x,18.65,-3.0],[1.0,.25,1.2],new THREE.MeshStandardMaterial({color:0xebe4d5}),false);
 box('mesa de estudo',[24.2,18.0,-3.8],[3.2,.22,1.5],woodMat,false);for(let x of [23.0,25.4])box('pé da mesa',[x,17.3,-3.8],[.13,1.25,.13],cedarMat,false);
@@ -275,6 +278,7 @@ addWindow(21,19.1,-6.25,3.4,2.0,'back');
 for(let i=0;i<5;i++){const book=box('pilha de livros',[23+i*.3,18.3,-4.1],[.42,.16,.75],new THREE.MeshStandardMaterial({color:[0x6f4537,0x334e50,0x987346,0x51405c][i%4]}),false);book.rotation.z=(i-2)*.03}
 const bedside=new THREE.PointLight(0xffc98b,.5,6);bedside.position.set(17.3,19.3,1.2);scene.add(bedside);
 box('cama secundária',[24,17.65,1.2],[3.2,.5,3.3],leather,false);
+addRoomLabel('ALA DOS QUARTOS',21,20.8,-6.15);
 // Ponto de referência: placa discreta no pátio.
 const info=box('placa de identificação',[ -22,2.3,24],[.08,2.3,3.2],metal,false);const sign=new THREE.Mesh(new THREE.PlaneGeometry(2.8,1.65),canvasSign('BROOKLYN HOUSE'));sign.position.set(-21.94,2.4,24);sign.rotation.y=Math.PI/2;scene.add(sign);
 // Luzes interiores quentes.

@@ -25,6 +25,12 @@ export function buildTrainingRoom({
   const faienceLight = new THREE.MeshPhysicalMaterial({ color: 0xb9a16f, metalness: 0.04, roughness: 0.3, clearcoat: 0.28 });
   const clay = new THREE.MeshPhysicalMaterial({ color: 0x9d6549, roughness: 0.34, clearcoat: 0.42, clearcoatRoughness: 0.24 });
   const clayLight = new THREE.MeshPhysicalMaterial({ color: 0xd1a47a, roughness: 0.4, clearcoat: 0.28 });
+  const raBasalt = new THREE.MeshPhysicalMaterial({ color: 0x20282a, metalness: 0.12, roughness: 0.28, clearcoat: 0.48, clearcoatRoughness: 0.22 });
+  const raBasaltLight = new THREE.MeshPhysicalMaterial({ color: 0x343d3d, metalness: 0.1, roughness: 0.3, clearcoat: 0.38 });
+  const raGold = new THREE.MeshStandardMaterial({ color: 0xc69a4e, metalness: 0.78, roughness: 0.25 });
+  const raGoldLight = new THREE.MeshStandardMaterial({ color: 0xe0bb70, metalness: 0.68, roughness: 0.22 });
+  const raLapis = new THREE.MeshPhysicalMaterial({ color: 0x183c59, metalness: 0.12, roughness: 0.3, clearcoat: 0.28 });
+  const faience = new THREE.MeshPhysicalMaterial({ color: 0x3d8582, metalness: 0.06, roughness: 0.26, clearcoat: 0.38, clearcoatRoughness: 0.2 });
   const paintedLine = new THREE.MeshStandardMaterial({ color: 0xe6d8b6, roughness: 0.62 });
   const warmEmissive = new THREE.MeshStandardMaterial({
     color: 0xffc16a, emissive: 0xff8a29, emissiveIntensity: 1.6,
@@ -481,61 +487,142 @@ export function buildTrainingRoom({
   // Efígies de Rá: cabeças de falcão, discos solares vazados e redes de aro.
   const hoops = [];
   function addRaHoop(baselineZ, facing, name) {
-    const group = new THREE.Group(); group.position.set(centerX,floorY,baselineZ); group.rotation.y=facing;
-    const steleShape=new THREE.Shape();
-    steleShape.moveTo(-.72,0);steleShape.lineTo(.72,0);steleShape.lineTo(.72,2.25);
-    steleShape.quadraticCurveTo(.72,2.92,0,2.92);steleShape.quadraticCurveTo(-.72,2.92,-.72,2.25);steleShape.closePath();
-    const stoneBack=new THREE.Mesh(new THREE.ExtrudeGeometry(steleShape,{depth:.18,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.045,bevelThickness:.045}),reliefStone);
-    stoneBack.name='estela arqueada de calcário atrás da estátua de Rá';stoneBack.position.set(0,.12,-2.05);group.add(stoneBack);
-    const steleInset=new THREE.Mesh(new THREE.ShapeGeometry(steleShape),new THREE.MeshStandardMaterial({color:0x6f5540,roughness:.93}));
-    steleInset.position.set(0,.12,-1.862);group.add(steleInset);
-    const solarPanel=new THREE.Mesh(new THREE.TorusGeometry(.52,.035,8,56),bronze);
-    solarPanel.position.set(0,2.68,-1.84);group.add(solarPanel);
-    const throne=new THREE.Mesh(new THREE.BoxGeometry(1.04,.64,.88),limestoneShade); throne.position.set(0,.36,-.16); group.add(throne);
-    const throneBack=new THREE.Mesh(new THREE.BoxGeometry(.98,1.7,.22),limestoneShade); throneBack.position.set(0,1.1,-.46); group.add(throneBack);
-    const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.36,.72,8,24),limestone); torso.position.set(0,1.48,.05); torso.scale.set(1.2,1,.82); group.add(torso);
-    const shoulders=new THREE.Mesh(new THREE.SphereGeometry(.48,24,18),limestone); shoulders.position.set(0,1.9,.07); shoulders.scale.set(1.2,.56,.8); group.add(shoulders);
-    const kilt=new THREE.Mesh(new THREE.CylinderGeometry(.36,.54,.72,4,1),faienceLight); kilt.position.set(0,.95,.28); kilt.rotation.y=Math.PI/4; group.add(kilt);
-    for(let pleat=-3;pleat<=3;pleat++){const fold=new THREE.Mesh(new THREE.BoxGeometry(.018,.56,.018),bronze);fold.position.set(pleat*.095,.95,.57-Math.abs(pleat)*.025);group.add(fold);}
+    const group=new THREE.Group();group.name='estátua sentada de Rá em diorito polido';
+    group.position.set(centerX,floorY,baselineZ);group.rotation.y=facing;
+    const bevelMat=raBasaltLight;
+    const pedestal=new THREE.Mesh(new THREE.BoxGeometry(1.95,.34,1.72),raBasalt);pedestal.position.set(0,.17,-.05);group.add(pedestal);
+    const pedestalTop=new THREE.Mesh(new THREE.BoxGeometry(1.78,.12,1.55),raGold);pedestalTop.position.set(0,.39,-.05);group.add(pedestalTop);
+    const seat=new THREE.Mesh(new THREE.BoxGeometry(1.18,.48,.94),raBasaltLight);seat.position.set(0,.72,-.08);group.add(seat);
+    const seatCushion=new THREE.Mesh(new THREE.BoxGeometry(1.15,.12,.9),raGold);seatCushion.position.set(0,1.02,-.08);group.add(seatCushion);
+
+    // Trono e pilar dorsal esculpidos como uma peça arquitetônica contínua.
+    const backShape=new THREE.Shape();backShape.moveTo(-.67,.0);backShape.lineTo(.67,.0);backShape.lineTo(.67,1.46);
+    backShape.quadraticCurveTo(.65,1.92,0,2.08);backShape.quadraticCurveTo(-.65,1.92,-.67,1.46);backShape.closePath();
+    const backPanel=new THREE.Mesh(new THREE.ExtrudeGeometry(backShape,{depth:.22,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.035,bevelThickness:.035}),raBasalt);
+    backPanel.name='pilar dorsal esculpido do trono de Rá';backPanel.position.set(0,.86,-.57);group.add(backPanel);
+    const backInset=new THREE.Mesh(new THREE.ShapeGeometry(backShape),raBasaltLight);backInset.position.set(0,.86,-.345);group.add(backInset);
     for(const side of [-1,1]){
-      const thigh=new THREE.Mesh(new THREE.CapsuleGeometry(.15,.52,6,16),limestone);thigh.position.set(side*.22,.58,.32);thigh.rotation.x=Math.PI/2.2;group.add(thigh);
-      const shin=new THREE.Mesh(new THREE.CapsuleGeometry(.12,.38,6,14),limestoneShade);shin.position.set(side*.22,.3,.62);group.add(shin);
-      const arm=new THREE.Mesh(new THREE.CapsuleGeometry(.11,.5,6,16),limestone);arm.position.set(side*.46,1.5,.18);arm.rotation.z=side*.18;group.add(arm);
-      const hand=new THREE.Mesh(new THREE.SphereGeometry(.11,14,12),limestoneShade);hand.position.set(side*.36,.88,.58);group.add(hand);
+      const upright=new THREE.Mesh(new THREE.BoxGeometry(.13,1.72,.13),raGold);upright.position.set(side*.61,1.63,-.36);group.add(upright);
+      for(let y=1.02;y<2.45;y+=.28){const stud=new THREE.Mesh(new THREE.SphereGeometry(.032,10,8),raGoldLight);stud.position.set(side*.61,y,-.27);group.add(stud);}
     }
-    const collar=new THREE.Mesh(new THREE.TorusGeometry(.43,.095,12,48),bronze);collar.position.set(0,1.82,.23);collar.rotation.x=Math.PI/2;group.add(collar);
-    const pectoral=new THREE.Mesh(new THREE.TorusGeometry(.29,.045,8,36),lapis);pectoral.position.set(0,1.65,.31);pectoral.rotation.x=Math.PI/2;group.add(pectoral);
-    // Cabeça de falcão reconhecível: crânio alongado, bico, olhos laterais e nemes listrado.
-    const head=new THREE.Mesh(new THREE.SphereGeometry(.31,28,20),limestoneShade);head.position.set(0,2.34,.12);head.scale.set(.92,1.08,1.16);group.add(head);
-    const brow=new THREE.Mesh(new THREE.SphereGeometry(.34,24,16),lapis);brow.position.set(0,2.48,-.08);brow.scale.set(1.28,.85,.92);group.add(brow);
-    const beakUpper=new THREE.Mesh(new THREE.ConeGeometry(.105,.44,4),bronze);beakUpper.position.set(0,2.25,.48);beakUpper.rotation.x=Math.PI/2;group.add(beakUpper);
-    const beakTip=new THREE.Mesh(new THREE.ConeGeometry(.055,.2,4),darkBronze);beakTip.position.set(0,2.12,.62);beakTip.rotation.x=Math.PI/2;group.add(beakTip);
+
+    // Corpo humano sentado, modelado por perfis contínuos em vez de esferas empilhadas.
+    const torsoProfile=[
+      new THREE.Vector2(.31,0),new THREE.Vector2(.37,.1),new THREE.Vector2(.43,.28),
+      new THREE.Vector2(.48,.55),new THREE.Vector2(.54,.83),new THREE.Vector2(.62,1.08),
+      new THREE.Vector2(.66,1.25),new THREE.Vector2(.56,1.39),new THREE.Vector2(.34,1.5)
+    ];
+    const torso=new THREE.Mesh(new THREE.LatheGeometry(torsoProfile,64),raBasalt);
+    torso.name='tronco humano monolítico de Rá';torso.position.y=1.0;torso.castShadow=true;group.add(torso);
+    const waistBand=new THREE.Mesh(new THREE.TorusGeometry(.44,.065,10,64),raGold);waistBand.rotation.x=Math.PI/2;waistBand.position.set(0,1.18,.02);group.add(waistBand);
+
+    // Kilt cerimonial de pregas largas, com borda metálica.
+    const kiltShape=new THREE.Shape();kiltShape.moveTo(-.52,0);kiltShape.lineTo(.52,0);kiltShape.lineTo(.43,.76);kiltShape.quadraticCurveTo(0,.92,-.43,.76);kiltShape.closePath();
+    const kilt=new THREE.Mesh(new THREE.ExtrudeGeometry(kiltShape,{depth:.13,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.018,bevelThickness:.018}),raLapis);
+    kilt.name='kilt shendyt azul de Rá';kilt.position.set(0,.78,.42);group.add(kilt);
+    for(let i=-4;i<=4;i++){
+      const x=i*.095;addTube('prega esculpida do kilt de Rá',[[x,.84,.57],[x*1.05,1.02,.575],[x*1.12,1.31,.55]],.012,raGold,group,18);
+    }
+    const kiltHem=new THREE.Mesh(new THREE.BoxGeometry(1.0,.045,.045),raGold);kiltHem.position.set(0,.8,.57);group.add(kiltHem);
+
+    // Coxas dobradas sobre o assento, canelas verticais e pés apoiados no estrado.
     for(const side of [-1,1]){
-      const eye=new THREE.Mesh(new THREE.SphereGeometry(.075,18,14),turquoise);eye.position.set(side*.255,2.37,.32);group.add(eye);
-      const eyeRing=new THREE.Mesh(new THREE.TorusGeometry(.09,.023,8,28),darkBronze);eyeRing.position.set(side*.255,2.37,.325);group.add(eyeRing);
-      const headdressSide=new THREE.Mesh(new THREE.BoxGeometry(.18,.72,.23),lapis);headdressSide.position.set(side*.34,1.98,.01);headdressSide.rotation.z=side*-.08;group.add(headdressSide);
-      for(let stripe=0;stripe<4;stripe++){const band=new THREE.Mesh(new THREE.BoxGeometry(.19,.025,.245),bronze);band.position.set(side*.34,1.72+stripe*.17,.025);group.add(band);}
+      const thigh=new THREE.Mesh(new THREE.LatheGeometry([
+        new THREE.Vector2(.11,0),new THREE.Vector2(.15,.12),new THREE.Vector2(.17,.36),
+        new THREE.Vector2(.145,.62),new THREE.Vector2(.11,.76)
+      ],32),raBasalt);
+      thigh.name='coxa esculpida de Rá';thigh.rotation.x=Math.PI/2;thigh.position.set(side*.27,.66,.2);group.add(thigh);
+      const shin=new THREE.Mesh(new THREE.LatheGeometry([
+        new THREE.Vector2(.09,0),new THREE.Vector2(.12,.12),new THREE.Vector2(.13,.34),
+        new THREE.Vector2(.11,.56),new THREE.Vector2(.1,.68)
+      ],32),raBasalt);
+      shin.name='canela esculpida de Rá';shin.position.set(side*.27,.34,.78);group.add(shin);
+      const foot=new THREE.Mesh(new THREE.BoxGeometry(.2,.13,.42),raBasaltLight);foot.position.set(side*.27,.12,.91);group.add(foot);
+      for(let toe=0;toe<3;toe++){const line=new THREE.Mesh(new THREE.BoxGeometry(.016,.018,.12),raGold);line.position.set(side*.27+(toe-1)*.048,.18,1.03);group.add(line);}
     }
-    const uraeus=new THREE.Mesh(new THREE.TorusGeometry(.09,.028,8,24),bronze);uraeus.position.set(0,2.55,.23);uraeus.rotation.x=Math.PI/2;group.add(uraeus);
-    // Disco solar vazado: abertura interna de 45 cm; a borda superior do aro fica a 3,05 m.
-    const sunCenter=new THREE.Vector3(0,2.761,.2);
-    const sunOuter=new THREE.Mesh(new THREE.TorusGeometry(.47,.055,12,64),bronze);sunOuter.position.copy(sunCenter);group.add(sunOuter);
-    const rim=new THREE.Mesh(new THREE.TorusGeometry(.257,.032,12,64),darkBronze);rim.position.copy(sunCenter);group.add(rim);
-    const innerHighlight=new THREE.Mesh(new THREE.TorusGeometry(.247,.012,8,64),bronze);innerHighlight.position.copy(sunCenter);innerHighlight.position.y-=.035;group.add(innerHighlight);
-    for(let i=0;i<16;i++){const a=i/16*Math.PI*2;const ray=new THREE.Mesh(new THREE.ConeGeometry(.052,.2,8),faienceLight);ray.position.set(Math.cos(a)*.43,2.761+Math.sin(a)*.43,.2);ray.rotation.z=a-Math.PI/2;group.add(ray);}
-    const netRing=new THREE.Mesh(new THREE.TorusGeometry(.15,.018,8,40),bronze);netRing.position.set(0,2.40,.2);group.add(netRing);
-    for(let i=0;i<12;i++){const a=i/12*Math.PI*2;addTube('corda da rede do disco solar',[[Math.cos(a)*.257,2.761+Math.sin(a)*.257,.2],[Math.cos(a+.08)*.19,2.56+Math.sin(a+.08)*.19,.2],[Math.cos(a+.16)*.15,2.40+Math.sin(a+.16)*.15,.2]],.009,limestoneShade,group,10);}
-    const cartouche=new THREE.Mesh(new THREE.BoxGeometry(.72,.34,.06),darkBronze);cartouche.position.set(0,.5,.54);group.add(cartouche);
-    const glyphCanvas=document.createElement('canvas');glyphCanvas.width=256;glyphCanvas.height=128;const gg=glyphCanvas.getContext('2d');gg.fillStyle='#193b49';gg.fillRect(0,0,256,128);gg.strokeStyle='#c99b51';gg.lineWidth=6;gg.strokeRect(5,5,246,118);gg.fillStyle='#f0d49a';gg.font='bold 46px Georgia';gg.textAlign='center';gg.fillText('RA',128,83);
-    const glyphTex=new THREE.CanvasTexture(glyphCanvas);glyphTex.colorSpace=THREE.SRGBColorSpace;
-    const glyphPlate=new THREE.Mesh(new THREE.PlaneGeometry(.62,.28),new THREE.MeshBasicMaterial({map:glyphTex}));glyphPlate.position.set(0,.5,.575);group.add(glyphPlate);
+
+    // Braços em repouso sobre os joelhos; volumes longos, afilados e sem articulações esféricas aparentes.
+    for(const side of [-1,1]){
+      addTube('braço esculpido de Rá',[
+        [side*.48,2.05,.06],[side*.62,1.86,.18],[side*.61,1.56,.4],[side*.48,1.26,.66]
+      ],.125,raBasalt,group,36);
+      addTube('antebraço esculpido de Rá',[
+        [side*.61,1.56,.4],[side*.52,1.37,.56],[side*.35,1.22,.72]
+      ],.105,raBasaltLight,group,28);
+      const hand=new THREE.Mesh(new THREE.BoxGeometry(.2,.14,.22),raBasalt);hand.position.set(side*.34,1.18,.75);group.add(hand);
+      const cuff=new THREE.Mesh(new THREE.TorusGeometry(.13,.035,8,32),raGold);cuff.rotation.x=Math.PI/2;cuff.position.set(side*.6,1.56,.43);group.add(cuff);
+    }
+
+    // Broad usekh collar and pectoral inlaid with lapis lazuli and gold.
+    for(let row=0;row<4;row++){
+      const collar=new THREE.Mesh(new THREE.TorusGeometry(.43-row*.045,.045,10,56),row%2?raLapis:raGold);
+      collar.rotation.x=Math.PI/2;collar.position.set(0,2.24-row*.035,.18+row*.018);collar.scale.set(1.18,1,.72);group.add(collar);
+    }
+    const chestPlate=new THREE.Mesh(new THREE.ShapeGeometry((()=>{const sh=new THREE.Shape();sh.moveTo(-.34,0);sh.lineTo(0,-.28);sh.lineTo(.34,0);sh.lineTo(.25,.24);sh.lineTo(-.25,.24);sh.closePath();return sh;})()),raGold);
+    chestPlate.position.set(0,2.0,.42);group.add(chestPlate);
+    const chestGem=new THREE.Mesh(new THREE.OctahedronGeometry(.105,1),raLapis);chestGem.position.set(0,2.04,.45);group.add(chestGem);
+
+    const neck=new THREE.Mesh(new THREE.LatheGeometry([
+      new THREE.Vector2(.16,0),new THREE.Vector2(.19,.08),new THREE.Vector2(.18,.35),new THREE.Vector2(.2,.47)
+    ],32),raBasalt);neck.position.set(0,2.24,.02);group.add(neck);
+    // Cabeça de falcão antropomórfica: crânio alongado, olhos profundos, bico curvo e nemes estriado.
+    const falconHead=new THREE.Mesh(new THREE.SphereGeometry(.39,40,28),raBasaltLight);
+    falconHead.name='cabeça de falcão de Rá';falconHead.position.set(0,2.67,.045);falconHead.scale.set(.78,1.13,1.02);group.add(falconHead);
+    const brow=new THREE.Mesh(new THREE.TorusGeometry(.30,.055,10,48),raBasalt);brow.position.set(0,2.83,.22);brow.scale.set(1.22,.72,1);group.add(brow);
+    // Bico curvo de falcão, esculpido como uma peça cônica e arqueada.
+    addTube('bico curvo de falcão de Rá',[
+      [0,2.67,.28],[0,2.61,.43],[0,2.51,.57],[0,2.38,.6],[0,2.32,.53]
+    ],.085,raGoldLight,group,30);
+    for(const side of [-1,1]){
+      const socket=new THREE.Mesh(new THREE.TorusGeometry(.082,.025,8,32),raGold);socket.position.set(side*.255,2.75,.23);socket.scale.set(1.12,.82,1);group.add(socket);
+      const eye=new THREE.Mesh(new THREE.SphereGeometry(.052,20,14),turquoise);eye.position.set(side*.255,2.75,.255);group.add(eye);
+      const pupil=new THREE.Mesh(new THREE.SphereGeometry(.022,12,10),darkBronze);pupil.position.set(side*.255,2.75,.295);group.add(pupil);
+      const cheek=new THREE.Mesh(new THREE.BoxGeometry(.12,.22,.035),raGold);cheek.position.set(side*.29,2.51,.19);cheek.rotation.z=side*.16;group.add(cheek);
+    }
+
+    // Nemes: touca rígida e duas abas de tecido com faixas longitudinais gravadas.
+    const nemesCap=new THREE.Mesh(new THREE.SphereGeometry(.53,40,24,0,Math.PI*2,0,Math.PI*.62),raLapis);
+    nemesCap.name='coroa nemes azul de Rá';nemesCap.position.set(0,2.91,-.08);nemesCap.scale.set(1.03,.78,.9);group.add(nemesCap);
+    for(const side of [-1,1]){
+      const flapShape=new THREE.Shape();flapShape.moveTo(0,0);flapShape.lineTo(.25,.02);flapShape.lineTo(.31,-.78);
+      flapShape.quadraticCurveTo(.24,-1.0,.08,-1.08);flapShape.lineTo(-.03,-.94);flapShape.closePath();
+      const flap=new THREE.Mesh(new THREE.ExtrudeGeometry(flapShape,{depth:.085,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.018,bevelThickness:.018}),raLapis);
+      flap.name='aba lateral estriada do nemes';flap.position.set(side*.27,2.78,.05);if(side<0)flap.rotation.y=Math.PI;group.add(flap);
+      for(let stripe=0;stripe<4;stripe++){
+        const x=side*(.31+stripe*.045);
+        addTube('filete dourado do nemes de Rá',[[x,2.73,.145],[x,2.43,.155],[x*1.05,2.12,.16],[x*1.06,1.98,.16]],.012,raGoldLight,group,18);
+      }
+    }
+    const uraeus=new THREE.Mesh(new THREE.TorusGeometry(.075,.025,8,28),raGold);uraeus.position.set(0,3.0,.26);group.add(uraeus);
+
+    // Disco solar vertical e vazado. O aro interno é a cesta: não há placa atravessando a abertura.
+    const sunCenter=new THREE.Vector3(0,2.761,.48);
+    const solarDisk=new THREE.Mesh(new THREE.RingGeometry(.34,.58,72),new THREE.MeshPhysicalMaterial({color:0xb98639,metalness:.72,roughness:.27,side:THREE.DoubleSide}));
+    solarDisk.name='disco solar vazado de Rá';solarDisk.position.set(0,sunCenter.y,.29);group.add(solarDisk);
+    const sunOuter=new THREE.Mesh(new THREE.TorusGeometry(.58,.055,12,72),raGold);sunOuter.position.copy(sunCenter);group.add(sunOuter);
+    const rim=new THREE.Mesh(new THREE.TorusGeometry(.257,.032,14,72),raBasalt);rim.name='aro de basquete inscrito no disco solar';rim.position.copy(sunCenter);group.add(rim);
+    const innerHighlight=new THREE.Mesh(new THREE.TorusGeometry(.225,.012,8,72),raGoldLight);innerHighlight.position.set(0,sunCenter.y-.015,sunCenter.z+.018);group.add(innerHighlight);
+    for(let i=0;i<20;i++){
+      const a=i/20*Math.PI*2;const ray=new THREE.Mesh(new THREE.ConeGeometry(.045,.18,10),raGoldLight);
+      ray.position.set(Math.cos(a)*.66,sunCenter.y+Math.sin(a)*.66,.29);ray.rotation.z=a-Math.PI/2;group.add(ray);
+    }
+    const netRing=new THREE.Mesh(new THREE.TorusGeometry(.15,.018,8,48),raGold);netRing.position.set(0,2.4,sunCenter.z);group.add(netRing);
+    for(let i=0;i<14;i++){
+      const a=i/14*Math.PI*2;
+      addTube('corda da rede da cesta solar',[
+        [Math.cos(a)*.257,sunCenter.y+Math.sin(a)*.257,sunCenter.z],
+        [Math.cos(a+.08)*.19,2.56+Math.sin(a+.08)*.19,sunCenter.z],
+        [Math.cos(a+.15)*.15,2.4+Math.sin(a+.15)*.15,sunCenter.z]
+      ],.009,raGoldLight,group,12);
+    }
+    const plaque=new THREE.Mesh(new THREE.BoxGeometry(.74,.28,.06),raBasalt);plaque.position.set(0,.47,.62);group.add(plaque);
     group.traverse(obj=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;}});scene.add(group);
-    const hoopPosition=new THREE.Vector3(centerX,floorY+2.761,baselineZ+(facing===0?.2:-.2));
+    const hoopPosition=new THREE.Vector3(centerX,floorY+sunCenter.y,baselineZ+(facing===0?.48:-.48));
     hoops.push({position:hoopPosition,label:name,approachDirection:facing===0?-1:1});
-    addInteractable({name,label:'Rá — disco solar / cesta',description:'Figura humana de cabeça de falcão representa Rá. O disco solar vazado acima da cabeça funciona como cesta de basquete; a abertura interna tem 45 cm, com a borda superior a 3,05 m do piso.',prompt:'CESTA DE RÁ · E para examinar · arremesse a bola pelo disco solar',position:group.position,radius:2.6});
+    addInteractable({name,label:'Rá — disco solar / cesta',description:'Estátua sentada em diorito polido, com cabeça de falcão, nemes, colar e disco solar vazado. O aro interno está voltado para o centro da quadra.',prompt:'CESTA DE RÁ · E para examinar · arremesse a bola pelo disco solar',position:group.position,radius:2.7});
   }
-  addRaHoop(nearZ + 0.55, 0, 'Rá — cesta norte');
-  addRaHoop(farZ - 0.55, Math.PI, 'Rá — cesta sul');
+  addRaHoop(nearZ + 1.35, 0, 'Rá — cesta norte');
+  addRaHoop(farZ - 1.35, Math.PI, 'Rá — cesta sul');
 
   // Painel de pontuação em papiro, atualizado quando a bola ou os projéteis acertam.
   const scoreCanvas = document.createElement('canvas');

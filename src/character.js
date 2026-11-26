@@ -21,27 +21,22 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
   const mixer = new THREE.AnimationMixer(hero.scene);
   let locomotion = hero.locomotion(mixer);
   let jumping = false;
-  let jumpAction = null;
   let movementSpeed = 0;
   scene.add(hero.scene);
 
   function jump() {
     if (jumping) return;
-    const clip = hero.clip('jump');
-    if (!clip) { console.warn('A animação jump não foi carregada pelo Ara 3D.'); return; }
+    if (!hero.clip('jump')) {
+      console.warn('A animação jump não foi carregada pelo Ara 3D.');
+      return;
+    }
     jumping = true;
     locomotion.stop();
-    jumpAction = mixer.clipAction(clip);
-    jumpAction.reset();
-    jumpAction.setLoop(THREE.LoopOnce, 1);
-    jumpAction.clampWhenFinished = true;
-    jumpAction.enabled = true;
-    jumpAction.play();
+    const sequence = hero.playSequence(mixer, 'jump', { repeat: false });
     const finishJump = (event) => {
-      if (event.action !== jumpAction) return;
+      if (event.action.getClip().name.toLowerCase() !== 'jump') return;
       mixer.removeEventListener('finished', finishJump);
-      jumpAction.stop();
-      jumpAction = null;
+      sequence.stop();
       jumping = false;
       locomotion = hero.locomotion(mixer);
       locomotion.speed = movementSpeed;

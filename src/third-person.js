@@ -8,7 +8,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   let zoneName = 'dock';
   let cameraYaw = 0;
   let cameraPitch = 0.25;
-  let cameraDistance = 4.25;
+  let cameraDistance = 2.65;
   let pointerLocked = false;
   let firstCameraFrame = true;
   let fallbackSpeed = 0;
@@ -49,7 +49,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   document.addEventListener('mousemove', (event) => {
     if (!pointerLocked) return;
     cameraYaw -= event.movementX * 0.0027;
-    cameraPitch = THREE.MathUtils.clamp(cameraPitch - event.movementY * 0.0018, 0.04, 1.52);
+    cameraPitch = THREE.MathUtils.clamp(cameraPitch - event.movementY * 0.0018, -0.15, Math.PI / 2 - 0.002);
   });
 
   // Em telas sensíveis ao toque, arrastar sobre a cena orbita a câmera sem Pointer Lock.
@@ -63,7 +63,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     const dx = event.clientX - touchLook.x;
     const dy = event.clientY - touchLook.y;
     cameraYaw -= dx * 0.006;
-    cameraPitch = THREE.MathUtils.clamp(cameraPitch - dy * 0.004, 0.04, 1.52);
+    cameraPitch = THREE.MathUtils.clamp(cameraPitch - dy * 0.004, -0.15, Math.PI / 2 - 0.002);
     touchLook.x = event.clientX;
     touchLook.y = event.clientY;
   });
@@ -78,7 +78,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   });
 
   window.addEventListener('wheel', (event) => {
-    cameraDistance = THREE.MathUtils.clamp(cameraDistance + Math.sign(event.deltaY) * 0.4, 2.8, 8.5);
+    cameraDistance = THREE.MathUtils.clamp(cameraDistance + Math.sign(event.deltaY) * 0.3, 1.7, 7.5);
   }, { passive: true });
 
   window.addEventListener('keydown', (event) => {
@@ -213,7 +213,8 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       if (next.z >= bounds[2] && next.z <= bounds[3]) current.z = next.z;
       fallbackSpeed = smoothVelocity.length();
       if (direction.lengthSq() > 0.0001) {
-        const targetHeading = Math.atan2(-direction.x, -direction.z);
+        // O modelo Ara começa com rotação PI; manter esse offset evita que ele vire para a câmera ao andar.
+        const targetHeading = Math.atan2(-direction.x, -direction.z) + Math.PI;
         character.model.rotation.y = THREE.MathUtils.damp(character.model.rotation.y, targetHeading, 13.5, dt);
       }
       character.updateFallback(dt, fallbackSpeed);

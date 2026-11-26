@@ -282,7 +282,7 @@ function createSofa(scene,x,z,rotation,upholstery,wood,brass) {
   group.name='sofá de reserva do Grande Salão';
   group.position.set(x,13.175,z);
   group.rotation.y=rotation;
-  group.scale.set(.54,.74,.74);
+  group.scale.set(.49,.64,.72);
 
   const base=new THREE.Mesh(new RoundedBoxGeometry(4.65,.34,1.95,8,.15),wood);
   base.position.y=.25;base.castShadow=true;base.receiveShadow=true;group.add(base);
@@ -328,7 +328,7 @@ function loadSofaAssets(scene, fallbacks, colliders, interactables) {
       model.name='sofá Poly Haven Sofa 03 · '+place.side;
       model.position.set(place.x,13.175,place.z);
       model.rotation.y=place.rotation;
-      model.scale.setScalar(.84);
+      model.scale.setScalar(.78);
       model.traverse(object=>{
         if(object.isMesh){object.castShadow=true;object.receiveShadow=true;}
       });
@@ -413,10 +413,10 @@ function createRug(scene) {
   bump.colorSpace=THREE.NoColorSpace;
   const rug=new THREE.Mesh(new THREE.CircleGeometry(1,144),new THREE.MeshStandardMaterial({map:color,bumpMap:bump,bumpScale:.065,roughness:.94}));
   rug.name='tapete oval de couro com padrão de escamas de serpente do Grande Salão';
-  rug.rotation.x=-Math.PI/2;rug.scale.set(4.4,1,2.45);rug.position.set(0,13.205,3.45);rug.receiveShadow=true;scene.add(rug);
-  for(const spec of [[2.7,.023],[4.05,.018]]){
+  rug.rotation.x=-Math.PI/2;rug.scale.set(6.1,1,2.3);rug.position.set(0,13.205,3.45);rug.receiveShadow=true;scene.add(rug);
+  for(const spec of [[5.42,.023],[5.86,.018]]){
     const ring=new THREE.Mesh(new THREE.TorusGeometry(spec[0],spec[1],7,112),new THREE.MeshStandardMaterial({color:0x957046,metalness:.52,roughness:.58}));
-    ring.rotation.x=Math.PI/2;ring.position.set(0,13.22,3.45);ring.scale.z=.56;scene.add(ring);
+    ring.rotation.x=Math.PI/2;ring.position.set(0,13.22,3.45);ring.scale.z=2.3/6.1;scene.add(ring);
   }
 }
 
@@ -615,7 +615,7 @@ function addIconPlaque(scene, file, position, rotationY, wood, brass, size = 0.5
   group.add(back);
 
   const border = new THREE.Mesh(
-    new THREE.RoundedBoxGeometry(size + 0.1, size + 0.1, 0.035, 6, 0.025),
+    new RoundedBoxGeometry(size + 0.1, size + 0.1, 0.035, 6, 0.025),
     brass
   );
   border.position.z = 0.106;
@@ -829,7 +829,7 @@ function addGreatHallDoors(scene, stone, wood, brass, colliders, interactables) 
   }
 
   const chainMedallion = new THREE.Mesh(
-    new PlaneGeometry(0.58, 0.58),
+    new THREE.PlaneGeometry(0.58, 0.58),
     gameIconMaterial('crossed-chains')
   );
   chainMedallion.position.set(0, 1.18, -0.59);
@@ -853,6 +853,14 @@ function addGreatHallDoors(scene, stone, wood, brass, colliders, interactables) 
     radius: 2.7
   });
   return group;
+}
+
+function ironMaterial() {
+  return new THREE.MeshStandardMaterial({color:0x292a29,metalness:.86,roughness:.36});
+}
+
+function plasterMaterialFrom(base) {
+  return new THREE.MeshStandardMaterial({color:0xd7c59a,roughness:.96,bumpMap:base.bumpMap,bumpScale:.016});
 }
 
 function darkWoodFrom(base, color) {
@@ -1509,6 +1517,14 @@ export function buildGrandSalon({
   addWallReliefs(scene,brass,darkWood,stone,relief);
   ceilingOrnament(scene,brass,darkWood);
 
+  // Replaced legacy block props with sourced SVG iconography and bespoke 3D models.
+  addGreatHallDoors(scene,stone,darkWood,brass,colliders,interactables);
+  for(const side of [-1,1]){
+    createWallHarp(scene,side,darkWood,brass,colliders,interactables);
+    createWallDrum(scene,side,darkWood,brass,plasterMaterialFrom(stone),colliders,interactables);
+    createSpearDisplay(scene,side,darkWood,brass,ironMaterial(),colliders,interactables);
+  }
+
   const upholstery=new T.MeshStandardMaterial({
     color:0x65402f,
     roughness:.86,
@@ -1549,7 +1565,7 @@ export function buildGrandSalon({
   });
 
   addThoth(scene,marble,pale,brass,relief,walnut);
-  addBoxCollider(colliders,0,17.35,-.5,2.35,8.35,2.35);
+  addBoxCollider(colliders,0,17.75,-.5,2.7,9.2,2.7);
   interactables.push({
     name:'Estátua de Thoth',
     kind:'inspect',

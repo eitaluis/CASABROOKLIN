@@ -27,7 +27,7 @@ Módulo: src/character-accessories.js.
 
 ## Rig e compatibilidade
 
-- O módulo localiza o osso Hips pelo nome do rig; se não encontrar, mantém o acessório no root do modelo.
+- A bolsa localiza o osso Hips; corrente e medalhão localizam Spine2/Spine1/Chest/Spine. Se o osso adequado não existir, usam o root do modelo.
 - O corpo, a bolsa e o medalhão compartilham o mesmo root e a mesma origem.
 - O socket WeaponR do inventário deve permanecer intacto.
 - A integração usa a malha e o rig do Ara; não é um segundo esqueleto.

@@ -210,43 +210,13 @@ box('boca escura da lareira',[0,15.4,-8.48],[4.1,2.5,.08],new THREE.MeshStandard
 box('manto de pedra',[0,17.15,-8.85],[6.3,.42,1.15],stone,false);
 box('TV de plasma',[0,19.0,-9.05],[4.6,2.55,.2],new THREE.MeshStandardMaterial({color:0x090f12,metalness:.35,roughness:.15,emissive:0x101e22,emissiveIntensity:.75}),false);
 box('tela da TV',[0,19.0,-8.91],[4.35,2.3,.025],new THREE.MeshBasicMaterial({color:0x15242b}),false,false);
-const fireLight=new THREE.PointLight(0xff7d30,3.0,15,1.7);fireLight.position.set(0,15.0,-7.45);scene.add(fireLight);
-const fireOuterMat=new THREE.MeshBasicMaterial({color:0xf05a1a,transparent:true,opacity:.94,depthWrite:false});
-const fireInnerMat=new THREE.MeshBasicMaterial({color:0xffb32e,transparent:true,opacity:.96,depthWrite:false});
-const fireCoreMat=new THREE.MeshBasicMaterial({color:0xffe39a,transparent:true,opacity:.96,depthWrite:false});
-function addFireTongue(name,x,baseY,z,height,radius,material,tilt=0){
- const flame=new THREE.Mesh(new THREE.ConeGeometry(radius,height,12,3),material);
- flame.name=name;flame.position.set(x,baseY+height/2,z);flame.rotation.z=tilt;
- flame.castShadow=false;flame.receiveShadow=false;scene.add(flame);
- animated.push({obj:flame,fire:true,phase:Math.random()*Math.PI*2,baseY:flame.position.y,baseRotationZ:tilt,baseScaleY:1});
- return flame;
-}
-addFireTongue('chama principal da lareira',0,14.28,-8.15,1.62,.48,fireOuterMat,0);
-addFireTongue('chama lateral esquerda',-.62,14.30,-8.1,1.12,.34,fireOuterMat,.18);
-addFireTongue('chama lateral direita',.58,14.30,-8.12,1.28,.34,fireOuterMat,-.2);
-addFireTongue('núcleo amarelo da lareira',0,14.29,-8.0,.92,.23,fireInnerMat,0);
-addFireTongue('língua de fogo central',.08,14.3,-7.98,.64,.13,fireCoreMat,-.08);
-
-// Estátua central de Tot: figura de mármore negro com aproximadamente nove metros.
-const blackMarble=new THREE.MeshStandardMaterial({color:0x17191a,roughness:.32,metalness:.18,map:texCanvas((g,w,h)=>{g.fillStyle='#17191a';g.fillRect(0,0,w,h);for(let i=0;i<260;i++){g.strokeStyle=i%3?'#343638':'#786c5d';g.globalAlpha=.13;g.lineWidth=Math.random()*2+.3;g.beginPath();let x=Math.random()*w,y=Math.random()*h;g.moveTo(x,y);g.lineTo(x+Math.random()*80,y+Math.random()*16);g.stroke()}g.globalAlpha=1},256,256,1,1)});
-box('pedestal da estátua de Tot',[0,13.65,-.5],[3.0,.8,3.0],stone,false);
-const totBody=box('corpo de Tot em mármore negro',[0,16.45,-.5],[1.55,4.7,1.0],blackMarble,false);
-const totShoulders=box('ombros de Tot',[0,18.2,-.5],[2.1,.55,1.0],blackMarble,false);
-const totHead=new THREE.Mesh(new THREE.SphereGeometry(.78,20,16),blackMarble);totHead.position.set(0,19.15,-.5);totHead.scale.set(.78,1.1,.68);scene.add(totHead);
-const ibisNeck=cyl('pescoço de íbis de Tot',[0,20.1,-.5],.32,.38,1.25,blackMarble,16); 
-const ibisHead=new THREE.Mesh(new THREE.SphereGeometry(.43,16,12),blackMarble);ibisHead.position.set(0,20.8,-.48);ibisHead.scale.set(.78,.8,1.05);scene.add(ibisHead);
-const beak=cyl('bico longo de íbis',[0,20.55,.25],.16,.035,1.05,blackMarble,12);beak.rotation.x=Math.PI/2;beak.position.set(0,20.55,.22);
-const eyeMat=new THREE.MeshStandardMaterial({color:0xc6a45f,metalness:.55,roughness:.25,emissive:0x4b3412,emissiveIntensity:.3});
-for(const side of [-1,1]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.09,12,8),eyeMat);eye.position.set(side*.27,20.86,.05);scene.add(eye);const arm=box('braço ritual de Tot',[side*1.0,17.5,-.22],[.42,2.4,.42],blackMarble,false);arm.rotation.z=side*.28;}
-box('pergaminho na mão de Tot',[.95,16.9,.12],[.35,1.1,.28],new THREE.MeshStandardMaterial({color:0xd4c397,roughness:.9}),false);
-box('tábua de escrita na mão de Tot',[-1.0,17.0,.15],[.45,.85,.12],gold,false);
-const crown=cyl('coroa de Tot',[0,21.75,-.5],.56,.3,.42,gold,12);
-const totSpot=new THREE.SpotLight(0xe3c68e,32,24,Math.PI/5,.65,1.2);totSpot.position.set(-3,27,3);totSpot.target.position.set(0,17,-.5);scene.add(totSpot,totSpot.target);
+// Lareira, fogo volumétrico e estátua de Tot são finalizados em src/grand-salon.js.
+let fireLight = null;
 
 // Sofás de couro e tapete com padrão de escamas.
 const leather=new THREE.MeshStandardMaterial({color:0x59402f,roughness:.58});
 function sofa(x,z,rot=0){
- const group=new THREE.Group();group.position.set(x,13.45,z);group.rotation.y=rot;
+ const group=new THREE.Group();group.name='sofá legado do Grande Salão';group.position.set(x,13.45,z);group.rotation.y=rot;
  const frame=new THREE.Mesh(new THREE.BoxGeometry(5.35,.42,1.9),cedarMat);frame.position.y=.28;group.add(frame);
  const base=new THREE.Mesh(new THREE.BoxGeometry(5.12,.72,1.72),leather);base.position.y=.78;group.add(base);
  const back=new THREE.Mesh(new THREE.BoxGeometry(5.12,1.38,.38),leather);back.position.set(0,1.46,-.73);group.add(back);
@@ -264,12 +234,12 @@ function sofa(x,z,rot=0){
  scene.add(group);return group
 }
 sofa(-4,1.5,0);sofa(4,1.5,0);
-const rug=new THREE.Mesh(new THREE.PlaneGeometry(10,6),new THREE.MeshStandardMaterial({map:rugTex,roughness:1,side:THREE.DoubleSide}));rug.rotation.x=-Math.PI/2;rug.position.set(0,13.2,-1.3);scene.add(rug);
-box('mesa de centro',[0,13.65,-1.4],[3.2,.38,1.8],woodMat,false);cyl('pé mesa',[0,13.4,-1.4],.18,.3,.55,gold,12);
+const rug=new THREE.Mesh(new THREE.PlaneGeometry(10,6),new THREE.MeshStandardMaterial({map:rugTex,roughness:1,side:THREE.DoubleSide}));rug.name='tapete legado do Grande Salão';rug.rotation.x=-Math.PI/2;rug.position.set(0,13.2,-1.3);scene.add(rug);
+box('mesa de centro legado',[0,13.65,-1.4],[3.2,.38,1.8],woodMat,false);cyl('pé mesa legado',[0,13.4,-1.4],.18,.3,.55,gold,12);
 // Instrumentos musicais e armas antigas como decoração.
 function instrument(x,y,z,type){if(type==='harp'){const frame=box('harpa decorativa',[x,y,z],[.18,2.4,.42],cedarMat);frame.rotation.z=-.22;for(let i=0;i<9;i++)line([[x-.15+i*.035,y-1,z+.25],[x-.15+i*.035,y+1,z+.25]],gold,.012)}else if(type==='spear'){cyl('lança cerimonial',[x,y,z],.045,.045,2.9,woodMat,8);const p=new THREE.Mesh(new THREE.ConeGeometry(.13,.48,8),gold);p.position.set(x,y+1.62,z);scene.add(p)}else{cyl('tambor decorativo',[x,y,z],.42,.42,.65,woodMat,16);cyl('pele do tambor',[x,y+.34,z],.42,.42,.06,plaster,16)}}
 for(let x of [-12,12]){instrument(x,19.5,-9.35,'harp');instrument(x,21.0,9.1,'spear');instrument(x,17.2,-9.35,'drum')}
-for(let z of [-7,7]){addStatue(-12,13.1,z,0);addStatue(12,13.1,z,1)}
+// As pequenas estátuas geométricas foram removidas; a decoração escultórica é criada em grand-salon.js.
 // Biblioteca circular subterrânea, escavada na rocha.
 const libCenterY=-12.5,libFloor= -17.4,libRadius=12.5;
 const rockMat=new THREE.MeshStandardMaterial({color:0x82735e,map:concrete,roughness:.94,side:THREE.DoubleSide});

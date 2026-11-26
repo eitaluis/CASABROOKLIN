@@ -145,6 +145,7 @@ function addOutfit(root) {
 function makeFallbackFigure(scene) {
   const root = new THREE.Group();
   root.name = 'BrooklynHouse_PlayerFallback';
+  root.scale.set(0.94, 0.86, 0.94);
   scene.add(root);
   const joints = {};
   const sphere = (name, parent, size, pos, material) => {

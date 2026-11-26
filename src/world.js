@@ -294,5 +294,5 @@ for(let x of [-8,0,8])for(let z of [-6,5]){const lamp=new THREE.PointLight(0xffd
  library:{label:'BIBLIOTECA SUBTERRÂNEA',pos:[0,-17.4,2.5],yaw:0,bounds:[-10.8,10.8,-10.8,10.8],base:-17.4},
  bedroom:{label:'ALA DOS QUARTOS',pos:[25,17.275,2.5],yaw:0,bounds:[19.3,32.2,-5.5,5.5],base:17.275}
 };
-return {zones,groundSurfaces,water,fireLight,spiralStair:{centerX:stairCenter.x,centerZ:stairCenter.y,radius:stairRadius,bottomY:.08,topY:.08+stairRise,startAngle:-Math.PI/2,totalAngle:(stairCount-1)*.195}};
+return {zones,groundSurfaces,water,fireLight,spiralStair:{centerX:stairCenter.x,centerZ:stairCenter.y,radius:stairRadius,bottomY:.08,topY:13.0,startAngle:-Math.PI/2,totalAngle:(stairCount-1)*.195}};
 }

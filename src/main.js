@@ -194,6 +194,8 @@ const inventory = createInventory({
   }
 });
 
+let lookingAtInspectedObject = false;
+
 function interactWithNearby() {
   const p = controller.getPosition();
   let nearest = null;
@@ -206,9 +208,14 @@ function interactWithNearby() {
     }
   }
   if (nearest) {
+    // O pescoço e a cabeça acompanham o objeto examinado; hero.update() aplica o easing.
+    character.lookAt?.(nearest.position, { amount: 0.82, smoothing: 0.42 });
+    lookingAtInspectedObject = true;
     const result = typeof nearest.onInteract === 'function' ? nearest.onInteract() : null;
     toast(result || nearest.description || nearest.label || nearest.name);
   } else {
+    character.lookAt?.(null);
+    lookingAtInspectedObject = false;
     toast('Não há nenhum objeto próximo para examinar.');
   }
 }
@@ -270,7 +277,11 @@ function drawMap() {
 function animate() {
   requestAnimationFrame(animate);
   const dt = Math.min(clock.getDelta(), 0.04);
-  controller.update(dt);
+  const movementState = controller.update(dt);
+  if (lookingAtInspectedObject && movementState?.speed > 0.25) {
+    character.lookAt?.(null);
+    lookingAtInspectedObject = false;
+  }
   const time = clock.elapsedTime;
   for (const item of animated) {
     if (item.spin) item.obj.rotation.z = time * 0.18;

@@ -31,11 +31,14 @@ const AVAILABLE_CINEMATIC_ANIMATIONS = CINEMATIC_ANIMATIONS.filter((id) => ARA_A
 
 export async function createCharacter({
   scene,
+  characterSource = CARTER_SHARE_URL,
+  characterName = 'Carter Kane',
+  attachCarterAccessories = true,
   onModeChange = () => {},
   onActionChange = () => {}
 }) {
   const loading = document.getElementById('loading');
-  const hero = await createAraCharacter(CARTER_SHARE_URL, {
+  const hero = await createAraCharacter(characterSource, {
     // The saved Ara share originally included a backpack. Remove that built-in
     // carried prop; Carter now uses only the custom side satchel below.
     carry: 'none',
@@ -70,10 +73,10 @@ export async function createCharacter({
   hero.scene.rotation.y = Math.PI;
 
   // Acessórios originais: bolsa no quadril direito, alça cruzada e medalhão.
-  const accessories = createCarterAccessories({
+  const accessories = attachCarterAccessories ? createCarterAccessories({
     characterRoot: hero.scene,
     height: hero.height || 1.75
-  });
+  }) : null;
 
   function clearJumpListener() {
     if (finishJump) mixer.removeEventListener('finished', finishJump);
@@ -178,10 +181,11 @@ export async function createCharacter({
       if (!disposed && typeof hero.setExpression === 'function') hero.setExpression(expression, amount);
     },
     height: hero.height || 1.75,
-    locomotionName: 'Carter Kane · Ara 3D · Cinematic',
+    characterName,
+    locomotionName: characterName + ' · Ara 3D · Cinematic',
     availableActions: AVAILABLE_CINEMATIC_ANIMATIONS.slice(),
     get action() { return currentAction; },
-    accessoryAttachment: accessories.attachment,
+    accessoryAttachment: accessories?.attachment || 'none',
     updateFallback(dt, speed) {
       if (disposed) return;
       movementSpeed = speed;
@@ -193,7 +197,7 @@ export async function createCharacter({
       if (!jumping && !actionSequence) locomotion.speed = speed;
       mixer.update(dt);
       hero.update(dt);
-      accessories.update(dt, movementSpeed);
+      accessories?.update(dt, movementSpeed);
     },
     resetFallback() {
       if (disposed) return;
@@ -219,7 +223,7 @@ export async function createCharacter({
       jumpSequence = null;
       actionSequence = null;
       mixer.stopAllAction();
-      accessories.dispose();
+      accessories?.dispose();
       hero.dispose();
       root.removeFromParent();
     }

@@ -419,7 +419,7 @@ export function buildGrandSalon({ THREE: T, scene, animated=[] }) {
   for(const side of [-1,1]){
     const flights=[
       {centerX:side*10.35,baseY:13.175,topY:16.875,startZ:7.35,direction:-1,width:2.38},
-      {centerX:side*8.55,baseY:16.875,topY:20.625,startZ:-.91,direction:1,width:1.42},
+      {centerX:side*8.5,baseY:16.875,topY:20.625,startZ:-.91,direction:1,width:1.3},
       {centerX:side*12.25,baseY:20.625,topY:24.375,startZ:7.35,direction:-1,width:1.35}
     ];
     for(const flight of flights) stairRamps.push(stairFlight(scene,stone,pale,brass,darkWood,flight));

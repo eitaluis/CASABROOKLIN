@@ -163,11 +163,13 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
 
   const hipsBone = findBone(characterRoot, ['hips', 'mixamorighips', 'hip']);
   const chestBone = findBone(characterRoot, ['spine2', 'mixamorigspine2', 'spine1', 'mixamorigspine1', 'chest', 'spine']);
-  if (hipsBone) hipsBone.attach(bagRoot);
-  if (chestBone) {
-    chestBone.attach(strapRoot);
-    chestBone.attach(necklaceRoot);
+  if (hipsBone) {
+    hipsBone.attach(bagRoot);
+    // A alça termina no mesmo pivô da bolsa: a conexão não se perde quando o
+    // tronco gira ou quando o personagem caminha, corre e salta.
+    hipsBone.attach(strapRoot);
   }
+  if (chestBone) chestBone.attach(necklaceRoot);
 
   function addMesh(geometry, material, parent, name) {
     geometries.add(geometry);
@@ -193,15 +195,15 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
   // The strap crosses the chest, rounds the character's right flank and
   // returns to the satchel at the back of the right hip.
   const strapCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0.145 * unit, 0.835 * height, 0.115 * unit),
-    new THREE.Vector3(0.125 * unit, 0.765 * height, 0.135 * unit),
-    new THREE.Vector3(0.045 * unit, 0.665 * height, 0.135 * unit),
-    new THREE.Vector3(-0.095 * unit, 0.555 * height, 0.125 * unit),
-    new THREE.Vector3(-0.205 * unit, 0.475 * height, 0.105 * unit),
-    new THREE.Vector3(-0.255 * unit, 0.425 * height, 0.045 * unit),
-    new THREE.Vector3(-0.265 * unit, 0.405 * height, -0.035 * unit),
-    new THREE.Vector3(-0.265 * unit, 0.405 * height, -0.105 * unit),
-    new THREE.Vector3(-0.255 * unit, 0.415 * height, -0.155 * unit)
+    new THREE.Vector3(0.145 * unit, 0.835 * height, 0.165 * unit),
+    new THREE.Vector3(0.125 * unit, 0.765 * height, 0.185 * unit),
+    new THREE.Vector3(0.045 * unit, 0.665 * height, 0.19 * unit),
+    new THREE.Vector3(-0.095 * unit, 0.555 * height, 0.185 * unit),
+    new THREE.Vector3(-0.17 * unit, 0.49 * height, 0.15 * unit),
+    new THREE.Vector3(-0.205 * unit, 0.465 * height, 0.07 * unit),
+    new THREE.Vector3(-0.21 * unit, 0.455 * height, -0.005 * unit),
+    new THREE.Vector3(-0.21 * unit, 0.455 * height, -0.065 * unit),
+    new THREE.Vector3(-0.205 * unit, 0.455 * height, -0.09 * unit)
   ]);
   const strapWidth = 0.038 * unit;
   const strapMaterial = new THREE.MeshStandardMaterial({
@@ -221,12 +223,12 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
     strapRoot,
     'CarterBagStrapAdjuster'
   );
-  adjuster.position.set(0.102 * unit, 0.73 * height, 0.151 * unit);
+  adjuster.position.set(0.102 * unit, 0.73 * height, 0.201 * unit);
 
   // Anatomical right / posterior placement: local -X and local -Z.
   const bagPivot = new THREE.Group();
   bagPivot.name = 'CarterRightHipSatchelPivot';
-  bagPivot.position.set(-0.245 * unit, 0.375 * height, -0.135 * unit);
+  bagPivot.position.set(-0.20 * unit, 0.39 * height, -0.09 * unit);
   bagPivot.rotation.y = -Math.PI / 2;
   bagPivot.rotation.z = -0.055;
   bagRoot.add(bagPivot);
@@ -303,7 +305,8 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
   topRing.rotation.x = Math.PI / 2;
 
   // Keep the pendant design intact, but pull the chain and medallion closer to the chest surface.
-  const necklaceInset = 0.045 * unit;
+  // O sinal positivo desloca a corrente para fora da camisa, não para dentro do tórax.
+  const necklaceInset = -0.025 * unit;
   const necklaceCurve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-0.105 * unit, 0.86 * height, 0.125 * unit - necklaceInset),
     new THREE.Vector3(-0.092 * unit, 0.795 * height, 0.155 * unit - necklaceInset),
@@ -393,7 +396,7 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
     update,
     dispose,
     attachment: (hipsBone ? 'hips-bone' : 'model-root')
-      + ' + strap-' + (chestBone ? 'chest-bone' : 'model-root')
+      + ' + strap-' + (hipsBone ? 'hips-bone' : 'model-root')
       + ' + necklace-' + (chestBone ? 'chest-bone' : 'model-root')
   };
 }

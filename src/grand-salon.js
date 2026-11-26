@@ -1440,29 +1440,53 @@ function addModernTelevision(scene,brass,colliders,interactables) {
   group.name='televisor moderno emoldurado no Grande Salão';
   group.position.set(0,19.0,-8.98);
 
-  const shellMat=new THREE.MeshPhysicalMaterial({color:0x171b1c,metalness:.58,roughness:.32,clearcoat:.55,clearcoatRoughness:.22});
-  const glassMat=new THREE.MeshPhysicalMaterial({color:0x080d10,metalness:.38,roughness:.12,clearcoat:1,clearcoatRoughness:.08,emissive:0x071014,emissiveIntensity:.28});
+  const shellMat=new THREE.MeshPhysicalMaterial({
+    color:0x171b1c,metalness:.58,roughness:.32,
+    clearcoat:.55,clearcoatRoughness:.22
+  });
+  const glassMat=new THREE.MeshPhysicalMaterial({
+    color:0x080d10,metalness:.38,roughness:.12,
+    clearcoat:1,clearcoatRoughness:.08,
+    emissive:0x02060a,emissiveIntensity:.025
+  });
   const shell=new THREE.Mesh(new RoundedBoxGeometry(4.72,2.58,.2,8,.09),shellMat);
-  shell.name='moldura metálica arredondada da TV';shell.castShadow=true;group.add(shell);
+  shell.name='moldura metálica arredondada da TV';
+  shell.castShadow=true;group.add(shell);
 
   const screen=new THREE.Mesh(new RoundedBoxGeometry(4.48,2.32,.06,8,.025),glassMat);
-  screen.name='painel de vidro refletivo da TV';screen.position.z=.115;group.add(screen);
+  screen.name='painel de vidro refletivo da TV';
+  screen.position.z=.115;group.add(screen);
 
   const innerRim=new THREE.Mesh(new THREE.RingGeometry(2.08,2.14,96,1),brass);
-  innerRim.name='filete de bronze sob a tela';innerRim.position.set(0,-1.205,.115);innerRim.scale.set(1,.065,1);group.add(innerRim);
+  innerRim.name='filete de bronze sob a tela';
+  innerRim.position.set(0,-1.205,.115);
+  innerRim.scale.set(1,.065,1);group.add(innerRim);
 
-  const sensor=new THREE.Mesh(new THREE.SphereGeometry(.035,12,10),new THREE.MeshBasicMaterial({color:0xd7ac67,emissive:0x8b642b,emissiveIntensity:.3}));
+  const sensorMat=new THREE.MeshBasicMaterial({color:0x3c3429});
+  const sensor=new THREE.Mesh(new THREE.SphereGeometry(.035,12,10),sensorMat);
   sensor.position.set(2.24,-1.17,.16);group.add(sensor);
+
+  let powered=false;
+  const togglePower=()=>{
+    powered=!powered;
+    glassMat.emissive.setHex(powered?0x0c3448:0x02060a);
+    glassMat.emissiveIntensity=powered?.72:.025;
+    sensorMat.color.setHex(powered?0x8de0c1:0x3c3429);
+    group.userData.powered=powered;
+    return powered?'A tela de plasma acendeu com uma luz azul discreta.':'A televisão foi desligada; o vidro voltou a refletir a sala.';
+  };
 
   scene.add(group);
   interactables.push({
     name:'Televisor do Grande Salão',
-    kind:'inspect',
+    kind:'toggle',
     label:'TV acima da lareira',
-    description:'A tela moderna contrasta com o manto de pedra e a arquitetura egípcia da sala',
+    description:'A tela moderna contrasta com o manto de pedra e a arquitetura egípcia da sala.',
     position:new THREE.Vector3(0,19.0,-8.4),
-    radius:6.5
+    radius:6.5,
+    onInteract:togglePower
   });
+  addBoxCollider(colliders,0,19.0,-8.98,4.65,2.5,.28);
   return group;
 }
 

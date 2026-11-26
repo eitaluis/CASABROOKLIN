@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -191,7 +191,7 @@
     {
       "id": "carter-cinematic-actions-and-motion",
       "path": "src/character.js + src/third-person.js",
-      "role": "integração de ações look_around, talk_gestures, wave, point e bow após consulta ao catálogo Ara; suavização da aceleração, desaceleração, rotação corporal, inclinação lateral e easing da câmera no controlador comum desktop/mobile",
+      "role": "integração das ações look_around, talk_gestures, wave, point e bow após consulta ao catálogo Ara; suavização da aceleração, desaceleração, rotação corporal, inclinação lateral e easing da câmera; Carter também direciona cabeça e pescoço ao objeto examinado por E/INTERAGIR; tudo no controlador comum desktop/mobile",
       "license": "project-original-code; os clips do personagem permanecem sujeitos aos termos de Ara/CMU descritos em openSourceReferences"
     }
   ],
@@ -443,6 +443,13 @@
       "source": "https://ambientcg.com/view?id=WoodFloor001",
       "license": "CC0-1.0",
       "role": "reviewed PBR wood-floor candidate for the training room; not downloaded or imported, current floor uses original procedural canvas color and bump maps",
+      "runtimeImported": false
+    },
+    {
+      "id": "carter-blender-accessories-source",
+      "source": "assets/models/carter/blender/create_carter_accessories.py",
+      "license": "project-original-code",
+      "role": "script-fonte editável para gerar bolsa transversal, alça, ferragens e medalhão no Blender; ferramenta de lookdev, não carregada no runtime",
       "runtimeImported": false
     }
   ]

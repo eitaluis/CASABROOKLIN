@@ -2,92 +2,73 @@
 
 Este documento separa assets com licença aberta, referências técnicas e o que está realmente carregado no runtime.
 
-## 1. Personagem — runtime atual e opções de substituição
+## 1. Personagem — runtime atual e direção aprovada
 
-O Carter em runtime é construído pela biblioteca **Ara 3D Gen** usando o link compartilhado em `src/character.js`. O personagem é gerado/carregado como rig humanoide com as animações solicitadas; o projeto não mantém um GLB binário local desse modelo atualmente.
+O Carter em runtime ainda é construído pela biblioteca **Ara 3D Gen** usando o link compartilhado em src/character.js. O personagem não foi substituído. A direção visual C — Game 3D gráfico — foi aprovada, mas a malha/rig final ainda passa por avaliação.
+
+**Direção aprovada para Carter**
+- Personagem 3D de videogame, estilizado e gráfico, com silhueta atlética e formas legíveis.
+- Rosto humano natural; sem estética anime, olhos exagerados, chibi ou realismo de escaneamento.
+- Corpo jovem e ágil, pele negra e cabelo crespo escuro.
+- Camisa azul, calça cáqui e bolsa transversal no quadril direito.
+- Desktop e mobile compartilham o mesmo modelo, rig, assets e animações.
 
 **Ara 3D Gen / ara3d**  
 https://ara3dgen.com/docs/library/  
 https://github.com/ara3d/ara3d  
-Biblioteca: MIT. A documentação informa que os personagens usam dados-base CC0 do MakeHuman e animações da CMU Graphics Lab Motion Capture Database. O rig inclui um osso `WeaponR`, sob a mão direita, destinado ao encaixe de armas. O projeto usa esse socket para o cajado e o khopesh do inventário. A disponibilidade dos dados de personagem depende do CDN Ara, salvo se os assets forem hospedados localmente.
+Biblioteca: MIT. A documentação informa que os personagens usam dados-base CC0 do MakeHuman e animações da CMU Graphics Lab Motion Capture Database. O rig inclui um osso WeaponR, sob a mão direita, destinado ao encaixe de armas. O projeto usa esse socket para o cajado e o khopesh. A disponibilidade do modelo atual depende do CDN Ara, salvo se o asset for hospedado localmente. Avaliar se uma saída menos realista pode ser obtida sem prejudicar rosto e rig.
 
-**CharacterCreator — kblood**  
-https://github.com/kblood/CharacterCreator  
-https://dionysus.dk/webxr/charactercreator/  
-Código GPL-3.0-or-later; os GLBs gerados com fontes CC0 e dados próprios são publicados pelo projeto como CC0-1.0. Ferramenta baseada em MakeHuman/MPFB com sliders corporais e faciais, opções de cabelo, vestuário, animações procedurais e exportação GLB. Está documentada como alternativa em avaliação, não integrada no runtime.
+**Quaternius — Universal Base Characters**  
+https://quaternius.com/packs/universalbasecharacters.html  
+Licença CC0-1.0. Seis bases humanoides em proporções Teen/Regular/Superhero, vinte cabelos, rig humanoide e formatos FBX/glTF/Blend; média anunciada de aproximadamente 13 mil triângulos. Primeiro candidato técnico para testar a direção aprovada e retarget. Não está no runtime. Inspecionar a geometria facial do modelo Teen para evitar aparência low-poly facetada demais.
 
 **MPFB 2 / MakeHuman Community**  
 https://github.com/makehumancommunity/mpfb2  
 https://static.makehumancommunity.org/mpfb.html  
-Código do add-on GPL-3.0; os assets centrais do sistema MakeHuman são CC0-1.0. Permite personalizar rosto, corpo, assimetria, cabelo, roupas e rig antes de exportar o GLB. Alternativa recomendada para um Carter altamente personalizado em Blender.
+Código do add-on GPL-3.0; assets centrais do sistema MakeHuman CC0-1.0. Permite personalizar rosto, corpo, cabelo, roupas e rig antes de exportar GLB. Alternativa caso a base Quaternius não ofereça rosto natural suficiente; não está no runtime.
 
-**Quaternius — Universal Base Characters**  
-https://quaternius.com/packs/universalbasecharacters.html  
-Licença CC0-1.0. Seis bases humanoides com proporções Teen/Regular/Superhero, vinte cabelos, rig humanoide e formatos FBX/glTF. Alternativa de aparência mais estilizada e menor custo gráfico.
+**CharacterCreator — kblood**  
+https://github.com/kblood/CharacterCreator  
+https://dionysus.dk/webxr/charactercreator/  
+Código GPL-3.0-or-later; o projeto declara CC0-1.0 para GLBs gerados exclusivamente com fontes CC0 e dados próprios. Ferramenta de personalização e exportação GLB em avaliação; não está integrada no runtime.
 
-As opções e os critérios de escolha estão detalhados em `docs/CHARACTER-OPTIONS.md`. Nenhum modelo substituto será integrado antes da escolha e da validação de rig, textura, licença e animações.
+## 2. Bolsa transversal — asset aprovado, integração pendente
 
-**Grab3D Character Mixer**  
-https://grab3d.com/tools/character-mixer/  
-Licença: CC0 1.0 para personagens exportados. Referência adicional de asset pipeline; não está carregado no runtime.
+**Innerscene — Crossbody Bag**  
+https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2  
+GLB de 3,5 MB. Licença CC0; uso, modificação e redistribuição permitidos, inclusive comercialmente. Corpo em couro conhaque, aba frontal e fecho de latão.  
+**Posição decidida:** quadril direito de Carter, com a alça cruzando o peito.  
+A descrição do asset observa que a alça está disposta atrás da bolsa num laço no chão. Portanto, o formato do corpo da bolsa foi aprovado, mas a alça deverá ser refeita/ajustada para vestir o personagem. O GLB ainda não foi baixado nem integrado no runtime.
 
-**Grab3D Teenager**  
-https://grab3d.com/models/characters/teen-character/  
-Licença: CC0 1.0. Modelo adolescente e rigged; referência de proporções juvenis, não carregado no runtime.
+## 3. Locomoção e animação
 
-**giaBaoJS — Procedural 3D Characters**  
-https://github.com/giaBaoJS/procedural-3d-characters  
-Licença: MIT. Referência para geração procedural de malha, rig e keyframes em Three.js.
+A inspiração de Naruto se limita à mecânica corporal: agilidade, inclinação do tronco, braços ativos, passadas, aceleração e saltos. O Carter continua com rosto e corpo humano natural em 3D, sem imitar o desenho 2D do anime.
 
-## 2. Locomoção e animação
+**Quaternius — Universal Animation Library**  
+https://quaternius.itch.io/universal-animation-library  
+Licença: CC0-1.0. Mais de 120 animações num rig humanoide universal, incluindo locomoção em oito direções, jog, sprint, combate e emotes. Inclui versões com e sem root motion e permite retarget em rigs comuns, como Mixamo. Principal conjunto a testar para locomoção do novo Carter; ainda não integrado.
+
+**Quaternius — Universal Animation Library 2**  
+https://quaternius.itch.io/universal-animation-library-2  
+Licença: CC0-1.0. Mais de 130 animações complementares, incluindo parkour e combos. Avaliar como complemento para saltos e ações atléticas; ainda não integrado.
+
+**KinemIQ — Free Game Animations**  
+https://github.com/Kinemiq/free-game-animations  
+Licença: CC0-1.0. Repositório com 35 clips humanoides em FBX/GLB, incluindo idle, walk, run, sprint, jump take-off/air/landing, climb, roll e espada. Rig humanoide de 66 ossos a 30 fps. Alternativa prática para testar retarget; ainda não integrado.
 
 **three-procedural-locomotion**, de Pablo Mesquida  
 https://github.com/PabloMesquida/three-procedural-locomotion  
-Licença: MIT. Referência técnica para cadência, trajetória do pé, IK, aceleração, curvas, caminhada e corrida. A versão atual do Carter usa a locomoção da biblioteca Ara 3D Gen; o controlador do jogo envia a velocidade e aplica lean corporal adicional durante a corrida.
+Licença: MIT. Referência técnica para cadência, trajetória do pé, IK, aceleração, curvas e caminhada/corrida. O controlador do jogo deverá combinar clips baked e ajustes procedurais leves, sem trocar de animação abruptamente.
 
-**Grab3D Character Mixer** também documenta clips de idle (2 s), walk (1 s), run (0,67 s), wave e jump num rig de 19 ossos. Fonte útil para uma futura troca por personagem skinned com animações baked.
-
-**Quaternius — Universal Animation Library**  
-https://quaternius.itch.io/universal-animation-library  
-Licença anunciada: CC0 1.0. Opção futura para gestos e ações especiais.
-
-**KinemIQ — Free Game Animations**  
-https://github.com/Kinemiq/free-game-animations  
-Licença anunciada: CC0 1.0. Opção futura para clipes de idle, walk, run, sprint, crouch, jump, climb e pick-up.
-
-## 3. Motor 3D e carregamento
+## 4. Motor 3D e carregamento
 
 **Three.js**  
 https://github.com/mrdoob/three.js  
-Licença: MIT  
-Utilização: renderização WebGL, geometrias, materiais, iluminação, câmera e GLTFLoader.
+Licença: MIT. Renderização WebGL, geometria, materiais, iluminação, câmera, animação e GLTFLoader.
 
-## 4. Alternativas pesquisadas para animações futuras
+## 5. Exterior industrial cinematográfico — primeira integração
 
-**Quaternius — Universal Animation Library**  
-https://quaternius.itch.io/universal-animation-library  
-Licença anunciada: CC0 1.0  
-120+ animações humanoides, com locomoção em oito direções, corrida, sprint, rastejar, nadar, sentar, gestos e combate. Não é a fonte da marcha atual: fica como alternativa para gestos, interações e animações especiais futuras.
-
-**KinemIQ — Free Game Animations**  
-https://github.com/Kinemiq/free-game-animations  
-Licença anunciada: CC0 1.0  
-35 animações humanoides em GLB/FBX, incluindo idle, walk, run, sprint, crouch, jump, climb e pick-up. Não é usada no runtime atual; fica como alternativa futura para gestos, interações e animações especiais.
-
-**OpenGameArt — Animated Human Low Poly (Quaternius)**  
-https://opengameart.org/content/animated-human-low-poly  
-Licença anunciada na página: CC0. Alternativa para uma personagem low-poly com animações baked.
-
-## 5. Notas de manutenção
-
-- A versão da biblioteca de locomoção está fixada em `v0.9.0` para reduzir mudanças inesperadas.
-- Os assets remotos dependem de disponibilidade dos serviços de CDN e do repositório de origem.
-- Para uma versão offline, os binários deverão ser copiados para `assets/models/` após revisão das licenças e dos avisos de atribuição.
-- A biblioteca Ara 3D Gen é MIT; conferir também as condições e a proveniência dos dados de personagem e animação usados em cada export.
-
-## 6. Exterior industrial cinematográfico — primeira integração
-
-A primeira etapa do exterior foi construída com geometria procedural original em `src/world.js`, usando os kits abaixo como referências de linguagem e escala. Os modelos dos pacotes não foram importados diretamente: a cena precisa manter orçamento de geometria e carregamento compatível com desktop e celular.
+A primeira etapa do exterior foi construída com geometria procedural original em src/world.js, usando os kits abaixo como referências de linguagem e escala. Os modelos dos pacotes não foram importados diretamente: a cena precisa manter orçamento de geometria e carregamento compatível com desktop e celular.
 
 **Kenney — City Kit Industrial**  
 https://kenney.nl/assets/city-kit-industrial  

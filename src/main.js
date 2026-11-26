@@ -3,7 +3,7 @@ import { buildWorld } from './world.js?v=warehouse-only-perception-20261126a';
 import { buildExterior } from './exterior.js?v=warehouse-only-perception-20261126a';
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-final-pass-20261126a';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-final-pass-20261126c';
-import { buildTrainingRoom } from './training-room.js?v=training-room-combat-20261126a';
+import { buildTrainingRoom } from './training-room.js?v=training-room-polish-20261126a';
 import { createInventory } from './inventory.js?v=duat-inventory-20261126c';
 import { createCharacter } from './character.js?v=carter-side-satchel-20261126f';
 import { createThirdPersonController } from './third-person.js?v=warehouse-only-perception-20261126a';
@@ -344,7 +344,7 @@ function animate() {
   if(nearbyTrainingItem){
     let prompt=typeof nearbyTrainingItem.prompt==='function'?nearbyTrainingItem.prompt():nearbyTrainingItem.prompt;
     if(!prompt)prompt=nearbyTrainingItem.label||nearbyTrainingItem.name;
-    if(isTouchDevice)prompt=String(prompt).replace(/E\\s*\\/\\s*INTERAGIR/gi,'TOQUE · INTERAGIR').replace(/E\\s*·/gi,'TOQUE ·').replace(/F\\s*\\/\\s*USAR/gi,'BOTÃO USAR');
+    if(isTouchDevice)prompt=String(prompt).replaceAll('E / INTERAGIR','TOQUE · INTERAGIR').replaceAll('E ·','TOQUE ·').replaceAll('F / USAR','BOTÃO USAR');
     interactionPrompt.textContent=prompt;
     interactionPrompt.hidden=false;
   }else{

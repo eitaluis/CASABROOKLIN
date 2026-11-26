@@ -6,7 +6,7 @@ import { buildInteriorDetails } from './interior-details.js?v=great-hall-atrium-
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-atrium-20261126d';
 import { buildTrainingRoom } from './training-room.js?v=ha-di-shabti-respawn-20261126b';
 import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
-import { createMagicSystem } from './magic-system.js?v=ha-di-prototype-20261126d';
+import { createMagicSystem } from './magic-system.js?v=ha-di-prototype-20261126e';
 import { createCharacter } from './character.js?v=ha-di-hand-pose-20261126b';
 import { createThirdPersonController } from './third-person.js?v=duat-input-lock-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';

@@ -2222,6 +2222,15 @@ export function buildGrandSalon({
       direction:-1,width:1.65,depth:.53,count:18,landingWidth:2.45
     });
     stairRamps.push(topFlight);walkablePlatforms.push(topFlight.landingPlatform);
+    const topConnector=new THREE.Mesh(new RoundedBoxGeometry(2.95,.34,1.55,8,.04),stone);
+    topConnector.name='patamar inferior de acesso à escadaria superior';
+    topConnector.position.set(side*12.55,20.455,7.8);
+    topConnector.castShadow=true;topConnector.receiveShadow=true;scene.add(topConnector);
+    groundSurfaces?.push(topConnector);
+    walkablePlatforms.push({
+      minX:side<0?-14.0:11.1,maxX:side<0?-11.1:14.0,
+      minZ:7.02,maxZ:8.58,height:20.625
+    });
   }
   addCentralCrossBridge(scene,stone,railWood,brass,groundSurfaces,walkablePlatforms);
 

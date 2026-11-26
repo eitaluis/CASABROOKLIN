@@ -862,7 +862,8 @@ export function buildTrainingRoom({
   // As miniaturas seguem a forma histórica de um shabti mumiiforme; a animação desperta o guerreiro do romance.
   const shabtiMiniScale=.085;
   const shabtiFullScale=.82;
-  const combatBounds={minX:room.minX+1.45,maxX:eastWallX-1.0,minZ:room.minZ+1.7,maxZ:room.maxZ-1.7};
+  // Faixas junto aos muros e às duas efígies de Rá ficam reservadas para decoração; IA permanece na quadra útil.
+  const combatBounds={minX:room.minX+2.8,maxX:eastWallX-2.65,minZ:room.minZ+4.8,maxZ:room.maxZ-4.8};
   const shabtiTemplate=new THREE.Group();shabtiTemplate.name='shabti mumiiforme de faiança azul-esverdeada';
   function shabtiMesh(parent,name,geometry,material,pos,scale=null){
     const mesh=new THREE.Mesh(geometry,material);mesh.name=name;mesh.position.set(pos[0],pos[1],pos[2]);

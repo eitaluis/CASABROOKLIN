@@ -6,7 +6,7 @@ Todo novo objeto ou espaço deve seguir [ASSET-FIRST-ROOM-BUILDING.md](ASSET-FIR
 
 ## Personagem Carter — runtime híbrido
 
-**Ara 3D Gen** — https://github.com/ara3d/ara3d — pacote JavaScript MIT; os personagens usam dados-base CC0 do MakeHuman e clips da base CMU descrita na documentação do Ara.
+**Ara 3D Gen** — https://github.com/olatunde85/3d-gen — pacote JavaScript MIT; os dados de personagem usam MakeHuman CC0 e os clips de captura de movimento vêm da base CMU, livres para uso comercial conforme a licença/documentação do projeto.
 - O corpo, rosto, cabelo, rig e clips principais preservam o Carter aprovado no share salvo do Ara.
 - src/character.js carrega idle, walk, run e a sequência de salto, além de consultar ANIMATIONS para selecionar ações cinematográficas disponíveis (look_around, talk_gestures, wave, point e bow).
 - src/character-accessories.js acrescenta geometria original do projeto: bolsa de couro conhaque, alça do ombro esquerdo ao quadril direito, ferragens e medalhão; bolsa presa à pelve e colar preso ao alto do tronco. Não utiliza um GLB de terceiro.

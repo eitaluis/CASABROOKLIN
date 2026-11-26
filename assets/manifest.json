@@ -19,18 +19,6 @@
   ],
   "localGeneratedAssets": [
     {
-      "id": "carter-crossbody-satchel",
-      "path": "src/character.js",
-      "role": "corpo, aba, ferragens e alça plana da bolsa transversal no quadril direito; geometria local inspirada na referência CC0 Innerscene, não é o GLB original",
-      "license": "project-original-code"
-    },
-    {
-      "id": "carter-game-motion-adapter",
-      "path": "src/character.js",
-      "role": "ponte da locomoção Ara para o controlador terceiro-pessoa, balanço sutil da bolsa e sequência de salto",
-      "license": "project-original-code"
-    },
-    {
       "id": "great-hall-cinematic-decor",
       "path": "src/interior-details.js",
       "role": "procedural bronze chandelier, wall sconces, carved plaques, Egyptian banners and furniture detailing",
@@ -50,8 +38,14 @@
     },
     {
       "id": "great-hall-layered-fire",
-      "path": "src/world.js",
-      "role": "procedural layered fireplace flames and flicker animation",
+      "path": "src/grand-salon.js",
+      "role": "organic layered flame meshes with vertex-colour gradients, log/ember bed, sparks and animated point lighting",
+      "license": "project-original-code"
+    },
+    {
+      "id": "great-hall-sculpted-finish",
+      "path": "src/grand-salon.js",
+      "role": "sculpted Thoth ibis-headed statue, fluted lotus columns, twin stair flights, turned balustrades, textured stone/wood materials, softened sofas, oval woven rug and carved wall/ceiling reliefs",
       "license": "project-original-code"
     }
   ],
@@ -62,13 +56,6 @@
       "license": "MIT-library-CC0-MakeHuman-base-and-animations",
       "role": "runtime: geração de malha humana contínua, skin weights, game rig, WeaponR e clips idle/walk/run/jump",
       "runtimeImported": true
-    },
-    {
-      "id": "innerscene-crossbody-bag",
-      "source": "https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2",
-      "license": "CC0-1.0",
-      "role": "approved CC0 visual reference; GLB not imported; custom local body and flat strap geometry recreated and fitted to Carter right hip",
-      "runtimeImported": false
     },
     {
       "id": "mesh2motion-human-animations",
@@ -99,10 +86,10 @@
       "runtimeImported": false
     },
     {
-      "id": "quaternius-casual-2-character-study",
-      "source": "https://github.com/LuanDucate/Ducz.CharacterCreator/blob/main/public/models/Male/Casual_2.glb",
+      "id": "mia-thoth-ibis-statue-reference",
+      "source": "https://sketchfab.com/3d-models/thoth-c-644-bce-30-ce-394a94722862460e8cefab54b4bed7bf",
       "license": "CC0-1.0",
-      "role": "isolated Carter design candidate: Quaternius Ultimate Modular Men Casual_2 GLB; loaded by carter-study.html via CDN pinned to Ducz repository commit fcd215b58eec5c9ed97d0ba5f696d0e7dc085e08; not used by the game runtime",
+      "role": "visual reference for historic bronze Thoth with ibis head from Minneapolis Institute of Art; referenced for the original procedural statue, not imported",
       "runtimeImported": false
     }
   ]

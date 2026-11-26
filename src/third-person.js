@@ -36,18 +36,37 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     return character.human ? character.human.position : character.model.position;
   }
 
-  function getWalkingSurface(x, z, currentY = zones[zoneName].base ?? 0) {
-    const ramp = stairRamps.find(item =>
+  function getWalkingSurface(x, z, currentY = zones[zoneName].base ?? 0, travelDirection = null) {
+    const ramps = stairRamps.filter(item =>
       Math.abs(x - item.centerX) <= item.width * 0.5 &&
       currentY >= item.bottomY - 0.35 && currentY <= item.topY + 0.35 &&
       z >= Math.min(item.startZ, item.endZ) &&
       z <= Math.max(item.startZ, item.endZ)
     );
-    if (ramp) {
-      const t = THREE.MathUtils.clamp((z - ramp.startZ) / (ramp.endZ - ramp.startZ), 0, 1);
+    // Adjacent flights meet on the same landing. When two ramps overlap in X/Z,
+    // use the player's travel direction to select the flight that is being entered.
+    if(ramps.length && travelDirection && Math.abs(travelDirection.z)>.05) {
+      ramps.sort((a,b)=>{
+        const aAligned=Math.sign(a.endZ-a.startZ)===Math.sign(travelDirection.z)?0:1;
+        const bAligned=Math.sign(b.endZ-b.startZ)===Math.sign(travelDirection.z)?0:1;
+        if(aAligned!==bAligned)return aAligned-bAligned;
+        const aDist=Math.min(Math.abs(z-a.startZ),Math.abs(z-a.endZ));
+        const bDist=Math.min(Math.abs(z-b.startZ),Math.abs(z-b.endZ));
+        return aDist-bDist;
+      });
+    } else if(ramps.length) {
+      ramps.sort((a,b)=>{
+        const aDist=Math.min(Math.abs(currentY-a.bottomY),Math.abs(currentY-a.topY));
+        const bDist=Math.min(Math.abs(currentY-b.bottomY),Math.abs(currentY-b.topY));
+        return aDist-bDist;
+      });
+    }
+    const ramp=ramps[0];
+    if(ramp) {
+      const t=THREE.MathUtils.clamp((z-ramp.startZ)/(ramp.endZ-ramp.startZ),0,1);
       return {
-        height: ramp.bottomY + (ramp.topY - ramp.bottomY) * t,
-        raised: true
+        height:ramp.bottomY+(ramp.topY-ramp.bottomY)*t,
+        raised:true
       };
     }
 
@@ -286,7 +305,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       // The Ara rig previously skipped the stair solver used by the fallback avatar.
       // Keep its root aligned with the same ramps, landings and elevated room floors.
       const updated=getPosition();
-      const walkingSurface=getWalkingSurface(updated.x,updated.z,updated.y);
+      const walkingSurface=getWalkingSurface(updated.x,updated.z,updated.y,direction);
       if(walkingSurface.raised) updated.y=walkingSurface.height;
       else if(updated.y>walkingSurface.height) updated.y=Math.max(walkingSurface.height,updated.y-9.81*dt);
       else updated.y=walkingSurface.height;
@@ -312,7 +331,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       }
       // As escadarias laterais elevam o Carter gradualmente até a galeria;
       // fora da plataforma, ele retorna ao piso principal sob gravidade.
-      const walkingSurface = getWalkingSurface(current.x, current.z, current.y);
+      const walkingSurface = getWalkingSurface(current.x,current.z,current.y,direction);
       if (walkingSurface.raised) {
         current.y = walkingSurface.height;
       } else if (current.y > walkingSurface.height) {

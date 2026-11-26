@@ -88,7 +88,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     if (event.code === 'Digit2') teleport('hall');
     if (event.code === 'Digit3') teleport('library');
     if (event.code === 'Digit4') teleport('bedroom');
-    if (event.code === 'Space' && character.human) character.human.jump();
+    if (event.code === 'Space') character.jump?.();
   });
   window.addEventListener('keyup', (event) => keys.delete(event.code));
   window.addEventListener('blur', () => keys.clear());
@@ -150,7 +150,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     button.addEventListener('pointerdown', (event) => {
       event.preventDefault();
       if (action === 'run') touch.sprint = true;
-      if (action === 'jump' && character.human) character.human.jump();
+      if (action === 'jump') character.jump?.();
       button.setPointerCapture?.(event.pointerId);
     });
     const release = () => { if (action === 'run') touch.sprint = false; };

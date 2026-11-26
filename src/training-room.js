@@ -2,7 +2,8 @@
 // Reconstrução 3D jogável: quadra de madeira, abóbada pintada, efígies de Rá/cestas,
 // guerreiros shabti e prática de magia. Layout e vários acabamentos são interpretativos.
 export function buildTrainingRoom({
-  THREE, scene, zones, groundSurfaces, colliders, interactables, animated
+  THREE, scene, zones, groundSurfaces, colliders, interactables, animated,
+  onPlayerHit = () => {}
 }) {
   const floorY = 16.875;
   const centerX = -25.35;
@@ -963,6 +964,7 @@ export function buildTrainingRoom({
       aiState:'idle',windup:0,strike:0,strikeResolved:false,attackCooldown:0,moveSpeed:1.32,
       origin:group.position.clone(),miniScale:shabtiMiniScale,fullScale:shabtiFullScale,
       aura,beamMat,swordArm:group.getObjectByName('shabti-sword-arm'),shieldArm:group.getObjectByName('shabti-shield-arm'),
+      swordForearm:group.getObjectByName('cotovelo armado'),shieldForearm:group.getObjectByName('antebraço do escudo'),
       leftLeg:group.getObjectByName('shabti-perna-esquerda'),rightLeg:group.getObjectByName('shabti-perna-direita'),
       stumbleTimer:0,stumbleDirection:new THREE.Vector3(),marked:false
     };
@@ -1472,23 +1474,52 @@ export function buildTrainingRoom({
               for(const other of shabtiWarriors){if(other===state||!other.active)continue;if(Math.hypot(nextX-other.group.position.x,nextZ-other.group.position.z)<1.0){blocked=true;break;}}
               if(!blocked){enemyPosition.x=THREE.MathUtils.clamp(nextX,combatBounds.minX,combatBounds.maxX);enemyPosition.z=THREE.MathUtils.clamp(nextZ,combatBounds.minZ,combatBounds.maxZ);}
             }
-            const stride=Math.sin(time*9+state.index)*.34;state.leftLeg.rotation.z=stride;state.rightLeg.rotation.z=-stride;
-            state.swordArm.rotation.x=-.12+Math.sin(time*9+state.index)*.11;state.shieldArm.rotation.x=.12;
-            state.group.position.y=floorY+Math.abs(Math.sin(time*9+state.index))*.035;
+            const gaitPhase=time*9+state.index*1.7;
+            const stride=Math.sin(gaitPhase)*.42;
+            state.leftLeg.rotation.set(stride,0,Math.sin(gaitPhase)*.035);
+            state.rightLeg.rotation.set(-stride,0,-Math.sin(gaitPhase)*.035);
+            state.swordArm.rotation.set(-.12+Math.sin(gaitPhase+Math.PI)*.18,Math.sin(gaitPhase)*.08,-.08+Math.sin(gaitPhase)*.07);
+            state.swordForearm.rotation.set(-.34+Math.sin(gaitPhase+1)*.12,0,.04);
+            state.shieldArm.rotation.set(.12+Math.sin(gaitPhase)*.08,0,.08);
+            state.shieldForearm.rotation.set(.18+Math.cos(gaitPhase)*.08,0,0);
+            state.group.rotation.x=Math.sin(gaitPhase*2)*.018;
+            state.group.position.y=floorY+Math.abs(Math.sin(gaitPhase))*.035;
           } else if(distance<=2.25&&state.attackCooldown<=0&&state.spawnProgress>=1){state.aiState='windup';state.windup=.72;state.strikeResolved=false;}
           else state.attackCooldown=Math.max(0,state.attackCooldown-dt);
         } else if(state.aiState==='windup'){
-          state.windup=Math.max(0,state.windup-dt);state.group.rotation.x=-.08;
-          state.swordArm.rotation.x=-1.02-Math.sin(time*18)*.07;state.shieldArm.rotation.x=.58;state.group.rotation.z=-.08;
+          state.windup=Math.max(0,state.windup-dt);
+          const charge=1-state.windup/.72;
+          const pullback=charge*charge*(3-2*charge);
+          state.group.rotation.x=-.035-.15*pullback;
+          state.group.rotation.z=-.035-Math.sin(time*13+state.index)*.018;
+          state.swordArm.rotation.set(-.38-1.02*pullback,.12*pullback,-.08-.22*pullback);
+          state.swordForearm.rotation.set(-.25-.72*pullback,0,.06);
+          state.shieldArm.rotation.set(.2+.55*pullback,0,.12);
+          state.shieldForearm.rotation.set(.22+.24*pullback,0,0);
           if(state.windup<=0){state.aiState='strike';state.strike=.42;state.strikeResolved=false;}
         } else if(state.aiState==='strike'){
-          state.strike=Math.max(0,state.strike-dt);const phase=1-state.strike/.42;
-          state.swordArm.rotation.x=-1.05+1.8*Math.sin(Math.min(1,phase)*Math.PI/2);state.shieldArm.rotation.x=.62;
-          state.group.rotation.x=-.12+.08*Math.sin(phase*Math.PI);
+          state.strike=Math.max(0,state.strike-dt);
+          const phase=1-state.strike/.42;
+          const swing=THREE.MathUtils.smoothstep(phase,0.02,.76);
+          const recoil=THREE.MathUtils.smoothstep(phase,.76,1);
+          state.swordArm.rotation.set(-1.4+2.15*swing-.16*recoil,.18*Math.sin(phase*Math.PI),-.28+.42*Math.sin(phase*Math.PI));
+          state.swordForearm.rotation.set(-.92+.52*swing+.18*recoil,0,.12*Math.sin(phase*Math.PI));
+          state.shieldArm.rotation.set(.74-.3*swing,0,.14);
+          state.shieldForearm.rotation.set(.42-.16*swing,0,0);
+          state.group.rotation.x=-.16+.11*Math.sin(phase*Math.PI);
+          state.group.rotation.y=faceYaw+Math.sin(phase*Math.PI)*.12;
           if(!state.strikeResolved&&state.strike<.25){
             state.strikeResolved=true;
             if(distance<2.8&&playerInvulnerability<=0){
               playerHealth=Math.max(0,playerHealth-1);playerInvulnerability=1.35;
+              onPlayerHit({
+                damage:1,
+                health:playerHealth,
+                maxHealth:maxPlayerHealth,
+                warrior:state.index,
+                attacker:enemyPosition.clone(),
+                playerPosition:playerPosition.clone()
+              });
               message='O guerreiro shabti acertou Carter. Vitalidade: '+playerHealth+'/'+maxPlayerHealth+'.';
               if(playerHealth<=0){
                 shabtiActive=false;shabtiRemaining=0;
@@ -1499,7 +1530,13 @@ export function buildTrainingRoom({
           }
           if(state.strike<=0){state.aiState='recover';state.attackCooldown=1.15;state.group.rotation.x=0;state.group.rotation.z=0;}
         } else if(state.aiState==='recover'){
-          state.attackCooldown=Math.max(0,state.attackCooldown-dt);state.swordArm.rotation.x=-.18;state.shieldArm.rotation.x=.2;
+          state.attackCooldown=Math.max(0,state.attackCooldown-dt);
+          const recovery=THREE.MathUtils.clamp(state.attackCooldown/1.15,0,1);
+          state.swordArm.rotation.set(-.18-.18*recovery,0,-.08*recovery);
+          state.swordForearm.rotation.set(-.22*recovery,0,0);
+          state.shieldArm.rotation.set(.2+.12*recovery,0,.05*recovery);
+          state.shieldForearm.rotation.set(.16*recovery,0,0);
+          state.group.rotation.x*=.82;
           if(state.attackCooldown<=0)state.aiState='approach';
         }
         if(state.collider){

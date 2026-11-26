@@ -39,6 +39,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   function getWalkingSurface(x, z, currentY = zones[zoneName].base ?? 0) {
     const ramp = stairRamps.find(item =>
       Math.abs(x - item.centerX) <= item.width * 0.5 &&
+      currentY >= item.bottomY - 0.35 && currentY <= item.topY + 0.35 &&
       z >= Math.min(item.startZ, item.endZ) &&
       z <= Math.max(item.startZ, item.endZ)
     );

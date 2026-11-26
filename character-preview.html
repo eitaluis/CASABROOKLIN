@@ -221,7 +221,7 @@ function setMode(mode) {
   if (mode === 'sprint') speed = 4.2;
   if (mode === 'jump') {
     speed = 0;
-    if (character.jump()) previewJumpVelocity = 4.55;
+    if (character.jump()) previewJumpVelocity = 4.6;
   }
 }
 
@@ -271,7 +271,7 @@ function animate(now) {
   previous = now;
   character.updateFallback(dt, speed);
   if (previewJumpVelocity !== 0 || character.model.position.y > 0) {
-    previewJumpVelocity -= 10.8 * dt;
+    previewJumpVelocity -= 9.3 * dt;
     character.model.position.y += previewJumpVelocity * dt;
     if (character.model.position.y <= 0) {
       character.model.position.y = 0;

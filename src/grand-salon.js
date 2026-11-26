@@ -448,7 +448,7 @@ function createSofa(scene,x,z,rotation,upholstery,wood,brass) {
   group.name='sofá de reserva do Grande Salão';
   group.position.set(x,13.175,z);
   group.rotation.y=rotation;
-  group.scale.set(.44,.72,.42);
+  group.scale.set(.58,.78,.62);
 
   const base=new THREE.Mesh(new RoundedBoxGeometry(4.65,.34,1.95,8,.15),wood);
   base.position.y=.25;base.castShadow=true;base.receiveShadow=true;group.add(base);
@@ -485,8 +485,8 @@ function loadSofaAssets(scene, fallbacks, colliders, interactables) {
   loader.setMeshoptDecoder(MeshoptDecoder);
   const source=assetUrl('models/polyhaven-sofa-03.glb');
   const placements=[
-    {x:-4.35,z:-4.6,rotation:Math.PI/2,side:'oeste'},
-    {x:4.35,z:-4.6,rotation:-Math.PI/2,side:'leste'}
+    {x:-4.75,z:-4.6,rotation:Math.PI/2,side:'oeste'},
+    {x:4.75,z:-4.6,rotation:-Math.PI/2,side:'leste'}
   ];
 
   loader.load(source,gltf=>{
@@ -502,7 +502,7 @@ function loadSofaAssets(scene, fallbacks, colliders, interactables) {
       placements.forEach((place,index)=>{
         const model=sourceRoot.clone(true);
         model.name='sofá Poly Haven Sofa 03 · '+place.side;
-        model.scale.setScalar(.72);
+        model.scale.setScalar(1.05);
         model.rotation.y=place.rotation;
         model.updateMatrixWorld(true);
 
@@ -533,7 +533,7 @@ function loadSofaAssets(scene, fallbacks, colliders, interactables) {
         model.userData.assetId='polyhaven-sofa-03';
         model.userData.license='CC0-1.0';
         model.userData.nativeDimensions=[2.731,.925,1.118];
-        model.userData.appliedScale=.72;
+        model.userData.appliedScale=1.05;
         model.userData.interaction={
           type:'inspect',
           label:'Sofá de couro',
@@ -555,7 +555,7 @@ function loadSofaAssets(scene, fallbacks, colliders, interactables) {
   });
 
   placements.forEach(place=>{
-    addBoxCollider(colliders,place.x,13.68,place.z,1.02,.92,2.18);
+    addBoxCollider(colliders,place.x,13.68,place.z,1.42,1.08,3.18);
     interactables.push({
       name:'Sofá de couro '+place.side,
       kind:'inspect',
@@ -638,6 +638,7 @@ function centerTable(scene,wood,brass) {
   const group=new THREE.Group();
   group.name='mesa baixa circular de nogueira e bronze do Grande Salão';
   group.position.set(0,13.175,-4.6);
+  group.scale.set(1.34,1,1.34);
 
   const base=new THREE.Mesh(new THREE.LatheGeometry([
     new THREE.Vector2(.18,0),new THREE.Vector2(.27,.05),new THREE.Vector2(.34,.12),
@@ -1349,12 +1350,12 @@ function addThoth(scene,marble,pale,brass,reliefTex,wood) {
   torso.castShadow=true;torso.receiveShadow=true;group.add(torso);
 
   const sashMaterial=new THREE.MeshStandardMaterial({
-    color:0x344955,roughness:.88,metalness:.04
+    color:0x806345,roughness:.94,metalness:.01
   });
   const sash=tube([
     [-.53,4.16,.69],[-.42,3.78,.68],[-.18,3.4,.63],
     [.12,3.08,.55],[.48,2.72,.44]
-  ],.085,sashMaterial,42,12);
+  ],.058,sashMaterial,42,12);
   sash.name='faixa cerimonial diagonal de Thoth';
   group.add(sash);
   const sashEdge=tube([
@@ -1711,7 +1712,8 @@ export function buildGrandSalon({
   camera,
   isTouchDevice=false,
   colliders=[],
-  interactables=[]
+  interactables=[],
+  groundSurfaces=[]
 }) {
   const stone=stoneMaterial();
   const walnut=woodMaterial();
@@ -1747,17 +1749,23 @@ export function buildGrandSalon({
     ].includes(o.name)) o.visible=false;
 
     if(o.name==='parede interna do salão' && o.position.z>0) o.visible=false;
+    if(o.name==='parede lateral do salão' || o.name==='sacada de calcário' ||
+       o.name==='lateral oeste da mansão' || o.name==='lateral leste da mansão' ||
+       o.name==='moldura da lareira' || o.name==='manto de pedra' ||
+       o.name==='boca escura da lareira') o.visible=false;
+    if(o.type==='Group' && Math.abs(Math.abs(o.position.x)-16.08)<.22 &&
+       Math.abs(o.position.z)<9 && o.position.y>13) o.visible=false;
+    if((o.name==='steel window frame' || o.name==='mullion') &&
+       Math.abs(Math.abs(o.position.x)-16.08)<.28) o.visible=false;
 
-    if(
-      o.name==='parede interna do salão' ||
-      o.name==='parede lateral do salão' ||
-      o.name==='sacada de calcário' ||
-      o.name==='coluna de calcário' ||
-      o.name==='moldura da lareira' ||
-      o.name==='manto de pedra'
-    ) o.material=stone;
-
+    if(o.name==='parede interna do salão' || o.name==='coluna de calcário') o.material=stone;
     if(o.name==='piso do Grande Salão') o.material=floorMaterial;
+    if(o.name==='viga de cedro do teto') {
+      o.material=darkWood;
+      o.geometry.dispose();
+      o.geometry=new T.BoxGeometry(28,.68,.66);
+      o.position.y=28.12;
+    }
   });
 
   for(const x of [-8.8,8.8]) {
@@ -1768,22 +1776,19 @@ export function buildGrandSalon({
   }
 
   addBalustrades(scene,stone,brass,darkWood);
-  addBalconyDoorRows(scene,stone,darkWood,brass,colliders,interactables);
 
   const stairRamps=[];
-  const walkablePlatforms=[];
+  const walkablePlatforms=addGalleryWalkways(scene,stone,groundSurfaces);
+  walkablePlatforms.push(...addBalconyDoorRows(
+    scene,stone,darkWood,brass,colliders,interactables,groundSurfaces
+  ));
   for(const side of [-1,1]){
     const flights=[
       {centerX:side*10.35,baseY:13.175,topY:16.875,startZ:7.35,direction:-1,width:2.38},
-      {centerX:side*8.5,baseY:16.875,topY:20.625,startZ:-.91,direction:1,width:1.3},
-      {centerX:side*12.25,baseY:20.625,topY:24.375,startZ:7.35,direction:-1,width:1.35}
+      {centerX:side*10.35,baseY:16.875,topY:20.625,startZ:-.91,direction:1,width:2.38},
+      {centerX:side*10.35,baseY:20.625,topY:24.375,startZ:7.35,direction:-1,width:2.38}
     ];
     for(const flight of flights) stairRamps.push(stairFlight(scene,stone,pale,brass,darkWood,flight));
-    walkablePlatforms.push(
-      {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:16.875},
-      {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:20.625},
-      {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:24.375}
-    );
   }
 
   // Musical instruments and ceremonial weapons: bespoke high-detail forms,
@@ -1841,9 +1846,10 @@ export function buildGrandSalon({
     radius:1.55
   });
 
+  addFireplaceHearth(scene,stone,brass);
   const fire=addFire(scene,animated,camera,isTouchDevice);
   const fireLight=fire.fireLight;
-  addBoxCollider(colliders,0,15.25,-8.3,3.2,2.4,.9);
+  addBoxCollider(colliders,0,14.55,-8.3,3.2,2.4,.9);
   interactables.push({
     name:'Lareira monumental',
     kind:'inspect',

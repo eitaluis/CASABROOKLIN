@@ -8,7 +8,10 @@ export function createMagicSystem({
   camera,
   character,
   controller,
-  trainingRoom
+  trainingRoom,
+  canSpendEnergy = () => true,
+  spendEnergy = () => true,
+  spellCost = 30
 }) {
   const GOLD = 0xffd36a;
   const PALE_GOLD = 0xffefb2;
@@ -307,7 +310,7 @@ export function createMagicSystem({
   }
 
   function canCastHaDi() {
-    if (casting || controller.zone !== 'training') return false;
+    if (casting || controller.zone !== 'training' || !canSpendEnergy(spellCost)) return false;
     return Boolean(trainingRoom.findHaDiTarget({
       position: controller.getPosition(),
       forward: controller.getForward(),
@@ -317,6 +320,9 @@ export function createMagicSystem({
 
   function castHaDi() {
     if (casting) return { success: false, message: 'Carter já está conjurando HA-DI.' };
+    if (!canSpendEnergy(spellCost)) {
+      return { success: false, message: 'Energia insuficiente para conjurar HA-DI. Aguarde a recarga.' };
+    }
     const target = trainingRoom.findHaDiTarget({
       position: controller.getPosition(),
       forward: controller.getForward(),
@@ -329,6 +335,9 @@ export function createMagicSystem({
       };
     }
 
+    if (!spendEnergy(spellCost)) {
+      return { success: false, message: 'Não foi possível consumir a energia necessária para HA-DI.' };
+    }
     activeTarget = target;
     casting = true;
     castElapsed = 0;

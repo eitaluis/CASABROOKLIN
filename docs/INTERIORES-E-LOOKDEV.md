@@ -115,3 +115,26 @@ A cena já usa ACES tone mapping e sombras suaves. O próximo passo de lookdev �
 - Grande Salão: a lareira deixou de usar esferas soltas e passou a usar línguas de fogo cônicas em camadas, com flicker e luz pontual.
 - Exposição e luz ambiente elevadas moderadamente; SSAO reduzido para evitar escurecimento excessivo.
 - Validação visual final ainda pendente de navegador.
+
+
+## Finalização do Grande Salão — nova camada escultórica
+
+A nova etapa está implementada em `src/grand-salon.js`, chamada depois da construção-base de `world.js` e da decoração compartilhada de `interior-details.js`. O mesmo módulo é executado no desktop e no mobile.
+
+- **Calcário:** textura 2D procedural em blocos com variação de tom, juntas, veios discretos e bump map. Aplicada às paredes internas, sacadas, piso e shafts das colunas.
+- **Madeira:** mapa de veios e bump para peças novas de mobiliário e acabamentos.
+- **Colunas:** shafts com caneluras verticais, anéis metálicos, capitéis em forma de lótus e pétalas.
+- **Galerias:** substituição visual dos guarda-corpos retos por balaústres torneados, corrimãos de madeira com filete de latão e postes de extremidade.
+- **Escadarias:** duas escadarias laterais, com 14 degraus de pedra arredondados por lado, filetes de bronze, corrimãos e patamares superiores.
+- **Thoth:** nova escultura original em basalto, com túnica de pregas, cabeça de íbis, bico, olhos, braços, papiro, cetro e coroa lunar. A escultura histórica CC0 do Minneapolis Institute of Art foi utilizada apenas como referência visual; o modelo não foi importado.
+- **Lareira:** remoção dos antigos cones isolados; novas malhas orgânicas em gradiente de cor, múltiplas línguas, lenha, cama de brasas, partículas e luz pontual animada.
+- **Mobiliário:** sofás de volumes arredondados com almofadas e costuras, tapete oval com motivo solar, mesa circular de centro e detalhes de bronze.
+- **Teto e paredes:** medalhão de cedro, roseta, relevos solares alados e pilastras esculpidas próximas à lareira.
+
+### Critérios de validação pendentes
+
+- Sintaxe e referências estáticas verificadas; ainda falta inspeção visual em navegador.
+- Conferir se os degraus se conectam visualmente ao piso e aos patamares. O controlador ainda não altera a altura do personagem para percorrer escadas; esta primeira etapa resolve a presença arquitetônica, não a navegação vertical.
+- Avaliar o fogo e a estátua de diferentes ângulos, incluindo vista de dentro do salão.
+- Testar textura, sombras, clipping e desempenho em desktop e celular paisagem.
+- Não marcar como finalizado visualmente até esses testes ocorrerem.

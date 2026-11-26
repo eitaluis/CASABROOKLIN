@@ -737,7 +737,7 @@ function addWallSpear(scene,x,baseY,z,rotation,wood,brass,colliders,interactable
     label:'Lança de bronze',
     description:'Lança egípcia exposta na parede, com haste de nogueira e ponta de bronze em forma de folha',
     position:new THREE.Vector3(x,baseY+1.5,z),
-    radius:3.1
+    radius:4.7
   });
   return group;
 }
@@ -768,7 +768,7 @@ function addModernTelevision(scene,brass,colliders,interactables) {
     label:'TV acima da lareira',
     description:'A tela moderna contrasta com o manto de pedra e a arquitetura egípcia da sala',
     position:new THREE.Vector3(0,19.0,-8.4),
-    radius:3.1
+    radius:6.5
   });
   return group;
 }

@@ -4,10 +4,10 @@ import { buildExterior } from './exterior.js?v=waterfront-architecture-20261126a
 import { buildWaterfrontEnvironment } from './waterfront-environment.js?v=waterfront-architecture-20261126a';
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-atrium-20261126a';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-atrium-20261126d';
-import { buildTrainingRoom } from './training-room.js?v=ha-di-shabti-respawn-20261126a';
+import { buildTrainingRoom } from './training-room.js?v=ha-di-shabti-respawn-20261126b';
 import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
-import { createMagicSystem } from './magic-system.js?v=ha-di-prototype-20261126a';
-import { createCharacter } from './character.js?v=ha-di-hand-pose-20261126a';
+import { createMagicSystem } from './magic-system.js?v=ha-di-prototype-20261126b';
+import { createCharacter } from './character.js?v=ha-di-hand-pose-20261126b';
 import { createThirdPersonController } from './third-person.js?v=duat-input-lock-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';

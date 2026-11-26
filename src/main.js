@@ -54,7 +54,7 @@ function addRoomLabel(text,x,y,z){const mat=canvasSign(text);const p=new THREE.M
 const world = buildWorld({
   THREE, scene, colliders, animated, box, cyl, line, texCanvas,
   addWindow, glyphPanel, addStatue, addColumn, makeGraffiti, addRoomLabel,
-  canvasSign, rugTex, metal, gold, stone, brickMat, darkBrick, woodMat,
+  canvasSign, rugTex, limestone, metal, gold, stone, brickMat, darkBrick, woodMat,
   cedarMat, darkGlass, plaster
 });
 const { zones, groundSurfaces, water, fireLight } = world;

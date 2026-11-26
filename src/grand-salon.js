@@ -588,6 +588,191 @@ function addThoth(scene,marble,pale,brass,reliefTex) {
   const fill=new THREE.PointLight(0x8ea4a5,1,14,1.8);fill.position.set(2.3,19.4,2.6);scene.add(fill);
 }
 
+function addHarpDisplay(scene,x,baseY,z,wood,brass,colliders,interactables) {
+  const group=new THREE.Group();
+  group.name='harpa egípcia arqueada';
+  group.position.set(x,baseY,z);
+
+  const resonator=new THREE.Mesh(new RoundedBoxGeometry(.55,.44,.34,8,.09),wood);
+  resonator.position.set(-.08,.22,0);
+  resonator.castShadow=true;resonator.receiveShadow=true;group.add(resonator);
+
+  const foot=new THREE.Mesh(new THREE.CylinderGeometry(.16,.22,.12,32),brass);
+  foot.position.set(-.08,.06,0);group.add(foot);
+
+  const frame=tube([
+    [-.18,.35,0],[-.24,.92,0],[-.14,1.5,.01],
+    [.08,2.04,.02],[.48,2.34,.02],[.88,2.25,.02]
+  ],.07,wood,80,14);
+  frame.name='arco curvo da harpa';group.add(frame);
+
+  const spine=tube([
+    [-.18,.24,.02],[-.02,.88,.02],[.18,1.48,.02],[.44,2.05,.02]
+  ],.055,darkWoodForHarp(wood),48,12);
+  spine.name='coluna estrutural da harpa';group.add(spine);
+
+  const soundboard=new THREE.Mesh(new RoundedBoxGeometry(.27,.54,.15,6,.06),wood);
+  soundboard.position.set(-.17,.48,.07);group.add(soundboard);
+
+  for(let i=0;i<14;i++){
+    const t=i/13;
+    const x0=-.13+t*.34;
+    const topX=.2+t*.55;
+    const topY=2.23-.58*Math.pow((t-.5)*2,2);
+    const string=tube([[x0,.56,.105],[x0+(topX-x0)*.42,1.33,.105],[topX,topY,.105]],.008,brass,24,5);
+    string.name='corda individual de harpa';group.add(string);
+    const pin=new THREE.Mesh(new THREE.SphereGeometry(.027,10,8),brass);
+    pin.position.set(topX,topY,.11);group.add(pin);
+  }
+
+  const lowerBrace=tube([[-.22,.32,.14],[-.08,.25,.14],[.1,.3,.14]],.024,brass,20,7);
+  group.add(lowerBrace);
+  scene.add(group);
+
+  addBoxCollider(colliders,x,baseY+1.15,z,.95,2.35,.5);
+  interactables.push({
+    name:'Harpa egípcia',
+    kind:'inspect',
+    label:'Harpa arqueada',
+    description:'Harpa cerimonial com caixa de ressonância entalhada e cordas individuais tensionadas',
+    position:new THREE.Vector3(x,baseY+1.15,z),
+    radius:2.35
+  });
+  return group;
+}
+
+function darkWoodForHarp(material) {
+  return new THREE.MeshStandardMaterial({
+    color:0x6b472d,
+    map:material.map,
+    normalMap:material.normalMap,
+    normalScale:new THREE.Vector2(.8,.8),
+    roughnessMap:material.roughnessMap,
+    roughness:.76
+  });
+}
+
+function addCeremonialDrum(scene,x,baseY,z,wood,brass,colliders,interactables) {
+  const group=new THREE.Group();
+  group.name='tambor cerimonial de pele e madeira';
+  group.position.set(x,baseY,z);
+
+  const shell=new THREE.Mesh(new THREE.LatheGeometry([
+    new THREE.Vector2(.29,0),new THREE.Vector2(.34,.07),new THREE.Vector2(.39,.18),
+    new THREE.Vector2(.42,.46),new THREE.Vector2(.38,.67),new THREE.Vector2(.31,.76)
+  ],48),wood);
+  shell.name='corpo torneado do tambor';
+  shell.castShadow=true;shell.receiveShadow=true;group.add(shell);
+
+  const skinMat=new THREE.MeshStandardMaterial({color:0xd6c39d,roughness:.92,bumpMap:wood.normalMap,bumpScale:.014});
+  const skin=new THREE.Mesh(new THREE.CircleGeometry(.315,48),skinMat);
+  skin.name='pele tensionada do tambor';
+  skin.rotation.x=-Math.PI/2;skin.position.y=.765;group.add(skin);
+
+  for(const y of [.12,.68,.76]){
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(y===.76?.33:.4,.025,8,48),brass);
+    ring.rotation.x=Math.PI/2;ring.position.y=y;group.add(ring);
+  }
+
+  for(let i=0;i<16;i++){
+    const a=i/16*Math.PI*2;
+    const cord=tube([
+      [Math.cos(a)*.395,.16,Math.sin(a)*.395],
+      [Math.cos(a+.035)*.42,.42,Math.sin(a+.035)*.42],
+      [Math.cos(a)*.355,.69,Math.sin(a)*.355]
+    ],.012,brass,18,5);
+    cord.name='amarração de pele do tambor';group.add(cord);
+    const rivet=new THREE.Mesh(new THREE.SphereGeometry(.028,10,8),brass);
+    rivet.position.set(Math.cos(a)*.4,.64,Math.sin(a)*.4);group.add(rivet);
+  }
+
+  scene.add(group);
+  addBoxCollider(colliders,x,baseY+.39,z,.94,.84,.94);
+  interactables.push({
+    name:'Tambor cerimonial',
+    kind:'inspect',
+    label:'Tambor de pele',
+    description:'Tambor de madeira torneada, pele natural tensionada e amarrações de bronze',
+    position:new THREE.Vector3(x,baseY+.4,z),
+    radius:1.45
+  });
+  return group;
+}
+
+function addWallSpear(scene,x,baseY,z,rotation,wood,brass,colliders,interactables) {
+  const group=new THREE.Group();
+  group.name='lança cerimonial egípcia';
+  group.position.set(x,baseY,z);
+  group.rotation.y=rotation;
+
+  const shaft=new THREE.Mesh(new THREE.CylinderGeometry(.035,.058,2.65,32,1),wood);
+  shaft.name='haste torneada da lança';shaft.position.y=1.28;shaft.castShadow=true;group.add(shaft);
+
+  const shape=new THREE.Shape();
+  shape.moveTo(0,0);shape.quadraticCurveTo(.16,.25,.115,.52);
+  shape.quadraticCurveTo(.05,.78,0,.94);
+  shape.quadraticCurveTo(-.05,.78,-.115,.52);
+  shape.quadraticCurveTo(-.16,.25,0,0);
+  const headGeo=new THREE.ExtrudeGeometry(shape,{depth:.045,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.018,bevelThickness:.018,curveSegments:18});
+  const headMat=new THREE.MeshStandardMaterial({color:0xc0a16c,metalness:.82,roughness:.24});
+  const head=new THREE.Mesh(headGeo,headMat);
+  head.name='ponta foliácea de bronze da lança';
+  head.position.set(0,2.47,.02);head.castShadow=true;group.add(head);
+
+  const fuller=tube([[0,2.52,.085],[0,2.82,.085],[0,3.18,.085],[0,3.36,.065]],.009,brass,30,5);
+  fuller.name='sulco central da ponta da lança';group.add(fuller);
+
+  for(const [y,r] of [[.12,.052],[.34,.049],[2.42,.075],[2.5,.06]]){
+    const collar=new THREE.Mesh(new THREE.TorusGeometry(r,.018,8,32),brass);
+    collar.rotation.x=Math.PI/2;collar.position.y=y;group.add(collar);
+  }
+
+  const mount=new THREE.Mesh(new RoundedBoxGeometry(.62,.14,.12,5,.035),darkWoodForHarp(wood));
+  mount.position.set(0,1.26,-.08);group.add(mount);
+  scene.add(group);
+
+  interactables.push({
+    name:'Lança cerimonial',
+    kind:'inspect',
+    label:'Lança de bronze',
+    description:'Lança egípcia exposta na parede, com haste de nogueira e ponta de bronze em forma de folha',
+    position:new THREE.Vector3(x,baseY+1.5,z),
+    radius:3.1
+  });
+  return group;
+}
+
+function addModernTelevision(scene,brass,colliders,interactables) {
+  const group=new THREE.Group();
+  group.name='televisor moderno emoldurado no Grande Salão';
+  group.position.set(0,19.0,-8.98);
+
+  const shellMat=new THREE.MeshPhysicalMaterial({color:0x171b1c,metalness:.58,roughness:.32,clearcoat:.55,clearcoatRoughness:.22});
+  const glassMat=new THREE.MeshPhysicalMaterial({color:0x080d10,metalness:.38,roughness:.12,clearcoat:1,clearcoatRoughness:.08,emissive:0x071014,emissiveIntensity:.28});
+  const shell=new THREE.Mesh(new RoundedBoxGeometry(4.72,2.58,.2,8,.09),shellMat);
+  shell.name='moldura metálica arredondada da TV';shell.castShadow=true;group.add(shell);
+
+  const screen=new THREE.Mesh(new RoundedBoxGeometry(4.48,2.32,.035,8,.055),glassMat);
+  screen.name='painel de vidro refletivo da TV';screen.position.z=.115;group.add(screen);
+
+  const innerRim=new THREE.Mesh(new THREE.RingGeometry(2.08,2.14,96,1),brass);
+  innerRim.name='filete de bronze sob a tela';innerRim.position.set(0,-1.205,.115);innerRim.scale.set(1,.065,1);group.add(innerRim);
+
+  const sensor=new THREE.Mesh(new THREE.SphereGeometry(.035,12,10),new THREE.MeshBasicMaterial({color:0xd7ac67,emissive:0x8b642b,emissiveIntensity:.3}));
+  sensor.position.set(2.24,-1.17,.16);group.add(sensor);
+
+  scene.add(group);
+  interactables.push({
+    name:'Televisor do Grande Salão',
+    kind:'inspect',
+    label:'TV acima da lareira',
+    description:'A tela moderna contrasta com o manto de pedra e a arquitetura egípcia da sala',
+    position:new THREE.Vector3(0,19.0,-8.4),
+    radius:3.1
+  });
+  return group;
+}
+
 export function buildGrandSalon({
   THREE: T,
   scene,

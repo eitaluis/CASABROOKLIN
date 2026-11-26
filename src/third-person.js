@@ -237,23 +237,34 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     limitToZone(currentPosition, direction, Math.max(speedTarget, 2.25) * dt * 1.35);
 
     if (character.human) {
-      // Os elementos importantes do Grande Salão também bloqueiam o rig Ara,
-      // não apenas o controlador procedural de fallback.
-      if (direction.lengthSq() > 0.0001) {
-        const nextX = currentPosition.x + direction.x * speedTarget * dt;
-        const nextZ = currentPosition.z + direction.z * speedTarget * dt;
-        if (blockedAt(nextX, nextZ, currentPosition.y)) direction.set(0, 0, 0);
+      // Resolve X/Z independently so the player can slide alongside furniture and gallery walls.
+      if(direction.lengthSq()>0.0001) {
+        const dx=direction.x*speedTarget*dt;
+        const dz=direction.z*speedTarget*dt;
+        const blockedX=Math.abs(dx)>0.00001 && blockedAt(currentPosition.x+dx,currentPosition.z,currentPosition.y);
+        const blockedZ=Math.abs(dz)>0.00001 && blockedAt(currentPosition.x,currentPosition.z+dz,currentPosition.y);
+        if(blockedX) direction.x=0;
+        if(blockedZ) direction.z=0;
+        if(direction.lengthSq()>0.0001) direction.normalize();
+        else direction.set(0,0,0);
       }
-      character.human.targetSpeed = direction.lengthSq() > 0.0001 ? speedTarget : 0;
-      if (direction.lengthSq() > 0.0001) {
-        const currentForward = character.human.locomotion.body.state.forward.clone().setY(0).normalize();
-        const turn = Math.atan2(
-          new THREE.Vector3().crossVectors(currentForward, direction).y,
+      character.human.targetSpeed=direction.lengthSq()>0.0001?speedTarget:0;
+      if(direction.lengthSq()>0.0001) {
+        const currentForward=character.human.locomotion.body.state.forward.clone().setY(0).normalize();
+        const turn=Math.atan2(
+          new THREE.Vector3().crossVectors(currentForward,direction).y,
           currentForward.dot(direction)
         );
-        character.human.targetHeading = character.human.heading + turn;
+        character.human.targetHeading=character.human.heading+turn;
       }
       character.human.update(dt);
+      // The Ara rig previously skipped the stair solver used by the fallback avatar.
+      // Keep its root aligned with the same ramps, landings and elevated room floors.
+      const updated=getPosition();
+      const walkingSurface=getWalkingSurface(updated.x,updated.z,updated.y);
+      if(walkingSurface.raised) updated.y=walkingSurface.height;
+      else if(updated.y>walkingSurface.height) updated.y=Math.max(walkingSurface.height,updated.y-9.81*dt);
+      else updated.y=walkingSurface.height;
     } else {
       const targetVelocity = direction.clone().multiplyScalar(speedTarget);
       const response = input.moving ? 12.5 : 17.5;

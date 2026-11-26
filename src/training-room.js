@@ -457,59 +457,50 @@ export function buildTrainingRoom({
   // Efígies de Rá: cabeças de falcão, discos solares vazados e redes de aro.
   const hoops = [];
   function addRaHoop(baselineZ, facing, name) {
-    const group = new THREE.Group();
-    group.position.set(centerX, floorY + 1.95, baselineZ);
-    group.rotation.y = facing;
-    const plinth = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.42, 0.9), limestoneShade);
-    plinth.position.set(0, -1.28, -0.08); group.add(plinth);
-    const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.72, 1.1, 32, 1), limestone);
-    chest.position.set(0, -0.72, -0.08); group.add(chest);
-    const collar = new THREE.Mesh(new THREE.TorusGeometry(0.48, 0.115, 12, 40), bronze);
-    collar.position.set(0, -0.35, 0.25); collar.rotation.x = Math.PI / 2; group.add(collar);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.39, 32, 24), limestone);
-    head.position.set(0, 0.16, 0.13); head.scale.set(0.88, 1.12, 1.0); group.add(head);
-    const beak = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.62, 24), bronze);
-    beak.rotation.x = -Math.PI / 2; beak.position.set(0, 0.02, 0.58); group.add(beak);
-    const nemes = new THREE.Mesh(new THREE.SphereGeometry(0.48, 32, 20), lapis);
-    nemes.scale.set(1.2, 1.28, 0.82); nemes.position.set(0, 0.27, -0.1); group.add(nemes);
-    for (const side of [-1, 1]) {
-      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.065, 16, 12), turquoise);
-      eye.position.set(side * 0.25, 0.2, 0.43); group.add(eye);
-      const eyeLine = new THREE.Mesh(new THREE.TorusGeometry(0.09, 0.022, 8, 24), darkBronze);
-      eyeLine.position.set(side * 0.25, 0.2, 0.43); group.add(eyeLine);
+    const group = new THREE.Group(); group.position.set(centerX,floorY,baselineZ); group.rotation.y=facing;
+    const stoneBack=new THREE.Mesh(new THREE.BoxGeometry(1.42,2.72,.24),reliefStone); stoneBack.position.set(0,1.62,-2.05); group.add(stoneBack);
+    const backFrame=new THREE.Mesh(new THREE.BoxGeometry(1.58,2.9,.12),bronze); backFrame.position.set(0,1.62,-1.9); group.add(backFrame);
+    const throne=new THREE.Mesh(new THREE.BoxGeometry(1.04,.64,.88),limestoneShade); throne.position.set(0,.36,-.16); group.add(throne);
+    const throneBack=new THREE.Mesh(new THREE.BoxGeometry(.98,1.7,.22),limestoneShade); throneBack.position.set(0,1.1,-.46); group.add(throneBack);
+    const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.36,.72,8,24),limestone); torso.position.set(0,1.48,.05); torso.scale.set(1.2,1,.82); group.add(torso);
+    const shoulders=new THREE.Mesh(new THREE.SphereGeometry(.48,24,18),limestone); shoulders.position.set(0,1.9,.07); shoulders.scale.set(1.2,.56,.8); group.add(shoulders);
+    const kilt=new THREE.Mesh(new THREE.CylinderGeometry(.36,.54,.72,4,1),faienceLight); kilt.position.set(0,.95,.28); kilt.rotation.y=Math.PI/4; group.add(kilt);
+    for(let pleat=-3;pleat<=3;pleat++){const fold=new THREE.Mesh(new THREE.BoxGeometry(.018,.56,.018),bronze);fold.position.set(pleat*.095,.95,.57-Math.abs(pleat)*.025);group.add(fold);}
+    for(const side of [-1,1]){
+      const thigh=new THREE.Mesh(new THREE.CapsuleGeometry(.15,.52,6,16),limestone);thigh.position.set(side*.22,.58,.32);thigh.rotation.x=Math.PI/2.2;group.add(thigh);
+      const shin=new THREE.Mesh(new THREE.CapsuleGeometry(.12,.38,6,14),limestoneShade);shin.position.set(side*.22,.3,.62);group.add(shin);
+      const arm=new THREE.Mesh(new THREE.CapsuleGeometry(.11,.5,6,16),limestone);arm.position.set(side*.46,1.5,.18);arm.rotation.z=side*.18;group.add(arm);
+      const hand=new THREE.Mesh(new THREE.SphereGeometry(.11,14,12),limestoneShade);hand.position.set(side*.36,.88,.58);group.add(hand);
     }
-    // Disco solar: el aro central se deja hueco para funcionar como cesta.
-    const rimY = 1.1;
-    const rim = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.075, 14, 64), bronze);
-    rim.position.set(0, rimY, 0.82); rim.rotation.x = Math.PI / 2; group.add(rim);
-    const sunRays = new THREE.Mesh(new THREE.TorusGeometry(0.76, 0.035, 8, 64), darkBronze);
-    sunRays.position.set(0, rimY, 0.82); sunRays.rotation.x = Math.PI / 2; group.add(sunRays);
-    for (let i = 0; i < 12; i++) {
-      const a = i / 12 * Math.PI * 2;
-      const ray = new THREE.Mesh(new THREE.ConeGeometry(0.075, 0.28, 12), bronze);
-      ray.position.set(Math.cos(a) * 0.69, rimY, 0.82 + Math.sin(a) * 0.69);
-      ray.rotation.z = Math.PI / 2 - a;
-      group.add(ray);
+    const collar=new THREE.Mesh(new THREE.TorusGeometry(.43,.095,12,48),bronze);collar.position.set(0,1.82,.23);collar.rotation.x=Math.PI/2;group.add(collar);
+    const pectoral=new THREE.Mesh(new THREE.TorusGeometry(.29,.045,8,36),lapis);pectoral.position.set(0,1.65,.31);pectoral.rotation.x=Math.PI/2;group.add(pectoral);
+    // Cabeça de falcão reconhecível: crânio alongado, bico, olhos laterais e nemes listrado.
+    const head=new THREE.Mesh(new THREE.SphereGeometry(.31,28,20),limestoneShade);head.position.set(0,2.34,.12);head.scale.set(.92,1.08,1.16);group.add(head);
+    const brow=new THREE.Mesh(new THREE.SphereGeometry(.34,24,16),lapis);brow.position.set(0,2.48,-.08);brow.scale.set(1.28,.85,.92);group.add(brow);
+    const beakUpper=new THREE.Mesh(new THREE.ConeGeometry(.105,.44,4),bronze);beakUpper.position.set(0,2.25,.48);beakUpper.rotation.x=Math.PI/2;group.add(beakUpper);
+    const beakTip=new THREE.Mesh(new THREE.ConeGeometry(.055,.2,4),darkBronze);beakTip.position.set(0,2.12,.62);beakTip.rotation.x=Math.PI/2;group.add(beakTip);
+    for(const side of [-1,1]){
+      const eye=new THREE.Mesh(new THREE.SphereGeometry(.075,18,14),turquoise);eye.position.set(side*.255,2.37,.32);group.add(eye);
+      const eyeRing=new THREE.Mesh(new THREE.TorusGeometry(.09,.023,8,28),darkBronze);eyeRing.position.set(side*.255,2.37,.325);group.add(eyeRing);
+      const headdressSide=new THREE.Mesh(new THREE.BoxGeometry(.18,.72,.23),lapis);headdressSide.position.set(side*.34,1.98,.01);headdressSide.rotation.z=side*-.08;group.add(headdressSide);
+      for(let stripe=0;stripe<4;stripe++){const band=new THREE.Mesh(new THREE.BoxGeometry(.19,.025,.245),bronze);band.position.set(side*.34,1.72+stripe*.17,.025);group.add(band);}
     }
-    const lowerNetRing = new THREE.Mesh(new THREE.TorusGeometry(0.31, 0.027, 8, 40), darkBronze);
-    lowerNetRing.position.set(0, rimY - 0.62, 0.82); lowerNetRing.rotation.x = Math.PI / 2; group.add(lowerNetRing);
-    for (let i = 0; i < 12; i++) {
-      const a = i / 12 * Math.PI * 2;
-      addTube('corda da rede da cesta solar', [
-        [Math.cos(a) * 0.55, rimY - 0.02, 0.82 + Math.sin(a) * 0.55],
-        [Math.cos(a + 0.1) * 0.42, rimY - 0.33, 0.82 + Math.sin(a + 0.1) * 0.42],
-        [Math.cos(a + 0.16) * 0.31, rimY - 0.62, 0.82 + Math.sin(a + 0.16) * 0.31]
-      ], 0.018, limestoneShade, group, 12);
-    }
-    group.traverse(obj => { if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; } });
-    scene.add(group);
-    const hoopPosition = new THREE.Vector3(centerX, floorY + 1.95 + rimY, baselineZ + (facing === 0 ? 0.82 : -0.82));
-    hoops.push({ position: hoopPosition, label: name });
-    addInteractable({
-      name, label: 'Cesta solar de Rá',
-      description: 'Efígie de Rá com cabeça de falcão. O disco solar vazado foi adaptado como cesta de basquete.',
-      position: group.position, radius: 2.4
-    });
+    const uraeus=new THREE.Mesh(new THREE.TorusGeometry(.09,.028,8,24),bronze);uraeus.position.set(0,2.55,.23);uraeus.rotation.x=Math.PI/2;group.add(uraeus);
+    // Disco solar vazado: aro interno com 47 cm de diâmetro, dentro do disco cerimonial.
+    const sunCenter=new THREE.Vector3(0,3.05,.2);
+    const sunOuter=new THREE.Mesh(new THREE.TorusGeometry(.47,.055,12,64),bronze);sunOuter.position.copy(sunCenter);sunOuter.rotation.x=Math.PI/2;group.add(sunOuter);
+    const rim=new THREE.Mesh(new THREE.TorusGeometry(.235,.032,12,64),darkBronze);rim.position.copy(sunCenter);rim.rotation.x=Math.PI/2;group.add(rim);
+    const innerHighlight=new THREE.Mesh(new THREE.TorusGeometry(.225,.012,8,64),bronze);innerHighlight.position.copy(sunCenter);innerHighlight.position.y-=.035;innerHighlight.rotation.x=Math.PI/2;group.add(innerHighlight);
+    for(let i=0;i<16;i++){const a=i/16*Math.PI*2;const ray=new THREE.Mesh(new THREE.ConeGeometry(.052,.2,8),faienceLight);ray.position.set(Math.cos(a)*.43,3.05,.2+Math.sin(a)*.43);ray.rotation.z=Math.PI/2-a;group.add(ray);}
+    const netRing=new THREE.Mesh(new THREE.TorusGeometry(.15,.018,8,40),bronze);netRing.position.set(0,2.62,.2);netRing.rotation.x=Math.PI/2;group.add(netRing);
+    for(let i=0;i<12;i++){const a=i/12*Math.PI*2;addTube('corda da rede do disco solar',[[Math.cos(a)*.235,3.02,.2+Math.sin(a)*.235],[Math.cos(a+.08)*.19,2.83,.2+Math.sin(a+.08)*.19],[Math.cos(a+.16)*.15,2.62,.2+Math.sin(a+.16)*.15]],.009,limestoneShade,group,10);}
+    const cartouche=new THREE.Mesh(new THREE.BoxGeometry(.72,.34,.06),darkBronze);cartouche.position.set(0,.5,.54);group.add(cartouche);
+    const glyphCanvas=document.createElement('canvas');glyphCanvas.width=256;glyphCanvas.height=128;const gg=glyphCanvas.getContext('2d');gg.fillStyle='#193b49';gg.fillRect(0,0,256,128);gg.strokeStyle='#c99b51';gg.lineWidth=6;gg.strokeRect(5,5,246,118);gg.fillStyle='#f0d49a';gg.font='bold 46px Georgia';gg.textAlign='center';gg.fillText('RA',128,83);
+    const glyphTex=new THREE.CanvasTexture(glyphCanvas);glyphTex.colorSpace=THREE.SRGBColorSpace;
+    const glyphPlate=new THREE.Mesh(new THREE.PlaneGeometry(.62,.28),new THREE.MeshBasicMaterial({map:glyphTex}));glyphPlate.position.set(0,.5,.575);group.add(glyphPlate);
+    group.traverse(obj=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;}});scene.add(group);
+    const hoopPosition=new THREE.Vector3(centerX,floorY+3.05,baselineZ+(facing===0?.2:-.2));hoops.push({position:hoopPosition,label:name});
+    addInteractable({name,label:'Rá — disco solar / cesta',description:'Figura humana de cabeça de falcão representa Rá. O disco solar vazado acima da cabeça funciona como cesta de basquete; a abertura tem cerca de 47 cm.',prompt:'CESTA DE RÁ · E para examinar · arremesse a bola pelo disco solar',position:group.position,radius:2.6});
   }
   addRaHoop(nearZ + 0.55, 0, 'Rá — cesta norte');
   addRaHoop(farZ - 0.55, Math.PI, 'Rá — cesta sul');
@@ -557,16 +548,17 @@ export function buildTrainingRoom({
   const ballMap = new THREE.CanvasTexture(ballCanvas);
   ballMap.colorSpace = THREE.SRGBColorSpace;
   const ballMaterial = new THREE.MeshStandardMaterial({ map: ballMap, roughness: 0.84, metalness: 0.01 });
-  const ball = new THREE.Mesh(new THREE.SphereGeometry(0.23, 40, 32), ballMaterial);
+  const ballRadius = 0.12; // Bola oficial com aproximadamente 24 cm de diâmetro.
+  const ball = new THREE.Mesh(new THREE.SphereGeometry(ballRadius, 40, 32), ballMaterial);
   ball.name = 'bola de basquete interativa';
-  ball.position.set(centerX, floorY + 0.24, centerZ - 2.2);
+  ball.position.set(centerX, floorY + ballRadius, centerZ - 2.2);
   ball.castShadow = true; ball.receiveShadow = true; scene.add(ball);
   const seamMaterial = new THREE.MeshStandardMaterial({ color: 0x211812, roughness: 0.9 });
-  const seamA = new THREE.Mesh(new THREE.TorusGeometry(0.231, 0.009, 6, 80), seamMaterial);
+  const seamA = new THREE.Mesh(new THREE.TorusGeometry(0.121, 0.0045, 6, 80), seamMaterial);
   seamA.name = 'costura da bola'; seamA.rotation.x = Math.PI / 2; ball.add(seamA);
-  const seamB = new THREE.Mesh(new THREE.TorusGeometry(0.231, 0.009, 6, 80), seamMaterial);
+  const seamB = new THREE.Mesh(new THREE.TorusGeometry(0.121, 0.0045, 6, 80), seamMaterial);
   seamB.name = 'costura da bola'; seamB.rotation.y = Math.PI / 2; ball.add(seamB);
-  const seamC = new THREE.Mesh(new THREE.TorusGeometry(0.231, 0.009, 6, 80), seamMaterial);
+  const seamC = new THREE.Mesh(new THREE.TorusGeometry(0.121, 0.0045, 6, 80), seamMaterial);
   seamC.name = 'costura da bola'; seamC.rotation.z = Math.PI / 2; ball.add(seamC);
   const ballVelocity = new THREE.Vector3();
   let ballHeld = false, ballAge = 0;
@@ -574,7 +566,8 @@ export function buildTrainingRoom({
   const latestForward = new THREE.Vector3(0, 0, -1);
   addInteractable({
     name: 'Bola de basquete', label: 'Bola de basquete',
-    description: 'Uma bola de couro está no piso. Aproxime-se e pressione E/INTERAGIR para pegá-la; pressione novamente para arremessar.',
+    description: 'Bola oficial de couro com cerca de 24 cm de diâmetro. E/INTERAGIR pega e arremessa; mire em uma cesta de Rá ou em um shabti despertado.',
+    prompt: 'E / INTERAGIR · pegar ou arremessar a bola',
     position: ball.position, radius: 2.1,
     onInteract: () => {
       if (!ballHeld) {
@@ -948,7 +941,7 @@ export function buildTrainingRoom({
     playerInvulnerability = Math.max(0, playerInvulnerability - dt);
     if (ballHeld) {
       const dir = forward.clone().setY(0).normalize();
-      ball.position.copy(playerPosition).add(new THREE.Vector3(0, 1.35, 0)).addScaledVector(dir, 0.9);
+      ball.position.copy(playerPosition).add(new THREE.Vector3(0, 1.12, 0)).addScaledVector(dir, 0.72);
       ball.rotation.x += dt * 1.2;
       ball.rotation.z += dt * 0.8;
     } else if (ballVelocity.lengthSq() > 0.02) {
@@ -957,8 +950,8 @@ export function buildTrainingRoom({
       ball.position.addScaledVector(ballVelocity, dt);
       ballAge += dt;
       // Rebote no piso e nos limites interiores da quadra.
-      if (ball.position.y < floorY + 0.23) {
-        ball.position.y = floorY + 0.23;
+      if (ball.position.y < floorY + ballRadius) {
+        ball.position.y = floorY + ballRadius;
         if (Math.abs(ballVelocity.y) > 0.75) ballVelocity.y *= -0.62;
         else ballVelocity.y = 0;
         ballVelocity.x *= 0.82; ballVelocity.z *= 0.82;
@@ -976,14 +969,14 @@ export function buildTrainingRoom({
           ball.position.x - hoop.position.x,
           ball.position.z - hoop.position.z
         );
-        if (crossedDown && radialDistance < 0.24) {
+        if (crossedDown && radialDistance < 0.105) {
           baskets += 1; drawScoreboard(baskets, targetHits, targetPracticeActive);
           message = 'Cesta! A bola atravessou o disco solar de Rá. Total: ' + baskets + '.';
           ballVelocity.multiplyScalar(0.28);
           break;
         }
       }
-      if (ballAge > 28 || ball.position.y < floorY + 0.24 && ballVelocity.length() < 0.35) {
+      if (ballAge > 28 || ball.position.y < floorY + ballRadius + 0.01 && ballVelocity.length() < 0.35) {
         ballVelocity.set(0, 0, 0);
       }
     }

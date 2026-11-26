@@ -98,7 +98,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Clareamento da tonalidade da parede.
 - [ ] Testar face interna, profundidade, cúpula, piso e distribuição dos nichos.
 - [ ] Ajustar luz ambiente e materiais para evitar aparência cinza/transparente.
-- [x] Adicionar inspeção contextual aos 16 nichos inferiores, quatro shabtis e mesa de leitura (E/INTERAGIR compartilhado).
+- [x] Adicionar abertura/fechamento visual dos 16 papiros inferiores e inspeção dos quatro shabtis e mesa de leitura (E/INTERAGIR compartilhado).
 - [x] Fixar a seed das texturas de Nut e Geb para manter a composição estável entre recarregamentos e dispositivos.
 - [ ] Criar leitura aprofundada/coleção de papiros e interações de uso dos artefatos.
 

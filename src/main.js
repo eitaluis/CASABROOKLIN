@@ -3,8 +3,8 @@ import { buildWorld } from './world.js?v=brooklyn-exterior-spiralwalk-20261126a'
 import { buildExterior } from './exterior.js?v=brooklyn-exterior-arrival-20261126b';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
 import { buildGrandSalon } from './grand-salon.js?v=grand-salon-circulation-20261126a';
-import { buildTrainingRoom } from './training-room.js?v=training-room-interactive-20261126a';
-import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
+import { buildTrainingRoom } from './training-room.js?v=training-room-interactive-20261126b';
+import { createInventory } from './inventory.js?v=training-weapon-hook-20261126a';
 import { createCharacter } from './character.js?v=carter-ara-approved-restore-20261126d';
 import { createThirdPersonController } from './third-person.js?v=brooklyn-exterior-spiralwalk-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';

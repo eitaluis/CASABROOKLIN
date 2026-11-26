@@ -366,7 +366,7 @@
       "id": "nyc-dot-williamsburg-bridge-dimensions",
       "source": "https://www.nyc.gov/html/dot/html/infrastructure/williamsburg-bridge.shtml",
       "license": "official public reference; no asset imported",
-      "role": "official bridge data for total length, main span, navigation clearance, tower height and cable count; guide for proportions only",
+      "role": "official bridge measurements and NYC DOT official panorama photograph used as visual reference for towers, suspension cables, deck and East River proportions; no photo imported",
       "runtimeImported": false
     },
     {

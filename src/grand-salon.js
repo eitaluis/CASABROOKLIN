@@ -581,7 +581,7 @@ function papyrusMaterial() {
   return new THREE.MeshStandardMaterial({map:color,bumpMap:bump,bumpScale:.018,roughness:.96,side:THREE.DoubleSide});
 }
 
-function addThoth(scene,marble,pale,brass,reliefTex) {
+function addThoth(scene,marble,pale,brass,reliefTex,wood) {
   const group=new THREE.Group();group.name='estátua monumental de Thoth em basalto';group.position.set(0,13.175,-.5);
   const plinth=new THREE.Mesh(new RoundedBoxGeometry(3,.48,3,6,.13),pale);plinth.position.y=.24;plinth.castShadow=true;plinth.receiveShadow=true;group.add(plinth);
   const step=new THREE.Mesh(new RoundedBoxGeometry(2.62,.28,2.62,6,.1),marble);step.position.y=.6;step.castShadow=true;group.add(step);
@@ -973,7 +973,7 @@ export function buildGrandSalon({
     radius:2.2
   });
 
-  addThoth(scene,marble,pale,brass,relief);
+  addThoth(scene,marble,pale,brass,relief,walnut);
   addBoxCollider(colliders,0,17.35,-.5,2.35,8.35,2.35);
   interactables.push({
     name:'Estátua de Thoth',

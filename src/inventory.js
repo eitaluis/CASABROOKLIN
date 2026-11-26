@@ -4,6 +4,7 @@ export function createInventory({
   THREE,
   character,
   onUse = () => {},
+  setControlsLocked = () => {},
   handBoneCandidates = ['weaponr', 'righthand', 'mixamorigrighthand', 'handr', 'righthandindex1'],
   fallbackSocketPosition = [0.4, 0.94, 0.04]
 }) {

@@ -63,7 +63,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     const dx = event.clientX - touchLook.x;
     const dy = event.clientY - touchLook.y;
     cameraYaw -= dx * 0.006;
-    cameraPitch = THREE.MathUtils.clamp(cameraPitch - dy * 0.004, -0.15, Math.PI / 2 - 0.002);
+    cameraPitch = THREE.MathUtils.clamp(cameraPitch - dy * 0.004, -Math.PI / 2 + 0.01, Math.PI / 2 - 0.01);
     touchLook.x = event.clientX;
     touchLook.y = event.clientY;
   });

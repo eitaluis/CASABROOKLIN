@@ -133,16 +133,16 @@ A nova etapa está implementada em `src/grand-salon.js`, chamada depois da const
 - **Colunas:** shafts com caneluras verticais, anéis metálicos, capitéis em forma de lótus e pétalas.
 - **Galerias:** substituição visual dos guarda-corpos retos por balaústres torneados, corrimãos de madeira com filete de latão e postes de extremidade.
 - **Escadarias:** dois conjuntos laterais em zigue-zague, cada um com três lances alternados e 14 degraus por lance, alcançando as três galerias. Incluem filetes de bronze, corrimãos, balaústres torneados e patamares.
-- **Thoth:** nova escultura original em basalto, com túnica de pregas, cabeça de íbis, bico, olhos, braços, papiro, cetro e coroa lunar. A escultura histórica CC0 do Minneapolis Institute of Art foi utilizada apenas como referência visual; o modelo não foi importado.
-- **Lareira:** remoção dos antigos cones isolados; novas malhas orgânicas em gradiente de cor, múltiplas línguas, lenha, cama de brasas, partículas e luz pontual animada.
-- **Mobiliário:** sofás de volumes arredondados com almofadas e costuras, tapete oval com motivo solar, mesa circular de centro e detalhes de bronze.
-- **Teto e paredes:** medalhão de cedro, roseta, relevos solares alados e pilastras esculpidas próximas à lareira.
+- **Thoth:** escultura original em mármore negro com pernas e tronco humanos, kilt shendyt pregueado, faixa diagonal, colar largo, cabeça e bico de íbis, papiro aberto com emblema Per Ankh e estilete. A escultura histórica CC0 do Minneapolis Institute of Art foi utilizada apenas como referência visual; o modelo não foi importado.
+- **Lareira:** o fogo atual usa o volume shader Housz/ThreeVolumetricFire (MIT), com ruído/profilagem, view alignment, lenha, cama de brasas, faíscas e luz dinâmica. A densidade das fatias foi aumentada para reduzir a leitura facetada. A moldura foi substituída por arco de calcário esculpido, pilastras, capitéis, detalhes de bronze e manto arredondado.
+- **Mobiliário:** dois GLBs Poly Haven Sofa 03 CC0 (escala 0,78) em cada lado da lareira, mesa circular baixa, e tapete de pele serpentina com dimensões canônicas aproximadas de 12,2 × 4,6 m.
+- **Teto e paredes:** medalhão de cedro, roseta, relevos solares alados, placas SVG CC BY 3.0 com harp/drum/flute/spears, porta dupla com Olho de Hórus, correntes e seis cadeados; parede panorâmica com vidro transmissivo e moldura de bronze.
 
 ### Critérios de validação pendentes
 
 - Sintaxe e referências estáticas verificadas; ainda falta inspeção visual em navegador.
 - O controlador de terceira pessoa recebe as rampas e os três níveis de galeria: acompanha a altura durante cada lance, preserva o nível no patamar e aplica queda ao sair da plataforma. Testar as transições e conferir se não há deslizamento ou mudança abrupta.
-- Avaliar o fogo e a estátua de diferentes ângulos, incluindo vista de dentro do salão.
+- Avaliar o fogo, a estátua, a moldura de lareira, a porta e o vidro de diferentes ângulos, incluindo vista de dentro do salão.
 - Testar textura, sombras, clipping e desempenho em desktop e celular paisagem.
 - Não marcar como finalizado visualmente até esses testes ocorrerem.
 
@@ -163,9 +163,9 @@ A partir de agora, cada sala é construída segundo [docs/ASSET-FIRST-ROOM-BUILD
 ### QA pendente
 
 - Verificar no browser a aparência do volume de fogo, incluindo cortes/slicing com a câmera em ângulos diferentes.
-- Confirmar que o GLB Sofa 03 carrega e mantém texturas no GitHub Pages sem erro de MeshoptDecoder/WebP.
+- Confirmar que os dois GLBs Sofa 03 carregam e mantêm texturas no GitHub Pages sem erro de MeshoptDecoder/WebP; verificar a nova escala 0,78 com a altura do Carter.
 - Comparar o assento do sofá com a altura do Carter, e validar o collider para não bloquear passagem útil.
 - Verificar a estatua com iluminação em movimento e o efeito de normal/roughness; o reflexo visual deve continuar presente.
 - Conferir a leitura do tapete como pele de serpente em vista de jogo, não apenas visto de cima.
 - Verificar interação E/INTERAGIR para todos os elementos hero e o comportamento das colisões nos dois perfis.
-- Confirmar que os instrumentos originais têm proporção e silhueta convincentes em escala humana; caso sejam aprovados, registar as suas fichas como assets locais originais no manifesto.
+- Confirmar harpas, tambores, flautas, lanças e khopeshes em escala humana; os modelos de geometria são locais originais e os SVGs auxiliares têm atribuição CC BY 3.0 no manifesto e em assets/decor/README.md. Verificar inspeção e colisões.

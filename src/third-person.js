@@ -8,7 +8,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   let zoneName = 'dock';
   let cameraYaw = 0;
   let cameraPitch = 0.25;
-  let cameraDistance = 6.2;
+  let cameraDistance = 4.25;
   let pointerLocked = false;
   let firstCameraFrame = true;
   let fallbackSpeed = 0;
@@ -78,7 +78,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   });
 
   window.addEventListener('wheel', (event) => {
-    cameraDistance = THREE.MathUtils.clamp(cameraDistance + Math.sign(event.deltaY) * 0.55, 3.4, 10.5);
+    cameraDistance = THREE.MathUtils.clamp(cameraDistance + Math.sign(event.deltaY) * 0.4, 2.8, 8.5);
   }, { passive: true });
 
   window.addEventListener('keydown', (event) => {
@@ -176,9 +176,9 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     if (direction.lengthSq() > 0.0001) direction.normalize();
 
     const running = keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint;
-    const speedTarget = input.moving ? (running ? 3.2 : 1.45) : 0;
+    const speedTarget = input.moving ? (running ? 5.8 : 2.25) : 0;
     const currentPosition = getPosition();
-    limitToZone(currentPosition, direction, Math.max(speedTarget, 1.45) * dt * 1.4);
+    limitToZone(currentPosition, direction, Math.max(speedTarget, 2.25) * dt * 1.35);
 
     if (character.human) {
       character.human.targetSpeed = direction.lengthSq() > 0.0001 ? speedTarget : 0;
@@ -193,7 +193,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       character.human.update(dt);
     } else {
       const targetVelocity = direction.clone().multiplyScalar(speedTarget);
-      smoothVelocity.lerp(targetVelocity, 1 - Math.exp(-5.5 * dt));
+      smoothVelocity.lerp(targetVelocity, 1 - Math.exp(-10.5 * dt));
       const current = character.model.position;
       const next = current.clone().addScaledVector(smoothVelocity, dt);
       const bounds = zones[zoneName].bounds;
@@ -207,7 +207,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     }
 
     const p = getPosition();
-    lookTarget.set(p.x, p.y + 1.02, p.z);
+    lookTarget.set(p.x, p.y + 0.98, p.z);
     const horizontalDistance = cameraDistance * Math.cos(cameraPitch);
     desiredCamera.set(
       lookTarget.x + Math.sin(cameraYaw) * horizontalDistance,
@@ -218,7 +218,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       camera.position.copy(desiredCamera);
       firstCameraFrame = false;
     } else {
-      camera.position.lerp(desiredCamera, 1 - Math.exp(-7.5 * dt));
+      camera.position.lerp(desiredCamera, 1 - Math.exp(-10.5 * dt));
     }
     camera.lookAt(lookTarget);
     return { position: p, speed: character.human ? character.human.speed : fallbackSpeed, zone: zoneName };

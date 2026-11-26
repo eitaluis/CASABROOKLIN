@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js';
 import { createCharacter } from './character.js?v=ara-game-jump-set-20261126c';
-import { createThirdPersonController } from './third-person.js?v=ara-pivot-close-freepitch-20261126e';
+import { createThirdPersonController } from './third-person.js?v=ara-collisions-camera-265-20261126f';
 
 
 
@@ -79,7 +79,7 @@ character.model.position.set(...zones.dock.pos);
 if (character.human) character.human.reset();
 
 const controller = createThirdPersonController({
-  THREE, camera, canvas, character, zones,
+  THREE, camera, canvas, character, zones, colliders,
   onZoneChange: (name, zone) => {
     document.getElementById('zoneName').textContent = zone.label;
     document.querySelectorAll('.nav button').forEach(button =>

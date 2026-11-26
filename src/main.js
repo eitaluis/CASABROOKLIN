@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
-import { buildGrandSalon } from './grand-salon.js?v=grand-salon-sculpted-20261126g';
+import { buildGrandSalon } from './grand-salon.js?v=great-hall-asset-refine-20261126a';
 import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
 import { createCharacter } from './character.js?v=carter-ara-approved-restore-20261126d';
 import { createThirdPersonController } from './third-person.js?v=grand-salon-stair-walk-20261126d';
@@ -51,7 +51,7 @@ const hemi=new THREE.HemisphereLight(0xd2e0e1,0x4a382b,1.8);scene.add(hemi);
 const sun=new THREE.DirectionalLight(0xffd7a0,2.35);sun.position.set(-42,58,35);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-90;sun.shadow.camera.right=90;sun.shadow.camera.top=90;sun.shadow.camera.bottom=-90;sun.shadow.bias=-.00025;scene.add(sun);
 const fill=new THREE.DirectionalLight(0x9dbbc7,.78);fill.position.set(50,24,-40);scene.add(fill);
 const clock=new THREE.Clock();
-const colliders=[];const animated=[];const clickable=[];
+const colliders=[];const animated=[];const clickable=[];const interactables=[];
 function texCanvas(draw,w=512,h=512,repeatX=1,repeatY=1){const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');draw(g,w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(repeatX,repeatY);t.anisotropy=8;return t}
 function noise(g,w,h,count,color,alpha){g.save();g.globalAlpha=alpha;for(let i=0;i<count;i++){g.fillStyle=color;const s=Math.random()*2+0.3;g.fillRect(Math.random()*w,Math.random()*h,s,s)}g.restore()}
 const limestone=texCanvas((g,w,h)=>{g.fillStyle='#b8aa8d';g.fillRect(0,0,w,h);for(let y=0;y<h;y+=84){for(let x=0;x<w;x+=128){g.fillStyle=['#c8b99a','#b9aa8b','#a99a7d','#c0b293'][Math.floor(Math.random()*4)];g.fillRect(x+(Math.random()*12),y+2,125,80);g.strokeStyle='#8d806b';g.globalAlpha=.28;g.strokeRect(x,y,126,82);g.globalAlpha=1}}noise(g,w,h,6000,'#514a3d',.10)},512,512,2.2,2);
@@ -94,7 +94,9 @@ const { zones, groundSurfaces, water } = world;
 
 // Interior passes are shared by desktop and mobile.
 buildInteriorDetails({ THREE, scene });
-const grandSalon = buildGrandSalon({ THREE, scene, animated });
+const grandSalon = buildGrandSalon({
+  THREE, scene, animated, camera, isTouchDevice, colliders, interactables
+});
 const fireLight = grandSalon.fireLight;
 
 function toast(message) {
@@ -136,6 +138,27 @@ const controller = createThirdPersonController({
     toast(notices[name] || zone.label);
   }
 });
+
+function interactWithNearby() {
+  const p = controller.getPosition();
+  let nearest = null;
+  let nearestDistance = Infinity;
+  for (const item of interactables) {
+    const distance = p.distanceTo(item.position);
+    if (distance <= item.radius && distance < nearestDistance) {
+      nearest = item;
+      nearestDistance = distance;
+    }
+  }
+  if (nearest) toast(nearest.description || nearest.label || nearest.name);
+  else toast('Não há nenhum objeto próximo para examinar.');
+}
+window.addEventListener('keydown', event => {
+  if (event.code === 'KeyE' && !event.repeat && document.getElementById('startscreen').classList.contains('hidden')) {
+    interactWithNearby();
+  }
+});
+document.getElementById('interactButton')?.addEventListener('click', interactWithNearby);
 
 document.querySelectorAll('.nav button').forEach(button => {
   button.addEventListener('click', () => {
@@ -202,7 +225,8 @@ function animate() {
       item.obj.rotation.z = (item.baseRotationZ ?? 0) + Math.sin(time * 6.2 + item.phase) * 0.055;
     }
   }
-  if (fireLight) fireLight.intensity = 4.35 + Math.sin(time * 8.7) * 0.8;
+  if (fireLight) fireLight.intensity = 4.25 + Math.sin(time * 8.7) * 0.72;
+  grandSalon.update?.(time);
   inventory.update(dt);
   water.material.opacity = 0.9 + 0.03 * Math.sin(time * 1.2);
   drawMap();

@@ -217,6 +217,51 @@
       "path": "src/magic-system.js + src/character.js + src/training-room.js + src/main.js",
       "role": "original Three.js HA-DI prototype: floating golden ḥḏ hieroglyph 𓉔𓆓 anchored to Carter's right hand, Ara Point gesture with two-finger adaptation, golden energy pulse and impact, Shabti ceramic fragments with gravity/bounce, 10-second floor persistence and random respawn",
       "license": "project-original-code"
+    },
+    {
+      "id": "ha-di-kenney-magic-sprite",
+      "path": "assets/vfx/kenney-magic-01.png.b64",
+      "source": "https://kenney.nl/assets/particle-pack",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "role": "Kenney magic sprite decoded as an additive spell-core and halo texture for HA-DI. The file is a Base64 text representation of the source PNG and is decoded to a Three.js texture at runtime; Canvas fallback is available.",
+      "runtimeImported": true
+    },
+    {
+      "id": "ha-di-kenney-smoke-sprite",
+      "path": "assets/vfx/kenney-smoke-03.png.b64",
+      "source": "https://kenney.nl/assets/particle-pack",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "role": "Kenney smoke sprite for the expanding dust/smoke layer of HA-DI impact. The file is a Base64 text representation of the source PNG and is decoded to a Three.js texture at runtime; Canvas fallback is available.",
+      "runtimeImported": true
+    },
+    {
+      "id": "ha-di-kenney-circle-sprite",
+      "path": "assets/vfx/kenney-circle-03.png.b64",
+      "source": "https://kenney.nl/assets/particle-pack",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "role": "Kenney circular sprite used as the expanding ground sigil beneath HA-DI impact. The file is a Base64 text representation of the source PNG and is decoded to a Three.js texture at runtime; Canvas fallback is available.",
+      "runtimeImported": true
+    },
+    {
+      "id": "ha-di-kenney-spark-sprite",
+      "path": "assets/vfx/kenney-spark-07.png.b64",
+      "source": "https://kenney.nl/assets/particle-pack",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "role": "Kenney spark sprite instanced for gold and pale-gold impact particles. The file is a Base64 text representation of the source PNG and is decoded to a Three.js texture at runtime; Canvas fallback is available.",
+      "runtimeImported": true
+    },
+    {
+      "id": "ha-di-kenney-slash-sprite",
+      "path": "assets/vfx/kenney-slash-02.png.b64",
+      "source": "https://kenney.nl/assets/particle-pack",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "role": "Kenney slash sprite used for the fast luminous cutting arc at the HA-DI impact. The file is a Base64 text representation of the source PNG and is decoded to a Three.js texture at runtime; Canvas fallback is available.",
+      "runtimeImported": true
     }
   ],
   "openSourceReferences": [

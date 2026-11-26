@@ -32,20 +32,23 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Setor 02 — personagem e movimento
 
-- [x] Aprovar direção visual **C — Game 3D gráfico**: personagem totalmente 3D, formas limpas e legíveis, acabamento playful de videogame; sem anime e sem realismo de escaneamento.
-- [x] Manter rosto humano natural, com proporções faciais críveis; sem olhos de anime ou proporções chibi.
-- [x] Aprovar corpo jovem, lean/atlético e ágil, sem musculatura adulta exagerada.
-- [x] Manter pele negra, cabelo crespo escuro, camiseta azul, calça cargo cáqui e tênis azul-marinho.
-- [x] Criar a primeira versão local do Carter em `src/character.js` e substituir o carregamento Ara remoto no runtime.
-- [x] Criar rig articulado com bones humanoides e socket `WeaponR` na mão direita; inventário existente segue conectado.
-- [x] Recriar localmente corpo, aba, ferragens e alça vestível da bolsa de referência Innerscene; quadril direito e alça cruzando peito. **O GLB original não foi integrado; a geometria atual é uma recriação procedural local.**
-- [x] Implementar idle, caminhada, sprint, lean frontal, braços recuados no sprint, salto, aterrissagem e balanço secundário da bolsa.
-- [x] Criar `character-preview.html` com o mesmo módulo de personagem do jogo, controles de animação e vistas frontal, lateral e traseira.
-- [ ] Testar a aparência do modelo no navegador real: rosto, proporção, cabelo, costuras, roupa, alça e bolsa.
-- [ ] Observar articulações/possíveis junções entre meshes durante curvas, sprint e saltos. A primeira versão usa peças parentadas aos bones, não um único SkinnedMesh com skin weights.
-- [ ] Confirmar posição de cajado e khopesh no socket `WeaponR` em idle, walk e sprint.
-- [ ] Validar o mesmo modelo e as mesmas animações no desktop e no celular em modo paisagem.
-- [ ] Avaliar em fase futura retarget dos clips Mesh2Motion (Sprint, Run_Anime, NinjaJump, Land_Three_Point e Wall_Run) se o movimento procedural precisar de mais variedade.
+- [x] Aprovar direção visual **C — Game 3D gráfico**: totalmente 3D, playful e com acabamento de videogame; sem anime no rosto e sem realismo excessivo.
+- [x] Aprovar rosto humano natural, cabelo crespo curto, corpo jovem e lean/atlético.
+- [x] Definir figurino: camisa azul, calça cargo cáqui e tênis escuros.
+- [x] Definir bolsa transversal conhaque no quadril direito, com alça sobre o peito.
+- [x] Reverter a substituição procedural depois da reprovação visual do boneco de primitivas; recuperar a base humana Ara 3D Gen que o usuário considerou mais interessante.
+- [x] Retomar malha humana contínua com skin weights e game rig Ara; manter socket `WeaponR` para o inventário.
+- [x] Configurar camisa azul, cargo pants cáqui, sneakers escuros e carry none (sem mochila automática).
+- [x] Criar corpo, aba, fole lateral, fecho, ferragens e alça plana da bolsa como geometria local inspirada na referência CC0 Innerscene. **O GLB original da referência não está incorporado.**
+- [x] Manter clips Ara de idle, walk, run e jump_start/jump_air/jump_land.
+- [x] Manter lean frontal e banking no controlador compartilhado entre desktop/mobile.
+- [x] Atualizar `character-preview.html` para carregar o mesmo personagem e a mesma bolsa usados no jogo.
+- [ ] Conferir visualmente o modelo restaurado em navegador real, comparando-o com o Carter anterior.
+- [ ] Ajustar posição, tamanho e ângulo da bolsa e conferir se a alça fica sobre a camisa.
+- [ ] Observar clipping e balanço da bolsa durante sprint, curvas e salto.
+- [ ] Testar animação, orientação e escala de cajado/khopesh em `WeaponR`.
+- [ ] Testar o mesmo personagem no desktop e no celular em modo paisagem.
+- [ ] Só então marcar identidade visual como aprovada em execução.
 
 ## Setor 03 — inventário e combate
 

@@ -8,25 +8,26 @@
       "version": "0.165.0",
       "role": "renderização WebGL, geometria, materiais, iluminação e animação",
       "license": "MIT"
+    },
+    {
+      "id": "ara3d-js",
+      "source": "https://github.com/ara3d/ara3d",
+      "version": "0.18.1",
+      "role": "geração local no navegador da malha humana contínua, game rig, skin weights e clips de locomoção do Carter",
+      "license": "MIT-library-CC0-MakeHuman-base-and-animations"
     }
   ],
   "localGeneratedAssets": [
     {
-      "id": "carter-kane-game3d",
-      "path": "src/character.js",
-      "role": "personagem local procedural: rosto humano natural, cabelo crespo, camiseta azul, calça cargo, rig articulado, WeaponR e locomoção",
-      "license": "project-original-code"
-    },
-    {
       "id": "carter-crossbody-satchel",
       "path": "src/character.js",
-      "role": "recriação procedural do corpo da bolsa e alça transversal; couro conhaque, aba, ferragens, posição no quadril direito; inspirada no asset CC0 Innerscene",
+      "role": "corpo, aba, ferragens e alça plana da bolsa transversal no quadril direito; geometria local inspirada na referência CC0 Innerscene, não é o GLB original",
       "license": "project-original-code"
     },
     {
-      "id": "carter-locomotion",
+      "id": "carter-game-motion-adapter",
       "path": "src/character.js",
-      "role": "idle, caminhada, sprint, balanço de braços/pernas, lean frontal, salto e aterrissagem",
+      "role": "ponte da locomoção Ara para o controlador terceiro-pessoa, balanço sutil da bolsa e sequência de salto",
       "license": "project-original-code"
     },
     {
@@ -56,10 +57,17 @@
   ],
   "openSourceReferences": [
     {
+      "id": "ara3d-character-generator",
+      "source": "https://github.com/ara3d/ara3d",
+      "license": "MIT-library-CC0-MakeHuman-base-and-animations",
+      "role": "runtime: geração de malha humana contínua, skin weights, game rig, WeaponR e clips idle/walk/run/jump",
+      "runtimeImported": true
+    },
+    {
       "id": "innerscene-crossbody-bag",
       "source": "https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2",
       "license": "CC0-1.0",
-      "role": "approved visual/measurement reference for cognac crossbody bag; original GLB download unavailable during this integration; locally recreated in src/character.js",
+      "role": "approved CC0 visual reference; GLB not imported; custom local body and flat strap geometry recreated and fitted to Carter right hip",
       "runtimeImported": false
     },
     {

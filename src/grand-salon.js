@@ -900,7 +900,10 @@ export function buildGrandSalon({
   });
 
   for(const x of [-8.8,8.8]) {
-    for(const z of [-6.7,6.3]) lotusColumn(scene,x,z,stone,pale,brass);
+    for(const z of [-6.7,6.3]) {
+      lotusColumn(scene,x,z,stone,pale,brass);
+      addBoxCollider(colliders,x,20.65,z,1.5,14.9,1.5);
+    }
   }
 
   addBalustrades(scene,stone,brass,darkWood);

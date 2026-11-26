@@ -214,7 +214,7 @@ Para a configuração específica da sala (quadra de basquete, piso de madeira, 
 - Pilastras, nervuras metálicas, acabamento de calcário/bronze e iluminação quente por arandelas.
 - Bustos de divindades como interpretação artística; seleção atual: Anúbis, Sekhmet, Hórus, Ísis e Bastet.
 - Efígies de Rá com cabeça de falcão e discos solares vazados como cestas.
-- Bola de basquete, alvos mágicos e placar como objetos jogáveis; quatro pequenas estatuetas shabti que crescem para guerreiros de barro com espada e escudo.
+- Bola de basquete com assistência de arco ao mirar numa cesta, alvos mágicos e placar; quatro pequenas estatuetas shabti que crescem para guerreiros de barro com espada e escudo.
 - Os guerreiros viram-se para encarar Carter, mas ainda não têm IA de perseguição/ataque.
 
 ### Materiais e assets

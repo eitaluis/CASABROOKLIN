@@ -516,20 +516,20 @@ export function buildTrainingRoom({
     }
     const uraeus=new THREE.Mesh(new THREE.TorusGeometry(.09,.028,8,24),bronze);uraeus.position.set(0,2.55,.23);uraeus.rotation.x=Math.PI/2;group.add(uraeus);
     // Disco solar vazado: aro interno com 47 cm de diâmetro, dentro do disco cerimonial.
-    const sunCenter=new THREE.Vector3(0,3.05,.2);
+    const sunCenter=new THREE.Vector3(0,2.761,.2);
     const sunOuter=new THREE.Mesh(new THREE.TorusGeometry(.47,.055,12,64),bronze);sunOuter.position.copy(sunCenter);sunOuter.rotation.x=Math.PI/2;group.add(sunOuter);
-    const rim=new THREE.Mesh(new THREE.TorusGeometry(.235,.032,12,64),darkBronze);rim.position.copy(sunCenter);rim.rotation.x=Math.PI/2;group.add(rim);
-    const innerHighlight=new THREE.Mesh(new THREE.TorusGeometry(.225,.012,8,64),bronze);innerHighlight.position.copy(sunCenter);innerHighlight.position.y-=.035;innerHighlight.rotation.x=Math.PI/2;group.add(innerHighlight);
-    for(let i=0;i<16;i++){const a=i/16*Math.PI*2;const ray=new THREE.Mesh(new THREE.ConeGeometry(.052,.2,8),faienceLight);ray.position.set(Math.cos(a)*.43,3.05,.2+Math.sin(a)*.43);ray.rotation.z=Math.PI/2-a;group.add(ray);}
+    const rim=new THREE.Mesh(new THREE.TorusGeometry(.257,.032,12,64),darkBronze);rim.position.copy(sunCenter);rim.rotation.x=Math.PI/2;group.add(rim);
+    const innerHighlight=new THREE.Mesh(new THREE.TorusGeometry(.247,.012,8,64),bronze);innerHighlight.position.copy(sunCenter);innerHighlight.position.y-=.035;innerHighlight.rotation.x=Math.PI/2;group.add(innerHighlight);
+    for(let i=0;i<16;i++){const a=i/16*Math.PI*2;const ray=new THREE.Mesh(new THREE.ConeGeometry(.052,.2,8),faienceLight);ray.position.set(Math.cos(a)*.43,2.761,.2+Math.sin(a)*.43);ray.rotation.z=Math.PI/2-a;group.add(ray);}
     const netRing=new THREE.Mesh(new THREE.TorusGeometry(.15,.018,8,40),bronze);netRing.position.set(0,2.62,.2);netRing.rotation.x=Math.PI/2;group.add(netRing);
-    for(let i=0;i<12;i++){const a=i/12*Math.PI*2;addTube('corda da rede do disco solar',[[Math.cos(a)*.235,3.02,.2+Math.sin(a)*.235],[Math.cos(a+.08)*.19,2.83,.2+Math.sin(a+.08)*.19],[Math.cos(a+.16)*.15,2.62,.2+Math.sin(a+.16)*.15]],.009,limestoneShade,group,10);}
+    for(let i=0;i<12;i++){const a=i/12*Math.PI*2;addTube('corda da rede do disco solar',[[Math.cos(a)*.257,2.733,.2+Math.sin(a)*.257],[Math.cos(a+.08)*.19,2.70,.2+Math.sin(a+.08)*.19],[Math.cos(a+.16)*.15,2.55,.2+Math.sin(a+.16)*.15]],.009,limestoneShade,group,10);}
     const cartouche=new THREE.Mesh(new THREE.BoxGeometry(.72,.34,.06),darkBronze);cartouche.position.set(0,.5,.54);group.add(cartouche);
     const glyphCanvas=document.createElement('canvas');glyphCanvas.width=256;glyphCanvas.height=128;const gg=glyphCanvas.getContext('2d');gg.fillStyle='#193b49';gg.fillRect(0,0,256,128);gg.strokeStyle='#c99b51';gg.lineWidth=6;gg.strokeRect(5,5,246,118);gg.fillStyle='#f0d49a';gg.font='bold 46px Georgia';gg.textAlign='center';gg.fillText('RA',128,83);
     const glyphTex=new THREE.CanvasTexture(glyphCanvas);glyphTex.colorSpace=THREE.SRGBColorSpace;
     const glyphPlate=new THREE.Mesh(new THREE.PlaneGeometry(.62,.28),new THREE.MeshBasicMaterial({map:glyphTex}));glyphPlate.position.set(0,.5,.575);group.add(glyphPlate);
     group.traverse(obj=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;}});scene.add(group);
-    const hoopPosition=new THREE.Vector3(centerX,floorY+3.05,baselineZ+(facing===0?.2:-.2));hoops.push({position:hoopPosition,label:name});
-    addInteractable({name,label:'Rá — disco solar / cesta',description:'Figura humana de cabeça de falcão representa Rá. O disco solar vazado acima da cabeça funciona como cesta de basquete; a abertura tem cerca de 47 cm.',prompt:'CESTA DE RÁ · E para examinar · arremesse a bola pelo disco solar',position:group.position,radius:2.6});
+    const hoopPosition=new THREE.Vector3(centerX,floorY+2.761,baselineZ+(facing===0?.2:-.2));hoops.push({position:hoopPosition,label:name});
+    addInteractable({name,label:'Rá — disco solar / cesta',description:'Figura humana de cabeça de falcão representa Rá. O disco solar vazado acima da cabeça funciona como cesta de basquete; a abertura interna tem 45 cm, com a borda superior a 3,05 m do piso.',prompt:'CESTA DE RÁ · E para examinar · arremesse a bola pelo disco solar',position:group.position,radius:2.6});
   }
   addRaHoop(nearZ + 0.55, 0, 'Rá — cesta norte');
   addRaHoop(farZ - 0.55, Math.PI, 'Rá — cesta sul');

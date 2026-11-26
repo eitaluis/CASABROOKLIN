@@ -116,6 +116,8 @@ for(const z of [-12,0,12,24,36,48]){
  ring.name='argola de amarração';ring.position.set(31.95,.55,z);ring.rotation.y=Math.PI/2;scene.add(ring);
 }
 
+// A mansão está no telhado, mas sua leitura depende da percepção mágica.
+const mansionRevealStart=scene.children.length;
 // Mansão oculta no telhado: cinco pavimentos, blocos de calcário e caixilhos de aço.
 const mansionBase=box('base elevada da mansão',[0,12.55,-.5],[36,.5,23],stone,false);
 const houseY=21.45,houseH=17.6;
@@ -148,18 +150,20 @@ box('lintel superior do portal',[0,19.16,11.42],[4.82,.48,.8],stone,false);
 const door=box('porta de madeira sem maçaneta',[0,15.9,11.93],[4.08,5.28,.34],woodMat,false);door.material=cedarMat;
 box('soleira monumental',[0,13.24,12.1],[4.4,.18,1.2],stone,false);
 for(let side of [-1,1]){box('pilar do portal',[side*2.58,16.1,11.7],[.55,6.3,.75],stone);for(let y=13.5;y<19;y+=.85)box('detalhe dourado do portal',[side*2.58,y,12.12],[.62,.06,.06],gold)}
-// Escada metálica externa em caracol: 66 degraus, cerca de duas voltas.
-const stairCenter=new THREE.Vector2(19,18),stairRadius=2.05,stairCount=78,stairRise=12.8;
+// Escada metálica helicoidal pela lateral leste do galpão, sem atravessar sua parede.
+const stairCenter=new THREE.Vector2(25,13),stairRadius=2.05,stairCount=78,stairRise=12.8;
+const stairStartAngle=Math.PI;
+const stairTotalAngle=Math.PI*5.5;
+const stairAngleStep=stairTotalAngle/(stairCount-1);
 const exteriorSteps=[];
 for(let i=0;i<stairCount;i++){
- const a=-Math.PI/2+i*.195,y=.08+i*(stairRise/(stairCount-1));
+ const a=stairStartAngle+i*stairAngleStep,y=.08+i*(stairRise/(stairCount-1));
  const x=stairCenter.x+Math.cos(a)*stairRadius,z=stairCenter.y+Math.sin(a)*stairRadius;
  const step=box('degrau de aço da escada em caracol',[x,y,z],[1.5,.18,.72],metal,false);
  step.rotation.y=a+Math.PI/2;exteriorSteps.push([a,y,x,z]);groundSurfaces.push(step);
 }
 const railPoints=exteriorSteps.map(([a,y])=>[stairCenter.x+Math.cos(a)*(stairRadius+1.0),y+.78,stairCenter.y+Math.sin(a)*(stairRadius+1.0)]);
 line(railPoints,metal,.075);
-// Mastro central e corrimão interno da escada externa.
 cyl('mastro central da escada espiral',[stairCenter.x,6.5,stairCenter.y],.16,.16,13.2,outdoorSteel,12);
 const innerRail=exteriorSteps.map(([a,y])=>[stairCenter.x+Math.cos(a)*(stairRadius-.82),y+.72,stairCenter.y+Math.sin(a)*(stairRadius-.82)]);
 line(innerRail,outdoorSteel,.052);
@@ -167,11 +171,13 @@ for(let i=0;i<stairCount;i+=6){
  const [a,y]=exteriorSteps[i];
  beamBetween('suporte interno do corrimão',[stairCenter.x+Math.cos(a)*(stairRadius-.82),y,stairCenter.y+Math.sin(a)*(stairRadius-.82)],[stairCenter.x+Math.cos(a)*(stairRadius-.82),y+.72,stairCenter.y+Math.sin(a)*(stairRadius-.82)],.028,outdoorSteel);
 }
-
-for(let i=0;i<stairCount;i+=4){const [a,y]=exteriorSteps[i];cyl('montante do corrimão',[stairCenter.x+Math.cos(a)*(stairRadius+1),y+.39,stairCenter.y+Math.sin(a)*(stairRadius+1)],.045,.045,.78,metal,8)}
-box('patamar da entrada',[18.7,13.05,13.0],[4.4,.2,4.2],metal,false);
-box('passarela entre a escada e a entrada',[9,13.05,11.0],[18,.2,2.2],stone,false);
-line([[18,13.18,13],[9,13.18,11],[0,13.18,11]],gold,.035);
+for(let i=0;i<stairCount;i+=4){
+ const [a,y]=exteriorSteps[i];
+ cyl('montante do corrimão',[stairCenter.x+Math.cos(a)*(stairRadius+1),y+.39,stairCenter.y+Math.sin(a)*(stairRadius+1)],.045,.045,.78,metal,8);
+}
+box('patamar da entrada',[25,13.05,13.0],[5.4,.2,5.4],metal,false);
+box('passarela entre a escada e a entrada',[12.5,13.05,12.1],[25,.2,2.6],stone,false);
+line([[25,13.18,13],[12.5,13.18,12.1],[0,13.18,12.1]],gold,.035);
 // Sinais discretos da camuflagem mágica.
 const magicMat=new THREE.MeshBasicMaterial({color:0xdab96f,transparent:true,opacity:.42,wireframe:true});
 const halo=new THREE.Mesh(new THREE.TorusGeometry(2.9,.025,8,96),magicMat);halo.position.set(0,16.1,12.35);scene.add(halo);animated.push({obj:halo,spin:true});
@@ -179,6 +185,33 @@ const sparkMat=new THREE.MeshBasicMaterial({color:0xe3bd73,transparent:true,opac
 for(let i=0;i<24;i++){const s=new THREE.Mesh(new THREE.SphereGeometry(.035+Math.random()*.04,8,8),sparkMat);s.position.set((Math.random()-.5)*7,14+Math.random()*5,12.3+Math.random()*.5);scene.add(s);animated.push({obj:s,phase:Math.random()*6.28,particle:true})}
 // Janelas com brilho quente ao entardecer.
 for(let i=0;i<14;i++){const l=new THREE.PointLight(0xffc27d,.24,8);l.position.set(-12+(i%6)*4.8,14+Math.floor(i/6)*5,10.3);scene.add(l)}
+
+// A arquitetura externa existe no mundo, mas a percepção comum só lê o galpão.
+// O material invisível escreve profundidade para impedir que os cômodos internos
+// apareçam através do telhado e das paredes. Ele não lança sombras no pátio.
+const mansionRevealGroup=new THREE.Group();
+mansionRevealGroup.name='BrooklynHouseMagicalPerception';
+for(const child of scene.children.slice(mansionRevealStart)){
+  scene.remove(child);
+  mansionRevealGroup.add(child);
+}
+mansionRevealGroup.traverse(node=>{
+  if(node.isMesh&&node.material){
+    node.userData.mansionRevealOriginalMaterial=node.material;
+    node.userData.mansionRevealOriginalCastShadow=node.castShadow;
+    const occluder=source=>new THREE.MeshBasicMaterial({
+      colorWrite:false,depthWrite:true,depthTest:true,
+      side:source.side??THREE.FrontSide
+    });
+    node.material=Array.isArray(node.material)?node.material.map(occluder):occluder(node.material);
+    node.castShadow=false;
+  }
+  if(node.isLight){
+    node.userData.mansionRevealOriginalIntensity=node.intensity;
+    node.intensity=0;
+  }
+});
+scene.add(mansionRevealGroup);
 // O rio em escala, a Williamsburg Bridge e o skyline de Manhattan são montados
 // no módulo src/exterior.js para manter a área externa independente dos interiores.
 // Grande Salão: salão de quatro alturas, pilares, sacadas e teto de cedro.
@@ -294,5 +327,5 @@ for(let x of [-8,0,8])for(let z of [-6,5]){const lamp=new THREE.PointLight(0xffd
  library:{label:'BIBLIOTECA SUBTERRÂNEA',pos:[0,-17.4,2.5],yaw:0,bounds:[-10.8,10.8,-10.8,10.8],base:-17.4},
  bedroom:{label:'ALA DOS QUARTOS',pos:[25,17.275,2.5],yaw:0,bounds:[19.3,32.2,-5.5,5.5],base:17.275}
 };
-return {zones,groundSurfaces,water,fireLight,spiralStair:{centerX:stairCenter.x,centerZ:stairCenter.y,radius:stairRadius,bottomY:.08,topY:13.0,startAngle:-Math.PI/2,totalAngle:(stairCount-1)*.195}};
+return {zones,groundSurfaces,water,fireLight,mansionRevealGroup,spiralStair:{centerX:stairCenter.x,centerZ:stairCenter.y,radius:stairRadius,bottomY:.08,topY:.08+stairRise,startAngle:stairStartAngle,totalAngle:stairTotalAngle}};
 }

@@ -157,6 +157,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     if (event.code === 'Digit2') teleport('hall');
     if (event.code === 'Digit3') teleport('library');
     if (event.code === 'Digit4') teleport('bedroom');
+    if (event.code === 'Digit5') teleport('training');
     if (event.code === 'Space') character.jump?.();
   });
   window.addEventListener('keyup', (event) => keys.delete(event.code));
@@ -335,6 +336,22 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     }
 
     const p = getPosition();
+    // Passagens entre ambientes contíguos preservam a posição do personagem.
+    // Os limiares só são avaliados dentro da faixa aberta do portal correspondente.
+    for (const portal of zonePortals) {
+      if (zoneName !== portal.from) continue;
+      const axisValue = p[portal.axis];
+      const transverseValue = portal.axis === 'x' ? p.z : p.x;
+      const inOpening = transverseValue >= portal.rangeMin && transverseValue <= portal.rangeMax;
+      const crossed = portal.direction === 'lt'
+        ? axisValue < portal.threshold
+        : axisValue > portal.threshold;
+      if (inOpening && crossed && zones[portal.to]) {
+        zoneName = portal.to;
+        onZoneChange?.(zoneName, zones[zoneName]);
+        break;
+      }
+    }
     lookTarget.set(p.x, p.y + 0.98, p.z);
     const horizontalDistance = cameraDistance * Math.cos(cameraPitch);
     desiredCamera.set(
@@ -361,6 +378,9 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     teleport,
     capturePointer,
     getPosition,
+    getForward() {
+      return new THREE.Vector3(-Math.sin(cameraYaw), 0, -Math.cos(cameraYaw));
+    },
     get zone() { return zoneName; },
     get pointerLocked() { return pointerLocked; }
   };

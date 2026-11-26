@@ -492,8 +492,9 @@ function addFire(scene,animated,camera,isTouchDevice=false) {
   const volume=new VolumetricFire({
     camera,textureNoise:noise,textureProfile:profile,
     width:3.5,height:2.25,depth:.66,
-    sliceSpacing:isTouchDevice?.105:.065,
-    segments:isTouchDevice?18:28,
+    // Smaller slices and a denser control lattice reduce the faceted edges of the flame.
+    sliceSpacing:isTouchDevice?.085:.042,
+    segments:isTouchDevice?22:38,
     debug:false
   });
   volume.name='fogo volumétrico com ruído procedural da lareira';
@@ -1008,15 +1009,77 @@ function addThoth(scene,marble,pale,brass,reliefTex,wood) {
   const step=new THREE.Mesh(new RoundedBoxGeometry(2.62,.28,2.62,6,.1),marble);step.position.y=.6;step.castShadow=true;group.add(step);
   const footRing=new THREE.Mesh(new THREE.TorusGeometry(.96,.055,10,56),brass);footRing.rotation.x=Math.PI/2;footRing.position.y=.78;group.add(footRing);
   const dais=new THREE.Mesh(new THREE.LatheGeometry([new THREE.Vector2(.68,0),new THREE.Vector2(.82,.14),new THREE.Vector2(.88,.31),new THREE.Vector2(.78,.52),new THREE.Vector2(.7,.65)],48),marble);dais.position.y=.72;dais.castShadow=true;group.add(dais);
-  const robe=new THREE.Mesh(new THREE.LatheGeometry([
-    new THREE.Vector2(.48,0),new THREE.Vector2(.57,.09),new THREE.Vector2(.65,.28),new THREE.Vector2(.61,.48),
-    new THREE.Vector2(.53,.72),new THREE.Vector2(.46,1.16),new THREE.Vector2(.43,1.75),new THREE.Vector2(.5,2.28),
-    new THREE.Vector2(.72,2.62),new THREE.Vector2(.77,2.82),new THREE.Vector2(.61,3.02),new THREE.Vector2(.34,3.2),new THREE.Vector2(.24,3.47)
-  ],64),marble);robe.name='túnica esculpida de Thoth';robe.position.y=1.34;robe.castShadow=true;robe.receiveShadow=true;group.add(robe);
-  for(let i=0;i<9;i++){const x=-.39+i*.0975;group.add(tube([[x*.78,1.54,.43],[x,1.9,.49],[x*1.1,2.55,.56],[x*1.18,3.05,.54],[x*.9,3.7,.42]],.012,pale,26,6));}
+  // Human body, visible shendyt kilt and legs rather than a single robe silhouette.
+  const legsProfile=[
+    new THREE.Vector2(.13,0),new THREE.Vector2(.16,.12),new THREE.Vector2(.145,.34),
+    new THREE.Vector2(.12,.62),new THREE.Vector2(.15,.88),new THREE.Vector2(.16,1.02)
+  ];
+  for(const side of [-1,1]){
+    const leg=new THREE.Mesh(new THREE.LatheGeometry(legsProfile,32),marble);
+    leg.name='perna humana esculpida de Thoth';
+    leg.position.set(side*.225,1.36,0);
+    leg.castShadow=true;leg.receiveShadow=true;group.add(leg);
+    const foot=new THREE.Mesh(new THREE.SphereGeometry(.2,20,14),marble);
+    foot.name='pé de mármore de Thoth';
+    foot.position.set(side*.225,1.42,.12);
+    foot.scale.set(.86,.48,1.42);
+    group.add(foot);
+  }
+
+  const kilt=new THREE.Mesh(new THREE.LatheGeometry([
+    new THREE.Vector2(.4,0),new THREE.Vector2(.49,.1),new THREE.Vector2(.57,.28),
+    new THREE.Vector2(.65,.48),new THREE.Vector2(.68,.68),new THREE.Vector2(.64,.85),
+    new THREE.Vector2(.55,.98),new THREE.Vector2(.49,1.08)
+  ],64),marble);
+  kilt.name='kilt shendyt de mármore de Thoth';
+  kilt.position.y=1.72;
+  kilt.castShadow=true;kilt.receiveShadow=true;group.add(kilt);
+
+  // Fine raised pleats catch the same grazing light as the statue's polished dark marble.
+  for(let i=0;i<13;i++){
+    const t=i/12,x=-.43+t*.86;
+    const pleat=tube([
+      [x*.78,1.82,.39],
+      [x*.94,2.05,.49],
+      [x,2.36,.59],
+      [x*.92,2.62,.57],
+      [x*.82,2.77,.48]
+    ],.012,pale,24,6);
+    pleat.name='prega vertical do kilt de Thoth';
+    group.add(pleat);
+  }
+
+  const torso=new THREE.Mesh(new THREE.LatheGeometry([
+    new THREE.Vector2(.36,0),new THREE.Vector2(.43,.12),new THREE.Vector2(.48,.28),
+    new THREE.Vector2(.53,.56),new THREE.Vector2(.59,.92),new THREE.Vector2(.69,1.27),
+    new THREE.Vector2(.73,1.43),new THREE.Vector2(.59,1.58),new THREE.Vector2(.34,1.72)
+  ],64),marble);
+  torso.name='tronco humano de mármore de Thoth';
+  torso.position.y=2.72;
+  torso.castShadow=true;torso.receiveShadow=true;group.add(torso);
+
+  const sashMaterial=new THREE.MeshStandardMaterial({
+    color:0x344955,roughness:.88,metalness:.04
+  });
+  const sash=tube([
+    [-.53,4.16,.29],[-.42,3.78,.48],[-.18,3.4,.56],
+    [.12,3.08,.55],[.48,2.72,.42]
+  ],.085,sashMaterial,42,12);
+  sash.name='faixa cerimonial diagonal de Thoth';
+  group.add(sash);
+  const sashEdge=tube([
+    [-.53,4.16,.36],[-.42,3.78,.55],[-.18,3.4,.63],
+    [.12,3.08,.62],[.48,2.72,.49]
+  ],.012,goldEdgeMaterial(),42,6);
+  sashEdge.name='filete dourado da faixa de Thoth';
+  group.add(sashEdge);
+
+  function goldEdgeMaterial(){
+    return new THREE.MeshStandardMaterial({color:0xc3a36b,metalness:.72,roughness:.28});
+  }
   const gold=new THREE.MeshStandardMaterial({color:0xb78c4c,metalness:.72,roughness:.29});
   const goldL=new THREE.MeshStandardMaterial({color:0xd4b16f,metalness:.68,roughness:.25});
-  const waist=new THREE.Mesh(new THREE.TorusGeometry(.55,.075,10,56),gold);waist.rotation.x=Math.PI/2;waist.position.set(0,2.38,.02);group.add(waist);
+  const waist=new THREE.Mesh(new THREE.TorusGeometry(.55,.075,10,56),gold);waist.rotation.x=Math.PI/2;waist.position.set(0,2.78,.02);group.add(waist);
   for(const y of [4.18,4.3,4.42]){const c=new THREE.Mesh(new THREE.TorusGeometry(.43+(y-4.18)*.55,.055,10,64),gold);c.rotation.x=Math.PI/2;c.position.set(0,y,.02);c.scale.set(1.22,1,.72);group.add(c);}
   const neck=new THREE.Mesh(new THREE.CylinderGeometry(.22,.29,.9,32),marble);neck.position.set(0,4.48,0);neck.castShadow=true;group.add(neck);
   const head=new THREE.Mesh(new THREE.SphereGeometry(.43,32,24),marble);head.name='cabeça de íbis de Thoth';head.position.set(0,5.05,.03);head.scale.set(.76,1.16,.87);head.castShadow=true;group.add(head);

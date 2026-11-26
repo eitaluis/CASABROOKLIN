@@ -61,44 +61,44 @@ export function buildInteriorDetails({ THREE, scene, interactables = [] }) {
 
   // GRANDE SALÃO — lustre de bronze em três anéis e luz quente controlada.
   const chandelier = new THREE.Group();
-  chandelier.name = 'lustre cerimonial do Grande Salão';
-  chandelier.position.set(0, 0, -0.5);
+  chandelier.name = 'lustre cerimonial de lótus do Grande Salão';
+  chandelier.position.set(0,0,-.5);
   scene.add(chandelier);
-  addCylinder(chandelier, 'corrente central do lustre', [0, 26.65, 0], 0.045, 0.045, 3.35, darkBrass, 10);
-  for (const spec of [
-    { radius: 2.35, y: 24.85, tube: 0.085 },
-    { radius: 1.62, y: 24.05, tube: 0.07 },
-    { radius: 0.78, y: 23.45, tube: 0.06 }
+  addCylinder(chandelier,'corrente central do lustre',[0,26.7,0],.055,.055,3.25,darkBrass,12);
+  const hub=new THREE.Mesh(new THREE.SphereGeometry(.42,32,24),brass);
+  hub.name='núcleo de bronze do lustre';
+  hub.position.set(0,24.95,0);hub.scale.set(1,.62,1);chandelier.add(hub);
+  for(const spec of [
+    {radius:2.55,y:24.92,tube:.095},
+    {radius:1.78,y:24.15,tube:.075},
+    {radius:1.0,y:23.55,tube:.065}
   ]) {
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(spec.radius, spec.tube, 10, 64), brass);
-    ring.name = 'aro de bronze do lustre';
-    ring.rotation.x = Math.PI / 2;
-    ring.position.y = spec.y;
-    ring.castShadow = true;
-    chandelier.add(ring);
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(spec.radius,spec.tube,12,80),brass);
+    ring.name='anel trabalhado de bronze do lustre';ring.rotation.x=Math.PI/2;
+    ring.position.y=spec.y;ring.castShadow=true;chandelier.add(ring);
   }
-  for (let i = 0; i < 12; i++) {
-    const a = i / 12 * Math.PI * 2;
-    const x = Math.cos(a) * 2.35;
-    const z = Math.sin(a) * 2.35;
-    const stem = addCylinder(chandelier, 'haste radial do lustre', [x * 0.82, 24.42, z * 0.82], 0.025, 0.025, 0.95, darkBrass, 8);
-    stem.rotation.z = Math.atan2(x, 0.9);
-    const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), warmGlass);
-    lamp.name = 'luz de âmbar do lustre';
-    lamp.position.set(x, 24.88, z);
-    chandelier.add(lamp);
-    const drop = new THREE.Mesh(new THREE.SphereGeometry(0.105, 24, 16), warmGlass);
-    drop.name = 'gota de vidro âmbar do lustre';
-    drop.scale.set(.78, 1.45, .78);
-    drop.position.set(x * 0.72, 23.82, z * 0.72);
-    chandelier.add(drop);
+  for(let i=0;i<12;i++) {
+    const angle=i*Math.PI/6,x=Math.cos(angle)*2.55,z=Math.sin(angle)*2.55;
+    const arm=addCylinder(chandelier,'braço curvo de bronze do lustre',[x*.54,24.74,z*.54],.045,.07,1.45,darkBrass,12);
+    arm.rotation.z=-Math.atan2(x,1.35);
+    const cup=new THREE.Mesh(new THREE.CylinderGeometry(.16,.22,.16,24),brass);
+    cup.name='copo de bronze da luz do lustre';cup.position.set(x,24.88,z);chandelier.add(cup);
+    const glass=new THREE.Mesh(new THREE.SphereGeometry(.19,28,20),warmGlass);
+    glass.name='globo de vidro opalino âmbar do lustre';
+    glass.scale.set(.82,1.28,.82);glass.position.set(x,25.12,z);chandelier.add(glass);
+    const petal=new THREE.Mesh(new THREE.SphereGeometry(.28,20,14),brass);
+    petal.name='pétala ornamental do lustre';
+    petal.scale.set(.55,.19,1.0);petal.position.set(x*.9,25.29,z*.9);
+    petal.rotation.y=-angle;chandelier.add(petal);
   }
-  for (const [x, y, z, intensity, distance] of [
-    [0, 24.2, -0.5, 1.5, 18]
+  for(const [x,y,z,intensity,distance] of [
+    [0,24.15,-.5,1.35,19],
+    [-2.1,23.9,-.5,.45,12],
+    [2.1,23.9,-.5,.45,12]
   ]) {
-    const light = new THREE.PointLight(0xffc783, intensity, distance, 1.65);
-    light.position.set(x, y, z);
-    scene.add(light);
+    const light=new THREE.PointLight(0xffc783,intensity,distance,1.7);
+    light.name='luz quente do lustre cerimonial';
+    light.position.set(x,y,z);scene.add(light);
   }
 
   // Estandartes verticais: tecido escuro, borda bordada e motivo solar alado.

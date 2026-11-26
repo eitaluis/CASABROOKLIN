@@ -23,6 +23,8 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
   let jumping = false;
   let movementSpeed = 0;
   scene.add(hero.scene);
+  // Inicia voltado para o interior do cenário, com a câmera atrás do personagem.
+  hero.scene.rotation.y = Math.PI;
 
   function jump() {
     if (jumping) return;

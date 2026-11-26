@@ -93,9 +93,7 @@ export function buildInteriorDetails({ THREE, scene }) {
     chandelier.add(drop);
   }
   for (const [x, y, z, intensity, distance] of [
-    [0, 24.2, -0.5, 1.5, 18],
-    [-5.5, 21.5, -0.5, 0.55, 10],
-    [5.5, 21.5, -0.5, 0.55, 10]
+    [0, 24.2, -0.5, 1.5, 18]
   ]) {
     const light = new THREE.PointLight(0xffc783, intensity, distance, 1.65);
     light.position.set(x, y, z);
@@ -156,7 +154,7 @@ export function buildInteriorDetails({ THREE, scene }) {
   }
 
   for (const side of [-1, 1]) {
-    for (const z of [-6.5, 0.5, 7.0]) addSconce(side * 13.75, 17.55, z, side === 1 ? -Math.PI / 2 : Math.PI / 2);
+    for (const z of [-6.5, 7.0]) addSconce(side * 13.75, 17.55, z, side === 1 ? -Math.PI / 2 : Math.PI / 2);
   }
 
   // Frisos dourados e pequenas placas de relevo ao redor do salão.
@@ -333,11 +331,11 @@ export function buildInteriorDetails({ THREE, scene }) {
     scene.add(ring);
   }
 
-  // 72 nichos circulares em três faixas, com rolos de papiro guardados.
+  // 48 nichos circulares em três faixas, com rolos de papiro guardados.
   const scrollWood = new THREE.MeshStandardMaterial({ color: 0x765137, roughness: 0.78 });
   const scrollCord = new THREE.MeshStandardMaterial({ color: 0x9d7339, roughness: 0.78 });
   const rows = [-15.05, -11.72, -8.39];
-  const nicheCount = 24;
+  const nicheCount = 16;
   for (let row = 0; row < rows.length; row++) {
     for (let i = 0; i < nicheCount; i++) {
       const angle = i / nicheCount * Math.PI * 2;
@@ -394,9 +392,6 @@ export function buildInteriorDetails({ THREE, scene }) {
     const armB = addBox(group, 'braço cruzado do shabti', [0.12, 1.22, 0.29], [0.48, 0.14, 0.15], shabtiGold);
     armB.rotation.z = -0.18;
     addCylinder(group, 'enxada cerimonial do shabti', [0.34, 1.58, 0.3], 0.025, 0.025, 0.8, brass, 8);
-    const glow = new THREE.PointLight(0x88b6c2, 0.22, 3, 2);
-    glow.position.set(0, 2.2, 0.45);
-    group.add(glow);
     scene.add(group);
   }
   for (let i = 0; i < 4; i++) addShabti(i * Math.PI / 2, i);

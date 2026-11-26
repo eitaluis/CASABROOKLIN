@@ -1,6 +1,6 @@
 # CASABROOKLIN — checklist de produção por setores
 
-Atualizado: 26/11/2026 — exterior East River aprimorado; padrão asset-first aplicado
+Atualizado: 26/11/2026 — refinamento técnico do Carter iniciado; exterior East River aprimorado; padrão asset-first aplicado
 
 Este documento é a fonte de verdade do andamento. A cada nova solicitação, classificar os setores afetados, trabalhar neles isoladamente, atualizar este checklist e manter desktop/mobile sincronizados.
 
@@ -18,7 +18,10 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Estados
 
-- [x] Carter Ara 3D Gen anterior restaurado; redesigns experimentais descartados
+- [x] Carter Ara 3D Gen aprovado preservado; redesigns experimentais descartados
+- [x] Refinar lifecycle do Carter: descarte seguro do rig, mixer e listener de salto
+- [x] Expor altura retornada pelo Ara para calibração futura de câmera/colisão
+- [x] Preview informa falha de carregamento do Ara em vez de ficar preso no loading
 - [x] Nova camada visual do Grande Salão implementada no módulo compartilhado
 - [x] Escadarias laterais, corrimãos e colunas de lótus criados
 - [x] GLB Poly Haven Sofa 03 (CC0), texturas PBR CC0 e fogo volumétrico Housz (MIT) adicionados ao runtime
@@ -39,9 +42,18 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Remover do runtime a construção rejeitada de cápsulas/esferas/caixas.
 - [x] Descartar o estudo Quaternius Casual_2 e pausar qualquer redesign.
 - [x] Manter o carregamento Ara, rig humano e clips já aprovados anteriormente.
-- [ ] Não alterar novamente o personagem até solicitação específica do usuário.
+- [x] Usuário autorizou continuar refinando o Carter existente sem substituir a base Ara aprovada.
+- [x] Corrigir descarte do personagem: parar mixer/sequência de salto, remover listener e retirar pivô da cena.
+- [x] Atualizar cache-buster do módulo compartilhado no runtime.
+- [x] Melhorar feedback de erro no preview independente.
+- [ ] Inspecionar visualmente o modelo Ara em navegador real (frente, perfil e costas).
+- [ ] Validar idle, walk, run e jump_start/jump_air/jump_land no preview e no jogo.
+- [ ] Conferir proporções, escala em relação aos ambientes e clipping nas articulações.
+- [ ] Conferir socket WeaponR e orientação/escala das armas.
+- [ ] Decidir e implementar bolsa transversal apenas após confirmar o desenho e a posição no corpo.
+- [ ] Testar personagem e controles em desktop e mobile paisagem.
 
-**Prioridade atual:** cenário e interiores; não integrar personagem novo nesta fase.
+**Prioridade atual:** refinamento incremental do Carter aprovado; não substituir a malha Ara por redesign experimental.
 
 ## Setor 03 — inventário e combate
 

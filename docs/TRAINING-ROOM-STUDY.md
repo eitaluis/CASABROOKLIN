@@ -41,7 +41,7 @@ A Disney também lista oficialmente *The Throne of Fire: The Graphic Novel* como
 - Sala: aproximadamente **20,4 × 32,3 m** de piso.
 - Quadra marcada: **15 × 28 m**, de acordo com a dimensão de jogo indicada no Artigo 2 das Official Basketball Rules 2026 da FIBA.
 - A FIBA 2026 indica ainda uma faixa desobstruída de pelo menos 2 m ao redor da área de jogo, produzindo um piso mínimo de 19 × 32 m. A sala construída deixa margens um pouco maiores em parte do perímetro para circulação e para os elementos decorativos.
-- Altura do aro solar: **3,05 m acima do piso**, igual à altura da borda superior do aro indicada no documento de equipamentos das Official Basketball Rules 2026 da FIBA.
+- Altura da borda superior do aro solar: **3,05 m acima do piso**. A abertura interna é de 45 cm; o disco está num plano vertical voltado para dentro da quadra e a pontuação verifica a travessia desse plano.
 - Piso da sala: nível 16,875 m no sistema vertical atual do modelo.
 - Ligação: passagem física a partir da primeira galeria do Grande Salão, com passarela, portal de portas duplas e troca de zona ao cruzar o vão.
 

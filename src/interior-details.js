@@ -1,6 +1,6 @@
 // Detalhes de interiores construídos para a linguagem híbrida cinematográfica.
 // Geometria procedural leve: nenhuma dependência externa de runtime.
-export function buildInteriorDetails({ THREE, scene }) {
+export function buildInteriorDetails({ THREE, scene, interactables = [] }) {
   const brass = new THREE.MeshStandardMaterial({ color: 0xb88b4d, metalness: 0.72, roughness: 0.3 });
   const darkBrass = new THREE.MeshStandardMaterial({ color: 0x604323, metalness: 0.68, roughness: 0.4 });
   const cedar = new THREE.MeshStandardMaterial({ color: 0x4b2d20, roughness: 0.72 });
@@ -209,6 +209,19 @@ export function buildInteriorDetails({ THREE, scene }) {
     if (object.name === 'biblioteca teto plano provisório') object.visible = false;
   });
 
+  // RNG local com seed fixa: a biblioteca mantém a mesma composição em todo reload,
+  // evitando que estrelas e cartografia mudem de posição entre desktop e mobile.
+  const libraryRandom = (() => {
+    let seed = 0x4e757447;
+    return () => {
+      seed = (seed + 0x6D2B79F5) | 0;
+      let value = seed;
+      value = Math.imul(value ^ (value >>> 15), value | 1);
+      value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+      return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+    };
+  })();
+
   // Cúpula de Nut: céu azul profundo, constelações e ornamentos celestes pintados.
   const domeCanvas = document.createElement('canvas');
   domeCanvas.width = 1024;
@@ -230,9 +243,9 @@ export function buildInteriorDetails({ THREE, scene }) {
     dg.fillRect(x - 95, y - 95, 190, 190);
   }
   for (let i = 0; i < 320; i++) {
-    const x = Math.random() * 1024;
-    const y = Math.random() * 512;
-    const r = Math.random() * 1.8 + 0.35;
+    const x = libraryRandom() * 1024;
+    const y = libraryRandom() * 512;
+    const r = libraryRandom() * 1.8 + 0.35;
     dg.fillStyle = i % 13 === 0 ? '#f7d99a' : 'rgba(210,231,236,0.8)';
     dg.beginPath(); dg.arc(x, y, r, 0, Math.PI * 2); dg.fill();
   }
@@ -286,11 +299,11 @@ export function buildInteriorDetails({ THREE, scene }) {
   eg.fillStyle = '#263d36';
   eg.fillRect(0, 0, 1024, 1024);
   for (let i = 0; i < 44; i++) {
-    const x = 70 + Math.random() * 884;
-    const y = 70 + Math.random() * 884;
+    const x = 70 + libraryRandom() * 884;
+    const y = 70 + libraryRandom() * 884;
     eg.fillStyle = i % 3 === 0 ? 'rgba(171,139,83,0.45)' : 'rgba(86,128,91,0.36)';
     eg.beginPath();
-    eg.ellipse(x, y, 25 + Math.random() * 120, 18 + Math.random() * 72, Math.random() * Math.PI, 0, Math.PI * 2);
+    eg.ellipse(x, y, 25 + libraryRandom() * 120, 18 + libraryRandom() * 72, libraryRandom() * Math.PI, 0, Math.PI * 2);
     eg.fill();
   }
   eg.strokeStyle = 'rgba(220,187,119,0.72)';
@@ -359,6 +372,15 @@ export function buildInteriorDetails({ THREE, scene }) {
         addBox(group, 'cordão do papiro', [-0.22 + n * 0.44, -0.18 + n * 0.48, 0.205], [0.06, 0.25, 0.025], scrollCord, false);
       }
       scene.add(group);
+      if (row === 0 && interactables) {
+        interactables.push({
+          name: 'papiro da galeria inferior',
+          label: 'Examinar papiro',
+          description: 'Um rolo de papiro guardado no nicho inferior. A escrita está gasta, mas ainda há marcas de tinta escura e um selo de cordão.',
+          position: new THREE.Vector3(group.position.x, -15.05, group.position.z),
+          radius: 2.9
+        });
+      }
     }
   }
 
@@ -394,6 +416,16 @@ export function buildInteriorDetails({ THREE, scene }) {
     armB.rotation.z = -0.18;
     addCylinder(group, 'enxada cerimonial do shabti', [0.34, 1.58, 0.3], 0.025, 0.025, 0.8, brass, 8);
     scene.add(group);
+    if (interactables) {
+      const directions = ['norte', 'leste', 'sul', 'oeste'];
+      interactables.push({
+        name: 'shabti ' + directions[index],
+        label: 'Examinar shabti',
+        description: 'Shabti ' + directions[index] + ': uma pequena figura funerária de faiança e ouro, com os braços cruzados e ferramentas de trabalho. O pedestal apresenta inscrições em baixo-relevo.',
+        position: new THREE.Vector3(x, -17.38, z),
+        radius: 2.55
+      });
+    }
   }
   for (let i = 0; i < 4; i++) addShabti(i * Math.PI / 2, i);
 
@@ -402,6 +434,13 @@ export function buildInteriorDetails({ THREE, scene }) {
   lectern.name = 'objetos de leitura da biblioteca';
   lectern.position.set(0, -16.95, -0.5);
   scene.add(lectern);
+  if (interactables) interactables.push({
+    name: 'mesa de leitura da biblioteca',
+    label: 'Examinar mesa de leitura',
+    description: 'O papiro aberto reúne anotações e sinais hieroglíficos. Dois pequenos recipientes de óleo iluminam a superfície; parece ser um local de consulta e estudo.',
+    position: new THREE.Vector3(0, -16.95, -0.5),
+    radius: 2.65
+  });
   addBox(lectern, 'papiro aberto sobre a mesa', [0, 0.91, 0.15], [2.55, 0.05, 0.9], papyrus);
   for (let i = 0; i < 11; i++) {
     const stroke = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.008, 0.62), darkBrass);

@@ -241,3 +241,6 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [ ] Medir FPS, memória, temperatura e estabilidade em celular paisagem.
 - [ ] Integrar mapas PBR locais de tijolo somente após baixar e verificar todos os mapas/licenças.
 - [ ] Não marcar visualmente aprovado antes de inspeção real.
+
+- [ ] Completar o restante do percurso perimetral do terraço para representar integralmente o contorno da casa; esta revisão entrega primeiro o acesso caminhável principal com piscina, jantar e fogueira.
+- [ ] Validar visualmente a orientação longitudinal do tapete de 40 × 15 pés em relação ao posicionamento final dos sofás e da estátua.

@@ -21,7 +21,7 @@ Todo novo objeto ou espaço deve seguir [ASSET-FIRST-ROOM-BUILDING.md](ASSET-FIR
 - Dimensões nativas catalogadas: 2,731 × 0,925 × 1,118 m.
 - 8.004 triângulos, dois materiais PBR; o GLB local inclui mapas de base color, normal e roughness.
 - Ficheiro: assets/models/polyhaven-sofa-03.glb. O carregamento utiliza GLTFLoader e MeshoptDecoder do Three.js.
-- A escala atual no salão é 0,78; a largura final aproximada no eixo longo é 2,13 m. O modelo é um asset real, não uma geometria procedural que imita um sofá.
+- A escala atual no salão é 0,72; a largura final aproximada no eixo longo é 1,97 m. O código normaliza o pivot pela bounding box e mantém um fallback proporcional se o GLB falhar. O modelo é um asset real, não uma geometria procedural que imita um sofá.
 
 ### Fogo volumétrico — Housz
 - Repositório: https://github.com/Housz/ThreeVolumetricFire
@@ -60,7 +60,7 @@ Os mapas estão locais para que a sala não dependa de downloads de textura em t
 - Harpas, tambores, lanças e khopeshes são geometria original com walnut PBR CC0 e metais locais. Foram mantidos porque nenhum GLB de instrumento egípcio de alta qualidade, estilo compatível e licença comprovada foi encontrado nesta pesquisa. Os SVGs Game-icons servem apenas como identificação visual nas placas.
 - A flauta é uma peça complementar original, com collider e prompt de inspeção; os sinais de flauta vêm do SVG CC BY 3.0.
 - A parede envidraçada usa Three.js `MeshPhysicalMaterial` e moldura de bronze original. Os painéis têm colisores para impedir atravessamento.
-- Os sofás usam o GLB Poly Haven Sofa 03 CC0 em escala 0,78. Collider e inspeção estão integrados; sentar/levantar continua como interação futura.
+- Os sofás usam o GLB Poly Haven Sofa 03 CC0 em escala 0,72. Collider e inspeção estão integrados; sentar/levantar continua como interação futura.
 
 ### Geometria original do ambiente
 - Tapete de escamas de serpente, mesa baixa, colunas de lótus, capitéis, escadarias, corrimãos e painéis de relevo são construções próprias para encaixar na arquitetura do Grande Salão.
@@ -78,3 +78,9 @@ Os mapas estão locais para que a sala não dependa de downloads de textura em t
 - Mesh2Motion: https://github.com/Mesh2Motion/mesh2motion-app — ferramenta aberta para rigging/retarget de GLB; ainda não integrada.
 - Quaternius Universal Animation Library: https://quaternius.itch.io/universal-animation-library — clips CC0, possível fonte futura; não integrada.
 
+
+
+### Televisão de plasma
+- As páginas Poly Haven Television 01 (Gabriel Radić) e Television 02 (Benny Weimer) foram verificadas como assets CC0, mas ambas são televisores CRT antigos e não correspondem à televisão de plasma descrita no livro.
+- Mantivemos uma geometria original de tela plana, com vidro físico refletivo, moldura metálica e toggle de energia integrado à inspeção por proximidade. Os modelos CRT não foram baixados/importados.
+- Fontes avaliadas: https://polyhaven.com/a/Television_01 e https://polyhaven.com/a/television_02.

@@ -355,7 +355,7 @@ export function createMagicSystem({
       } else {
         updateGlyphAnchor();
         const reveal = THREE.MathUtils.clamp(castElapsed / 0.16, 0, 1);
-        glyphGroup.scale.setScalar((0.12 + reveal * 0.64) * (1 + Math.sin(castElapsed * 23) * 0.035));
+        glyphGroup.scale.setScalar((0.12 + reveal * 0.68) * (1 + Math.sin(castElapsed * 23) * 0.035));
         glyphRing.rotation.z += dt * 1.15;
         glyphRingInner.rotation.z -= dt * 1.8;
         glyphRingOuter.rotation.z += dt * 2.15;

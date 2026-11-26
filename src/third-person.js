@@ -12,6 +12,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   let pointerLocked = false;
   let firstCameraFrame = true;
   let fallbackSpeed = 0;
+  let cameraCue = null;
 
   // Colisão de primeira passagem: cápsula vertical simplificada contra caixas estáticas.
   // Mantém o teste leve para funcionar também no celular.
@@ -107,10 +108,22 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     return { height: zones[zoneName].base ?? 0, raised: false };
   }
 
+  function focusOnRoof(){
+    const p=getPosition();
+    cameraCue={
+      elapsed:0,duration:1.65,hold:1.35,returnDuration:1.05,
+      fromFocus:new THREE.Vector3(p.x,p.y+cameraFocusHeight,p.z),
+      roofFocus:new THREE.Vector3(0,22.6,9.2),
+      fromYaw:cameraYaw,fromPitch:cameraPitch,fromDistance:cameraDistance,
+      roofYaw:0,roofPitch:0.18,roofDistance:9.2
+    };
+  }
+
   function teleport(name) {
     const zone = zones[name];
     if (!zone) return;
     zoneName = name;
+    cameraCue = null;
     character.model.position.set(...zone.pos);
     if (character.human) character.human.reset();
     else character.resetFallback?.();
@@ -374,11 +387,35 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       }
     }
     lookTarget.set(p.x, p.y + cameraFocusHeight, p.z);
-    const horizontalDistance = cameraDistance * Math.cos(cameraPitch);
+    let renderYaw=cameraYaw,renderPitch=cameraPitch,renderDistance=cameraDistance;
+    if(cameraCue){
+      cameraCue.elapsed+=dt;
+      const total=cameraCue.duration+cameraCue.hold+cameraCue.returnDuration;
+      if(cameraCue.elapsed<cameraCue.duration){
+        const t=THREE.MathUtils.clamp(cameraCue.elapsed/cameraCue.duration,0,1),e=t*t*(3-2*t);
+        lookTarget.copy(cameraCue.fromFocus).lerp(cameraCue.roofFocus,e);
+        renderYaw=THREE.MathUtils.lerp(cameraCue.fromYaw,cameraCue.roofYaw,e);
+        renderPitch=THREE.MathUtils.lerp(cameraCue.fromPitch,cameraCue.roofPitch,e);
+        renderDistance=THREE.MathUtils.lerp(cameraCue.fromDistance,cameraCue.roofDistance,e);
+      }else if(cameraCue.elapsed<cameraCue.duration+cameraCue.hold){
+        lookTarget.copy(cameraCue.roofFocus);
+        renderYaw=cameraCue.roofYaw;renderPitch=cameraCue.roofPitch;renderDistance=cameraCue.roofDistance;
+      }else if(cameraCue.elapsed<total){
+        const t=THREE.MathUtils.clamp((cameraCue.elapsed-cameraCue.duration-cameraCue.hold)/cameraCue.returnDuration,0,1),e=t*t*(3-2*t);
+        const home=new THREE.Vector3(p.x,p.y+cameraFocusHeight,p.z);
+        lookTarget.copy(cameraCue.roofFocus).lerp(home,e);
+        renderYaw=THREE.MathUtils.lerp(cameraCue.roofYaw,cameraCue.fromYaw,e);
+        renderPitch=THREE.MathUtils.lerp(cameraCue.roofPitch,cameraCue.fromPitch,e);
+        renderDistance=THREE.MathUtils.lerp(cameraCue.roofDistance,cameraCue.fromDistance,e);
+      }else{
+        cameraCue=null;
+      }
+    }
+    const horizontalDistance=renderDistance*Math.cos(renderPitch);
     desiredCamera.set(
-      lookTarget.x + Math.sin(cameraYaw) * horizontalDistance,
-      lookTarget.y + Math.sin(cameraPitch) * cameraDistance + 0.15,
-      lookTarget.z + Math.cos(cameraYaw) * horizontalDistance
+      lookTarget.x+Math.sin(renderYaw)*horizontalDistance,
+      lookTarget.y+Math.sin(renderPitch)*renderDistance+0.15,
+      lookTarget.z+Math.cos(renderYaw)*horizontalDistance
     );
     const floorY = getWalkingSurface(p.x, p.z, p.y).height;
     desiredCamera.y = Math.max(desiredCamera.y, floorY + 0.28);
@@ -399,6 +436,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     teleport,
     capturePointer,
     getPosition,
+    focusOnRoof,
     getForward() {
       return new THREE.Vector3(-Math.sin(cameraYaw), 0, -Math.cos(cameraYaw));
     },

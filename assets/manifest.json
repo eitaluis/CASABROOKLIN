@@ -149,6 +149,13 @@
   ],
   "openSourceReferences": [
     {
+      "id": "mqnc-cheapwater-study",
+      "source": "https://github.com/mqnc/cheapwater",
+      "license": "MIT",
+      "role": "technical study for low-cost Three.js animated water normals; no source code or textures copied into CASABROOKLIN",
+      "runtimeImported": false
+    },
+    {
       "id": "ara3d-character-generator",
       "source": "https://github.com/ara3d/ara3d",
       "license": "MIT-library-CC0-MakeHuman-base-and-animations",

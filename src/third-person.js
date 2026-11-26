@@ -1,4 +1,4 @@
-export function createThirdPersonController({ THREE, camera, canvas, character, zones, colliders = [], onZoneChange }) {
+export function createThirdPersonController({ THREE, camera, canvas, character, zones, colliders = [], stairRamps = [], walkablePlatforms = [], onZoneChange }) {
   const keys = new Set();
   const touch = { moveX: 0, moveY: 0, sprint: false };
   const position = new THREE.Vector3();
@@ -35,6 +35,28 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   function getPosition() {
     return character.human ? character.human.position : character.model.position;
   }
+
+  function getWalkingSurface(x, z) {
+    const ramp = stairRamps.find(item =>
+      Math.abs(x - item.centerX) <= item.width * 0.5 &&
+      z <= item.startZ && z >= item.endZ
+    );
+    if (ramp) {
+      const t = THREE.MathUtils.clamp((ramp.startZ - z) / (ramp.startZ - ramp.endZ), 0, 1);
+      return {
+        height: ramp.bottomY + (ramp.topY - ramp.bottomY) * t,
+        raised: true
+      };
+    }
+
+    const platform = walkablePlatforms.find(item =>
+      x >= item.minX && x <= item.maxX &&
+      z >= item.minZ && z <= item.maxZ
+    );
+    if (platform) return { height: platform.height, raised: true };
+    return { height: zones[zoneName].base ?? 0, raised: false };
+  }
+
 
   function teleport(name) {
     const zone = zones[name];
@@ -241,6 +263,17 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       } else {
         smoothVelocity.z = 0;
       }
+      // As escadarias laterais elevam o Carter gradualmente até a galeria;
+      // fora da plataforma, ele retorna ao piso principal sob gravidade.
+      const walkingSurface = getWalkingSurface(current.x, current.z);
+      if (walkingSurface.raised) {
+        current.y = walkingSurface.height;
+      } else if (current.y > walkingSurface.height) {
+        current.y = Math.max(walkingSurface.height, current.y - 9.81 * dt);
+      } else {
+        current.y = walkingSurface.height;
+      }
+
       fallbackSpeed = smoothVelocity.length();
       if (direction.lengthSq() > 0.0001) {
         // O modelo Ara começa com rotação PI; manter esse offset evita que ele vire para a câmera ao andar.
@@ -263,7 +296,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       lookTarget.y + Math.sin(cameraPitch) * cameraDistance + 0.15,
       lookTarget.z + Math.cos(cameraYaw) * horizontalDistance
     );
-    const floorY = zones[zoneName].base ?? 0;
+    const floorY = getWalkingSurface(p.x, p.z).height;
     desiredCamera.y = Math.max(desiredCamera.y, floorY + 0.28);
     if (firstCameraFrame) {
       camera.position.copy(desiredCamera);

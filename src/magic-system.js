@@ -228,6 +228,7 @@ export function createMagicSystem({
     glyphGroup.scale.setScalar(0.12);
     glyphMaterial.opacity = 1;
     controller.setLocked(true);
+    character.faceTarget?.(target.position);
     character.lookAt?.(target.position, { amount: 0.9, smoothing: 0.28 });
     character.playAction?.('point');
     character.setCastingHandPose?.(true);

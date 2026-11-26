@@ -614,20 +614,21 @@ function createRug(scene) {
   },1024,1024,1,1);
   bump.colorSpace=THREE.NoColorSpace;
   const hide=new THREE.Shape();
-  hide.moveTo(-6.05,-.18);
-  hide.bezierCurveTo(-6.12,-1.05,-5.05,-2.12,-3.45,-2.23);
-  hide.bezierCurveTo(-1.5,-2.42,2.75,-2.18,4.75,-1.83);
-  hide.bezierCurveTo(5.82,-1.62,6.24,-.75,6.12,.2);
-  hide.bezierCurveTo(5.96,1.28,4.42,2.06,2.35,2.2);
-  hide.bezierCurveTo(-.15,2.42,-3.92,2.2,-5.35,1.16);
-  hide.bezierCurveTo(-5.95,.72,-6.22,.26,-6.05,-.18);
+  // Rotate the long 40-foot axis to follow the room; 15 feet remain across the hall.
+  hide.moveTo(-.18,6.05);
+  hide.bezierCurveTo(-1.05,6.12,-2.12,5.05,-2.23,3.45);
+  hide.bezierCurveTo(-2.42,1.5,-2.18,-2.75,-1.83,-4.75);
+  hide.bezierCurveTo(-1.62,-5.82,-.75,-6.24,.2,-6.12);
+  hide.bezierCurveTo(1.28,-5.96,2.06,-4.42,2.2,-2.35);
+  hide.bezierCurveTo(2.42,.15,2.2,3.92,1.16,5.35);
+  hide.bezierCurveTo(.72,5.95,.26,6.22,-.18,6.05);
   const rug=new THREE.Mesh(new THREE.ShapeGeometry(hide,96),new THREE.MeshStandardMaterial({
     map:color,bumpMap:bump,bumpScale:.065,roughness:.96,side:THREE.DoubleSide
   }));
   rug.name='tapete de pele de serpente de quarenta pés por quinze pés do Grande Salão';
-  rug.rotation.x=-Math.PI/2;rug.position.set(0,13.205,-2.35);
+  rug.rotation.x=-Math.PI/2;rug.position.set(0,13.205,-.5);
   rug.receiveShadow=true;scene.add(rug);
-  const edgePoints=hide.getPoints(120).map(p=>[p.x,13.22,-2.35-p.y]);
+  const edgePoints=hide.getPoints(120).map(p=>[p.x,13.22,-.5-p.y]);
   scene.add(tube(edgePoints,.022,new THREE.MeshStandardMaterial({color:0x957046,metalness:.52,roughness:.58}),120,7));
 }
 

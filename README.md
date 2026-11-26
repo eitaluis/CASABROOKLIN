@@ -24,6 +24,8 @@ Também pode ser executado por um servidor estático local. Abrir o HTML diretam
 | Esc | Liberar o mouse |
 | I | Abrir/fechar inventário |
 | F | Usar arma equipada |
+| E | Inspecionar objeto próximo |
+| INTERAGIR (mobile) | Inspecionar objeto próximo |
 | 1–4 | Teleportar entre áreas |
 
 ## Personagem — Carter Kane
@@ -34,7 +36,7 @@ O jogo voltou ao Carter Kane do Ara 3D Gen que havia sido aprovado antes das ten
 
 ## Estrutura do repositório
 
-Veja [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) para a divisão dos módulos, [docs/OPEN-SOURCES.md](docs/OPEN-SOURCES.md) para fontes e licenças, [docs/CHARACTER-OPTIONS.md](docs/CHARACTER-OPTIONS.md) para alternativas de personagem e [docs/ROADMAP-CHECKLIST.md](docs/ROADMAP-CHECKLIST.md) para o checklist por setores.
+Veja [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) para a divisão dos módulos, [docs/OPEN-SOURCES.md](docs/OPEN-SOURCES.md) para fontes e licenças, [docs/ROADMAP-CHECKLIST.md](docs/ROADMAP-CHECKLIST.md) para o checklist por setores e [docs/ASSET-FIRST-ROOM-BUILDING.md](docs/ASSET-FIRST-ROOM-BUILDING.md) para o padrão obrigatório de pesquisa e integração de assets em cada espaço.
 
 ## Fidelidade ao livro
 

@@ -97,6 +97,13 @@
       "license": "MIT",
       "role": "reference for gait, foot contact, IK, acceleration and turning",
       "runtimeImported": false
+    },
+    {
+      "id": "quaternius-casual-2-character-study",
+      "source": "https://github.com/LuanDucate/Ducz.CharacterCreator/blob/main/public/models/Male/Casual_2.glb",
+      "license": "CC0-1.0",
+      "role": "isolated Carter design candidate: Quaternius Ultimate Modular Men Casual_2 GLB; loaded by carter-study.html via CDN pinned to Ducz repository commit fcd215b58eec5c9ed97d0ba5f696d0e7dc085e08; not used by the game runtime",
+      "runtimeImported": false
     }
   ]
 }

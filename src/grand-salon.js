@@ -224,7 +224,7 @@ function stairFlight(scene,stone,treadMaterial,brass,wood,options) {
   return {centerX,width,startZ,endZ,bottomY:baseY,topY};
 }
 
-function addBalconyDoorRows(scene,wood,brass,colliders,interactables) {
+function addBalconyDoorRows(scene,stone,wood,brass,colliders,interactables) {
   const dark=new THREE.MeshStandardMaterial({
     color:0x322116,
     map:wood.map,
@@ -246,12 +246,7 @@ function addBalconyDoorRows(scene,wood,brass,colliders,interactables) {
         group.position.set(side*14.16,floorY,z);
         group.rotation.y=side<0?Math.PI/2:-Math.PI/2;
 
-        const frameSide=new THREE.MeshStandardMaterial({
-          color:0xb9a47f,
-          map:null,
-          roughness:.88
-        });
-        const surround=new THREE.Mesh(new RoundedBoxGeometry(1.88,2.78,.26,8,.055),frameSide);
+        const surround=new THREE.Mesh(new RoundedBoxGeometry(1.88,2.78,.26,8,.055),stone);
         surround.position.set(0,1.39,0);
         surround.castShadow=true;surround.receiveShadow=true;group.add(surround);
 
@@ -1683,7 +1678,7 @@ export function buildGrandSalon({
   }
 
   addBalustrades(scene,stone,brass,darkWood);
-  addBalconyDoorRows(scene,darkWood,brass,colliders,interactables);
+  addBalconyDoorRows(scene,stone,darkWood,brass,colliders,interactables);
 
   const stairRamps=[];
   const walkablePlatforms=[];

@@ -615,45 +615,137 @@ export function buildTrainingRoom({
     }
   });
 
-  // Guerreiros shabti de barro: prova de Magic Problem-Solving 101 / Whatever Works.
-  const shabti = new THREE.Group();
-  shabti.name = 'guerreiro shabti de barro';
-  shabti.position.set(centerX, floorY, centerZ - 2.3);
-  const shabtiParts = [];
+  // Quatro estatuetas shabti de barro que crescem para guerreiros de treino.
+  // O arranjo adapta a aula Magic Problem-Solving 101 / Whatever Works.
+  const shabtiTemplate = new THREE.Group();
+  shabtiTemplate.name = 'modelo de estatueta shabti de barro';
   function addShabtiMesh(geometry, material, position, scale) {
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(position[0], position[1], position[2]);
     if (scale) mesh.scale.set(scale[0], scale[1], scale[2]);
     mesh.castShadow = true; mesh.receiveShadow = true;
-    shabti.add(mesh); shabtiParts.push(mesh);
+    shabtiTemplate.add(mesh);
     return mesh;
+  }
+  // Pés, corpo mumiforme, cabeça, nemes e colar.
+  for (const side of [-1, 1]) {
+    addShabtiMesh(new THREE.BoxGeometry(0.2, 0.2, 0.34), clayLight, [side * 0.2, 0.12, 0.08]);
+    const leg = addShabtiMesh(new THREE.CapsuleGeometry(0.115, 0.34, 8, 14), clay, [side * 0.2, 0.37, 0]);
+    leg.rotation.z = side * -0.035;
   }
   addShabtiMesh(new THREE.CylinderGeometry(0.42, 0.55, 1.1, 32, 2), clay, [0, 1.05, 0], [1, 1, 0.82]);
   addShabtiMesh(new THREE.SphereGeometry(0.39, 32, 24), clayLight, [0, 1.83, 0.04], [0.9, 1.12, 0.86]);
   addShabtiMesh(new THREE.SphereGeometry(0.48, 28, 20), lapis, [0, 1.91, -0.13], [1.12, 0.87, 0.88]);
   addShabtiMesh(new THREE.BoxGeometry(0.76, 0.15, 0.12), bronze, [0, 1.42, 0.34]);
-  const eyeLeft = addShabtiMesh(new THREE.SphereGeometry(0.055, 14, 10), darkBronze, [-0.14, 1.86, 0.37]);
-  const eyeRight = addShabtiMesh(new THREE.SphereGeometry(0.055, 14, 10), darkBronze, [0.14, 1.86, 0.37]);
+  addShabtiMesh(new THREE.SphereGeometry(0.055, 14, 10), darkBronze, [-0.14, 1.86, 0.37]);
+  addShabtiMesh(new THREE.SphereGeometry(0.055, 14, 10), darkBronze, [0.14, 1.86, 0.37]);
   addShabtiMesh(new THREE.ConeGeometry(0.12, 0.48, 20), bronze, [0, 1.67, 0.51], [1, 1, 0.75]);
   for (const side of [-1, 1]) {
     const arm = addShabtiMesh(new THREE.CapsuleGeometry(0.13, 0.56, 8, 16), clayLight, [side * 0.48, 1.05, 0.03]);
     arm.rotation.z = side * 0.42;
-    const hand = addShabtiMesh(new THREE.SphereGeometry(0.15, 16, 12), clay, [side * 0.69, 0.72, 0.12]);
+    addShabtiMesh(new THREE.SphereGeometry(0.15, 16, 12), clay, [side * 0.69, 0.72, 0.12]);
   }
   addShabtiMesh(new THREE.CylinderGeometry(0.22, 0.27, 0.7, 24), lapis, [0, 0.42, 0], [1.8, 1, 0.95]);
   addShabtiMesh(new THREE.TorusGeometry(0.42, 0.075, 10, 36), bronze, [0, 1.48, 0.02]);
-  const weapon = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.05, 1.6, 14), darkBronze);
-  weapon.name = 'lança do guerreiro shabti';
-  weapon.position.set(0.82, 1.15, 0.08); weapon.rotation.z = -0.35;
-  weapon.castShadow = true; shabti.add(weapon); shabtiParts.push(weapon);
-  const shabtiPedestal = new THREE.Mesh(new THREE.CylinderGeometry(0.82, 0.92, 0.28, 48), limestoneShade);
-  shabtiPedestal.position.y = 0.14; shabtiPedestal.castShadow = true; shabti.add(shabtiPedestal);
-  const seal = new THREE.Mesh(new THREE.TorusGeometry(1.12, 0.035, 8, 64), warmEmissive);
-  seal.rotation.x = Math.PI / 2; seal.position.y = 0.04; shabti.add(seal);
-  scene.add(shabti);
-  collidable(centerX, floorY + 1.0, centerZ - 2.3, 1.15, 2.0, 1.0);
-  let shabtiActive = false, shabtiHealth = 4, shabtiHitAt = 0, shabtiDefeatAt = 0;
-  shabti.visible = true;
+
+  // Espada reta de treino com guarda e ponta metálica.
+  const swordGrip = addShabtiMesh(new THREE.CylinderGeometry(0.035, 0.035, 0.36, 10), woodDark, [0.78, 0.98, 0.12]);
+  swordGrip.rotation.z = -0.28;
+  const swordGuard = addShabtiMesh(new THREE.BoxGeometry(0.42, 0.075, 0.12), bronze, [0.82, 1.2, 0.12]);
+  swordGuard.rotation.z = -0.28;
+  const swordBlade = addShabtiMesh(new THREE.CylinderGeometry(0.022, 0.07, 0.96, 8), darkBronze, [0.93, 1.67, 0.12]);
+  swordBlade.rotation.z = -0.28;
+  const swordTip = addShabtiMesh(new THREE.ConeGeometry(0.07, 0.2, 8), bronze, [1.06, 2.24, 0.12]);
+  swordTip.rotation.z = -0.28;
+
+  // Escudo oval facetado preso ao braço esquerdo.
+  const shield = addShabtiMesh(new THREE.CylinderGeometry(0.31, 0.36, 0.12, 8), clayLight, [-0.72, 1.02, 0.2], [1.0, 1.18, 1.0]);
+  shield.rotation.x = Math.PI / 2;
+  const shieldBoss = addShabtiMesh(new THREE.SphereGeometry(0.105, 16, 12), bronze, [-0.72, 1.02, 0.28], [1, 1, 0.42]);
+
+  const miniaturePedestal = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.68, 0.14, 32), limestoneShade);
+  miniaturePedestal.name = 'base exclusiva das miniaturas shabti';
+  miniaturePedestal.position.y = 0.07;
+  miniaturePedestal.userData.miniatureOnly = true;
+  miniaturePedestal.castShadow = true;
+  shabtiTemplate.add(miniaturePedestal);
+  const miniatureSeal = new THREE.Mesh(new THREE.TorusGeometry(0.78, 0.035, 8, 48), warmEmissive);
+  miniatureSeal.name = 'selo mágico das miniaturas shabti';
+  miniatureSeal.rotation.x = Math.PI / 2;
+  miniatureSeal.position.y = 0.035;
+  miniatureSeal.userData.miniatureOnly = true;
+  shabtiTemplate.add(miniatureSeal);
+
+  const shabtiOffsets = [
+    [-6.2, -10.2], [6.2, -10.2],
+    [-6.2, 10.2], [6.2, 10.2]
+  ];
+  const shabtiWarriors = shabtiOffsets.map((offset, index) => {
+    const group = index === 0 ? shabtiTemplate : shabtiTemplate.clone(true);
+    group.name = 'guerreiro shabti ' + (index + 1);
+    group.position.set(centerX + offset[0], floorY, centerZ + offset[1]);
+    group.scale.setScalar(0.24);
+    group.traverse(obj => {
+      if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; }
+    });
+    scene.add(group);
+    const state = {
+      group, index, health: 2, spawnScale: 0.24, hitAt: 0,
+      defeatTime: 0, active: false, defeated: false, collider: null
+    };
+    addInteractable({
+      name: 'Guerreiro shabti ' + (index + 1),
+      label: 'Estatueta shabti ' + String(index + 1).padStart(2, '0'),
+      description: 'Pequena estatueta mumiforme de barro, com espada e escudo. A figura parece inerte.',
+      position: group.position, radius: 1.85,
+      onInteract: () => {
+        if (!state.active) return state.defeated
+          ? 'Este guerreiro já foi derrotado. Use o quadro para reiniciar a prova.'
+          : 'Estatueta shabti inerte. Inicie a aula no quadro Whatever Works.';
+        return 'Guerreiro shabti ativo. Energia restante: ' + state.health + '. Use o cajado ou o khopesh.';
+      }
+    });
+    return state;
+  });
+  let shabtiActive = false, shabtiRemaining = 0;
+
+  function addShabtiCollider(state) {
+    const p = state.group.position;
+    const collider = {
+      minX: p.x - 0.54, maxX: p.x + 0.54,
+      minY: floorY, maxY: floorY + 2.15,
+      minZ: p.z - 0.48, maxZ: p.z + 0.48
+    };
+    colliders.push(collider);
+    state.collider = collider;
+  }
+  function removeShabtiCollider(state) {
+    if (!state.collider) return;
+    const index = colliders.indexOf(state.collider);
+    if (index >= 0) colliders.splice(index, 1);
+    state.collider = null;
+  }
+  function startShabtiChallenge() {
+    shabtiActive = true;
+    shabtiRemaining = shabtiWarriors.length;
+    for (const state of shabtiWarriors) {
+      removeShabtiCollider(state);
+      state.health = 2;
+      state.spawnScale = 0.24;
+      state.hitAt = 0;
+      state.defeatTime = 0;
+      state.active = true;
+      state.defeated = false;
+      state.group.visible = true;
+      state.group.position.y = floorY;
+      state.group.scale.setScalar(0.24);
+      state.group.traverse(obj => {
+        if (obj.userData?.miniatureOnly) obj.visible = true;
+      });
+      addShabtiCollider(state);
+    }
+  }
+
   const problemBoard = new THREE.Group();
   problemBoard.name = 'quadro da aula Whatever Works';
   problemBoard.position.set(westWallX + 0.48, floorY + 2.0, 11.2);
@@ -668,8 +760,8 @@ export function buildTrainingRoom({
   pg.fillStyle = '#332a20'; pg.textAlign = 'center'; pg.font = 'bold 52px Georgia';
   pg.fillText('MAGIC PROBLEM-SOLVING 101', 384, 108);
   pg.font = 'bold 66px Georgia'; pg.fillText('WHATEVER WORKS', 384, 222);
-  pg.font = '34px Georgia'; pg.fillText('Defeat the clay shabti warrior', 384, 322);
-  pg.font = '28px Georgia'; pg.fillText('The lesson ends when you solve it', 384, 397);
+  pg.font = '34px Georgia'; pg.fillText('Defeat all four clay shabti', 384, 322);
+  pg.font = '28px Georgia'; pg.fillText('Use your staff or khopesh', 384, 397);
   const paperTexture = new THREE.CanvasTexture(paperCanvas);
   paperTexture.colorSpace = THREE.SRGBColorSpace;
   const problemFace = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 1.92), new THREE.MeshBasicMaterial({ map: paperTexture }));
@@ -677,38 +769,33 @@ export function buildTrainingRoom({
   scene.add(problemBoard);
   addInteractable({
     name: 'Quadro da aula Magic Problem-Solving 101', label: 'Whatever Works — prova prática',
-    description: 'O quadro apresenta uma prova: resolver o problema proposto pelo instrutor, aqui representado por um guerreiro shabti de barro.',
+    description: 'O quadro anuncia uma prova de combate mágico: as quatro estatuetas shabti crescem e se tornam guerreiros de barro.',
     position: problemBoard.position, radius: 2.5,
     onInteract: () => {
-      if (shabtiActive) return 'A prova já está em andamento. Use o cajado ou o khopesh e pressione F/USAR perto do guerreiro.';
-      shabtiActive = true; shabtiHealth = 4; shabti.visible = true; shabtiDefeatAt = 0;
-      shabti.scale.setScalar(1);
-      return 'Prova iniciada! O guerreiro shabti despertou. Derrote-o com o cajado ou o khopesh.';
-    }
-  });
-  addInteractable({
-    name: 'Guerreiro shabti de barro', label: 'Guerreiro shabti',
-    description: 'Uma figura mumiforme de barro, com faixa azul, colar de bronze e arma cerimonial. Parece inerte.',
-    position: shabti.position, radius: 2.3,
-    onInteract: () => {
-      if (!shabtiActive) return 'O shabti está inerte. Leia o quadro da aula para iniciar a prova.';
-      return 'Guerreiro shabti ativo. Energia restante: ' + shabtiHealth + '. Use uma arma de perto.';
+      if (shabtiActive) return 'A prova já está em andamento. Derrote os quatro guerreiros com o cajado ou o khopesh.';
+      startShabtiChallenge();
+      return 'Prova iniciada! As quatro estatuetas cresceram e despertaram como guerreiros shabti. Derrote todos.';
     }
   });
 
-  let shabtiFlash = 0;
-  function hitShabti(weaponName) {
-    if (!shabtiActive) return null;
-    shabtiHealth -= 1;
-    shabtiHitAt = 0.42;
-    shabtiFlash = 0.3;
-    if (shabtiHealth <= 0) {
-      shabtiActive = false;
-      shabtiDefeatAt = 5.5;
-      return 'Prova concluída! O guerreiro shabti desmoronou. Você resolveu o desafio.';
+  function hitShabti(state, weaponName) {
+    if (!shabtiActive || !state?.active) return null;
+    state.health -= 1;
+    state.hitAt = 0.42;
+    if (state.health <= 0) {
+      state.active = false;
+      state.defeated = true;
+      state.defeatTime = 2.4;
+      removeShabtiCollider(state);
+      shabtiRemaining -= 1;
+      if (shabtiRemaining <= 0) {
+        shabtiActive = false;
+        return 'Prova concluída! Você derrotou os quatro guerreiros shabti e resolveu o desafio.';
+      }
+      return 'Guerreiro shabti ' + (state.index + 1) + ' derrotado. Restam ' + shabtiRemaining + '.';
     }
     return (weaponName === 'staff' ? 'O cajado atingiu o shabti. ' : 'O khopesh atingiu o shabti. ')
-      + 'Restam ' + shabtiHealth + ' golpes para concluir a prova.';
+      + 'Restam ' + state.health + ' golpes neste guerreiro.';
   }
 
   // Portal duplo de madeira e bronze, inicialmente aberto para permitir circulação.
@@ -765,11 +852,17 @@ export function buildTrainingRoom({
       firePracticeOrb(position, forward);
       return 'Orbe lançado. Acerte um dos três alvos na parede oposta.';
     }
-    if (shabtiActive && position.distanceTo(shabti.position) < 3.9) {
-      const direction = shabti.position.clone().sub(position).setY(0).normalize();
-      const aim = forward.clone().setY(0).normalize();
-      if (direction.dot(aim) > -0.18) return hitShabti(weaponName);
-      return 'Vire-se na direção do guerreiro para acertá-lo.';
+    if (shabtiActive) {
+      const nearest = shabtiWarriors
+        .filter(state => state.active)
+        .map(state => ({ state, distance: position.distanceTo(state.group.position) }))
+        .sort((a, b) => a.distance - b.distance)[0];
+      if (nearest && nearest.distance < 3.9) {
+        const direction = nearest.state.group.position.clone().sub(position).setY(0).normalize();
+        const aim = forward.clone().setY(0).normalize();
+        if (direction.dot(aim) > -0.18) return hitShabti(nearest.state, weaponName);
+        return 'Vire-se na direção do guerreiro para acertá-lo.';
+      }
     }
     if (weaponName === 'staff') return 'O cajado vibra com energia. Leia o quadro de alvos para iniciar a prática de mira.';
     return 'O khopesh está pronto. Aproxime-se do alvo ou do guerreiro shabti.';
@@ -841,26 +934,44 @@ export function buildTrainingRoom({
         break;
       }
     }
-    if (shabtiHitAt > 0) {
-      shabtiHitAt = Math.max(0, shabtiHitAt - dt);
-      shabti.rotation.z = Math.sin(time * 38) * shabtiHitAt * 0.55;
-    } else if (shabtiActive) {
-      shabti.rotation.z = Math.sin(time * 2.2) * 0.035;
-      shabti.position.y = floorY + Math.sin(time * 3.2) * 0.045;
-    } else {
-      shabti.rotation.z *= 0.86;
-      shabti.position.y = floorY;
-    }
-    if (shabtiFlash > 0) shabtiFlash = Math.max(0, shabtiFlash - dt);
-    if (shabtiDefeatAt > 0) {
-      shabtiDefeatAt = Math.max(0, shabtiDefeatAt - dt);
-      if (shabtiDefeatAt === 0) {
-        shabti.visible = true;
-        shabti.scale.setScalar(1);
-        shabtiHealth = 4;
-      } else if (shabtiDefeatAt < 4.7) {
-        shabti.scale.setScalar(Math.max(0.02, shabtiDefeatAt / 4.7));
-        shabti.visible = shabtiDefeatAt > 0.25;
+    for (const state of shabtiWarriors) {
+      if (state.active) {
+        if (state.spawnScale < 1) {
+          state.spawnScale = Math.min(1, state.spawnScale + dt * 2.4);
+          state.group.scale.setScalar(state.spawnScale);
+          if (state.spawnScale > 0.82) {
+            state.group.traverse(obj => {
+              if (obj.userData?.miniatureOnly) obj.visible = false;
+            });
+          }
+        }
+        if (state.hitAt > 0) {
+          state.hitAt = Math.max(0, state.hitAt - dt);
+          state.group.rotation.z = Math.sin(time * 38 + state.index) * state.hitAt * 0.55;
+        } else {
+          const dx = playerPosition.x - state.group.position.x;
+          const dz = playerPosition.z - state.group.position.z;
+          state.group.rotation.y = Math.atan2(dx, dz);
+          state.group.rotation.z = Math.sin(time * 2.2 + state.index) * 0.035;
+          state.group.position.y = floorY + Math.sin(time * 3.2 + state.index) * 0.035;
+        }
+      } else {
+        state.group.rotation.z *= 0.86;
+        state.group.position.y = floorY;
+      }
+      if (state.defeatTime > 0) {
+        state.defeatTime = Math.max(0, state.defeatTime - dt);
+        if (state.defeatTime === 0) {
+          state.group.visible = true;
+          state.group.scale.setScalar(0.24);
+          state.spawnScale = 0.24;
+          state.group.traverse(obj => {
+            if (obj.userData?.miniatureOnly) obj.visible = true;
+          });
+        } else if (state.defeatTime < 2.4) {
+          state.group.scale.setScalar(Math.max(0.02, state.defeatTime / 2.4));
+          state.group.visible = true;
+        }
       }
     }
     for (const target of targets) {

@@ -98,7 +98,16 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Clareamento da tonalidade da parede.
 - [ ] Testar face interna, profundidade, cúpula, piso e distribuição dos nichos.
 - [ ] Ajustar luz ambiente e materiais para evitar aparência cinza/transparente.
-- [ ] Criar interações de papiros e artefatos.
+- [x] Adicionar inspeção contextual aos 16 nichos inferiores, quatro shabtis e mesa de leitura (E/INTERAGIR compartilhado).
+- [x] Fixar a seed das texturas de Nut e Geb para manter a composição estável entre recarregamentos e dispositivos.
+- [ ] Criar leitura aprofundada/coleção de papiros e interações de uso dos artefatos.
+
+### Atualização 26/11/2026 — biblioteca subterrânea
+- [x] Conectar a biblioteca ao array de interações compartilhado sem criar controladores paralelos.
+- [x] Registrar 16 pontos de inspeção dos nichos inferiores, quatro shabtis cardeais e a mesa central.
+- [x] Tornar determinística a geração das texturas de Nut e Geb.
+- [ ] Validar alcance e leitura dos prompts no navegador desktop e em celular paisagem.
+- [ ] Refinar materiais/iluminação da câmara após inspeção visual.
 
 ## Setor 06 — arquitetura, circulação e interiores
 

@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#12171b">
+<title>Carter Kane — Character Lab / estudo isolado</title>
+<style>
+:root{color-scheme:dark;--bg:#12171b;--panel:rgba(18,24,28,.92);--line:rgba(227,202,157,.2);--gold:#d6b77e;--text:#f1eee8;--muted:#a6b0b2;--blue:#4b77af}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
+#stage{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+header{position:fixed;left:22px;top:18px;z-index:3;pointer-events:none;max-width:min(600px,calc(100% - 44px))}
+.kicker{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+h1{font:500 clamp(21px,3vw,32px)/1.1 Georgia,serif;letter-spacing:.07em;margin:6px 0 7px}
+header p{font-size:11px;color:#c4c7c4;margin:0;line-height:1.5}
+#tag{display:inline-block;margin-top:9px;border:1px solid rgba(214,183,126,.38);border-radius:100px;padding:5px 9px;font-size:9px;letter-spacing:.12em;color:#e6d4ad}
+#panel{position:fixed;right:16px;top:16px;bottom:16px;width:min(310px,calc(100vw - 32px));z-index:3;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(16px);padding:15px;overflow:auto;box-shadow:0 18px 60px rgba(0,0,0,.25)}
+.panel-title{font:500 16px Georgia,serif;color:var(--gold);letter-spacing:.04em;margin:0 0 4px}
+.small{font-size:10px;color:var(--muted);line-height:1.5}
+.section{border-top:1px solid var(--line);padding-top:12px;margin-top:13px}
+.label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:#bfc3bd;margin-bottom:8px}
+.buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+button{font:600 9px/1.2 Inter,system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase;cursor:pointer;border:1px solid rgba(255,255,255,.14);background:#252e34;color:#e8e6df;padding:10px 9px;transition:.15s}
+button:hover,button.active{background:#8b744e;color:#151719;border-color:#d6b77e}
+button:disabled{opacity:.32;cursor:not-allowed}
+button.subtle{background:transparent;color:#c4c9c5}
+button.wide{width:100%;margin-top:7px}
+.range{display:grid;grid-template-columns:1fr 44px;gap:8px;align-items:center;margin:9px 0}
+.range label{font-size:10px;color:#d2d0c9}
+.range output{font-size:10px;color:var(--gold);text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--gold);grid-column:1/3}
+#loading{position:fixed;inset:0;z-index:5;background:#12171b;display:grid;place-items:center;text-align:center;padding:24px;color:var(--gold);font:13px Georgia,serif;letter-spacing:.12em}
+#loading small{display:block;font:10px Inter,system-ui,sans-serif;color:var(--muted);letter-spacing:0;margin-top:10px}
+#loading.done{display:none}
+#status{position:fixed;left:22px;bottom:20px;z-index:3;max-width:min(490px,calc(100vw - 44px));font-size:10px;line-height:1.55;color:#d6d7d1;background:rgba(18,24,28,.72);border:1px solid var(--line);padding:9px 12px;backdrop-filter:blur(10px)}
+#status.error{color:#ffb8a8;border-color:rgba(255,120,90,.5)}
+#mobileToggle{display:none;position:fixed;right:14px;bottom:15px;z-index:4}
+#mobileToggle button{background:var(--panel);border:1px solid var(--line);padding:12px}
+@media(max-width:760px){
+ header{left:12px;top:12px;max-width:calc(100% - 24px)}
+ header p{max-width:260px;font-size:10px}
+ #panel{top:auto;left:10px;right:10px;bottom:10px;width:auto;max-height:54vh;padding:12px;transform:translateY(calc(100% + 20px));transition:transform .22s ease}
+ #panel.open{transform:translateY(0)}
+ #mobileToggle{display:block}
+ #status{left:12px;bottom:18px;max-width:calc(100% - 100px);font-size:9px}
+ #panel.open~#mobileToggle{bottom:calc(54vh + 20px)}
+}
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<header>
+ <div class="kicker">Brooklyn House · character lab · estudo 01</div>
+ <h1>CARTER KANE</h1>
+ <p>Playful 3D de aventura · sprint atlético · teste isolado de personagem</p>
+ <span id="tag">NÃO INTEGRADO AO JOGO</span>
+</header>
+<div id="loading">PREPARANDO O ESTUDO 3D<small>Carregando modelo CC0 Quaternius · Casual_2</small></div>
+<div id="panel">
+ <h2 class="panel-title">Character Lab</h2>
+ <p class="small">Base técnica Quaternius Casual_2. Recolorida para testar a combinação azul + cáqui. O visual ainda não está aprovado.</p>
+
+ <div class="section">
+  <span class="label">Locomoção</span>
+  <div class="buttons">
+   <button data-clip="Idle" class="active">Parado</button>
+   <button data-clip="Walk">Caminhar</button>
+   <button data-clip="Run">Correr</button>
+   <button data-clip="NinjaSprint">Sprint ninja</button>
+   <button data-clip="Run_Left">Corrida esquerda</button>
+   <button data-clip="Run_Right">Corrida direita</button>
+   <button data-clip="Roll">Rolamento</button>
+   <button data-clip="Sword_Slash">Golpe</button>
+  </div>
+  <p class="small" id="motionNote">O sprint ninja usa o clip Run com uma sobreposição de inclinação do tronco. Os clips serão avaliados no corpo antes de decidir o conjunto definitivo.</p>
+ </div>
+
+ <div class="section">
+  <span class="label">Câmera</span>
+  <div class="buttons">
+   <button data-view="front">Frente</button>
+   <button data-view="threeq">3/4</button>
+   <button data-view="side">Perfil</button>
+   <button data-view="back">Costas</button>
+  </div>
+  <button id="flip" class="subtle wide">Girar personagem 180°</button>
+ </div>
+
+ <div class="section">
+  <span class="label">Bolsa transversal · quadril direito</span>
+  <p class="small">Ajuste de estudo para visualizar a bolsa vestida no lado do corpo, e não no centro das costas ou à frente da pelve.</p>
+  <div class="range"><label for="bagX">Afastamento lateral</label><output id="bagXValue">0.25</output><input id="bagX" type="range" min="0.12" max="0.42" step="0.01" value="0.25"></div>
+  <div class="range"><label for="bagY">Altura no quadril</label><output id="bagYValue">-0.14</output><input id="bagY" type="range" min="-0.30" max="-0.04" step="0.01" value="-0.14"></div>
+  <div class="range"><label for="bagZ">Projeção para fora</label><output id="bagZValue">0.12</output><input id="bagZ" type="range" min="-0.04" max="0.26" step="0.01" value="0.12"></div>
+  <div class="range"><label for="bagYaw">Ângulo da aba</label><output id="bagYawValue">0.55</output><input id="bagYaw" type="range" min="-1.2" max="1.2" step="0.05" value="0.55"></div>
+  <button id="swapBagSide" class="subtle wide">Trocar para o outro quadril</button>
+ </div>
+
+ <div class="section">
+  <span class="label">Apresentação</span>
+  <div class="buttons">
+   <button id="rigToggle" class="subtle">Mostrar rig</button>
+   <button id="bagToggle" class="active">Ocultar bolsa</button>
+  </div>
+  <p class="small">Esta base não inclui um clip Jump explícito no conjunto do construtor. Salto, aterrissagem e transições ninja serão escolhidos/retargetados depois da aprovação da malha.</p>
+ </div>
+
+ <div class="section">
+  <span class="label">Candidato técnico</span>
+  <p class="small">Quaternius Ultimate Modular Men · Casual_2 · CC0 1.0. Modelo servido diretamente do repositório de origem; não foi copiado para o runtime principal.</p>
+  <p class="small"><a href="https://github.com/LuanDucate/Ducz.CharacterCreator" target="_blank" rel="noreferrer" style="color:#d6b77e">Ver construtor modular e código no GitHub ↗</a></p>
+ </div>
+</div>
+<div id="mobileToggle"><button id="togglePanel">CONTROLES</button></div>
+<div id="status">Inicializando a cena…</div>
+
+<script type="importmap">
+{
+ "imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+ }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+const MODEL_URL = 'https://cdn.jsdelivr.net/gh/LuanDucate/Ducz.CharacterCreator@fcd215b58eec5c9ed97d0ba5f696d0e7dc085e08/public/models/Male/Casual_2.glb';
+const canvas = document.getElementById('stage');
+const status = document.getElementById('status');
+const loading = document.getElementById('loading');
+
+function setStatus(message, isError = false) {
+ status.textContent = message;
+ status.classList.toggle('error', isError);
+}
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.12;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x777f80);
+scene.fog = new THREE.Fog(0x777f80, 8, 20);
+
+const camera = new THREE.PerspectiveCamera(36, window.innerWidth / window.innerHeight, 0.1, 60);
+camera.position.set(2.8, 1.72, 4.0);
+const controls = new OrbitControls(camera, canvas);
+controls.target.set(0, 0.92, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.075;
+controls.minDistance = 1.7;
+controls.maxDistance = 7;
+controls.maxPolarAngle = Math.PI * 0.88;
+
+scene.add(new THREE.HemisphereLight(0xe4edf3, 0x4a3a2e, 1.65));
+const key = new THREE.DirectionalLight(0xffe0c0, 2.6);
+key.position.set(-3.5, 5.5, 4);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+key.shadow.camera.left = -3;
+key.shadow.camera.right = 3;
+key.shadow.camera.top = 4;
+key.shadow.camera.bottom = -2;
+key.shadow.bias = -0.0003;
+scene.add(key);
+const fill = new THREE.DirectionalLight(0x9fc4e2, 1.0);
+fill.position.set(4, 3, -3);
+scene.add(fill);
+const rim = new THREE.DirectionalLight(0xe8c58d, 1.1);
+rim.position.set(-1, 3, -4);
+scene.add(rim);
+
+const floor = new THREE.Mesh(
+ new THREE.CircleGeometry(4.5, 64),
+ new THREE.MeshStandardMaterial({ color: 0x626b69, roughness: 0.94 })
+);
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = -0.02;
+floor.receiveShadow = true;
+scene.add(floor);
+const grid = new THREE.GridHelper(12, 32, 0xc3ad88, 0x87908c);
+grid.position.y = -0.012;
+grid.material.transparent = true;
+grid.material.opacity = 0.18;
+scene.add(grid);
+
+const actorRoot = new THREE.Group();
+actorRoot.name = 'CarterStudyActor';
+scene.add(actorRoot);
+
+let avatar = null;
+let mixer = null;
+let currentAction = null;
+let clips = [];
+let bones = [];
+let hipsBone = null;
+let spineBone = null;
+let rigHelper = null;
+let bagPivot = null;
+let bagSide = 1;
+let bagVisible = true;
+let ninjaSprint = false;
+let flipYaw = 0;
+let modelScale = 1;
+let leanApplied = new THREE.Quaternion();
+let previousTime = performance.now();
+
+const bagOptions = {
+ x: 0.25,
+ y: -0.14,
+ z: 0.12,
+ yaw: 0.55
+};
+
+function findBone(regex) {
+ return bones.find(b => regex.test(b.name));
+}
+
+function paintMaterials(root) {
+ const palette = new Map([
+  ['Skin', 0x86583f],
+  ['Skin_Darker', 0x5d3e30],
+  ['Hair', 0x17120f],
+  ['Eyebrows', 0x241916],
+  ['Eye', 0x40281f],
+  ['LightBrown', 0x2d5e9d],
+  ['LightBlue', 0xc7ad7d],
+  ['Red_Dark', 0x1d3152],
+  ['White', 0xd6d8d5]
+ ]);
+ const used = [];
+ root.traverse(object => {
+  if (!object.isMesh) return;
+  object.castShadow = true;
+  object.receiveShadow = true;
+  object.frustumCulled = false;
+  const apply = material => {
+   if (!material) return;
+   const key = material.name || '';
+   if (palette.has(key)) {
+    material.color.setHex(palette.get(key));
+    material.roughness = 0.82;
+    used.push(key);
+   }
+  };
+  if (Array.isArray(object.material)) object.material.forEach(apply);
+  else apply(object.material);
+ });
+ return [...new Set(used)].sort();
+}
+
+function createBag() {
+ const group = new THREE.Group();
+ group.name = 'CrossbodySatchelStudy';
+ const leather = new THREE.MeshStandardMaterial({ color: 0x70462d, roughness: 0.9 });
+ const flapMat = new THREE.MeshStandardMaterial({ color: 0x95623e, roughness: 0.88 });
+ const darkLeather = new THREE.MeshStandardMaterial({ color: 0x472b1e, roughness: 0.9 });
+ const brass = new THREE.MeshStandardMaterial({ color: 0xb99156, metalness: 0.62, roughness: 0.42 });
+ const stitch = new THREE.MeshStandardMaterial({ color: 0xd0ad7a, roughness: 0.9 });
+
+ const body = new THREE.Mesh(new RoundedBoxGeometry(0.25, 0.205, 0.105, 5, 0.025), leather);
+ body.name = 'BagBody';
+ body.position.z = 0.005;
+ body.castShadow = true;
+ body.receiveShadow = true;
+ group.add(body);
+
+ const sideGusset = new THREE.Mesh(new RoundedBoxGeometry(0.027, 0.155, 0.09, 4, 0.009), darkLeather);
+ sideGusset.position.set(0.12, -0.014, 0.008);
+ sideGusset.castShadow = true;
+ group.add(sideGusset);
+
+ const flap = new THREE.Mesh(new RoundedBoxGeometry(0.238, 0.092, 0.018, 4, 0.012), flapMat);
+ flap.name = 'BagFrontFlap';
+ flap.position.set(0, 0.065, 0.061);
+ flap.castShadow = true;
+ group.add(flap);
+
+ const seamPoints = [
+  new THREE.Vector3(-0.104, 0.025, 0.073),
+  new THREE.Vector3(-0.104, 0.098, 0.073),
+  new THREE.Vector3(-0.072, 0.111, 0.073),
+  new THREE.Vector3(0, 0.112, 0.073),
+  new THREE.Vector3(0.072, 0.111, 0.073),
+  new THREE.Vector3(0.104, 0.098, 0.073),
+  new THREE.Vector3(0.104, 0.025, 0.073)
+ ];
+ const seam = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(seamPoints), 40, 0.002, 6, false), stitch);
+ group.add(seam);
+
+ const clasp = new THREE.Mesh(new RoundedBoxGeometry(0.04, 0.045, 0.012, 3, 0.004), brass);
+ clasp.position.set(0, 0.027, 0.077);
+ clasp.castShadow = true;
+ group.add(clasp);
+ const tongue = new THREE.Mesh(new RoundedBoxGeometry(0.013, 0.027, 0.006, 3, 0.002), darkLeather);
+ tongue.position.set(0, 0.027, 0.085);
+ group.add(tongue);
+
+ for (const side of [-1, 1]) {
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.017, 0.004, 8, 20), brass);
+  ring.position.set(side * 0.135, 0.055, 0.0);
+  ring.rotation.y = Math.PI / 2;
+  group.add(ring);
+ }
+ return group;
+}
+
+function createStrap(root, scale, side = 1) {
+ const group = new THREE.Group();
+ group.name = 'CrossbodyStrapStudy';
+ group.scale.setScalar(1 / scale);
+ const points = [
+  [-0.17, 1.49, 0.105],
+  [-0.17, 1.40, 0.135],
+  [-0.115, 1.29, 0.15],
+  [-0.035, 1.13, 0.155],
+  [0.075, 0.96, 0.15],
+  [side * bagOptions.x, 0.79, 0.14]
+ ].map(p => new THREE.Vector3(p[0], p[1], p[2]));
+ const curve = new THREE.CatmullRomCurve3(points);
+ const segments = 48;
+ const halfWidth = 0.022;
+ const positions = [];
+ const indices = [];
+ for (let i = 0; i <= segments; i++) {
+  const t = i / segments;
+  const center = curve.getPoint(t);
+  const tangent = curve.getTangent(t).normalize();
+  const across = new THREE.Vector3(-tangent.y, tangent.x, 0).normalize().multiplyScalar(halfWidth);
+  positions.push(
+   center.x + across.x, center.y + across.y, center.z + across.z,
+   center.x - across.x, center.y - across.y, center.z - across.z
+  );
+  if (i < segments) {
+   const n = i * 2;
+   indices.push(n, n + 2, n + 1, n + 1, n + 2, n + 3);
+  }
+ }
+ const geometry = new THREE.BufferGeometry();
+ geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+ geometry.setIndex(indices);
+ geometry.computeVertexNormals();
+ const material = new THREE.MeshStandardMaterial({ color: 0x4a2e20, roughness: 0.88, side: THREE.DoubleSide });
+ const mesh = new THREE.Mesh(geometry, material);
+ mesh.name = 'FlatCrossbodyStrap';
+ mesh.castShadow = true;
+ group.add(mesh);
+ root.add(group);
+ return group;
+}
+
+let strapGroup = null;
+function rebuildStrap() {
+ if (strapGroup) {
+  actorRoot.remove(strapGroup);
+  strapGroup.traverse(obj => {
+   if (obj.geometry) obj.geometry.dispose();
+   if (obj.material && obj.material.dispose) obj.material.dispose();
+  });
+ }
+ strapGroup = createStrap(actorRoot, modelScale, bagSide);
+}
+
+function updateBagMount() {
+ if (!bagPivot || !hipsBone) return;
+ bagPivot.position.set(
+  bagSide * bagOptions.x / modelScale,
+  bagOptions.y / modelScale,
+  bagOptions.z / modelScale
+ );
+ bagPivot.rotation.set(0, bagOptions.yaw, 0);
+ bagPivot.visible = bagVisible;
+}
+
+function resolveClip(name) {
+ const exact = clips.find(c => c.name.toLowerCase() === name.toLowerCase());
+ if (exact) return exact;
+ return clips.find(c => c.name.toLowerCase().includes(name.toLowerCase()));
+}
+
+function play(name) {
+ if (!mixer) return;
+ const isNinja = name === 'NinjaSprint';
+ const clipName = isNinja ? 'Run' : name;
+ const clip = resolveClip(clipName);
+ if (!clip) {
+  setStatus('Este clip não está no GLB carregado: ' + clipName, true);
+  return;
+ }
+ const next = mixer.clipAction(clip);
+ next.reset();
+ next.enabled = true;
+ next.setEffectiveTimeScale(1);
+ next.setLoop(THREE.LoopRepeat, Infinity);
+ next.fadeIn(0.24);
+ if (currentAction && currentAction !== next) currentAction.crossFadeTo(next, 0.24, false);
+ next.play();
+ currentAction = next;
+ ninjaSprint = isNinja;
+ document.querySelectorAll('[data-clip]').forEach(button => button.classList.toggle('active', button.dataset.clip === name));
+ if (isNinja) setStatus('Sprint ninja: clip Run com inclinação de tronco sobreposta. Observe a pose de perfil.');
+ else setStatus('Reproduzindo: ' + clip.name + '.');
+}
+
+function setView(view) {
+ const poses = {
+  front: [0, 1.54, 4.25],
+  threeq: [2.8, 1.72, 4.0],
+  side: [4.3, 1.5, 0.15],
+  back: [0, 1.54, -4.25]
+ };
+ camera.position.set(...poses[view]);
+ controls.target.set(0, 0.92, 0);
+ controls.update();
+}
+
+function makeRigHelper() {
+ if (rigHelper) {
+  scene.remove(rigHelper);
+  rigHelper = null;
+ }
+ if (!avatar) return;
+ rigHelper = new THREE.SkeletonHelper(avatar);
+ rigHelper.visible = false;
+ scene.add(rigHelper);
+}
+document.getElementById('rigToggle').addEventListener('click', event => {
+ if (!rigHelper) makeRigHelper();
+ rigHelper.visible = !rigHelper.visible;
+ event.currentTarget.classList.toggle('active', rigHelper.visible);
+ event.currentTarget.textContent = rigHelper.visible ? 'Ocultar rig' : 'Mostrar rig';
+});
+document.getElementById('bagToggle').addEventListener('click', event => {
+ bagVisible = !bagVisible;
+ updateBagMount();
+ event.currentTarget.classList.toggle('active', bagVisible);
+ event.currentTarget.textContent = bagVisible ? 'Ocultar bolsa' : 'Mostrar bolsa';
+});
+document.getElementById('flip').addEventListener('click', () => {
+ flipYaw += Math.PI;
+ actorRoot.rotation.y = flipYaw;
+});
+document.getElementById('swapBagSide').addEventListener('click', () => {
+ bagSide *= -1;
+ updateBagMount();
+ rebuildStrap();
+ document.getElementById('swapBagSide').textContent = bagSide === 1 ? 'Trocar para o outro quadril' : 'Voltar ao quadril direito';
+});
+
+for (const view of ['front','threeq','side','back']) {
+ document.querySelector('[data-view="' + view + '"]').addEventListener('click', () => setView(view));
+}
+for (const name of ['Idle','Walk','Run','NinjaSprint','Run_Left','Run_Right','Roll','Sword_Slash']) {
+ document.querySelector('[data-clip="' + name + '"]').addEventListener('click', () => play(name));
+}
+for (const key of ['X','Y','Z','Yaw']) {
+ const input = document.getElementById('bag' + key);
+ const output = document.getElementById('bag' + key + 'Value');
+ input.addEventListener('input', () => {
+  bagOptions[key.toLowerCase()] = Number(input.value);
+  output.value = Number(input.value).toFixed(2);
+  updateBagMount();
+  rebuildStrap();
+ });
+}
+document.getElementById('togglePanel').addEventListener('click', () => {
+ document.getElementById('panel').classList.toggle('open');
+});
+
+const loader = new GLTFLoader();
+loader.load(
+ MODEL_URL,
+ gltf => {
+  try {
+   avatar = gltf.scene;
+   avatar.name = 'Quaternius_Casual_2_CarterStudy';
+   const initialBox = new THREE.Box3().setFromObject(avatar);
+   const size = initialBox.getSize(new THREE.Vector3());
+   const center = initialBox.getCenter(new THREE.Vector3());
+   modelScale = 1.74 / Math.max(size.y, 0.001);
+   avatar.scale.setScalar(modelScale);
+   avatar.position.set(-center.x * modelScale, -initialBox.min.y * modelScale, -center.z * modelScale);
+   const usedMaterials = paintMaterials(avatar);
+   actorRoot.add(avatar);
+
+   bones = [];
+   avatar.traverse(object => { if (object.isBone) bones.push(object); });
+   hipsBone = findBone(/(^|[:_])hips$|pelvis/i) || findBone(/hips/i);
+   spineBone = findBone(/spine1|spine_01|spine$/i);
+   if (!hipsBone) {
+    hipsBone = avatar;
+    setStatus('Rig carregado; osso de quadril não identificado. A bolsa ficará em posição aproximada.', true);
+   }
+
+   bagPivot = createBag();
+   bagPivot.scale.setScalar(1 / modelScale);
+   bagPivot.visible = bagVisible;
+   hipsBone.add(bagPivot);
+   updateBagMount();
+   rebuildStrap();
+
+   clips = gltf.animations || [];
+   mixer = new THREE.AnimationMixer(avatar);
+   makeRigHelper();
+
+   const clipNames = clips.map(c => c.name);
+   const materialMsg = usedMaterials.length ? usedMaterials.join(', ') : 'materiais preservados (nomes diferentes do catálogo)';
+   setStatus('Modelo carregado · ' + clipNames.length + ' clips · materiais: ' + materialMsg + '.');
+   loading.classList.add('done');
+   play(resolveClip('Idle')?.name || clipNames[0] || 'Idle');
+  } catch (error) {
+   console.error(error);
+   loading.innerHTML = 'FALHA AO PREPARAR O MODELO<small>' + String(error.message || error) + '</small>';
+   setStatus(String(error.message || error), true);
+  }
+ },
+ undefined,
+ error => {
+  console.error(error);
+  loading.innerHTML = 'NÃO FOI POSSÍVEL CARREGAR O GLB<small>Verifique a conexão ou abra novamente o preview.</small>';
+  setStatus('Falha ao carregar o modelo CC0 externo. O jogo principal não foi alterado.', true);
+ }
+);
+
+function animate(now) {
+ requestAnimationFrame(animate);
+ const dt = Math.min((now - previousTime) / 1000, 0.04);
+ previousTime = now;
+ if (mixer) {
+  // Remove the previous additive lean before the animation mixer advances.
+  if (spineBone && !leanApplied.equals(new THREE.Quaternion())) {
+   spineBone.quaternion.multiply(leanApplied.clone().invert());
+   leanApplied.identity();
+  }
+  mixer.update(dt);
+  if (spineBone && ninjaSprint) {
+   const lean = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), 0.16);
+   spineBone.quaternion.multiply(lean);
+   leanApplied.copy(lean);
+  }
+ }
+ controls.update();
+ renderer.render(scene, camera);
+}
+requestAnimationFrame(animate);
+
+window.addEventListener('resize', () => {
+ camera.aspect = window.innerWidth / window.innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
+ renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

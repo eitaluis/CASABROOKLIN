@@ -35,6 +35,9 @@ export async function createCharacter({
 }) {
   const loading = document.getElementById('loading');
   const hero = await createAraCharacter(CARTER_SHARE_URL, {
+    // The saved Ara share originally included a backpack. Remove that built-in
+    // carried prop; Carter now uses only the custom side satchel below.
+    carry: 'none',
     animations: [...CORE_ANIMATIONS, ...AVAILABLE_CINEMATIC_ANIMATIONS],
     detail: 'medium',
     onProgress: (label, fraction) => {

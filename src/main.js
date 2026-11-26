@@ -5,7 +5,7 @@ import { buildWaterfrontEnvironment } from './waterfront-environment.js?v=waterf
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-atrium-20261126a';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-atrium-20261126d';
 import { buildTrainingRoom } from './training-room.js?v=training-room-sculptural-pass-20261126b';
-import { createInventory } from './inventory.js?v=duat-kit-full-20261126a';
+import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
 import { createCharacter } from './character.js?v=carter-satchel-fit-20261126i';
 import { createThirdPersonController } from './third-person.js?v=duat-input-lock-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';

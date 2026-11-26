@@ -261,7 +261,7 @@ export function createMagicSystem({
           ? 1
           : THREE.MathUtils.clamp(1 - (castElapsed - 0.7) / 0.38, 0, 1);
 
-        if (castElapsed >= 0.38 && !projectile && activeTarget) {
+        if (castElapsed >= 0.38 && !projectile && !impactApplied && activeTarget) {
           const hand = handTransform();
           const start = hand.position.clone().addScaledVector(hand.direction, 0.28);
           createProjectile(start, activeTarget.position.clone());

@@ -3,7 +3,7 @@
 
 Data: 26/11/2026  
 Projeto: CASABROOKLIN  
-Status: **primeiro levantamento canônico concluído; implementação dos feitiços ainda não iniciada**
+Status: **pesquisa canônica concluída; primeiro protótipo jogável HA-DI integrado ao código; QA visual desktop/mobile pendente**
 
 ## 1. Como ler esta ficha
 
@@ -152,7 +152,7 @@ Exemplo conceitual de dados para HA-DI (não é código executável ainda):
 | `glyphColor` | azul ou dourado, escolha de apresentação |
 | `effect` | pulso destrutivo, com resposta condicionada ao material/resistência |
 
-O lançamento deve funcionar em qualquer zona explorável. Um alvo compatível no Grande Salão, biblioteca ou exterior deve reagir sem depender de estar na Sala de Treinamento.
+A arquitetura final poderá permitir feitiços globais e alvos por capacidades. **Exceção deliberada do primeiro protótipo:** HA-DI só pode atingir guerreiros Shabti despertos na Sala de Treinamento; não destrói portas, móveis, personagens ou objetos em outras zonas. Essa restrição foi solicitada para validar a interação com o alvo antes de generalizar o sistema.
 
 ## 8. Alvos de demonstração na sala
 
@@ -178,7 +178,41 @@ A pesquisa acadêmica identifica os valores associados aos exemplos de `The Red 
 
 O artigo reproduz os sinais usando a fonte tipográfica empregada nos livros. Antes de criar SVGs ou glifos definitivos, precisamos comparar a página impressa/ilustrada e verificar direção, composição e proporção. Não usar emojis ou caracteres hieroglíficos aleatórios como substitutos de uma inscrição específica.
 
-## 10. Próxima ordem de produção
+## 10. Protótipo jogável HA-DI — 26/11/2026
+
+### Esfera 1 — Carter / gesto de conjuração
+- A cena original de The Red Pyramid descreve Sadie apontando com dois dedos e o polegar, como uma arma imaginária. Carter usa o mesmo gesto no jogo como adaptação de gameplay, não como atribuição canônica de uma animação a ele.
+- O protótipo usa o clipe Ara Point como base do braço estendido. O código espelha a cadeia de articulações do indicador para o dedo médio da mão direita, preservando o polegar do clipe; o movimento é bloqueado durante a conjuração.
+- A pose deverá ser revisada visualmente no rig real do Carter. Se o clipe não produzir a silhueta exata, será substituído por uma animação retargetada própria.
+
+### Esfera 2 — hieróglifo e efeito HA-DI
+- Sequência correta publicada para ḥḏ: **𓉔𓆓** (O4 + I10), reproduzida no artigo de Frances Foster.
+- A inscrição dourada aparece suspensa no espaço, diante da mão direita, vinculada à posição/orientação do osso RightHand; não é HUD.
+- O hieróglifo recebe brilho aditivo, anel de energia e breve aparência de combustão. Um pulso dourado percorre a distância entre a mão e o alvo.
+- O texto é desenhado em Canvas com a família Noto Sans Egyptian Hieroglyphs como primeira opção e fallbacks do sistema. A fonte ainda não foi empacotada localmente; verificar a cobertura de glifos nos navegadores desktop/mobile.
+
+### Esfera 3 — Shabti e consequência
+- O feitiço procura somente um Shabti ativo, completamente desperto, na Sala de Treinamento.
+- Requisitos de gameplay: distância entre **3,5 m e 12,5 m** e alinhamento frontal mínimo de **0,78** no produto escalar da direção de Carter com o alvo.
+- Ao impacto, o Shabti desaparece como corpo inteiro e se divide em peças de faiança, com lascas adicionais de cerâmica e física simples de gravidade, rotação e ressalto.
+- Os fragmentos permanecem no chão durante **10 segundos**; em seguida são removidos.
+- O mesmo Shabti reaparece numa posição aleatória segura da quadra, em escala de miniatura, e repete a animação de despertar até voltar à forma de guerreiro e avançar contra Carter.
+- O ciclo não consome a contagem dos quatro guerreiros da prova: HA-DI funciona como teste repetível do alvo, sem encerrar a atividade.
+
+### Controles e arquivos
+- Desktop: **G** para conjurar HA-DI.
+- Mobile: botão **HA-DI**, exibido apenas durante a prova e habilitado quando há um Shabti válido à frente.
+- src/magic-system.js: hieróglifo, gesto, pulso, impacto e temporização.
+- src/character.js: socket da mão direita e adaptação dos dedos no clipe Point.
+- src/training-room.js: seleção exclusiva do Shabti, fragmentação, permanência de 10 s e respawn aleatório.
+- src/main.js + index.html: integração de entrada, HUD e botão touch.
+- Desktop e mobile utilizam a mesma cena, personagem, lógica e VFX; apenas o controle é adaptado.
+
+**Proveniência:** o repositório ThreeJS VFX foi estudado como referência de técnicas procedurais (MIT), mas nenhum código ou asset foi copiado para este protótipo. O efeito atual é código original da CASABROOKLIN em Three.js 0.165.0. A animação-base vem do runtime Ara 3D Gen já utilizado pelo projeto.
+
+**QA ainda necessário no navegador:** confirmar que a mão direita e o hieróglifo se alinham corretamente em movimento real; verificar legibilidade do glifo nos dois dispositivos; testar alcance/frente, explosão, contato dos fragmentos com o piso, desaparecimento em 10 s e respawn repetido. A integração de código não equivale a uma aprovação visual final.
+
+## 11. Próxima ordem de produção
 
 A ordem de produção permanece:
 1. finalizar e validar visualmente os objetos do Duat (escala, materiais, orientação e mão);
@@ -189,7 +223,7 @@ A ordem de produção permanece:
 6. fazer a Sala de Treinamento demonstrar os efeitos;
 7. testar os mesmos feitiços fora da sala, no desktop e no mobile.
 
-**Os feitiços ainda não foram implementados.** Esta ficha fixa a pesquisa canônica e a arquitetura para evitar programar efeitos ou palavras incorretos antes de validar os objetos e as animações.
+**HA-DI é o primeiro protótipo integrado ao código.** Os outros feitiços continuam sem implementação. A ficha separa a descrição canônica da adaptação de gameplay e registra o QA visual ainda pendente para não confundir integração com validação final.
 
 ## Referências
 

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js?v=brooklyn-exterior-spiralwalk-20261126a';
-import { buildExterior } from './exterior.js?v=brooklyn-exterior-arrival-20261126b';
+import { buildExterior } from './exterior.js?v=brooklyn-east-river-surface-20261126c';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
 import { buildGrandSalon } from './grand-salon.js?v=grand-salon-circulation-20261126a';
 import { buildTrainingRoom } from './training-room.js?v=training-room-interactive-20261126b';

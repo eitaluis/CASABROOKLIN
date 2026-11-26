@@ -677,7 +677,7 @@ export function buildGrandSalon({
     createSofa(scene,-2.55,3.45,Math.PI/2,upholstery,darkWood,brass),
     createSofa(scene,2.55,3.45,-Math.PI/2,upholstery,darkWood,brass)
   ];
-  const sofaAssets=loadSofaAssets(scene,sofaFallbacks,colliders,interactables);
+  loadSofaAssets(scene,sofaFallbacks,colliders,interactables);
 
   const rug=createRug(scene);
   const table=centerTable(scene,walnut,brass);
@@ -693,6 +693,7 @@ export function buildGrandSalon({
 
   const fire=addFire(scene,animated,camera,isTouchDevice);
   const fireLight=fire.fireLight;
+  addBoxCollider(colliders,0,15.25,-8.3,3.2,2.4,.9);
   interactables.push({
     name:'Lareira monumental',
     kind:'inspect',
@@ -723,7 +724,6 @@ export function buildGrandSalon({
     stairRamps,
     walkablePlatforms,
     interactables,
-    sofaAssets,
     rug,
     table
   };

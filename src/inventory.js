@@ -216,9 +216,164 @@ export function createInventory({
     return registerItem('wax_shabti', group, 'artifact', 'Pequena estatueta mumiforme de cera');
   }
 
+
+  function buildMagicBox() {
+    const group = new THREE.Group();
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x493021, roughness: 0.82 });
+    const lidMat = new THREE.MeshStandardMaterial({ color: 0x65422b, roughness: 0.76 });
+    const inlayMat = new THREE.MeshStandardMaterial({ color: 0x99713e, metalness: 0.48, roughness: 0.46 });
+    const boxBody = new THREE.Mesh(new THREE.BoxGeometry(0.235, 0.135, 0.17), bodyMat);
+    boxBody.position.y = 0.07;
+    group.add(boxBody);
+    const lid = new THREE.Mesh(new THREE.BoxGeometry(0.245, 0.028, 0.18), lidMat);
+    lid.position.set(0, 0.15, 0);
+    group.add(lid);
+    for (const x of [-0.09, 0.09]) {
+      const band = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.16, 0.19), inlayMat);
+      band.position.set(x, 0.078, 0);
+      group.add(band);
+    }
+    const clasp = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.055, 0.012), gold);
+    clasp.position.set(0, 0.12, 0.094);
+    group.add(clasp);
+    const eye = new THREE.Mesh(new THREE.TorusGeometry(0.025, 0.004, 7, 20), gold);
+    eye.position.set(0, 0.154, 0.094);
+    group.add(eye);
+    const handle = new THREE.Mesh(new THREE.TorusGeometry(0.025, 0.004, 7, 18, Math.PI), inlayMat);
+    handle.position.set(0, 0.19, -0.02);
+    handle.rotation.x = Math.PI / 2;
+    group.add(handle);
+    group.traverse(obj => { if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; } });
+    group.position.set(0, -0.075, 0.07);
+    return registerItem('magic_box', group, 'container', 'Caixa portátil de instrumentos mágicos');
+  }
+
+  function buildPapyrus() {
+    const group = new THREE.Group();
+    const paperCanvas = document.createElement('canvas');
+    paperCanvas.width = 256;
+    paperCanvas.height = 160;
+    const ctx = paperCanvas.getContext('2d');
+    ctx.fillStyle = '#d9c18c';
+    ctx.fillRect(0, 0, 256, 160);
+    ctx.strokeStyle = '#9a7847';
+    ctx.lineWidth = 3;
+    for (let y = 12; y < 160; y += 11) {
+      ctx.globalAlpha = 0.22;
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(256, y + 2); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#49372a';
+    for (let col = 0; col < 5; col++) {
+      const x = 23 + col * 47;
+      for (let row = 0; row < 4; row++) {
+        const y = 28 + row * 31;
+        ctx.strokeRect(x, y, 9, 8);
+        ctx.beginPath(); ctx.moveTo(x + 14, y + 3); ctx.lineTo(x + 25, y + 3); ctx.stroke();
+      }
+    }
+    const paperTexture = new THREE.CanvasTexture(paperCanvas);
+    paperTexture.colorSpace = THREE.SRGBColorSpace;
+    const sheet = new THREE.Mesh(
+      new THREE.BoxGeometry(0.205, 0.125, 0.004),
+      new THREE.MeshStandardMaterial({ map: paperTexture, roughness: 0.96, side: THREE.DoubleSide })
+    );
+    sheet.position.z = 0.004;
+    group.add(sheet);
+    const rollMaterial = new THREE.MeshStandardMaterial({ color: 0xc7a66c, roughness: 0.9 });
+    for (const x of [-0.105, 0.105]) {
+      const roll = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.145, 14), rollMaterial);
+      roll.rotation.z = Math.PI / 2;
+      roll.position.set(x, 0, 0);
+      group.add(roll);
+      const end = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.008, 12), gold);
+      end.rotation.z = Math.PI / 2;
+      end.position.set(x + (x > 0 ? 0.076 : -0.076), 0, 0);
+      group.add(end);
+    }
+    group.position.set(0, 0, 0.08);
+    group.traverse(obj => { if (obj.isMesh) obj.castShadow = true; });
+    return registerItem('papyrus', group, 'tool', 'Folha de papiro preparada para inscrições');
+  }
+
+  function buildReedPen() {
+    const group = new THREE.Group();
+    const reed = new THREE.MeshStandardMaterial({ color: 0x9a794a, roughness: 0.84 });
+    const darkReed = new THREE.MeshStandardMaterial({ color: 0x44352a, roughness: 0.74 });
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.009, 0.22, 10), reed);
+    shaft.position.y = 0.11;
+    group.add(shaft);
+    const nib = new THREE.Mesh(new THREE.ConeGeometry(0.009, 0.035, 8), darkReed);
+    nib.position.y = -0.012;
+    nib.rotation.x = Math.PI;
+    group.add(nib);
+    const grip = new THREE.Mesh(new THREE.TorusGeometry(0.009, 0.0025, 6, 12), gold);
+    grip.position.y = 0.045;
+    grip.rotation.x = Math.PI / 2;
+    group.add(grip);
+    group.position.set(0, -0.105, 0.08);
+    return registerItem('reed_pen', group, 'tool', 'Cálamo de cana para desenhar hieróglifos');
+  }
+
+  function buildInk() {
+    const group = new THREE.Group();
+    const ceramic = new THREE.MeshStandardMaterial({ color: 0x625044, roughness: 0.48 });
+    const darkInk = new THREE.MeshStandardMaterial({ color: 0x171b1d, roughness: 0.22, metalness: 0.08 });
+    const vessel = new THREE.Mesh(new THREE.CylinderGeometry(0.034, 0.045, 0.078, 18, 1), ceramic);
+    vessel.position.y = 0.039;
+    group.add(vessel);
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.026, 0.027, 16), ceramic);
+    neck.position.y = 0.09;
+    group.add(neck);
+    const lip = new THREE.Mesh(new THREE.TorusGeometry(0.024, 0.004, 7, 18), gold);
+    lip.position.y = 0.105;
+    lip.rotation.x = Math.PI / 2;
+    group.add(lip);
+    const inkSurface = new THREE.Mesh(new THREE.CircleGeometry(0.019, 20), darkInk);
+    inkSurface.position.y = 0.105;
+    inkSurface.rotation.x = -Math.PI / 2;
+    group.add(inkSurface);
+    group.position.set(0, -0.05, 0.08);
+    group.traverse(obj => { if (obj.isMesh) obj.castShadow = true; });
+    return registerItem('ink', group, 'tool', 'Pequeno recipiente de tinta para inscrições');
+  }
+
+  function buildProtectiveAmulet() {
+    const group = new THREE.Group();
+    const faience = new THREE.MeshStandardMaterial({ color: 0x287f8e, roughness: 0.34, metalness: 0.2 });
+    const eyeShape = new THREE.Shape();
+    eyeShape.moveTo(-0.058, 0.008);
+    eyeShape.quadraticCurveTo(-0.01, 0.065, 0.058, 0.008);
+    eyeShape.quadraticCurveTo(0.015, -0.045, -0.058, 0.008);
+    const eyeGeo = new THREE.ExtrudeGeometry(eyeShape, {
+      depth: 0.018, bevelEnabled: true, bevelSegments: 2,
+      bevelSize: 0.004, bevelThickness: 0.003, curveSegments: 16
+    });
+    const eye = new THREE.Mesh(eyeGeo, gold);
+    group.add(eye);
+    const inset = new THREE.Mesh(new THREE.ShapeGeometry(eyeShape), faience);
+    inset.position.z = 0.021;
+    group.add(inset);
+    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.012, 12, 8), gold);
+    pupil.scale.set(0.7, 1.25, 0.45);
+    pupil.position.set(0, 0.008, 0.028);
+    group.add(pupil);
+    const loop = new THREE.Mesh(new THREE.TorusGeometry(0.018, 0.004, 8, 20), gold);
+    loop.position.set(0, 0.071, 0.004);
+    group.add(loop);
+    group.position.set(0, -0.045, 0.08);
+    group.traverse(obj => { if (obj.isMesh) obj.castShadow = true; });
+    return registerItem('protective_amulet', group, 'artifact', 'Amuleto de faiança azul inspirado no olho wedjat');
+  }
+
   buildStaff();
   buildKhopesh();
   buildWaxShabti();
+  buildMagicBox();
+  buildPapyrus();
+  buildReedPen();
+  buildInk();
+  buildProtectiveAmulet();
 
   // Portal procedural do Duat, preso ao mesmo socket da mão que recebe os objetos.
   const portal = new THREE.Group();
@@ -268,7 +423,12 @@ export function createInventory({
   const itemNames = {
     staff: 'CAJADO MÁGICO',
     khopesh: 'KHOPESH',
-    wax_shabti: 'SHABTI DE CERA'
+    wax_shabti: 'SHABTI DE CERA',
+    magic_box: 'CAIXA DE MAGIA',
+    papyrus: 'PAPIRO',
+    reed_pen: 'CÁLAMO',
+    ink: 'TINTA',
+    protective_amulet: 'AMULETO DE PROTEÇÃO'
   };
 
   const toggle = (force) => {

@@ -20,6 +20,7 @@ O barco é descrito como feito de fibras trançadas, com pequenas tochas na proa
 
 ## 3. Referências visuais e dimensionais
 
+- NYC DOT — fotografia oficial da Williamsburg Bridge sobre o East River: https://www.nyc.gov/html/dot/images/infrastructure/williamsburg-bridge.jpg. Referência direta para silhueta das torres, cabos, tabuleiro e distância visual entre as margens; não foi importada como textura.
 - NYC DOT — Williamsburg Bridge: https://www.nyc.gov/html/dot/html/infrastructure/williamsburg-bridge.shtml. Medidas oficiais de referência: comprimento total 7.308 ft, vão principal 1.600 ft, clearance central 135 ft, torres de 310 ft e quatro cabos principais.
 - NYC Department of Records and Information Services — fotografias históricas da ponte: https://www.archives.nyc/blog/tag/Williamsburg%2BBridge.
 - Poly Haven Red Brick (CC0): https://polyhaven.com/a/red_brick. Referência candidata para o futuro passe PBR do armazém; os mapas ainda não estão integrados no runtime.

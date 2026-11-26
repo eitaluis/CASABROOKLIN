@@ -173,13 +173,13 @@ function makeStrap(THREE, parent, scale) {
   // Ara's generated character faces +Z in local space. The game wrapper turns
   // the actor 180 degrees, so local -X becomes the character's right hip.
   const points = [
-    [0.165, 1.49, 0.115],
-    [0.178, 1.40, 0.132],
-    [0.135, 1.27, 0.148],
-    [0.065, 1.10, 0.154],
-    [-0.035, 0.88, 0.16],
-    [-0.135, 0.60, 0.158],
-    [-0.17, 0.43, 0.15]
+    [0.165, 1.48, 0.095],
+    [0.178, 1.39, 0.102],
+    [0.135, 1.27, 0.109],
+    [0.065, 1.13, 0.112],
+    [-0.035, 0.98, 0.116],
+    [-0.135, 0.82, 0.113],
+    [-0.17, 0.74, 0.108]
   ].map(p => new THREE.Vector3(p[0] * scale, p[1] * scale, p[2] * scale));
 
   const curve = new THREE.CatmullRomCurve3(points);
@@ -238,7 +238,7 @@ function makeStrap(THREE, parent, scale) {
   // Regulador de alça em latão no peito.
   const buckle = new THREE.Group();
   buckle.name = 'Alça · regulador de latão';
-  buckle.position.set(0.035 * scale, 1.045 * scale, 0.169 * scale);
+  buckle.position.set(0.035 * scale, 1.095 * scale, 0.12 * scale);
   buckle.rotation.z = -0.38;
   const frame = new THREE.Mesh(
     new THREE.BoxGeometry(0.055 * scale, 0.048 * scale, 0.009 * scale),
@@ -293,7 +293,7 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
   const satchel = makeSatchel(THREE, characterScale);
   const satchelPivot = new THREE.Group();
   satchelPivot.name = 'Bolsa transversal · quadril direito';
-  satchelPivot.position.set(-0.172 * characterScale, 0.36 * characterScale, 0.145 * characterScale);
+  satchelPivot.position.set(-0.172 * characterScale, 0.72 * characterScale, 0.095 * characterScale);
   satchelPivot.rotation.z = -0.035;
   satchelPivot.add(satchel.group);
   hero.scene.add(satchelPivot);

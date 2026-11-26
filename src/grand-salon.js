@@ -545,6 +545,42 @@ function addFire(scene,animated,camera,isTouchDevice=false) {
   };
 }
 
+function papyrusMaterial() {
+  const rand=seeded(6317);
+  const color=tex((g,w,h)=>{
+    const base=g.createLinearGradient(0,0,w,0);
+    base.addColorStop(0,'#9f865b');base.addColorStop(.08,'#d7c49a');
+    base.addColorStop(.5,'#e2d2aa');base.addColorStop(.92,'#c6ad7e');base.addColorStop(1,'#9e8258');
+    g.fillStyle=base;g.fillRect(0,0,w,h);
+    for(let i=0;i<4200;i++){
+      const y=rand()*h,x=rand()*w;
+      g.strokeStyle=rand()>.5?'rgba(255,245,212,.16)':'rgba(89,65,38,.12)';
+      g.lineWidth=.4+rand()*1.4;
+      g.beginPath();g.moveTo(x,y);g.lineTo(x+12+rand()*90,y+(rand()-.5)*2);g.stroke();
+    }
+    for(let i=0;i<800;i++){
+      const x=rand()*w,y=rand()*h;
+      const radius=2+rand()*13;
+      g.fillStyle='rgba(105,79,47,'+(0.015+rand()*.035)+')';
+      g.beginPath();g.ellipse(x,y,radius,radius*.32,rand()*.2,0,Math.PI*2);g.fill();
+    }
+    g.strokeStyle='rgba(112,77,43,.4)';g.lineWidth=5;g.strokeRect(12,12,w-24,h-24);
+    g.strokeStyle='rgba(247,228,188,.48)';g.lineWidth=2;g.strokeRect(21,21,w-42,h-42);
+  },512,512,1,1);
+  const bump=tex((g,w,h)=>{
+    g.fillStyle='#777';g.fillRect(0,0,w,h);
+    for(let i=0;i<18000;i++){
+      const v=Math.floor(90+rand()*82);
+      g.fillStyle='rgb('+v+','+v+','+v+')';
+      g.fillRect(rand()*w,rand()*h,.5+rand()*1.8,.5+rand()*1.6);
+    }
+    g.strokeStyle='#666';g.lineWidth=1;
+    for(let y=0;y<h;y+=5){g.beginPath();g.moveTo(0,y);g.lineTo(w,y+(rand()-.5)*2);g.stroke();}
+  },512,512,1,1);
+  bump.colorSpace=THREE.NoColorSpace;
+  return new THREE.MeshStandardMaterial({map:color,bumpMap:bump,bumpScale:.018,roughness:.96,side:THREE.DoubleSide});
+}
+
 function addThoth(scene,marble,pale,brass,reliefTex) {
   const group=new THREE.Group();group.name='estátua monumental de Thoth em basalto';group.position.set(0,13.175,-.5);
   const plinth=new THREE.Mesh(new RoundedBoxGeometry(3,.48,3,6,.13),pale);plinth.position.y=.24;plinth.castShadow=true;plinth.receiveShadow=true;group.add(plinth);
@@ -574,15 +610,51 @@ function addThoth(scene,marble,pale,brass,reliefTex) {
     for(let i=0;i<4;i++){const x=s*(.69+i*.055);group.add(tube([[x,2.65,.29],[x+s*.018,2.5,.32],[x+s*.01,2.42,.31]],.035,marble,10,7));}
     const cuff=new THREE.Mesh(new THREE.TorusGeometry(.14,.032,8,24),gold);cuff.rotation.x=Math.PI/2;cuff.position.set(s*.78,2.86,.2);group.add(cuff);
   }
-  const scroll=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.92,18),pale);scroll.position.set(-.79,3.14,.29);scroll.rotation.z=.18;group.add(scroll);
-  const staff=new THREE.Mesh(new THREE.CylinderGeometry(.037,.05,3,16),gold);staff.position.set(.98,3.05,.14);staff.rotation.z=-.08;group.add(staff);
-  const ankh=new THREE.Mesh(new THREE.TorusGeometry(.13,.028,8,24),goldL);ankh.position.set(.98,4.62,.14);ankh.rotation.y=Math.PI/2;group.add(ankh);
+  // Papiro aberto com o sinal composto Per Ankh (casa + vida), mantido legível à altura do jogador.
+  const papyrus=papyrusMaterial();
+  const scrollGeometry=new THREE.PlaneGeometry(1.02,.78,18,14);
+  const scrollPositions=scrollGeometry.attributes.position;
+  for(let i=0;i<scrollPositions.count;i++){
+    const x=scrollPositions.getX(i),y=scrollPositions.getY(i);
+    scrollPositions.setZ(i,.045*(x*x)+.012*Math.cos(y*8));
+  }
+  scrollGeometry.computeVertexNormals();
+  const openScroll=new THREE.Mesh(scrollGeometry,papyrus);
+  openScroll.name='papiro aberto de Thoth com Per Ankh';
+  openScroll.position.set(-.52,3.13,.53);
+  openScroll.castShadow=true;group.add(openScroll);
+
+  const rollerMaterial=new THREE.MeshStandardMaterial({color:0x8d6339,map:wood.map,normalMap:wood.normalMap,roughness:.74});
+  for(const y of [2.75,3.51]){
+    const roller=new THREE.Mesh(new THREE.CylinderGeometry(.047,.047,1.12,20),rollerMaterial);
+    roller.rotation.z=Math.PI/2;roller.position.set(-.52,y,.52);roller.castShadow=true;group.add(roller);
+    for(const side of [-1,1]){
+      const finial=new THREE.Mesh(new THREE.SphereGeometry(.065,12,10),gold);
+      finial.position.set(-.52+side*.57,y,.52);group.add(finial);
+    }
+  }
+  const perAnkhTexture=new THREE.TextureLoader().load(assetUrl('decor/per-ankh.svg'));
+  perAnkhTexture.colorSpace=THREE.SRGBColorSpace;
+  const perAnkh=new THREE.Mesh(new THREE.PlaneGeometry(.42,.52),new THREE.MeshBasicMaterial({
+    map:perAnkhTexture,transparent:true,side:THREE.DoubleSide,depthWrite:false
+  }));
+  perAnkh.name='inscrição Per Ankh no papiro';
+  perAnkh.position.set(-.52,3.13,.585);group.add(perAnkh);
+  const stylus=tube([
+    [.76,2.66,.3],[.84,2.94,.36],[.94,3.25,.4],[1.02,3.52,.42]
+  ],.022,rollerMaterial,20,8);
+  stylus.name='estilete de escriba na mão de Thoth';
+  group.add(stylus);
+  const nib=new THREE.Mesh(new THREE.ConeGeometry(.035,.15,10),goldL);
+  nib.position.set(1.025,3.57,.42);nib.rotation.z=-.24;group.add(nib);
+  const grip=new THREE.Mesh(new THREE.TorusGeometry(.032,.008,6,16),gold);
+  grip.rotation.x=Math.PI/2;grip.position.set(.91,3.16,.405);group.add(grip);
   for(const s of [-1,1]){const lappet=new THREE.Mesh(new RoundedBoxGeometry(.18,.94,.34,4,.075),marble);lappet.position.set(s*.3,4.72,-.19);lappet.rotation.z=s*.08;group.add(lappet);const feather=new THREE.Mesh(new THREE.SphereGeometry(.22,18,12),pale);feather.position.set(s*.37,5.35,-.08);feather.scale.set(.46,1.4,.25);feather.rotation.z=s*-.4;group.add(feather);}
   const disc=new THREE.Mesh(new THREE.SphereGeometry(.38,24,16),goldL);disc.position.set(0,5.86,-.18);disc.scale.set(1,1,.18);group.add(disc);
   group.add(tube([[-.58,5.78,-.18],[-.55,6.08,-.18],[-.3,6.23,-.18],[0,6.28,-.18],[.3,6.23,-.18],[.55,6.08,-.18],[.58,5.78,-.18]],.055,gold,36,8));
   const plaque=new THREE.Mesh(new RoundedBoxGeometry(1.15,.42,.09,4,.04),new THREE.MeshStandardMaterial({color:0x322116,roughness:.82}));plaque.position.set(0,.3,1.52);group.add(plaque);
   const panel=new THREE.Mesh(new THREE.PlaneGeometry(.97,.23),new THREE.MeshBasicMaterial({map:reliefTex}));panel.position.set(0,.3,1.571);group.add(panel);
-  group.scale.setScalar(1.25);
+  group.scale.setScalar(1.45);
   scene.add(group);
   const spot=new THREE.SpotLight(0xe9d2a0,46,27,Math.PI/7,.62,1.15);spot.position.set(-3.6,27.2,3);spot.target.position.set(0,18.2,-.5);scene.add(spot,spot.target);
   const fill=new THREE.PointLight(0x8ea4a5,1,14,1.8);fill.position.set(2.3,19.4,2.6);scene.add(fill);

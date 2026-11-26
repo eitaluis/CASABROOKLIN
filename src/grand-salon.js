@@ -1027,10 +1027,60 @@ function createWallDrum(scene, side, wood, brass, plaster, colliders, interactab
   return group;
 }
 
+function createWallFluteRack(scene,side,wood,brass,iron,colliders,interactables) {
+  const group=new THREE.Group();
+  group.name='estojo de flautas de madeira do Grande Salão';
+  group.position.set(side*13.48,14.0,5.65);
+  group.rotation.y=side<0?Math.PI/2:-Math.PI/2;
+
+  const backing=new THREE.Mesh(new RoundedBoxGeometry(1.48,.82,.16,7,.055),wood);
+  backing.position.set(0,.62,0);
+  backing.castShadow=true;backing.receiveShadow=true;group.add(backing);
+
+  for(const y of [.27,1.02]){
+    const rail=new THREE.Mesh(new RoundedBoxGeometry(1.36,.075,.22,6,.025),brass);
+    rail.position.set(0,y,.055);group.add(rail);
+  }
+
+  const lengths=[.94,.82,.7,.58];
+  for(let i=0;i<lengths.length;i++){
+    const length=lengths[i],x=-.48+i*.32;
+    const flute=new THREE.Mesh(
+      new THREE.CylinderGeometry(.035,.043,length,24,1),
+      i%2?wood:darkWoodFrom(wood,0x6b482d)
+    );
+    flute.name='flauta egípcia de madeira';
+    flute.position.set(x,.65,.12);
+    flute.castShadow=true;group.add(flute);
+
+    for(let h=0;h<4;h++){
+      const y=.65-length*.28+h*.135;
+      const hole=new THREE.Mesh(new THREE.CircleGeometry(.017,12),iron);
+      hole.position.set(x+.043,y,.155);
+      group.add(hole);
+    }
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(.045,.012,8,18),brass);
+    ring.position.set(x,.65-length*.45,.12);group.add(ring);
+  }
+
+  scene.add(group);
+  addIconPlaque(scene,'flute',[side*13.92,15.35,5.65],side<0?Math.PI/2:-Math.PI/2,wood,brass,.38);
+  addBoxCollider(colliders,side*13.2,14.63,5.65,.85,1.1,.65);
+  interactables.push({
+    name:'Estojo de flautas '+(side<0?'oeste':'leste'),
+    kind:'inspect',
+    label:'Flautas de madeira',
+    description:'Quatro flautas de madeira com orifícios de afinação e anéis de bronze. Uma interpretação de instrumentos antigos para completar a coleção musical do salão.',
+    position:new THREE.Vector3(side*12.35,14.65,5.65),
+    radius:1.7
+  });
+  return group;
+}
+
 function createSpearDisplay(scene, side, wood, brass, iron, colliders, interactables) {
   const group = new THREE.Group();
   group.name = 'suporte de armas egípcias do Grande Salão';
-  group.position.set(side * 8.1, 13.175, 8.72);
+  group.position.set(side * 8.1, 13.175, 9.15);
   group.rotation.y = Math.PI;
 
   const backboard = new THREE.Mesh(
@@ -1055,7 +1105,7 @@ function createSpearDisplay(scene, side, wood, brass, iron, colliders, interacta
       wood
     );
     shaft.name = 'haste torneada de lança';
-    shaft.position.set(x, 1.98, -0.02);
+    shaft.position.set(x, 1.98, 0.31);
     shaft.castShadow = true;
     group.add(shaft);
 
@@ -1069,17 +1119,17 @@ function createSpearDisplay(scene, side, wood, brass, iron, colliders, interacta
       ], 20),
       iron
     );
-    tip.position.set(x, 3.29, -0.02);
+    tip.position.set(x, 3.29, 0.31);
     tip.castShadow = true;
     group.add(tip);
 
     const ferrule = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.12, 18), brass);
-    ferrule.position.set(x, 0.66, -0.02);
+    ferrule.position.set(x, 0.66, 0.31);
     group.add(ferrule);
 
     for (const y of [1.0, 2.8]) {
       const wrap = new THREE.Mesh(new THREE.TorusGeometry(0.047, 0.012, 8, 18), brass);
-      wrap.position.set(x, y, -0.02);
+      wrap.position.set(x, y, 0.31);
       group.add(wrap);
     }
   }
@@ -1522,6 +1572,7 @@ export function buildGrandSalon({
   for(const side of [-1,1]){
     createWallHarp(scene,side,darkWood,brass,colliders,interactables);
     createWallDrum(scene,side,darkWood,brass,plasterMaterialFrom(stone),colliders,interactables);
+    createWallFluteRack(scene,side,darkWood,brass,ironMaterial(),colliders,interactables);
     createSpearDisplay(scene,side,darkWood,brass,ironMaterial(),colliders,interactables);
   }
 

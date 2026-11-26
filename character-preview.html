@@ -37,6 +37,7 @@ button.active,button:hover{background:#9b7542;color:#111}
   <button data-action="talk_gestures">GESTICULAR</button>
   <button data-action="wave">ACENAR</button>
   <button data-action="point">APONTAR</button>
+  <button data-action="use_press">ALCANÇAR O DUAT</button>
   <button data-action="bow">SAUDAR</button>
   <button data-action="stop">RETOMAR</button>
   <button data-view="front">FRENTE</button>
@@ -51,7 +52,7 @@ button.active,button:hover{background:#9b7542;color:#111}
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createCharacter } from './src/character.js?v=carter-side-satchel-20261126f';
+import { createCharacter } from './src/character.js?v=carter-duat-reach-20261126a';
 
 const canvas = document.getElementById('stage');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });

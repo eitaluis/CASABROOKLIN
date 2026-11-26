@@ -809,7 +809,10 @@ export function buildGrandSalon({
     if([
       'sofá legado do Grande Salão','tapete legado do Grande Salão',
       'mesa de centro legado','pé mesa legado','guarda-corpo da sacada',
-      'balaústre','viga sacada'
+      'balaústre','viga sacada','harpa decorativa','lança cerimonial',
+      'tambor decorativo','pele do tambor','estátua de cerâmica',
+      'cabeça de estátua','face da estátua','pedestal de pedra',
+      'coroa ritual','TV de plasma','tela da TV'
     ].includes(o.name)) o.visible=false;
 
     if(
@@ -845,6 +848,16 @@ export function buildGrandSalon({
       {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:24.375}
     );
   }
+
+  // Musical instruments and ceremonial weapons: bespoke high-detail forms,
+  // because no compatible licensed Egyptian instrument pack was verified.
+  addHarpDisplay(scene,-11.65,13.32,-9.64,walnut,brass,colliders,interactables);
+  addHarpDisplay(scene,11.65,13.32,-9.64,walnut,brass,colliders,interactables);
+  addCeremonialDrum(scene,-10.65,13.18,-6.2,walnut,brass,colliders,interactables);
+  addCeremonialDrum(scene,10.65,13.18,-6.2,walnut,brass,colliders,interactables);
+  addWallSpear(scene,-11.8,15.65,8.82,Math.PI,walnut,brass,colliders,interactables);
+  addWallSpear(scene,11.8,15.65,8.82,Math.PI,walnut,brass,colliders,interactables);
+  addModernTelevision(scene,brass,colliders,interactables);
 
   addWallReliefs(scene,brass,darkWood,stone,relief);
   ceilingOrnament(scene,brass,darkWood);

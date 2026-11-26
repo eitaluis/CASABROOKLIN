@@ -29,7 +29,7 @@ CASABROOKLIN/
 - `src/vendor/volumetric-fire.js`: shader volumétrico Housz MIT adaptado a GLSL3/WebGL2; licença preservada em licenses/THREE-VOLUMETRIC-FIRE-MIT.txt.
 - `src/character.js`: personagem aprovado carregado pelo Ara 3D Gen, pivô de navegação independente, animações de locomoção/salto e descarte seguro do rig. A bolsa transversal não está presente no runtime atual; o inventário procura o socket de equipamento no rig e mantém fallback.
 - `src/inventory.js`: inventário inicial, cajado, khopesh, encaixe WeaponR e ações de uso.
-- `src/third-person.js`: WASD, corrida com lean frontal, salto, rotação por mouse/toque, câmera com proteção do piso, teleporte e colisão leve por volumes AABB.
+- `src/third-person.js`: WASD, corrida com lean frontal, salto, rotação por mouse/toque, câmera com proteção do piso, teleporte e colisão AABB. Altura da cápsula e alvo vertical da câmera usam a altura informada pelo rig quando disponível.
 - `assets/manifest.json`: proveniência e licenças dos assets locais e referências externas.
 - `docs/OPEN-SOURCES.md`: fontes abertas e decisões de licença.
 

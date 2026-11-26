@@ -33,6 +33,18 @@
       "path": "src/interior-details.js",
       "role": "star-painted Nut dome, Geb floor cartography, papyrus niches and four shabti guardians",
       "license": "project-original-code"
+    },
+    {
+      "id": "egyptian-staff-and-khopesh",
+      "path": "src/inventory.js",
+      "role": "procedural Egyptian-inspired staff and khopesh props attached to the character WeaponR socket",
+      "license": "project-original-code"
+    },
+    {
+      "id": "great-hall-layered-fire",
+      "path": "src/world.js",
+      "role": "procedural layered fireplace flames and flicker animation",
+      "license": "project-original-code"
     }
   ],
   "openSourceReferences": [
@@ -76,6 +88,34 @@
       "source": "https://polyhaven.com/a/ArmChair_01",
       "license": "CC0-1.0",
       "role": "selected candidate for future hall seating and lounge details",
+      "runtimeImported": false
+    },
+    {
+      "id": "mpfb-character-generator",
+      "source": "https://github.com/makehumancommunity/mpfb2",
+      "license": "GPL-3.0-code-CC0-1.0-system-assets",
+      "role": "evaluated customizable humanoid character creator pipeline",
+      "runtimeImported": false
+    },
+    {
+      "id": "kblood-charactercreator",
+      "source": "https://github.com/kblood/CharacterCreator",
+      "license": "GPL-3.0-or-later-code-CC0-1.0-generated-assets-when-sources-CC0",
+      "role": "evaluated realistic morphable character creator and GLB exporter",
+      "runtimeImported": false
+    },
+    {
+      "id": "quaternius-universal-base-characters",
+      "source": "https://quaternius.com/packs/universalbasecharacters.html",
+      "license": "CC0-1.0",
+      "role": "evaluated modular teen and regular humanoid character alternatives",
+      "runtimeImported": false
+    },
+    {
+      "id": "ducz-charactercreator",
+      "source": "https://github.com/LuanDucate/Ducz.CharacterCreator",
+      "license": "repository-license-not-confirmed; credited-Quaternius-assets-CC0",
+      "role": "browser-based character builder evaluated as reference only",
       "runtimeImported": false
     }
   ]

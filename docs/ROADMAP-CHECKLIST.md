@@ -1,6 +1,6 @@
 # CASABROOKLIN — checklist de produção por setores
 
-Atualizado: 26/11/2026
+Atualizado: 26/11/2026 — padrão asset-first aplicado
 
 Este documento é a fonte de verdade do andamento. A cada nova solicitação, classificar os setores afetados, trabalhar neles isoladamente, atualizar este checklist e manter desktop/mobile sincronizados.
 
@@ -14,12 +14,15 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 6. Verificar sintaxe, imports, referências, cache-busters e documentação.
 7. Distinguir **implementado** de **testado**. Não marcar como visualmente concluído sem teste real no navegador.
 8. Atualizar estados e próxima ação no mesmo changeset.
+9. Para cada novo cômodo/área, seguir obrigatoriamente o [padrão asset-first](ASSET-FIRST-ROOM-BUILDING.md): pesquisar modelos, PBR, luz, colisão/interação e desempenho no GitHub antes de modelar.
 
 ## Estados
 
 - [x] Carter Ara 3D Gen anterior restaurado; redesigns experimentais descartados
 - [x] Nova camada visual do Grande Salão implementada no módulo compartilhado
-- [x] Escadarias laterais, corrimãos, colunas de lótus, estátua de Thoth e fogo orgânico criados
+- [x] Escadarias laterais, corrimãos e colunas de lótus criados
+- [x] GLB Poly Haven Sofa 03 (CC0), texturas PBR CC0 e fogo volumétrico Housz (MIT) adicionados ao runtime
+- [x] Collider e interação por proximidade implementados para sofás, mesa, estátua e lareira; E no desktop e INTERAGIR no mobile
 - [ ] Teste visual do Grande Salão em navegador real
 - [ ] Ajustes de enquadramento, proporção e circulação após inspeção desktop/mobile
 
@@ -52,8 +55,9 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 ## Setor 04 — Grande Salão
 
 ### Arquitetura e materiais
-- [x] Aplicar textura procedural de calcário em blocos com variação tonal, bump e desgaste sutil nas paredes, piso, sacadas e colunas.
-- [x] Aplicar textura de madeira com veios e bump às peças novas de mobiliário.
+- [x] Aplicar variação de blocos de calcário e material PBR de plaster com mapas normal/roughness às paredes, sacadas e colunas.
+- [x] Piso recebe mapas PBR CC0 do ambientCG Tiles139.
+- [x] Walnut PBR CC0 (color, normal e roughness) aplicado aos acabamentos e mesa.
 - [x] Substituir o eixo visual das quatro colunas por shafts com caneluras e capitéis de lótus esculpidos.
 - [x] Acrescentar medalhão de cedro, frisos, relevos solares alados e pilastras junto à lareira.
 - [x] Substituir os antigos balaústres cilíndricos por balaústres torneados, corrimãos curvos e filetes de latão.
@@ -62,14 +66,18 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ### Peças de destaque
 - [x] Substituir a estátua central geométrica por uma escultura de Thoth com túnica esculpida, cabeça e bico de íbis, olhos, braços, cetro, papiro e coroa lunar.
-- [x] Recriar a lareira com lenha, brasas, várias línguas orgânicas de fogo em gradiente, faíscas e luz dinâmica.
-- [x] Substituir os sofás quadrados por estofados de cantos suaves, almofadas, costuras e estrutura em madeira.
-- [x] Substituir o tapete e a mesa de centro por versões ovais/circulares com motivos solares e detalhes de bronze.
+- [x] Substituir as línguas poligonais por fogo volumétrico de shader MIT com ruído, textura de perfil, lenha, brasas, faíscas e luz dinâmica.
+- [x] Substituir sofás reserva por GLB Poly Haven Sofa 03 CC0, com MeshoptDecoder, materiais PBR embutidos e escala 0,84.
+- [x] Reduzir a mesa central para altura/diâmetro de mesa baixa e aplicar walnut PBR, bronze e medalhão solar.
+- [x] Refazer o tapete como pele de serpente em escamas sobrepostas, com color/bump procedural.
 - [x] Manter lustre, arandelas e estandartes da decoração anterior.
 
 ### QA ainda pendente
-- [ ] Conferir a leitura de fogo, estátua, degraus, capitéis e mobiliário no navegador desktop.
-- [ ] Conferir sombras, texturas, z-fighting e orientação dos relevos em visão 3/4 e de dentro do salão.
+- [ ] Conferir se o novo fogo volumétrico está orgânico e corretamente orientado à câmera; avaliar custo no mobile.
+- [ ] Conferir o tamanho do Sofa 03 com o Carter e ajustar posição/rotação caso necessário.
+- [ ] Conferir se as interações E/INTERAGIR estão acessíveis e se as colisões não bloqueiam passagem útil.
+- [ ] Conferir a leitura da estátua com os mapas de normal/roughness, preservando a reflexão.
+- [ ] Conferir sombras, texturas PBR, z-fighting e orientação dos relevos em visão 3/4 e de dentro do salão.
 - [ ] Testar a subida e descida nos três níveis de galeria, incluindo as transições entre os lances e os patamares.
 - [ ] Ajustar desempenho e densidade visual em mobile paisagem.
 - [ ] Fazer a aprovação visual final antes de marcar o Grande Salão como concluído.
@@ -97,7 +105,8 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Perfil de processamento reduzido para telas touch.
 - [ ] Validar FPS, temperatura e estabilidade em celular e PC.
 - [ ] Ajustar efeitos conforme desempenho real.
-- [ ] Integrar PBR/HDRI CC0 selecionados.
+- [x] Integrar conjuntos PBR CC0 locais para walnut, limestone, plaster e marble.
+- [ ] Pesquisar HDRI CC0 adequado ao salão e avaliar custo/performance antes de ligar ao runtime.
 - [ ] Fazer passe final de color grading e sombras de contato.
 
 ## Setor 08 — QA e entrega
@@ -110,7 +119,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Próximas ações
 
-1. Abrir o Grande Salão no navegador e avaliar o novo conjunto: escadas, estátua de Thoth, fogo, colunas e mobiliário.
-2. Corrigir quaisquer problemas de escala, câmera, clipping, materiais ou circulação identificados nessa inspeção.
-3. Testar desktop e mobile em modo paisagem, mantendo o mesmo mundo e os mesmos assets.
-4. Somente após a inspeção visual, marcar o Grande Salão como aprovado e passar à próxima área.
+1. Abrir o Grande Salão no navegador e avaliar a chama volumétrica, o Sofa 03, a estátua, o tapete serpentino, a mesa e as superfícies PBR.
+2. Conferir colisões e interação contextual E/INTERAGIR; ajustar o raio/posições se algo não puder ser alcançado.
+3. Testar desktop e mobile em modo paisagem, mantendo o mesmo mundo, assets e gameplay; comparar FPS, carregamento e temperatura.
+4. Preencher a matriz asset-first e fechar as lacunas de instrumentos/armas expostos antes de marcar o Grande Salão como aprovado.

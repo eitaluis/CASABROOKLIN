@@ -61,7 +61,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Substituir o eixo visual das quatro colunas por shafts com caneluras e capitéis de lótus esculpidos.
 - [x] Acrescentar medalhão de cedro, frisos, relevos solares alados e pilastras junto à lareira.
 - [x] Substituir os antigos balaústres cilíndricos por balaústres torneados, corrimãos curvos e filetes de latão.
-- [x] Substituir harpas/tambores/lanças placeholders por modelos sob medida: harpas arqueadas e cordas tensionadas, tambores com pele e amarrações, lanças com ponta foliácea de bronze.
+- [x] Substituir harpas/tambores/lanças placeholders por modelos sob medida: harpas arqueadas e cordas tensionadas, tambores com pele e amarrações, lanças com ponta foliácea de bronze e khopeshes de lâmina curva.
 - [x] Substituir a TV em bloco por moldura metálica arredondada e vidro escuro refletivo.
 - [x] Construir duas escadarias laterais em zigue-zague, cada uma com três lances alternados para alcançar os três níveis de galeria; degraus de pedra arredondados, filetes de bronze, balaústres torneados, corrimãos e patamares.
 - [x] Conectar os lances ao controlador de terceira pessoa: a altura do Carter acompanha as rampas, mantém-se nos patamares e retorna ao piso principal ao sair das galerias.
@@ -77,7 +77,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 ### QA ainda pendente
 - [ ] Conferir se o novo fogo volumétrico está orgânico e corretamente orientado à câmera; avaliar custo no mobile.
 - [ ] Conferir o tamanho do Sofa 03 com o Carter e ajustar posição/rotação caso necessário.
-- [ ] Conferir se as interações E/INTERAGIR estão acessíveis para sofás, mesa, estátua, lareira, harpas, tambores, lanças e TV, e se as colisões não bloqueiam passagem útil.
+- [ ] Conferir se as interações E/INTERAGIR estão acessíveis para sofás, mesa, estátua, lareira, harpas, tambores, lanças, khopeshes e TV, e se as colisões não bloqueiam passagem útil.
 - [ ] Conferir a leitura da estátua com os mapas de normal/roughness, preservando a reflexão.
 - [ ] Conferir sombras, texturas PBR, z-fighting e orientação dos relevos em visão 3/4 e de dentro do salão.
 - [ ] Testar a subida e descida nos três níveis de galeria, incluindo as transições entre os lances e os patamares.

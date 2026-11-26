@@ -229,74 +229,108 @@ function createFallbackPose(model) {
   };
 }
 
-export async function createCharacter({ scene, ground }) {
-  let model;
-  let fallback;
-  let human = null;
-  let locomotionName = 'animação procedural local';
+function withTimeout(promise, milliseconds, label) {
+  let timer;
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(label + ' excedeu ' + milliseconds + ' ms')), milliseconds);
+    })
+  ]).finally(() => clearTimeout(timer));
+}
 
-  try {
-    const loader = new GLTFLoader();
-    const gltf = await loader.loadAsync(MODEL_URL);
-    model = gltf.scene;
-    model.name = 'BrooklynHouse_Explorer';
-    model.traverse((obj) => {
-      if (!obj.isMesh) return;
-      obj.castShadow = true;
-      obj.receiveShadow = true;
-      if (obj.material) {
-        const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
-        for (const mat of materials) {
-          if (/skin|body/i.test(mat.name || '')) {
-            mat.color?.set(0x76503d);
-            mat.roughness = 0.78;
-          }
-        }
-      }
-    });
-    const bounds = new THREE.Box3().setFromObject(model);
-    const height = bounds.max.y - bounds.min.y;
-    if (height > 0.1) model.scale.multiplyScalar(1.78 / height);
-    addOutfit(model);
-    scene.add(model);
-
-    try {
-      const locomotion = await import(LOCOMOTION_URL);
-      human = locomotion.createProceduralHuman({
-        model,
-        mapping: locomotion.mixamoMapping,
-        ground,
-        preset: 'athletic',
-        bodyScale: 'auto',
-        speedScale: 'auto',
-        seed: 27,
-        config: locomotion.applyBasicControls(locomotion.defaultConfig, {
-          naturalness: 1.15,
-          armSwing: 1.05,
-          hipSway: 1.0,
-          looseness: 1.08,
-          stride: 0.98
-        })
-      });
-      if (human.warnings?.length) console.info('[Brooklyn House] Rig notes:', human.warnings);
-      locomotionName = 'locomoção CMU / IK';
-    } catch (error) {
-      console.warn('[Brooklyn House] Locomotion CDN unavailable; using local rig animation.', error);
-      fallback = createFallbackPose(model);
-    }
-  } catch (error) {
-    console.warn('[Brooklyn House] External GLB unavailable; using the built-in explorer figure.', error);
-    fallback = makeFallbackFigure(scene);
-    model = fallback.root;
-    locomotionName = 'boneco articulado de contingência';
-  }
-
-  return {
-    model,
-    human,
+/**
+ * Retorna um personagem local imediatamente. O GLB e a locomoção avançada são
+ * upgrades opcionais carregados em segundo plano; nunca bloqueiam o primeiro frame.
+ */
+export function createCharacter({ scene, ground, onModeChange = () => {} }) {
+  let fallback = makeFallbackFigure(scene);
+  const state = {
+    model: fallback.root,
+    human: null,
     fallback,
-    locomotionName,
+    locomotionName: 'personagem local articulado',
     updateFallback(dt, speed) { fallback?.update(dt, speed); },
     resetFallback() { fallback?.reset?.(); }
   };
+
+  const upgrade = async () => {
+    try {
+      const loader = new GLTFLoader();
+      const gltf = await withTimeout(
+        loader.loadAsync(MODEL_URL),
+        10000,
+        'Carregamento do modelo humanoide'
+      );
+      const model = gltf.scene;
+      model.name = 'BrooklynHouse_Explorer';
+      model.traverse((obj) => {
+        if (!obj.isMesh) return;
+        obj.castShadow = true;
+        obj.receiveShadow = true;
+        if (obj.material) {
+          const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+          for (const mat of materials) {
+            if (/skin|body/i.test(mat.name || '')) {
+              mat.color?.set(0x76503d);
+              mat.roughness = 0.78;
+            }
+          }
+        }
+      });
+
+      const bounds = new THREE.Box3().setFromObject(model);
+      const height = bounds.max.y - bounds.min.y;
+      if (height > 0.1) model.scale.multiplyScalar(1.78 / height);
+      addOutfit(model);
+      model.position.copy(state.model.position);
+      model.rotation.copy(state.model.rotation);
+      scene.add(model);
+
+      let human = null;
+      let nextFallback = null;
+      let mode = 'animação local no rig externo';
+      try {
+        const locomotion = await withTimeout(import(LOCOMOTION_URL), 10000, 'Biblioteca de locomoção');
+        human = locomotion.createProceduralHuman({
+          model,
+          mapping: locomotion.mixamoMapping,
+          ground,
+          preset: 'athletic',
+          bodyScale: 'auto',
+          speedScale: 'auto',
+          seed: 27,
+          config: locomotion.applyBasicControls(locomotion.defaultConfig, {
+            naturalness: 1.15,
+            armSwing: 1.05,
+            hipSway: 1.0,
+            looseness: 1.08,
+            stride: 0.98
+          })
+        });
+        if (human.warnings?.length) console.info('[Brooklyn House] Rig notes:', human.warnings);
+        mode = 'locomoção procedural CMU / IK';
+      } catch (error) {
+        console.warn('[Brooklyn House] Locomoção avançada indisponível; usando movimento local.', error);
+        nextFallback = createFallbackPose(model);
+      }
+
+      const old = state.model;
+      state.model = model;
+      state.human = human;
+      state.fallback = nextFallback;
+      fallback = nextFallback;
+      state.locomotionName = mode;
+      if (old?.parent) old.parent.remove(old);
+      onModeChange(mode);
+      console.info('[Brooklyn House] Personagem externo carregado:', mode);
+    } catch (error) {
+      console.warn('[Brooklyn House] Usando o personagem local; asset remoto indisponível.', error);
+      onModeChange('personagem local articulado');
+    }
+  };
+
+  // Não aguardar. A cena já pode renderizar com o boneco articulado local.
+  upgrade();
+  return state;
 }

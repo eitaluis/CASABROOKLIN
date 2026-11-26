@@ -318,6 +318,13 @@
       "author": "Benny Weimer",
       "role": "reviewed but not imported: retro CRT television; rejected because The Red Pyramid describes a plasma screen",
       "runtimeImported": false
+    },
+    {
+      "id": "tevy-open-parchment-scroll-study",
+      "source": "https://tevy.dev/models/open-parchment-scroll",
+      "license": "CC0-1.0",
+      "role": "candidate mesh study only: open parchment GLB, 7,772 tris LOD0, 986 KB; contains invented glyphs and fantasy/medieval styling, not integrated as an Egyptian artifact",
+      "runtimeImported": false
     }
   ]
 }

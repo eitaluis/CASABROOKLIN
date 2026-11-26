@@ -47,7 +47,7 @@
     {
       "id": "library-nut-geb-environment",
       "path": "src/interior-details.js",
-      "role": "star-painted Nut dome, Geb floor cartography, papyrus niches and four shabti guardians",
+      "role": "star-painted Nut dome and Geb floor cartography with deterministic seeded canvas textures; 48 papyrus niches, lower-tier papyrus inspection points, four cardinal shabti guardians and central reading-table inspection; shared E/INTERAGIR interactions",
       "license": "project-original-code"
     },
     {

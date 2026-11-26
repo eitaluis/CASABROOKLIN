@@ -318,7 +318,8 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     const direction = forward.multiplyScalar(input.forward).add(right.multiplyScalar(input.strafe));
     if (direction.lengthSq() > 0.0001) direction.normalize();
 
-    const running = !controlsLocked && (keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint);
+    const injured = character.isInjured === true;
+    const running = !controlsLocked && !injured && (keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint);
     const injuryMultiplier = Number.isFinite(character.movementMultiplier) ? character.movementMultiplier : 1;
     const speedTarget = input.moving ? (running ? 4.2 : 1.7) * input.magnitude * injuryMultiplier : 0;
     const currentPosition = getPosition();

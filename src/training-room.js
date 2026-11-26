@@ -182,6 +182,18 @@ export function buildTrainingRoom({
     map: floorMaps.map, bumpMap: floorMaps.bump, bumpScale: 0.032,
     roughness: 0.38, metalness: 0.015, clearcoat: 0.36, clearcoatRoughness: 0.28
   });
+  // Complementa o desenho das tábuas com mapas PBR locais CC0 de nogueira (normal/roughness).
+  const roomTextureLoader = new THREE.TextureLoader();
+  const loadRoomPbr = (path, color = false, repeat = [2, 4]) => {
+    const texture = roomTextureLoader.load(path);
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(repeat[0], repeat[1]); texture.anisotropy = 8;
+    if (color) texture.colorSpace = THREE.SRGBColorSpace;
+    return texture;
+  };
+  floor.material.normalMap = loadRoomPbr('./assets/textures/wood-walnut/normal.webp', false, [2.2, 5.5]);
+  floor.material.roughnessMap = loadRoomPbr('./assets/textures/wood-walnut/roughness.webp', false, [2.2, 5.5]);
+  floor.material.normalScale.set(0.38, 0.38);
   // Moldura perimetral escura e filetes metálicos embutidos.
   const floorBorderMat = new THREE.MeshStandardMaterial({ color: 0x49301f, roughness: 0.38 });
   for (const [x,z,w,d] of [
@@ -262,7 +274,17 @@ export function buildTrainingRoom({
     map.anisotropy=bump.anisotropy=8; return {map,bump};
   }
   const wallMaps=makeLimestoneWallMaps();
-  const wallMat=new THREE.MeshStandardMaterial({map:wallMaps.map,bumpMap:wallMaps.bump,bumpScale:.075,color:0xfff4df,roughness:.91,metalness:0});
+  const wallMat=new THREE.MeshStandardMaterial({map:wallMaps.map,bumpMap:wallMaps.bump,bumpScale:.035,color:0xfff4df,roughness:.88,metalness:0});
+  // Reboco mineral PBR local CC0; alvenaria procedural permanece como fallback offline.
+  const wallPbrColor=roomTextureLoader.load('./assets/textures/plaster-smooth-beige/color.webp',
+    tex=>{tex.colorSpace=THREE.SRGBColorSpace;},undefined,
+    ()=>{wallMat.map=wallMaps.map;wallMat.normalMap=null;wallMat.roughnessMap=null;wallMat.bumpMap=wallMaps.bump;wallMat.needsUpdate=true;}
+  );
+  wallPbrColor.wrapS=wallPbrColor.wrapT=THREE.RepeatWrapping;wallPbrColor.repeat.set(5,2);wallPbrColor.anisotropy=8;wallPbrColor.colorSpace=THREE.SRGBColorSpace;
+  wallMat.map=wallPbrColor;
+  wallMat.normalMap=loadRoomPbr('./assets/textures/plaster-smooth-beige/normal.webp',false,[5,2]);
+  wallMat.roughnessMap=loadRoomPbr('./assets/textures/plaster-smooth-beige/roughness.webp',false,[5,2]);
+  wallMat.bumpMap=null;wallMat.normalScale.set(.32,.32);
   const westWallX = room.minX + 0.25;
   const eastWallX = room.maxX - 0.18;
   const wallBottom = floorY;
@@ -458,8 +480,15 @@ export function buildTrainingRoom({
   const hoops = [];
   function addRaHoop(baselineZ, facing, name) {
     const group = new THREE.Group(); group.position.set(centerX,floorY,baselineZ); group.rotation.y=facing;
-    const stoneBack=new THREE.Mesh(new THREE.BoxGeometry(1.42,2.72,.24),reliefStone); stoneBack.position.set(0,1.62,-2.05); group.add(stoneBack);
-    const backFrame=new THREE.Mesh(new THREE.BoxGeometry(1.58,2.9,.12),bronze); backFrame.position.set(0,1.62,-1.9); group.add(backFrame);
+    const steleShape=new THREE.Shape();
+    steleShape.moveTo(-.72,0);steleShape.lineTo(.72,0);steleShape.lineTo(.72,2.25);
+    steleShape.quadraticCurveTo(.72,2.92,0,2.92);steleShape.quadraticCurveTo(-.72,2.92,-.72,2.25);steleShape.closePath();
+    const stoneBack=new THREE.Mesh(new THREE.ExtrudeGeometry(steleShape,{depth:.18,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.045,bevelThickness:.045}),reliefStone);
+    stoneBack.name='estela arqueada de calcário atrás da estátua de Rá';stoneBack.position.set(0,.12,-2.05);group.add(stoneBack);
+    const steleInset=new THREE.Mesh(new THREE.ShapeGeometry(steleShape),new THREE.MeshStandardMaterial({color:0x6f5540,roughness:.93}));
+    steleInset.position.set(0,.12,-1.862);group.add(steleInset);
+    const solarPanel=new THREE.Mesh(new THREE.TorusGeometry(.52,.035,8,56),bronze);
+    solarPanel.position.set(0,2.68,-1.84);solarPanel.rotation.x=Math.PI/2;group.add(solarPanel);
     const throne=new THREE.Mesh(new THREE.BoxGeometry(1.04,.64,.88),limestoneShade); throne.position.set(0,.36,-.16); group.add(throne);
     const throneBack=new THREE.Mesh(new THREE.BoxGeometry(.98,1.7,.22),limestoneShade); throneBack.position.set(0,1.1,-.46); group.add(throneBack);
     const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.36,.72,8,24),limestone); torso.position.set(0,1.48,.05); torso.scale.set(1.2,1,.82); group.add(torso);
@@ -645,10 +674,10 @@ export function buildTrainingRoom({
   ng.fillStyle = '#e5d2a6'; ng.fillRect(0, 0, 512, 384);
   ng.strokeStyle = '#674a2b'; ng.lineWidth = 12; ng.strokeRect(9, 9, 494, 366);
   ng.fillStyle = '#352d24'; ng.textAlign = 'center'; ng.font = 'bold 38px Georgia';
-  ng.fillText('TARGET PRACTICE', 256, 72);
-  ng.font = '26px Georgia'; ng.fillText('STAFF / MAGIC', 256, 132);
-  ng.fillText('Press E to begin', 256, 208);
-  ng.font = '22px Georgia'; ng.fillText('Three marked targets', 256, 286);
+  ng.fillText('TREINO DE PRECISÃO', 256, 72);
+  ng.font = '26px Georgia'; ng.fillText('CAJADO / MAGIA', 256, 132);
+  ng.fillText('E / INTERAGIR PARA COMEÇAR', 256, 208);
+  ng.font = '22px Georgia'; ng.fillText('Três alvos marcados', 256, 286);
   const noticeTexture = new THREE.CanvasTexture(noticeCanvas);
   noticeTexture.colorSpace = THREE.SRGBColorSpace;
   const noticeFace = new THREE.Mesh(new THREE.PlaneGeometry(1.88, 1.42), new THREE.MeshBasicMaterial({ map: noticeTexture }));

@@ -31,7 +31,7 @@ Módulo: src/character-accessories.js.
 - Oscilação secundária discreta da bolsa e do medalhão, atualizada pelo mesmo ciclo de movimento.
 - Geometria e materiais são originais do projeto; não dependem de GLB externo nem de download em runtime.
 
-A modelagem de detalhe em Blender ainda não foi concluída. O módulo Three.js atual é a primeira implementação funcional de acessórios e deverá servir como guia de escala, posição e leitura para o futuro arquivo-fonte Blender.
+A modelagem de detalhe em Blender ainda não foi concluída. O módulo Three.js atual é a primeira implementação funcional de acessórios. O gerador Blender já cria uma fonte editável com âncoras separadas para Hips e Spine2; ela deve servir para refinar escala, posição e leitura e, depois, salvar uma cena .blend validada.
 
 ## Ações cinematográficas
 

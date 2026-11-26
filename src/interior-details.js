@@ -362,9 +362,11 @@ export function buildInteriorDetails({ THREE, scene, interactables = [] }) {
       addBox(group, 'ombreira direita do nicho', [0.76, 0, 0], [0.12, 1.72, 0.36], nicheStone, false);
       addBox(group, 'lintel do nicho', [0, 0.84, 0], [1.62, 0.14, 0.38], brass, false);
       addBox(group, 'soleira do nicho', [0, -0.84, 0], [1.62, 0.14, 0.38], brass, false);
+      const lowerScrolls = [];
       for (let n = 0; n < 2; n++) {
         const roll = addCylinder(group, 'rolo de papiro', [-0.22 + n * 0.44, -0.18 + n * 0.48, 0.1], 0.105, 0.105, 0.98, papyrus, 12);
         roll.rotation.z = Math.PI / 2;
+        if (row === 0) lowerScrolls.push(roll);
         for (const end of [-0.5, 0.5]) {
           const cap = addCylinder(group, 'ponteira de madeira do papiro', [-0.22 + n * 0.44 + end * 0.97, -0.18 + n * 0.48, 0.1], 0.112, 0.112, 0.035, scrollWood, 10);
           cap.rotation.z = Math.PI / 2;
@@ -373,12 +375,38 @@ export function buildInteriorDetails({ THREE, scene, interactables = [] }) {
       }
       scene.add(group);
       if (row === 0 && interactables) {
+        const openedSheet = new THREE.Mesh(
+          new THREE.PlaneGeometry(0.82, 0.48),
+          new THREE.MeshStandardMaterial({ color: 0xe0c894, roughness: 0.96, side: THREE.DoubleSide })
+        );
+        openedSheet.name = 'folha de papiro aberta';
+        openedSheet.position.set(0, -0.18, 0.27);
+        openedSheet.visible = false;
+        group.add(openedSheet);
+        for (let line = 0; line < 5; line++) {
+          const ink = new THREE.Mesh(
+            new THREE.BoxGeometry(0.012, 0.008, 0.31 + (line % 2) * 0.08),
+            darkBrass
+          );
+          ink.name = 'linha de tinta do papiro aberto';
+          ink.position.set(-0.24 + (line % 2) * 0.035, -0.08 - line * 0.055, 0.278);
+          openedSheet.add(ink);
+        }
+        let isOpen = false;
         interactables.push({
           name: 'papiro da galeria inferior',
-          label: 'Examinar papiro',
-          description: 'Um rolo de papiro guardado no nicho inferior. A escrita está gasta, mas ainda há marcas de tinta escura e um selo de cordão.',
+          label: 'Abrir papiro',
+          description: 'Um rolo de papiro guardado no nicho inferior.',
           position: new THREE.Vector3(group.position.x, -15.05, group.position.z),
-          radius: 2.9
+          radius: 2.9,
+          onInteract: () => {
+            isOpen = !isOpen;
+            openedSheet.visible = isOpen;
+            lowerScrolls.forEach((scroll) => { scroll.visible = !isOpen; });
+            return isOpen
+              ? 'Você desenrola o papiro. Há linhas de escrita em tinta escura, parcialmente apagadas pelo tempo.'
+              : 'Você enrola o papiro e o devolve ao nicho.';
+          }
         });
       }
     }

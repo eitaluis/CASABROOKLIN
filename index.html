@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#111619">
 <title>Brooklyn House — As Crônicas dos Kane</title>
 <style>
@@ -57,6 +57,67 @@
 #mobile button{width:42px;height:42px;background:#101719b8;color:#eee;border:1px solid var(--line);border-radius:4px}
 @media(max-width:700px){#topbar{padding:14px} .brand-mark{width:34px;height:34px}.brand h1{font-size:14px}#coordinates{font-size:8px}#leftpanel{top:auto;bottom:145px;left:12px;width:180px}#minimap{right:12px;top:84px;width:128px;padding:7px}#minimap canvas{width:112px;height:92px}#bottom{padding:10px 13px 14px}#hint{font-size:9px;max-width:62%}.startcard{padding:28px 24px}.startcard p{font-size:12px}#mobile{display:grid;grid-template-columns:repeat(3,42px)}}
 @media(max-height:520px){#leftpanel{top:82px}#minimap{top:78px}#bottom{padding-bottom:8px}}
+
+/* Layout responsivo único: cenário, personagem e recursos são compartilhados. */
+#rotateNotice{display:none;position:fixed;inset:0;z-index:50;background:#101719;color:#f0eee7;align-items:center;justify-content:center;text-align:center;padding:28px}
+#rotateNotice .rotate-card{max-width:300px}
+#rotateNotice .phone{font-size:52px;display:block;margin-bottom:16px;transform:rotate(90deg);color:#d0ad69}
+#rotateNotice h2{font:500 22px Cinzel,serif;color:#f0d7a0}
+#rotateNotice p{font:12px/1.6 "DM Sans",sans-serif;color:#c4c9c4}
+@media (max-width:900px) and (pointer:coarse){
+ html,body{overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+ #scene{touch-action:none}
+ #topbar{padding:9px 16px}
+ .brand-mark{width:30px;height:30px;font-size:13px}
+ .brand h1{font-size:13px}.brand p{font-size:8px}.eyebrow{font-size:7px}
+ #coordinates{font-size:7px}#coordinates strong{font-size:11px}
+ #leftpanel{left:12px;top:58px;width:164px}
+ .panel-label{font-size:7px;margin-bottom:5px}
+ .nav{padding:4px}.nav button{padding:6px 7px;gap:6px;font-size:9px}
+ .nav small{font-size:7px}.nav .num{font-size:8px;width:14px}
+ #minimap{right:12px;top:58px;width:112px;padding:6px}
+ #minimap .maptitle{font-size:7px;margin-bottom:4px}
+ #minimap canvas{width:98px;height:72px}
+ #minimap .mapfoot{font-size:6px}
+ #bottom{padding:5px 12px 6px}
+ #hint{font-size:7px;line-height:1.4}#status{font-size:7px}
+ #crosshair{width:4px;height:4px}
+ #mobile{left:18px;right:18px;bottom:14px;display:flex;position:fixed;z-index:6;justify-content:space-between;align-items:flex-end;gap:16px;pointer-events:auto}
+ #mobile .joystick{width:116px;height:116px;display:grid;place-items:center;touch-action:none;pointer-events:auto}
+ #mobile .joystick-ring{width:108px;height:108px;border:1px solid rgba(226,194,133,.58);border-radius:50%;background:radial-gradient(circle,rgba(25,34,35,.52),rgba(8,14,15,.72));box-shadow:0 5px 24px #0007,inset 0 0 24px #0008;display:grid;place-items:center;backdrop-filter:blur(7px)}
+ #mobile .joystick-knob{width:48px;height:48px;border:1px solid rgba(245,222,177,.9);border-radius:50%;background:linear-gradient(145deg,rgba(211,177,112,.88),rgba(103,76,43,.88));box-shadow:0 3px 12px #0008;transform:translate(0,0);pointer-events:none}
+ #mobile .actions{display:flex;margin:0 2px 7px 0;gap:9px}
+ #mobile .actions button{width:62px;height:54px;border-radius:50%;font-size:9px;letter-spacing:.08em;background:rgba(10,17,19,.72);color:#f1dfbd;border:1px solid rgba(208,173,105,.6);font:600 9px "DM Sans";backdrop-filter:blur(8px);touch-action:none;box-shadow:0 3px 14px #0005}
+ #mobile .actions button:active{background:rgba(208,173,105,.4);transform:scale(.96)}
+ #mobile [data-action="jump"]{border-color:rgba(240,215,160,.85);color:#f0d7a0}
+ #mobile [data-action="run"]{background:rgba(125,77,42,.78)}
+ #startscreen{padding:10px}
+ .startcard{width:min(540px,calc(100% - 24px));padding:20px 25px}
+ .startcard h2{font-size:clamp(23px,4vw,34px);margin-bottom:6px}
+ .startcard p{font-size:10px;line-height:1.5;margin:7px 0}
+ .kicker{font-size:7px;margin-bottom:7px}
+ .startmeta{margin:10px 0;font-size:7px;gap:12px}
+ #enter{padding:10px 14px;font-size:8px}
+ #toast{bottom:75px}
+ @media (orientation:portrait){
+   #rotateNotice{display:flex}
+   #topbar,#leftpanel,#minimap,#bottom,#mobile,#startscreen,#toast,#crosshair{visibility:hidden}
+ }
+ @media (orientation:landscape) and (max-height:430px){
+   #leftpanel{top:55px;left:8px;width:145px}
+   #minimap{right:8px;top:55px;width:98px}
+   #minimap canvas{width:84px;height:60px}
+   #mobile{left:12px;right:12px;bottom:8px}
+   #mobile .joystick{width:88px;height:88px}
+   #mobile .joystick-ring{width:82px;height:82px}
+   #mobile .joystick-knob{width:38px;height:38px}
+   #mobile .actions{gap:6px}
+   #mobile .actions button{width:50px;height:46px}
+   #bottom{padding-bottom:4px}
+ }
+ @media (orientation:landscape) and (min-height:431px){#mobile{bottom:18px}}
+}
+
 </style>
 </head>
 <body>
@@ -79,9 +140,18 @@
 <div id="crosshair"></div>
 <div id="bottom"><div id="hint"><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> mover &nbsp; <span class="key">Mouse</span> orbitar câmera<br><span class="key">Shift</span> correr &nbsp; <span class="key">Espaço</span> saltar &nbsp; <span class="key">Esc</span> liberar mouse</div><div id="status">TERCEIRA PESSOA<br>WASD · MOUSE · SHIFT</div></div>
 <div id="toast"></div>
-<div id="mobile"><button data-move="forward">▲</button><button data-move="left">◀</button><button data-move="back">▼</button><button data-move="right">▶</button></div>
-<div id="startscreen"><div class="startcard"><div class="kicker">Um lugar escondido à margem do East River</div><h2>A casa que os<br><span>olhos não veem.</span></h2><p>Agora você vê a Brooklyn House por trás do personagem. Caminhe pela doca, suba a escada metálica em caracol, atravesse o portal e explore o Grande Salão e a biblioteca subterrânea. O movimento acompanha a velocidade e a direção de cada passo.</p><div class="startmeta"><span>Brooklyn, New York</span><span>Personagem articulado</span><span>Terceira pessoa</span></div><button id="enter">Explorar em terceira pessoa&nbsp; ↗</button>
-      <a href="./mobile.html" style="display:inline-block;margin-left:14px;color:#e4d1a8;font:600 9px 'DM Sans',sans-serif;letter-spacing:.12em;text-decoration:none;border-bottom:1px solid rgba(208,173,105,.55);padding:8px 0">VERSÃO PARA CELULAR DEITADO ↗</a></div></div>
+<div id="mobile" aria-label="Controles de toque">
+  <div class="joystick" id="joystick" aria-label="Joystick de movimento">
+    <div class="joystick-ring"><div class="joystick-knob" id="joystickKnob"></div></div>
+  </div>
+  <div class="actions">
+    <button data-action="run" aria-label="Correr">CORRER</button>
+    <button data-action="jump" aria-label="Saltar">SALTAR</button>
+  </div>
+</div>
+<div id="rotateNotice"><div class="rotate-card"><span class="phone">▱</span><h2>Gire seu celular</h2><p>A Brooklyn House foi preparada para explorar em modo paisagem. Vire o aparelho de lado para continuar.</p></div></div>
+<div id="startscreen"><div class="startcard"><div class="kicker">Um lugar escondido à margem do East River</div><h2>A casa que os<br><span>olhos não veem.</span></h2><p>Agora você vê a Brooklyn House por trás do personagem. Caminhe pela doca, suba a escada metálica em caracol, atravesse o portal e explore o Grande Salão e a biblioteca subterrânea. O movimento acompanha a velocidade e a direção de cada passo.</p><div class="startmeta"><span>Brooklyn, New York</span><span>Personagem articulado</span><span>Terceira pessoa</span><span>Desktop · Mobile</span></div><button id="enter">Explorar em terceira pessoa&nbsp; ↗</button>
+      </div></div>
 <script type="importmap">
 {
   "imports": {

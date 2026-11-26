@@ -118,3 +118,19 @@ A biblioteca é uma reconstrução interpretativa da câmara subterrânea da Cas
 - Os textos de inspeção são descrições ambientais interpretativas, não transcrições do romance nem traduções de hieróglifos.
 - Não foi introduzido um modelo 3D externo nesta etapa. As formas atuais são peças arquitetônicas específicas da câmara; antes de substituir shabtis, papiros ou relevos por assets externos, validar modelo, escala, orientação, materiais e licença individual conforme a fase 02.
 - A validação de distância, colisão, iluminação, legibilidade e desempenho ainda depende de teste real no navegador desktop e em celular paisagem.
+
+
+### Refinamento de escala e sequência de chegada — 26/11/2026
+
+A matriz exterior anterior continua válida. Este complemento registra a expansão da escala geográfica e a sequência do barco até o portal, sem substituir a pesquisa de água procedural já documentada.
+
+| Elemento | Complemento asset-first | Material / comportamento | Estado |
+|---|---|---|---|
+| East River e distância entre margens | Superfície ampliada para dar separação visual real entre Brooklyn e Manhattan; margem oposta posicionada ao longe | Água azul-ardósia, linha de reflexo restrita à margem distante, ripples instanciados perto da doca e neblina | Geometria expandida; verificar escala, horizonte e custo em mobile |
+| Williamsburg Bridge | Torres altas, quatro linhas de cabos principais, pendurais, treliças laterais e tabuleiro longo; dimensões oficiais NYC DOT orientam proporção | Aço escuro e instâncias compartilhadas para reduzir draw calls | Geometria original; validar leitura da ponte em várias orientações da câmera |
+| Manhattan | Cais, armazéns baixos e skyline em camadas, com prédios escalonados e janelas instanciadas | Tons azul-acinzentados com neblina por distância; não é área jogável | Geometria interpretativa; validar clipping e FPS mobile |
+| Barco egípcio | Casco de fibras, cobertura de esteiras, banco, leme/remo e tochas na proa; sem piloto visível | Textura de fibra vegetal procedural e emissive quente | Implementado e inspecionável; QA visual de escala pendente |
+| Portal | Vão livre com ombreiras e lintel, folha de madeira larga sem puxador ou fechadura | A folha sobe verticalmente quando Carter interage | Interação implementada; testar atravessamento físico |
+| Percurso exterior | Escada helicoidal calculada pela posição angular e altura atual, patamar e passarela conectados ao piso do Grande Salão | Controlador de movimento compartilhado | Implementado no código; teste real de subida/descida ainda pendente |
+
+**Fidelidade textual:** a escada que contorna a lateral do armazém é canônica; a forma helicoidal exata é uma interpretação do projeto. Manhattan é a margem oposta, não o local da Brooklyn House.

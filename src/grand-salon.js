@@ -92,30 +92,77 @@ function lotusColumn(scene,x,z,stone,pale,brass) {
   const necking=new THREE.Mesh(new THREE.CylinderGeometry(.76,.76,.2,48),brass);necking.position.set(x,28.26,z);scene.add(necking);
 }
 
-function stairFlight(scene,side,stone,pale,brass,wood) {
-  const cx=side*10.35,base=13.18,startZ=7.35,count=14,rise=.245,depth=.59,width=2.38,thick=.21;
+function stairFlight(scene,stone,treadMaterial,brass,wood,options) {
+  const {
+    centerX,baseY,topY,startZ,direction,width=1.8,depth=.59,count=14
+  }=options;
+  const rise=(topY-baseY)/count;
+  const thick=.21;
   const left=[],right=[],lowL=[],lowR=[];
-  const balusterGeo=new THREE.LatheGeometry([new THREE.Vector2(.035,0),new THREE.Vector2(.055,.1),new THREE.Vector2(.11,.24),new THREE.Vector2(.07,.42),new THREE.Vector2(.045,.58),new THREE.Vector2(.08,.76),new THREE.Vector2(.045,.88)],16);
+  const balusterGeo=new THREE.LatheGeometry([
+    new THREE.Vector2(.035,0),new THREE.Vector2(.055,.1),new THREE.Vector2(.11,.24),
+    new THREE.Vector2(.07,.42),new THREE.Vector2(.045,.58),new THREE.Vector2(.08,.76),
+    new THREE.Vector2(.045,.88)
+  ],16);
+
   for(let i=0;i<count;i++){
-    const top=base+(i+1)*rise,z=startZ-(i+.5)*depth;
-    const tread=new THREE.Mesh(new RoundedBoxGeometry(width,thick,depth+.025,5,.045),i%2?stone:pale);
-    tread.name='degrau da escadaria do Grande Salão';tread.position.set(cx,top-thick/2,z);tread.castShadow=true;tread.receiveShadow=true;scene.add(tread);
+    const top=baseY+(i+1)*rise;
+    const z=startZ+direction*(i+.5)*depth;
+    const tread=new THREE.Mesh(new RoundedBoxGeometry(width,thick,depth+.025,5,.045),i%2?stone:treadMaterial);
+    tread.name='degrau de pedra da escadaria do Grande Salão';
+    tread.position.set(centerX,top-thick/2,z);
+    tread.castShadow=true;tread.receiveShadow=true;scene.add(tread);
+
     const nosing=new THREE.Mesh(new RoundedBoxGeometry(width-.08,.035,.065,4,.014),brass);
-    nosing.position.set(cx,top-.035,z+depth*.46);scene.add(nosing);
-    const xl=cx-width*.49,xr=cx+width*.49,ry=top+.94;
-    left.push([xl,ry,z]);right.push([xr,ry,z]);lowL.push([xl,top+.15,z]);lowR.push([xr,top+.15,z]);
-    if(i%2===0)for(const x of [xl,xr]){const b=new THREE.Mesh(balusterGeo,brass);b.position.set(x,top+.13,z);b.name='balaústre torneado da escadaria';b.castShadow=true;scene.add(b);}
+    nosing.name='filete de bronze no degrau';
+    nosing.position.set(centerX,top-.035,z-direction*depth*.46);
+    scene.add(nosing);
+
+    const xL=centerX-width*.49,xR=centerX+width*.49,railY=top+.94;
+    left.push([xL,railY,z]);right.push([xR,railY,z]);
+    lowL.push([xL,top+.15,z]);lowR.push([xR,top+.15,z]);
+
+    if(i%2===0){
+      for(const x of [xL,xR]){
+        const baluster=new THREE.Mesh(balusterGeo,brass);
+        baluster.position.set(x,top+.13,z);
+        baluster.name='balaústre torneado da escadaria';
+        baluster.castShadow=true;scene.add(baluster);
+      }
+    }
   }
-  scene.add(tube(left,.065,wood,64,10),tube(right,.065,wood,64,10));
-  scene.add(tube(left.map(p=>[p[0],p[1]-.065,p[2]]),.018,brass,64,8),tube(right.map(p=>[p[0],p[1]-.065,p[2]]),.018,brass,64,8));
-  scene.add(tube(lowL,.035,brass,64,8),tube(lowR,.035,brass,64,8));
-  const topZ=startZ-count*depth;
+
+  scene.add(
+    tube(left,.065,wood,64,10),
+    tube(right,.065,wood,64,10),
+    tube(left.map(p=>[p[0],p[1]-.065,p[2]]),.018,brass,64,8),
+    tube(right.map(p=>[p[0],p[1]-.065,p[2]]),.018,brass,64,8),
+    tube(lowL,.035,brass,64,8),
+    tube(lowR,.035,brass,64,8)
+  );
+
+  const endZ=startZ+direction*count*depth;
   const landing=new THREE.Mesh(new RoundedBoxGeometry(width+.3,.24,2.2,5,.055),stone);
-  landing.name='patamar superior da escadaria';landing.position.set(cx,16.56,topZ-.92);landing.castShadow=true;landing.receiveShadow=true;scene.add(landing);
-  for(const dx of [-1,1]){const post=new THREE.Mesh(new THREE.LatheGeometry([
-    new THREE.Vector2(.13,0),new THREE.Vector2(.17,.16),new THREE.Vector2(.12,.36),new THREE.Vector2(.21,.54),
-    new THREE.Vector2(.22,.83),new THREE.Vector2(.1,1.1),new THREE.Vector2(.06,1.23)
-  ],20),brass);post.position.set(cx+dx*1.23,base+.08,startZ);post.name='poste de início da escadaria';post.castShadow=true;scene.add(post);}
+  landing.name='patamar de mudança de nível da escadaria';
+  landing.position.set(centerX,topY-.12,endZ+direction*.93);
+  landing.castShadow=true;landing.receiveShadow=true;scene.add(landing);
+
+  const postGeo=new THREE.LatheGeometry([
+    new THREE.Vector2(.13,0),new THREE.Vector2(.17,.16),
+    new THREE.Vector2(.12,.36),new THREE.Vector2(.21,.54),
+    new THREE.Vector2(.22,.83),new THREE.Vector2(.1,1.1),
+    new THREE.Vector2(.06,1.23)
+  ],20);
+  for(const z of [startZ,endZ+direction*.15]){
+    for(const dx of [-1,1]){
+      const post=new THREE.Mesh(postGeo,brass);
+      post.position.set(centerX+dx*(width*.52),baseY+.08,z);
+      post.name='poste de início ou fim da escadaria';
+      post.castShadow=true;scene.add(post);
+    }
+  }
+
+  return {centerX,width,startZ,endZ,bottomY:baseY,topY};
 }
 
 function addBalustrades(scene,stone,brass,wood) {
@@ -367,8 +414,21 @@ export function buildGrandSalon({ THREE: T, scene, animated=[] }) {
 
   for(const x of [-8.8,8.8])for(const z of [-6.7,6.3])lotusColumn(scene,x,z,stone,pale,brass);
   addBalustrades(scene,stone,brass,darkWood);
-  stairFlight(scene,-1,stone,pale,brass,darkWood);
-  stairFlight(scene,1,stone,pale,brass,darkWood);
+  const stairRamps=[];
+  const walkablePlatforms=[];
+  for(const side of [-1,1]){
+    const flights=[
+      {centerX:side*10.35,baseY:13.175,topY:16.6,startZ:7.35,direction:-1,width:2.38},
+      {centerX:side*8.55,baseY:16.6,topY:20.35,startZ:-.91,direction:1,width:1.5},
+      {centerX:side*12.25,baseY:20.35,topY:24.1,startZ:7.35,direction:-1,width:1.35}
+    ];
+    for(const flight of flights) stairRamps.push(stairFlight(scene,stone,pale,brass,darkWood,flight));
+    walkablePlatforms.push(
+      {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:16.6},
+      {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:20.35},
+      {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:24.1}
+    );
+  }
   addWallReliefs(scene,brass,darkWood,stone,relief);
   ceilingOrnament(scene,brass,darkWood);
 
@@ -383,17 +443,5 @@ export function buildGrandSalon({ THREE: T, scene, animated=[] }) {
   const sideLight=new T.PointLight(0xffbe78,.9,12,1.8);sideLight.position.set(0,20.3,7.9);scene.add(sideLight);
 
   // Superfícies de circulação associadas às duas escadarias e às galerias laterais.
-  const stairRamps=[-1,1].map(side=>({
-    centerX:side*10.35,
-    width:2.75,
-    startZ:7.35,
-    endZ:7.35-14*.59,
-    bottomY:13.175,
-    topY:16.6
-  }));
-  const walkablePlatforms=[
-    {minX:-13,maxX:-7.6,minZ:-8,maxZ:8,height:16.6},
-    {minX:7.6,maxX:13,minZ:-8,maxZ:8,height:16.6}
-  ];
   return {fireLight,stairRamps,walkablePlatforms};
 }

@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -179,19 +179,19 @@
     {
       "id": "training-room-interactive-second-floor",
       "path": "src/training-room.js",
-      "role": "second-floor training wing with a 15x28m marked basketball court, procedural hardwood color/bump maps, vaulted original fresco, deity busts, Ra falcon-headed solar-disc hoops, basketball pickup/throw with aim-assisted arc and downward hoop scoring, target-practice magic orbs, four growing clay shabti warriors with swords and shields for the Whatever Works challenge, interactive doors, colliders and shared desktop/mobile gameplay",
+      "role": "second-floor training wing with a 15x28m marked basketball court, procedural hardwood color/bump maps, vaulted original fresco, deity busts, Ra falcon-headed solar-disc hoops, basketball pickup/throw with aim-assisted arc and downward hoop scoring, target-practice magic orbs, four growing clay shabti warriors with swords and shields for the Whatever Works challenge, interactive doors, colliders and shared desktop/mobile gameplay; Shabti combat now uses articulated sword/shield shoulder and elbow wind-up, strike, recovery and gait animation; confirmed hits emit a callback to the shared player-vitals HUD",
       "license": "project-original-code; no third-party model imported"
     },
     {
       "id": "carter-crossbody-satchel-and-medallion",
       "path": "src/character-accessories.js",
-      "role": "geometria e materiais originais Three.js para bolsa de couro conhaque cerca de 15% menor, silhueta trapezoidal arredondada e levemente macia, face larga voltada para a lateral; pivô Hips no quadril direito posterior; aba e bolso sobre a face lateral com costuras e dois fechos pequenos; alça cruza o peito e contorna o flanco até um aro posterior; medalhão e corrente mantêm o desenho aprovado, recuados 4,5 cm para assentar no tórax; compartilhado desktop/mobile",
+      "role": "original Three.js geometry and materials for a conhaque leather satchel about 15% smaller, rounded soft tapered body, side-facing wide panel, right posterior hip; bag and cross-body strap share the Hips anchor to keep both ends aligned during locomotion; strap wraps across chest and flank to the bag's rear ring; chain and medallion are offset outward from the shirt and parented to the upper chest; shared desktop/mobile; final visual fit still pending browser QA",
       "license": "project-original-code"
     },
     {
       "id": "carter-cinematic-actions-and-motion",
       "path": "src/character.js + src/third-person.js",
-      "role": "integração das ações look_around, talk_gestures, wave, point e bow após consulta ao catálogo Ara; suavização da aceleração, desaceleração, rotação corporal, inclinação lateral e easing da câmera; Carter também direciona cabeça e pescoço ao objeto examinado por E/INTERAGIR; tudo no controlador comum desktop/mobile",
+      "role": "integração das ações look_around, talk_gestures, wave, point e bow após consulta ao catálogo Ara; suavização da aceleração, desaceleração, rotação corporal, inclinação lateral e easing da câmera; Carter também direciona cabeça e pescoço ao objeto examinado por E/INTERAGIR; tudo no controlador comum desktop/mobile; Ara-native walk_slouch and crouch clips are used below half vitality; directional hit_front/back/left/right reactions are loaded; jump animation is paired with a physical vertical arc in the shared controller",
       "license": "project-original-code; os clips do personagem permanecem sujeitos aos termos de Ara/CMU descritos em openSourceReferences"
     },
     {
@@ -215,7 +215,7 @@
     {
       "id": "ha-di-spell-prototype",
       "path": "src/magic-system.js + src/character.js + src/training-room.js + src/main.js",
-      "role": "original Three.js HA-DI prototype: floating golden ḥḏ hieroglyph 𓉔𓆓 anchored to Carter's right hand, Ara Point gesture with two-finger adaptation, golden energy pulse and impact, Shabti ceramic fragments with gravity/bounce, 10-second floor persistence and random respawn",
+      "role": "original Three.js HA-DI prototype: floating golden ḥḏ hieroglyph 𓉔𓆓 anchored to Carter's right hand, Ara Point gesture with two-finger adaptation, golden energy pulse and impact, Shabti ceramic fragments with gravity/bounce, 10-second floor persistence and random respawn; casting spends 30 points of the shared regenerating energy pool; practice staff orbs spend 12 points",
       "license": "project-original-code"
     },
     {
@@ -284,6 +284,12 @@
       "author": "Kenney",
       "role": "Reference pack for smoke and explosion texture direction; no separate Smoke Particles pack sprites imported in this iteration.",
       "runtimeImported": false
+    },
+    {
+      "id": "carter-vitals-energy-hit-feedback",
+      "path": "src/main.js + src/training-room.js + src/magic-system.js + src/third-person.js",
+      "role": "persistent shared player vitalidade and energia HUD; Shabti hits lower vitalidade and trigger Ara hit reaction, decaying camera shake and red peripheral damage vignette; below 50% vitality Carter uses crouch/slouch locomotion and cannot sprint; HA-DI spends 30 energy, training staff orbs spend 12, and energy regenerates at 8 points per second; desktop/mobile share the same runtime",
+      "license": "project-original-code; Ara animation clips remain under their upstream terms in runtimeAssets and openSourceReferences"
     }
   ],
   "openSourceReferences": [

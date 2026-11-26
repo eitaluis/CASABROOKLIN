@@ -140,12 +140,14 @@ for(let floor=0;floor<5;floor++){
 }
 for(let x of [-15.6])for(let y=13.4;y<30;y+=3.3)box('pilastra de canto',[x,y,-.5],[1.05,3.1,1.05],stone);
 for(let x=-14;x<15;x+=3.5){box('moldura superior',[x,30.0,11.5],[2.5,.22,.28],gold)}
-// Porta sem maçaneta: um bloco maciço de madeira gravada.
-box('portal de pedra',[0,16.1,11.42],[4.1,6.2,.8],darkBrick,false);
-const door=box('porta de madeira sem maçaneta',[0,15.9,11.93],[2.45,4.9,.34],woodMat,false);door.material=cedarMat;
-for(let i=0;i<5;i++){glyphPanel(-.75+(i%2)*1.5,14.9+Math.floor(i/2)*.9,12.13,0,.5)}
-box('soleira monumental',[0,13.24,12.1],[4.3,.18,1.2],stone,false);
-for(let side of [-1,1]){box('pilar do portal',[side*2.35,16.1,11.7],[.55,6.3,.75],stone);for(let y=13.5;y<19;y+=.85)box('detalhe dourado do portal',[side*2.35,y,12.12],[.62,.06,.06],gold)}
+// Portal canônico: bloco escuro de madeira, sem puxador nem fechadura visível.
+// O vão fica livre atrás da folha para permitir a abertura vertical por interação.
+box('ombreira esquerda do portal',[ -2.18,16.1,11.42],[.48,6.2,.8],stone,false);
+box('ombreira direita do portal',[ 2.18,16.1,11.42],[.48,6.2,.8],stone,false);
+box('lintel superior do portal',[0,19.16,11.42],[4.82,.48,.8],stone,false);
+const door=box('porta de madeira sem maçaneta',[0,15.9,11.93],[4.08,5.28,.34],woodMat,false);door.material=cedarMat;
+box('soleira monumental',[0,13.24,12.1],[4.4,.18,1.2],stone,false);
+for(let side of [-1,1]){box('pilar do portal',[side*2.58,16.1,11.7],[.55,6.3,.75],stone);for(let y=13.5;y<19;y+=.85)box('detalhe dourado do portal',[side*2.58,y,12.12],[.62,.06,.06],gold)}
 // Escada metálica externa em caracol: 66 degraus, cerca de duas voltas.
 const stairCenter=new THREE.Vector2(19,18),stairRadius=2.05,stairCount=78,stairRise=12.8;
 const exteriorSteps=[];
@@ -177,16 +179,8 @@ const sparkMat=new THREE.MeshBasicMaterial({color:0xe3bd73,transparent:true,opac
 for(let i=0;i<24;i++){const s=new THREE.Mesh(new THREE.SphereGeometry(.035+Math.random()*.04,8,8),sparkMat);s.position.set((Math.random()-.5)*7,14+Math.random()*5,12.3+Math.random()*.5);scene.add(s);animated.push({obj:s,phase:Math.random()*6.28,particle:true})}
 // Janelas com brilho quente ao entardecer.
 for(let i=0;i<14;i++){const l=new THREE.PointLight(0xffc27d,.24,8);l.position.set(-12+(i%6)*4.8,14+Math.floor(i/6)*5,10.3);scene.add(l)}
-// Contexto de Williamsburg: rio, docas, armazéns e ponte suspensa ao longe.
-const skylineMat=new THREE.MeshStandardMaterial({color:0x59666a,roughness:.95});
-for(let i=0;i<32;i++){const x=42+Math.random()*65,z=-72+Math.random()*120,h=8+Math.random()*30,w=3+Math.random()*6;const b=box('silhueta urbana distante',[x,h/2-1,z],[w,h,3+Math.random()*4],skylineMat,false,false);b.material=skylineMat}
-const bridgeSteel=new THREE.MeshStandardMaterial({color:0x46575b,metalness:.72,roughness:.48});
-for(let x of [48,88]){box('torre da Williamsburg Bridge',[x,22,-48],[1.2,44,1.2],bridgeSteel);box('travessa ponte',[x,34,-48],[8,1,1],bridgeSteel);for(let z of [-54,-48,-42])box('treliça torre',[x,22,z],[.3,44,.3],bridgeSteel)}
-line([[48,43,-48],[55,37,-48],[68,34,-48],[80,37,-48],[88,43,-48]],bridgeSteel,.12);
-line([[48,43,-48],[48,30,-48],[88,30,-48],[88,43,-48]],bridgeSteel,.09);
-for(let x=50;x<88;x+=2.2){line([[x,31,-48],[x,36+Math.sin((x-50)/38*Math.PI)*6,-48]],bridgeSteel,.025)}
-box('tabuleiro da ponte',[68,29,-48],[46,.45,5],bridgeSteel,false);
-for(let x=52;x<88;x+=3)box('poste ponte',[x,30,-48],[.12,1.6,.12],bridgeSteel,false);
+// O rio em escala, a Williamsburg Bridge e o skyline de Manhattan são montados
+// no módulo src/exterior.js para manter a área externa independente dos interiores.
 // Grande Salão: salão de quatro alturas, pilares, sacadas e teto de cedro.
 const hallFloorY=12.95;
 const hallFloor=box('piso do Grande Salão',[0,hallFloorY,-.5],[29,.45,20],new THREE.MeshStandardMaterial({color:0x9d8c70,map:limestone,roughness:.85}),false);groundSurfaces.push(hallFloor);

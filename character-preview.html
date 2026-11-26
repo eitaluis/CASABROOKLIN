@@ -19,7 +19,7 @@ button{border:1px solid var(--line);background:#263034;color:#f0eee7;padding:11p
 button.active,button:hover{background:#9b7542;color:#111}
 #note{position:fixed;right:20px;top:20px;z-index:2;color:#d6d0c1;font-size:10px;text-align:right;line-height:1.6}
 #loading{position:fixed;inset:0;display:grid;place-items:center;background:#111719;color:var(--gold);font:12px Georgia,serif;letter-spacing:.18em;z-index:5}
-#loading.done{display:none}
+#loading.done{display:none}#loading.error{display:grid;color:#f0c28a;letter-spacing:.08em;text-align:center;padding:24px;line-height:1.7}
 @media(max-width:600px){header{top:10px;left:12px}h1{font-size:19px}#note{right:12px;top:12px;font-size:8px}#controls{bottom:8px;padding:7px;gap:5px}button{padding:9px 10px;font-size:9px}}
 </style>
 </head>
@@ -100,8 +100,19 @@ grid.material.transparent = true;
 grid.material.opacity = 0.28;
 scene.add(grid);
 
-const character = await createCharacter({ scene });
-character.model.position.set(0, 0, 0);
+let character;
+try {
+  character = await createCharacter({ scene });
+  character.model.position.set(0, 0, 0);
+} catch (error) {
+  const loading = document.getElementById('loading');
+  if (loading) {
+    loading.textContent = 'NÃO FOI POSSÍVEL CARREGAR O CARTER · ATUALIZE A PÁGINA';
+    loading.classList.add('error');
+  }
+  console.error('Falha ao iniciar o preview do Carter:', error);
+  throw error;
+}
 let speed = 0;
 let previous = performance.now();
 let disposed = false;

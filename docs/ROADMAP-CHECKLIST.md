@@ -137,7 +137,7 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [x] Criar módulo independente `src/training-room.js`, conectado ao mundo compartilhado.
 - [x] Criar quadra de madeira 15 × 28 m, marcações de 5 cm, afresco de abóbada, nervuras, frisos e iluminação.
 - [x] Criar efígies de Rá com discos solares vazados usados como cestas, aro a 3,05 m do piso.
-- [x] Criar bola interativa, arremesso simplificado, detecção de cesta e placar.
+- [x] Criar bola interativa, arremesso com assistência de arco ao mirar numa cesta, detecção descendente do aro e placar.
 - [x] Criar prática de mira com alvos e orbes mágicos acionados pelo cajado.
 - [x] Criar quatro estatuetas shabti em pontos diferentes da quadra; ao iniciar “Whatever Works”, crescem para guerreiros de barro com espada e escudo.
 - [x] Dar a cada guerreiro estado independente, dois pontos de resistência, reação a golpes e retorno à forma de estatueta após derrota.

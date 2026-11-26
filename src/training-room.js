@@ -22,6 +22,21 @@ export function buildTrainingRoom({
   const lapis = new THREE.MeshStandardMaterial({ color: 0x173f60, metalness: 0.18, roughness: 0.34 });
   const turquoise = new THREE.MeshStandardMaterial({ color: 0x347c7d, metalness: 0.08, roughness: 0.3, clearcoat: 0.28 });
   const faience = new THREE.MeshPhysicalMaterial({ color: 0x3d8582, metalness: 0.06, roughness: 0.26, clearcoat: 0.38, clearcoatRoughness: 0.2 });
+  const faienceCanvas=document.createElement('canvas');faienceCanvas.width=faienceCanvas.height=512;
+  const faienceCtx=faienceCanvas.getContext('2d');
+  const faienceGrad=faienceCtx.createLinearGradient(0,0,512,512);
+  faienceGrad.addColorStop(0,'#287a79');faienceGrad.addColorStop(.48,'#5b9b91');faienceGrad.addColorStop(1,'#2c666e');
+  faienceCtx.fillStyle=faienceGrad;faienceCtx.fillRect(0,0,512,512);
+  let faienceSeed=76123;const faienceRand=()=>{faienceSeed=(faienceSeed*1664525+1013904223)>>>0;return faienceSeed/4294967296;};
+  for(let i=0;i<6200;i++){
+    const x=faienceRand()*512,y=faienceRand()*512,r=.35+faienceRand()*2.2;
+    faienceCtx.fillStyle=faienceRand()>.5?'rgba(218,231,185,.12)':'rgba(8,49,57,.13)';
+    faienceCtx.beginPath();faienceCtx.arc(x,y,r,0,Math.PI*2);faienceCtx.fill();
+  }
+  const faienceMap=new THREE.CanvasTexture(faienceCanvas);faienceMap.colorSpace=THREE.SRGBColorSpace;
+  faienceMap.wrapS=faienceMap.wrapT=THREE.RepeatWrapping;faienceMap.repeat.set(1.4,1.0);faienceMap.anisotropy=8;
+  faience.map=faienceMap;faience.needsUpdate=true;
+
   const faienceLight = new THREE.MeshPhysicalMaterial({ color: 0xb9a16f, metalness: 0.04, roughness: 0.3, clearcoat: 0.28 });
   const clay = new THREE.MeshPhysicalMaterial({ color: 0x9d6549, roughness: 0.34, clearcoat: 0.42, clearcoatRoughness: 0.24 });
   const clayLight = new THREE.MeshPhysicalMaterial({ color: 0xd1a47a, roughness: 0.4, clearcoat: 0.28 });
@@ -802,70 +817,92 @@ export function buildTrainingRoom({
     }
   });
 
-  // Quatro estatuetas shabti de barro que crescem para guerreiros de treino.
-  // O arranjo adapta a aula Magic Problem-Solving 101 / Whatever Works.
-  // Um shabti começa como estatueta vitrificada de cerca de 18 cm e cresce até a escala humana.
-  const shabtiMiniScale = 0.085;
-  const shabtiFullScale = 0.82;
-  const shabtiTemplate = new THREE.Group();
-  shabtiTemplate.name = 'modelo de guerreiro shabti de faiança';
-  function shabtiMesh(parent, name, geometry, material, pos, scale = null) {
-    const mesh = new THREE.Mesh(geometry, material); mesh.name = name;
-    mesh.position.set(pos[0],pos[1],pos[2]); if(scale) mesh.scale.set(scale[0],scale[1],scale[2]);
-    mesh.castShadow=true; mesh.receiveShadow=true; parent.add(mesh); return mesh;
+  // As miniaturas seguem a forma histórica de um shabti mumiiforme; a animação desperta o guerreiro do romance.
+  const shabtiMiniScale=.085;
+  const shabtiFullScale=.82;
+  const shabtiTemplate=new THREE.Group();shabtiTemplate.name='shabti mumiiforme de faiança azul-esverdeada';
+  function shabtiMesh(parent,name,geometry,material,pos,scale=null){
+    const mesh=new THREE.Mesh(geometry,material);mesh.name=name;mesh.position.set(pos[0],pos[1],pos[2]);
+    if(scale)mesh.scale.set(scale[0],scale[1],scale[2]);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;
   }
-  const body = shabtiMesh(shabtiTemplate,'corpo vitrificado mumiforme',new THREE.CapsuleGeometry(.31,.62,8,20),faience,[0,1.07,0],[.96,1,.84]);
-  const chest = shabtiMesh(shabtiTemplate,'peitoral de faiança',new THREE.CylinderGeometry(.27,.31,.48,16,2),faienceLight,[0,1.22,.17],[1,1,.72]);
-  const kilt = shabtiMesh(shabtiTemplate,'saiote cerimonial',new THREE.CylinderGeometry(.27,.40,.56,6,1),lapis,[0,.67,.02]); kilt.rotation.y=Math.PI/6;
-  for(let fold=-2;fold<=2;fold++) shabtiMesh(shabtiTemplate,'pregas do saiote',new THREE.BoxGeometry(.018,.44,.018),bronze,[fold*.11,.66,.36-Math.abs(fold)*.035]);
-  const legs=[];
+  // Silhueta contínua de múmia, afilada nos pés e nos ombros.
+  const mummyBody=shabtiMesh(shabtiTemplate,'corpo mumiforme contínuo',new THREE.LatheGeometry([
+    new THREE.Vector2(.17,0),new THREE.Vector2(.2,.08),new THREE.Vector2(.23,.18),
+    new THREE.Vector2(.26,.42),new THREE.Vector2(.3,.72),new THREE.Vector2(.32,1.02),
+    new THREE.Vector2(.3,1.28),new THREE.Vector2(.25,1.48),new THREE.Vector2(.18,1.62),new THREE.Vector2(.13,1.68)
+  ],64),faience,[0,.12,0]);
+  const dorsalPillar=new THREE.Mesh(new THREE.ExtrudeGeometry((()=>{const sh=new THREE.Shape();sh.moveTo(-.19,.06);sh.lineTo(.19,.06);sh.lineTo(.16,1.52);sh.quadraticCurveTo(0,1.68,-.16,1.52);sh.closePath();return sh;})(),{depth:.09,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.015,bevelThickness:.015}),faienceLight);
+  dorsalPillar.name='pilar dorsal do shabti';dorsalPillar.position.set(0,.13,-.22);dorsalPillar.userData.miniatureOnly=true;shabtiTemplate.add(dorsalPillar);
+  // Face alongada, orelhas, olhos incisos e barba postiça trançada.
+  const face=shabtiMesh(shabtiTemplate,'rosto do shabti',new THREE.LatheGeometry([
+    new THREE.Vector2(.055,0),new THREE.Vector2(.115,.035),new THREE.Vector2(.16,.12),
+    new THREE.Vector2(.17,.25),new THREE.Vector2(.145,.34),new THREE.Vector2(.09,.4)
+  ],32),faienceLight,[0,1.72,.035]);
   for(const side of [-1,1]){
-    const leg=new THREE.Group(); leg.name=side<0?'shabti-perna-esquerda':'shabti-perna-direita'; leg.position.set(side*.17,.44,.02); shabtiTemplate.add(leg);
-    shabtiMesh(leg,'perna de faiança',new THREE.CapsuleGeometry(.105,.42,6,14),faience,[0,-.16,0]);
-    shabtiMesh(leg,'sandália de bronze',new THREE.BoxGeometry(.22,.09,.34),bronze,[0,-.42,.09]); legs.push(leg);
+    shabtiMesh(shabtiTemplate,'orelha do shabti',new THREE.SphereGeometry(.042,14,10),faienceLight,[side*.15,1.88,.015],[.7,1.35,.6]);
+    shabtiMesh(shabtiTemplate,'olho inciso',new THREE.SphereGeometry(.025,14,10),darkBronze,[side*.075,1.91,.172]);
+    addTube('linha de sobrancelha incisa',[[side*.04,1.96,.17],[side*.09,1.97,.17],[side*.13,1.95,.15]],.012,darkBronze,shabtiTemplate,12);
   }
-  const neck=shabtiMesh(shabtiTemplate,'pescoço',new THREE.CylinderGeometry(.13,.15,.22,16),faienceLight,[0,1.72,.02]);
-  const head=shabtiMesh(shabtiTemplate,'rosto de guerreiro',new THREE.SphereGeometry(.235,24,18),faienceLight,[0,1.94,.045],[.88,1.08,.82]);
-  shabtiMesh(shabtiTemplate,'sobrancelha esquerda',new THREE.BoxGeometry(.12,.028,.025),darkBronze,[-.105,2.0,.225]);
-  shabtiMesh(shabtiTemplate,'sobrancelha direita',new THREE.BoxGeometry(.12,.028,.025),darkBronze,[.105,2.0,.225]);
-  for(const side of [-1,1]) shabtiMesh(shabtiTemplate,'olho escuro',new THREE.SphereGeometry(.032,12,10),darkBronze,[side*.09,1.96,.235]);
-  shabtiMesh(shabtiTemplate,'nariz',new THREE.ConeGeometry(.045,.12,5),faience,[0,1.89,.24]);
-  const nemes=shabtiMesh(shabtiTemplate,'nemes listrado',new THREE.SphereGeometry(.29,24,18),lapis,[0,2.03,-.055],[1.12,.78,.92]);
+  shabtiMesh(shabtiTemplate,'nariz esculpido',new THREE.ConeGeometry(.035,.11,5),faienceLight,[0,1.83,.185]);
+  const falseBeard=shabtiMesh(shabtiTemplate,'barba postiça trançada',new THREE.LatheGeometry([
+    new THREE.Vector2(.07,0),new THREE.Vector2(.085,.07),new THREE.Vector2(.07,.17),new THREE.Vector2(.05,.3),new THREE.Vector2(.027,.43),new THREE.Vector2(.012,.48)
+  ],24),raBasaltLight,[0,1.27,.16]);
+  falseBeard.rotation.x=Math.PI;
+  for(let braid=0;braid<3;braid++)addTube('trança da barba postiça',[[(-1+braid)*.025,1.32,.225],[(-1+braid)*.02,1.42,.23],[(-1+braid)*.013,1.53,.205]],.009,raGold,shabtiTemplate,14);
+  // Nemes estriado com touca e abas laterais, não um capacete esférico.
+  const nemesCap=shabtiMesh(shabtiTemplate,'touca do nemes',new THREE.SphereGeometry(.235,32,20,0,Math.PI*2,0,Math.PI*.64),lapis,[0,1.97,-.035],[1.13,.78,.96]);
   for(const side of [-1,1]){
-    const flap=shabtiMesh(shabtiTemplate,'aba lateral do nemes',new THREE.BoxGeometry(.16,.52,.18),lapis,[side*.245,1.69,.015]); flap.rotation.z=side*-.08;
-    for(let stripe=0;stripe<3;stripe++) shabtiMesh(shabtiTemplate,'friso dourado do nemes',new THREE.BoxGeometry(.17,.025,.19),bronze,[side*.245,1.53+stripe*.14,.03]);
+    const flapShape=new THREE.Shape();flapShape.moveTo(0,0);flapShape.lineTo(.16,.02);flapShape.lineTo(.19,-.36);flapShape.quadraticCurveTo(.14,-.51,.06,-.55);flapShape.lineTo(-.02,-.45);flapShape.closePath();
+    const flap=new THREE.Mesh(new THREE.ExtrudeGeometry(flapShape,{depth:.07,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.01,bevelThickness:.01}),lapis);
+    flap.name='aba de nemes listrada';flap.position.set(side*.17,1.88,.03);if(side<0)flap.rotation.y=Math.PI;shabtiTemplate.add(flap);
+    for(let stripe=0;stripe<4;stripe++)addTube('riscas douradas do nemes',[[side*(.19+stripe*.018),1.84,.105],[side*(.2+stripe*.018),1.67,.11],[side*(.21+stripe*.018),1.44,.12]],.008,raGoldLight,shabtiTemplate,14);
   }
-  const uraeus=shabtiMesh(shabtiTemplate,'uraeus frontal',new THREE.TorusGeometry(.07,.018,8,20),bronze,[0,2.19,.15]); uraeus.rotation.x=Math.PI/2;
-  const collar=shabtiMesh(shabtiTemplate,'colar largo usekh',new THREE.TorusGeometry(.29,.075,10,36),bronze,[0,1.57,.10]); collar.rotation.x=Math.PI/2;
-  for(let row=0;row<3;row++){
-    const line=shabtiMesh(shabtiTemplate,'filete de esmalte do colar',new THREE.TorusGeometry(.29-row*.035,.018,6,36),row%2?lapis:faienceLight,[0,1.57-row*.045,.11]); line.rotation.x=Math.PI/2;
+  const uraeus=shabtiMesh(shabtiTemplate,'uraeus na testa',new THREE.TorusGeometry(.055,.015,8,24),raGold,[0,2.13,.14]);
+  const collar=shabtiMesh(shabtiTemplate,'colar usekh de faiança e ouro',new THREE.TorusGeometry(.25,.055,10,48),raGold,[0,1.53,.12]);collar.rotation.x=Math.PI/2;collar.scale.set(1.18,.92,1);
+  for(let row=0;row<4;row++){
+    const band=shabtiMesh(shabtiTemplate,'filete colorido do colar',new THREE.TorusGeometry(.24-row*.026,.015,6,40),row%2?lapis:faienceLight,[0,1.52-row*.035,.13]);band.rotation.x=Math.PI/2;
   }
-  // Braços articulados: um sustenta a espada, o outro o escudo.
-  const swordArm=new THREE.Group(); swordArm.name='shabti-sword-arm'; swordArm.position.set(.37,1.45,.02); shabtiTemplate.add(swordArm);
-  shabtiMesh(swordArm,'braço superior armado',new THREE.CapsuleGeometry(.105,.40,6,14),faience,[0,-.22,0]);
-  const swordForearm=new THREE.Group(); swordForearm.name='cotovelo armado'; swordForearm.position.set(0,-.43,.02); swordArm.add(swordForearm);
-  shabtiMesh(swordForearm,'antebraço armado',new THREE.CapsuleGeometry(.085,.32,6,12),faienceLight,[0,-.16,.015]);
-  shabtiMesh(swordForearm,'mão direita',new THREE.SphereGeometry(.095,12,10),faience,[0,-.36,.04]);
-  const swordGrip=shabtiMesh(swordForearm,'punho de madeira da espada',new THREE.CylinderGeometry(.035,.04,.32,10),woodDark,[0,-.48,.08]); swordGrip.rotation.z=-.12;
-  shabtiMesh(swordForearm,'guarda de bronze da espada',new THREE.BoxGeometry(.32,.07,.11),bronze,[0,-.64,.08]);
-  const bladeShape=new THREE.Shape(); bladeShape.moveTo(-.045,0); bladeShape.lineTo(.045,0); bladeShape.lineTo(.06,.48); bladeShape.quadraticCurveTo(.08,.72,.24,.94); bladeShape.quadraticCurveTo(.30,1.04,.25,1.10); bladeShape.lineTo(.13,1.02); bladeShape.quadraticCurveTo(-.015,.86,-.06,.62); bladeShape.closePath();
-  const blade=new THREE.Mesh(new THREE.ExtrudeGeometry(bladeShape,{depth:.035,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.012,bevelThickness:.012}),new THREE.MeshStandardMaterial({color:0x8f9897,metalness:.82,roughness:.24})); blade.name='lâmina curva de bronze e ferro'; blade.position.set(-.02,-.62,.12); blade.castShadow=true; swordForearm.add(blade);
-  shabtiMesh(swordForearm,'nervura dourada da lâmina',new THREE.BoxGeometry(.018,.58,.02),bronze,[.035,-.27,.16]);
-  const shieldArm=new THREE.Group(); shieldArm.name='shabti-shield-arm'; shieldArm.position.set(-.38,1.4,.02); shabtiTemplate.add(shieldArm);
-  shabtiMesh(shieldArm,'braço do escudo',new THREE.CapsuleGeometry(.105,.46,6,14),faience,[-.02,-.23,0]);
-  const shield=new THREE.Group(); shield.name='escudo oval de faiança'; shield.position.set(-.13,-.48,.16); shieldArm.add(shield);
-  const shieldDisk=shabtiMesh(shield,'escudo esmaltado',new THREE.SphereGeometry(.32,18,12),faienceLight,[0,0,.0],[.82,1.12,.22]);
-  const shieldRim=shabtiMesh(shield,'aro de bronze do escudo',new THREE.TorusGeometry(.27,.028,8,32),bronze,[0,0,.05]); shieldRim.scale.set(.82,1.12,1);
-  shabtiMesh(shield,'umbigo do escudo',new THREE.SphereGeometry(.09,14,12),bronze,[0,0,.08]);
-  for(let rib=0;rib<6;rib++){const a=rib/6*Math.PI*2; const r=new THREE.Mesh(new THREE.BoxGeometry(.018,.43,.018),bronze);r.position.set(Math.cos(a)*.09,Math.sin(a)*.17,.055);r.rotation.z=a;shield.add(r);}
-  // Inscrição vertical e pequenos sinais pintados, como na cerâmica vitrificada.
-  const glyphCanvas=document.createElement('canvas'); glyphCanvas.width=256; glyphCanvas.height=512;
-  const gx=glyphCanvas.getContext('2d'); gx.clearRect(0,0,256,512); gx.fillStyle='#d8c08b'; gx.globalAlpha=.92; gx.font='42px serif'; gx.textAlign='center';
-  ['𓋹','𓂀','𓊹','𓆣','𓇳'].forEach((symbol,i)=>gx.fillText(symbol,128,56+i*92));
-  const glyphTexture=new THREE.CanvasTexture(glyphCanvas); glyphTexture.colorSpace=THREE.SRGBColorSpace;
-  const chestGlyph=new THREE.Mesh(new THREE.PlaneGeometry(.22,.54),new THREE.MeshBasicMaterial({map:glyphTexture,transparent:true,side:THREE.DoubleSide})); chestGlyph.name='hieróglifos pintados no peitoral'; chestGlyph.position.set(0,1.18,.405); shabtiTemplate.add(chestGlyph);
-  const miniaturePedestal=new THREE.Mesh(new THREE.CylinderGeometry(.43,.48,.12,24),limestoneShade); miniaturePedestal.name='base exclusiva da miniatura shabti'; miniaturePedestal.position.y=.055; miniaturePedestal.userData.miniatureOnly=true; shabtiTemplate.add(miniaturePedestal);
-  const miniatureSeal=new THREE.Mesh(new THREE.TorusGeometry(.52,.022,8,36),warmEmissive); miniatureSeal.name='selo luminoso da miniatura shabti'; miniatureSeal.rotation.x=Math.PI/2; miniatureSeal.position.y=.025; miniatureSeal.userData.miniatureOnly=true; shabtiTemplate.add(miniatureSeal);
+  // Inscrição vertical na frente e corda/bolsa de sementes no pilar dorsal.
+  const shabtiGlyphCanvas=document.createElement('canvas');shabtiGlyphCanvas.width=256;shabtiGlyphCanvas.height=512;
+  const shabtiGlyphCtx=shabtiGlyphCanvas.getContext('2d');shabtiGlyphCtx.clearRect(0,0,256,512);shabtiGlyphCtx.fillStyle='#162f32';shabtiGlyphCtx.font='42px serif';shabtiGlyphCtx.textAlign='center';
+  ['𓋹','𓂀','𓊹','𓆣','𓇳','𓈖'].forEach((symbol,i)=>shabtiGlyphCtx.fillText(symbol,128,48+i*78));
+  const shabtiGlyphMap=new THREE.CanvasTexture(shabtiGlyphCanvas);shabtiGlyphMap.colorSpace=THREE.SRGBColorSpace;
+  const glyphColumn=new THREE.Mesh(new THREE.PlaneGeometry(.17,.53),new THREE.MeshBasicMaterial({map:shabtiGlyphMap,transparent:true,side:THREE.DoubleSide,depthWrite:false}));
+  glyphColumn.name='inscrição vertical do shabti';glyphColumn.position.set(0,.84,.286);shabtiTemplate.add(glyphColumn);
+  const seedBag=shabtiMesh(shabtiTemplate,'bolsa de sementes do shabti',new THREE.SphereGeometry(.09,16,12),faienceLight,[0,1.08,-.3],[.8,1.12,.65]);seedBag.userData.miniatureOnly=true;
+  addTube('corda da bolsa dorsal',[[0,1.5,-.23],[.16,1.28,-.25],[0,1.02,-.27]],.012,raGold,shabtiTemplate,14).userData.miniatureOnly=true;
+
+  // Braços cruzados sobre o peito enquanto miniatura; abrem-se quando o shabti desperta.
+  const swordArm=new THREE.Group();swordArm.name='shabti-sword-arm';swordArm.position.set(.27,1.42,.02);swordArm.rotation.z=-.78;shabtiTemplate.add(swordArm);
+  shabtiMesh(swordArm,'braço superior direito em faiança',new THREE.CapsuleGeometry(.075,.36,8,14),faience,[0,-.19,.02]);
+  const swordForearm=new THREE.Group();swordForearm.name='cotovelo armado';swordForearm.position.set(0,-.36,.03);swordArm.add(swordForearm);
+  shabtiMesh(swordForearm,'antebraço direito cruzado',new THREE.CapsuleGeometry(.07,.3,8,14),faienceLight,[0,-.14,.03]);
+  shabtiMesh(swordForearm,'mão direita do shabti',new THREE.SphereGeometry(.07,14,10),faience,[0,-.3,.07]);
+  const swordGrip=shabtiMesh(swordForearm,'punho da espada curva',new THREE.CylinderGeometry(.025,.03,.25,10),woodDark,[0,-.4,.1]);swordGrip.rotation.z=-.12;
+  shabtiMesh(swordForearm,'guarda da espada curva',new THREE.BoxGeometry(.24,.045,.07),raGold,[0,-.51,.1]);
+  const bladeShape=new THREE.Shape();bladeShape.moveTo(-.035,0);bladeShape.lineTo(.035,0);bladeShape.lineTo(.05,.28);bladeShape.quadraticCurveTo(.07,.48,.19,.65);bladeShape.quadraticCurveTo(.24,.72,.2,.77);bladeShape.lineTo(.1,.7);bladeShape.quadraticCurveTo(-.015,.58,-.05,.4);bladeShape.closePath();
+  const blade=new THREE.Mesh(new THREE.ExtrudeGeometry(bladeShape,{depth:.028,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.008,bevelThickness:.008}),new THREE.MeshStandardMaterial({color:0x9da7a5,metalness:.82,roughness:.24}));
+  blade.name='khopesh de treino do shabti';blade.position.set(-.018,-.5,.135);swordForearm.add(blade);
+
+  const shieldArm=new THREE.Group();shieldArm.name='shabti-shield-arm';shieldArm.position.set(-.27,1.42,.02);shieldArm.rotation.z=.78;shabtiTemplate.add(shieldArm);
+  shabtiMesh(shieldArm,'braço superior esquerdo em faiança',new THREE.CapsuleGeometry(.075,.36,8,14),faience,[0,-.19,.02]);
+  const shieldForearm=new THREE.Group();shieldForearm.name='antebraço do escudo';shieldForearm.position.set(0,-.36,.03);shieldArm.add(shieldForearm);
+  shabtiMesh(shieldForearm,'antebraço esquerdo cruzado',new THREE.CapsuleGeometry(.07,.3,8,14),faienceLight,[0,-.14,.03]);
+  shabtiMesh(shieldForearm,'mão esquerda do shabti',new THREE.SphereGeometry(.07,14,10),faience,[0,-.3,.07]);
+  const shield=new THREE.Group();shield.name='escudo oval do shabti';shield.position.set(-.08,-.34,.14);shieldForearm.add(shield);
+  shabtiMesh(shield,'escudo de faiança esmaltada',new THREE.SphereGeometry(.24,24,18),faienceLight,[0,0,0],[.74,1.0,.18]);
+  const shieldRim=shabtiMesh(shield,'aro dourado do escudo',new THREE.TorusGeometry(.205,.022,8,40),raGold,[0,0,.04]);shieldRim.scale.set(.74,1,1);
+  shabtiMesh(shield,'umbigo de bronze do escudo',new THREE.SphereGeometry(.06,14,12),raGold,[0,0,.065]);
+
+  // Membros inferiores curtos permanecem ocultos na miniatura e emergem na forma de guerreiro.
+  const leftLeg=new THREE.Group();leftLeg.name='shabti-perna-esquerda';leftLeg.position.set(-.13,.25,0);leftLeg.visible=false;shabtiTemplate.add(leftLeg);
+  shabtiMesh(leftLeg,'perna esquerda do guerreiro',new THREE.LatheGeometry([new THREE.Vector2(.08,0),new THREE.Vector2(.1,.08),new THREE.Vector2(.085,.24),new THREE.Vector2(.075,.42),new THREE.Vector2(.09,.5)],20),faience,[0,-.22,0]);
+  shabtiMesh(leftLeg,'pé esquerdo do guerreiro',new THREE.BoxGeometry(.18,.1,.3),faienceLight,[0,-.48,.09]);
+  const rightLeg=new THREE.Group();rightLeg.name='shabti-perna-direita';rightLeg.position.set(.13,.25,0);rightLeg.visible=false;shabtiTemplate.add(rightLeg);
+  shabtiMesh(rightLeg,'perna direita do guerreiro',new THREE.LatheGeometry([new THREE.Vector2(.08,0),new THREE.Vector2(.1,.08),new THREE.Vector2(.085,.24),new THREE.Vector2(.075,.42),new THREE.Vector2(.09,.5)],20),faience,[0,-.22,0]);
+  shabtiMesh(rightLeg,'pé direito do guerreiro',new THREE.BoxGeometry(.18,.1,.3),faienceLight,[0,-.48,.09]);
+  const miniaturePedestal=new THREE.Mesh(new THREE.CylinderGeometry(.31,.36,.11,32),limestoneShade);miniaturePedestal.name='plinto pequeno do shabti';miniaturePedestal.position.y=.07;miniaturePedestal.userData.miniatureOnly=true;shabtiTemplate.add(miniaturePedestal);
+  const miniatureSeal=new THREE.Mesh(new THREE.TorusGeometry(.39,.018,8,40),warmEmissive);miniatureSeal.name='selo de invocação da miniatura';miniatureSeal.rotation.x=Math.PI/2;miniatureSeal.position.y=.035;miniatureSeal.userData.miniatureOnly=true;shabtiTemplate.add(miniatureSeal);
   const shabtiOffsets=[[-6.2,-10.2],[6.2,-10.2],[-6.2,10.2],[6.2,10.2]];
   const shabtiWarriors = shabtiOffsets.map((offset,index)=>{
     const group=index===0?shabtiTemplate:shabtiTemplate.clone(true);

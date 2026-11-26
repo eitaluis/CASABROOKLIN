@@ -133,7 +133,11 @@ Não fixar a magia a um botão ou a um tipo de dispositivo. Desktop e mobile cha
 
 ## 9. Critérios de QA
 
-- [ ] Cajado, khopesh e shabti têm escala e orientação corretas na mão.
+- [ ] Cada um dos doze objetos tem escala, orientação, origem e ponto de pega revisados no rig real.
+- [ ] Cajado e khopesh mantêm empunhadura coerente durante idle, walk, run, turn e stop.
+- [ ] Objetos pequenos, planos e compridos usam poses de pega adequadas, sem parecerem presos à ponta dos dedos.
+- [ ] Dedos e polegar fecham de forma convincente por clip de mão compatível com o rig.
+- [ ] O objeto não atravessa mão, braço, tronco, pernas ou cenário durante a locomoção.
 - [ ] O portal aparece na posição da mão, não no centro da tela nem no chão.
 - [ ] O objeto não aparece duplicado durante a transição.
 - [ ] Guardar e retirar repetidamente não deixa objetos órfãos nem sockets duplicados.

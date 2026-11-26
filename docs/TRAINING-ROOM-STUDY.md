@@ -95,9 +95,11 @@ Esta atividade é um complemento autoral de gameplay, não uma mecânica descrit
 1. Aproxime-se do quadro *Magic Problem-Solving 101* e pressione **E / INTERAGIR**.
 2. O guerreiro shabti desperta.
 3. Equipe o cajado ou o khopesh e use **F / USAR** quando estiver perto e voltado para ele.
-4. Quatro acertos concluem a prova; o shabti desmorona visualmente e pode ser reativado no quadro.
+4. Quatro estatuetas mumiformes ficam em pontos diferentes da quadra. Ao iniciar a aula, cada uma cresce até o tamanho de um guerreiro de barro, revelando espada e escudo.
+5. Equipe o cajado ou o khopesh e use **F / USAR** perto de cada guerreiro, voltado para ele. Cada guerreiro requer dois golpes; derrote os quatro para concluir a prova.
+6. Após ser derrotado, o guerreiro encolhe novamente para a forma de estatueta. O quadro pode reiniciar a aula.
 
-A experiência adapta o exercício de resolução de problemas descrito pela referência narrativa secundária. Vida, golpes e animação são regras próprias do protótipo.
+Essa sequência se inspira na cena do romance em que quatro pequenas estatuetas shabti crescem e se transformam em guerreiros armados com espadas e escudos. A contagem de golpes e as regras de combate são adaptações de gameplay. Nesta primeira versão, os guerreiros giram para encarar Carter, mas ainda não perseguem nem atacam o jogador; a IA de combate permanece como etapa futura.
 
 ### Portas e inspeção
 
@@ -131,7 +133,8 @@ A experiência adapta o exercício de resolução de problemas descrito pela ref
 - [ ] Conferir se a câmera enquadra a quadra, as cestas de Rá e a abóbada de forma convincente.
 - [ ] Testar pegar/arremessar a bola, colisão com a cesta e pontuação.
 - [ ] Testar a prática de alvos, o cajado e a resposta visual ao acertar.
-- [ ] Testar o shabti com cajado e khopesh, inclusive distância e direção dos golpes.
+- [ ] Testar os quatro shabtis com cajado e khopesh, inclusive transformação, distância, direção dos golpes e retorno à forma de estatueta.
+- [ ] Avaliar uma próxima etapa de IA: aproximação, defesa e ataques dos guerreiros (não implementados nesta versão).
 - [ ] Testar abrir/fechar o portal e garantir que as colisões acompanhem o estado das portas.
 - [ ] Testar toque, joystick, inventário e interação em celular paisagem.
 - [ ] Medir FPS, memória e temperatura no mobile.

@@ -959,7 +959,7 @@ export function buildTrainingRoom({
     const auraRing=new THREE.Mesh(new THREE.TorusGeometry(.68,.025,8,48),warmEmissive); auraRing.name='círculo de invocação'; auraRing.rotation.x=Math.PI/2; auraRing.position.y=.04; aura.add(auraRing);
     scene.add(aura); aura.visible=false;
     const state={
-      group,index,health:2,spawnProgress:1,hitAt:0,defeatTime:0,active:false,defeated:false,collider:null,
+      group,index,health:2,spawnProgress:1,hitAt:0,defeatTime:0,magicRespawnTimer:0,active:false,defeated:false,collider:null,
       aiState:'idle',windup:0,strike:0,strikeResolved:false,attackCooldown:0,moveSpeed:1.32,
       origin:group.position.clone(),miniScale:shabtiMiniScale,fullScale:shabtiFullScale,
       aura,beamMat,swordArm:group.getObjectByName('shabti-sword-arm'),shieldArm:group.getObjectByName('shabti-shield-arm'),
@@ -991,6 +991,7 @@ export function buildTrainingRoom({
     return state;
   });
   let shabtiActive=false,shabtiRemaining=0;
+  const shabtiDebris=[];
   const maxPlayerHealth=5;
   let playerHealth=maxPlayerHealth,playerInvulnerability=0;
   function addShabtiCollider(state) {
@@ -1009,11 +1010,167 @@ export function buildTrainingRoom({
     if (index >= 0) colliders.splice(index, 1);
     state.collider = null;
   }
+  function createShabtiDebris(state) {
+    const centre = state.group.position.clone().add(new THREE.Vector3(0, 1.02 * state.fullScale, 0));
+    state.group.updateMatrixWorld(true);
+    state.group.traverse(object => {
+      if (!object.isMesh || !object.visible || object.userData?.miniatureOnly) return;
+      object.updateWorldMatrix(true, false);
+      const position = new THREE.Vector3(), quaternion = new THREE.Quaternion(), scale = new THREE.Vector3();
+      object.matrixWorld.decompose(position, quaternion, scale);
+      const material = Array.isArray(object.material)
+        ? object.material.map(item => item.clone())
+        : object.material.clone();
+      const piece = new THREE.Mesh(object.geometry, material);
+      piece.name = 'fragmento de faiança destruído por HA-DI';
+      piece.position.copy(position); piece.quaternion.copy(quaternion); piece.scale.copy(scale);
+      piece.castShadow = true; piece.receiveShadow = true; scene.add(piece);
+      if (!object.geometry.boundingSphere) object.geometry.computeBoundingSphere();
+      const radius = Math.max(0.045, (object.geometry.boundingSphere?.radius || 0.12) * Math.max(scale.x, scale.y, scale.z));
+      const direction = position.clone().sub(centre);
+      if (direction.lengthSq() < 0.001) direction.set(Math.random() - 0.5, Math.random() * 0.7, Math.random() - 0.5);
+      direction.normalize();
+      const velocity = direction.multiplyScalar(1.8 + Math.random() * 3.8);
+      velocity.y += 1.5 + Math.random() * 2.8;
+      shabtiDebris.push({
+        mesh: piece, velocity,
+        spin: new THREE.Vector3((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 12, (Math.random() - 0.5) * 10),
+        radius, life: 0, ownsGeometry: false
+      });
+    });
+
+    // Lasquinhas adicionais de faiança dão leitura de estilhaçamento sem depender de texturas externas.
+    for (let i = 0; i < 12; i++) {
+      const size = 0.045 + Math.random() * 0.075;
+      const shard = new THREE.Mesh(
+        new THREE.DodecahedronGeometry(size, 0),
+        i % 2 ? faienceLight.clone() : faience.clone()
+      );
+      shard.name = 'lasca de faiança do HA-DI';
+      shard.position.copy(centre).add(new THREE.Vector3(
+        (Math.random() - 0.5) * 0.55,
+        (Math.random() - 0.5) * 0.8,
+        (Math.random() - 0.5) * 0.42
+      ));
+      shard.castShadow = true; shard.receiveShadow = true; scene.add(shard);
+      const velocity = new THREE.Vector3(Math.random() - 0.5, 1.8 + Math.random() * 3.2, Math.random() - 0.5)
+        .normalize().multiplyScalar(2.4 + Math.random() * 3.8);
+      shabtiDebris.push({
+        mesh: shard, velocity,
+        spin: new THREE.Vector3((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 12, (Math.random() - 0.5) * 12),
+        radius: size, life: 0, ownsGeometry: true
+      });
+    }
+  }
+
+  function updateShabtiDebris(dt) {
+    for (let i = shabtiDebris.length - 1; i >= 0; i--) {
+      const piece = shabtiDebris[i];
+      piece.life += dt;
+      if (piece.life >= 10) {
+        scene.remove(piece.mesh);
+        if (piece.ownsGeometry) piece.mesh.geometry.dispose();
+        if (Array.isArray(piece.mesh.material)) piece.mesh.material.forEach(material => material.dispose());
+        else if (piece.ownsGeometry) piece.mesh.material.dispose();
+        shabtiDebris.splice(i, 1);
+        continue;
+      }
+      piece.velocity.y -= 9.81 * dt;
+      piece.mesh.position.addScaledVector(piece.velocity, dt);
+      piece.mesh.rotation.x += piece.spin.x * dt;
+      piece.mesh.rotation.y += piece.spin.y * dt;
+      piece.mesh.rotation.z += piece.spin.z * dt;
+      const floorContact = floorY + Math.min(piece.radius, 0.16);
+      if (piece.mesh.position.y < floorContact) {
+        piece.mesh.position.y = floorContact;
+        if (Math.abs(piece.velocity.y) > 0.7) piece.velocity.y = Math.abs(piece.velocity.y) * 0.17;
+        else piece.velocity.y = 0;
+        piece.velocity.x *= 0.72;
+        piece.velocity.z *= 0.72;
+        piece.spin.multiplyScalar(0.72);
+        if (piece.velocity.lengthSq() < 0.055) piece.velocity.set(0, 0, 0);
+      }
+    }
+  }
+
+  function respawnShabtiRandomly(state, playerPosition) {
+    let spawn = state.origin.clone();
+    for (let attempt = 0; attempt < 36; attempt++) {
+      const candidate = new THREE.Vector3(
+        combatBounds.minX + 1.1 + Math.random() * (combatBounds.maxX - combatBounds.minX - 2.2),
+        floorY,
+        combatBounds.minZ + 1.1 + Math.random() * (combatBounds.maxZ - combatBounds.minZ - 2.2)
+      );
+      const farFromPlayer = candidate.distanceTo(playerPosition) > 5.2;
+      const farFromOthers = shabtiWarriors.every(other =>
+        other === state || !other.active || candidate.distanceTo(other.group.position) > 2.8
+      );
+      if (farFromPlayer && farFromOthers) { spawn = candidate; break; }
+    }
+    state.origin.copy(spawn);
+    state.group.position.copy(spawn);
+    state.group.rotation.set(0, 0, 0);
+    state.group.scale.setScalar(state.miniScale);
+    state.group.visible = true;
+    state.group.traverse(object => { if (object.userData?.miniatureOnly) object.visible = true; });
+    state.health = 2;
+    state.spawnProgress = 0;
+    state.hitAt = 0;
+    state.defeatTime = 0;
+    state.magicRespawnTimer = 0;
+    state.active = true;
+    state.defeated = false;
+    state.aiState = 'approach';
+    state.windup = 0; state.strike = 0; state.strikeResolved = false;
+    state.attackCooldown = 0.85 + Math.random() * 0.55;
+    state.swordArm.rotation.set(0, 0, -0.78);
+    state.shieldArm.rotation.set(0, 0, 0.78);
+    state.leftLeg.visible = false; state.rightLeg.visible = false;
+    state.leftLeg.rotation.set(0, 0, 0); state.rightLeg.rotation.set(0, 0, 0);
+    state.aura.position.copy(spawn);
+    state.aura.visible = true;
+    state.aura.scale.setScalar(1);
+    state.beamMat.opacity = 0.16;
+  }
+
+  function findHaDiTarget({ position, forward, zone }) {
+    if (zone !== 'training' || !shabtiActive) return null;
+    const aim = forward.clone().setY(0).normalize();
+    return shabtiWarriors
+      .filter(state => state.active && state.spawnProgress >= 0.92)
+      .map(state => {
+        const targetPosition = state.group.position.clone().add(new THREE.Vector3(0, 1.05 * state.fullScale, 0));
+        const distance = targetPosition.distanceTo(position);
+        const direction = targetPosition.clone().sub(position).setY(0);
+        const alignment = direction.lengthSq() > 0.001 ? direction.normalize().dot(aim) : -1;
+        return { state, position: targetPosition, distance, alignment };
+      })
+      .filter(target => target.distance >= 3.5 && target.distance <= 12.5 && target.alignment >= 0.78)
+      .sort((a, b) => a.distance - b.distance)[0] || null;
+  }
+
+  function applyHaDi(target) {
+    const state = target?.state || target;
+    if (!shabtiActive || !state?.active || state.spawnProgress < 0.92) return false;
+    removeShabtiCollider(state);
+    createShabtiDebris(state);
+    state.active = false;
+    state.defeated = true;
+    state.defeatTime = 0;
+    state.magicRespawnTimer = 10;
+    state.aiState = 'magic-destroyed';
+    state.aura.visible = false;
+    state.group.visible = false;
+    // O interactable acompanha o grupo; escondê-lo também evita prompt sobre uma estatueta invisível.
+    state.group.position.y = floorY - 100;
+    return true;
+  }
+
   function startShabtiChallenge() {
     shabtiActive=true; shabtiRemaining=shabtiWarriors.length;
     playerHealth=maxPlayerHealth; playerInvulnerability=0;
     for(const state of shabtiWarriors){
-      removeShabtiCollider(state); state.health=2; state.spawnProgress=0; state.aiState='approach';
+      removeShabtiCollider(state); state.health=2; state.spawnProgress=0; state.magicRespawnTimer=0; state.aiState='approach';
       state.windup=0;state.strike=0;state.strikeResolved=false;state.attackCooldown=.7+state.index*.22;state.moveSpeed=1.18+(state.index%2)*.15;
       state.hitAt=0;state.defeatTime=0;state.active=true;state.defeated=false;state.marked=false;
       state.group.visible=true;state.group.position.copy(state.origin);state.group.rotation.set(0,0,0);state.group.scale.setScalar(state.miniScale);
@@ -1042,8 +1199,8 @@ export function buildTrainingRoom({
   pg.fillStyle='#332a20';pg.font='bold 66px Georgia';pg.fillText('WHATEVER WORKS',384,190);
   pg.font='bold 30px Georgia';pg.fillText('E / INTERAGIR  ·  DESPERTAR OS QUATRO SHABTIS',384,270);
   pg.font='26px Georgia';pg.fillText('Aproxime-se e use E para marcar SA-PER (errar)',384,330);
-  pg.fillText('Use F / USAR com cajado ou khopesh para golpear',384,380);
-  pg.fillText('Ou pegue a bola e acerte a cabeça do guerreiro',384,430);
+  pg.fillText('G / HA-DI · destrua um Shabti à distância',384,380);
+  pg.fillText('F / USAR, khopesh ou basquete também funcionam',384,430);
   const paperTexture = new THREE.CanvasTexture(paperCanvas);
   paperTexture.colorSpace = THREE.SRGBColorSpace;
   const problemFace = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 1.92), new THREE.MeshBasicMaterial({ map: paperTexture }));
@@ -1214,7 +1371,24 @@ export function buildTrainingRoom({
         break;
       }
     }
+    updateShabtiDebris(dt);
     for (const state of shabtiWarriors) {
+      if (state.magicRespawnTimer > 0) {
+        if (shabtiActive) {
+          state.magicRespawnTimer = Math.max(0, state.magicRespawnTimer - dt);
+          if (state.magicRespawnTimer <= 0) respawnShabtiRandomly(state, playerPosition);
+        } else {
+          state.magicRespawnTimer = 0;
+          state.group.visible = true;
+          state.group.position.copy(state.origin);
+          state.group.rotation.set(0, 0, 0);
+          state.group.scale.setScalar(state.miniScale);
+          state.group.traverse(object => { if (object.userData?.miniatureOnly) object.visible = true; });
+          state.defeated = false;
+          state.spawnProgress = 1;
+          state.aura.visible = false;
+        }
+      }
       if (state.active) {
         // Invocação visível: a miniatura cresce dentro de uma coluna de luz.
         if (state.spawnProgress < 1) {
@@ -1351,6 +1525,8 @@ export function buildTrainingRoom({
     walkablePlatforms,
     zonePortals,
     onWeaponUse,
+    findHaDiTarget,
+    applyHaDi,
     update,
     getStatus() {
       return {

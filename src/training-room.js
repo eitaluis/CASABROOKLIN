@@ -186,7 +186,7 @@ export function buildTrainingRoom({
   const courtZ0 = centerZ;
   const courtX0 = centerX;
   function courtLine(points, name = 'marcação de quadra') {
-    return addTube(name, points, 0.035, paintedLine, scene, 72);
+    return addTube(name, points, 0.025, paintedLine, scene, 72);
   }
   const leftX = courtX0 - courtHalfWidth, rightX = courtX0 + courtHalfWidth;
   const nearZ = courtZ0 - courtHalfLength, farZ = courtZ0 + courtHalfLength;
@@ -749,9 +749,9 @@ export function buildTrainingRoom({
           const item = {
             minX: eastWallX - 0.12, maxX: eastWallX + 0.12,
             minY: floorY, maxY: floorY + 3.65,
-            minZ: centerZ + side * (openingHalf / 2), maxZ: centerZ + side * (openingHalf / 2) + (side < 0 ? openingHalf : -openingHalf)
+            minZ: side < 0 ? centerZ - openingHalf : centerZ,
+            maxZ: side < 0 ? centerZ : centerZ + openingHalf
           };
-          if (item.minZ > item.maxZ) [item.minZ, item.maxZ] = [item.maxZ, item.minZ];
           colliders.push(item); closedDoorColliders.push(item);
         }
       }

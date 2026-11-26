@@ -185,7 +185,6 @@ export function createCharacter({ scene, ground, onModeChange = () => {} }) {
     locomotionName: 'Carter Kane · rig local',
     updateFallback(dt, speed) { fallback.update(dt, speed); },
     resetFallback() {
-      fallback.root.position.set(0, 0, 0);
       fallback.root.rotation.set(0, 0, 0);
       fallback.phase = 0;
     }

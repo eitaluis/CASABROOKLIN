@@ -28,7 +28,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Lareira reposicionada em nicho de alvenaria; vigas transversais antigas removidas do vão central
 - [x] GLB Poly Haven Sofa 03 (CC0), texturas PBR CC0 e fogo volumétrico Housz (MIT) adicionados ao runtime
 - [x] Collider e interação por proximidade implementados para sofás, mesa, estátua e lareira; E no desktop e INTERAGIR no mobile
-- [ ] Teste visual do Grande Salão em navegador real, com verificação de todas as transições e passagens em desktop e mobile
+- [ ] Teste visual do Grande Salão em navegador real, verificando subida/descida de cada lance, passarela, assentos e passagens em desktop e mobile, com verificação de todas as transições e passagens em desktop e mobile
 - [ ] Ajustes de enquadramento, proporção e circulação após inspeção desktop/mobile
 
 ## Setor 01 — câmera e controles

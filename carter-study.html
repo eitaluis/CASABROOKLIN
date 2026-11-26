@@ -319,13 +319,14 @@ function createStrap(root, scale, side = 1) {
  const group = new THREE.Group();
  group.name = 'CrossbodyStrapStudy';
  group.scale.setScalar(1 / scale);
+ const frontSign = Math.sign(bagOptions.z) || 1;
  const points = [
-  [-0.17, 1.49, 0.105],
-  [-0.17, 1.40, 0.135],
-  [-0.115, 1.29, 0.15],
-  [-0.035, 1.13, 0.155],
-  [0.075, 0.96, 0.15],
-  [side * bagOptions.x, 0.79, 0.14]
+  [-side * 0.17, 1.49, frontSign * 0.105],
+  [-side * 0.17, 1.40, frontSign * 0.135],
+  [-side * 0.115, 1.29, frontSign * 0.15],
+  [-side * 0.035, 1.13, frontSign * 0.155],
+  [side * 0.075, 0.96, frontSign * 0.15],
+  [side * bagOptions.x, 0.79, frontSign * Math.abs(bagOptions.z)]
  ].map(p => new THREE.Vector3(p[0], p[1], p[2]));
  const curve = new THREE.CatmullRomCurve3(points);
  const segments = 48;
@@ -378,7 +379,7 @@ function updateBagMount() {
   bagOptions.y / modelScale,
   bagOptions.z / modelScale
  );
- bagPivot.rotation.set(0, bagOptions.yaw, 0);
+ bagPivot.rotation.set(0, bagOptions.yaw + (bagOptions.z < 0 ? Math.PI : 0), 0);
  bagPivot.visible = bagVisible;
  if (strapGroup) strapGroup.visible = bagVisible;
 }

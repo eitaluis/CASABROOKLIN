@@ -67,7 +67,14 @@ function toast(message) {
   toast.timer = setTimeout(() => element.classList.remove('show'), 2600);
 }
 
-const character = await createCharacter({ scene, ground: groundSurfaces });
+const character = createCharacter({
+  scene,
+  ground: groundSurfaces,
+  onModeChange: (mode) => {
+    const status = document.getElementById('status');
+    if (status) status.innerHTML = 'TERCEIRA PESSOA<br>' + mode.toUpperCase();
+  }
+});
 character.model.position.set(...zones.dock.pos);
 if (character.human) character.human.reset();
 
@@ -163,6 +170,8 @@ window.addEventListener('resize', () => {
 try {
   document.getElementById('zoneName').textContent = zones.dock.label;
   document.getElementById('status').innerHTML = 'TERCEIRA PESSOA<br>' + character.locomotionName.toUpperCase();
+  document.documentElement.dataset.appReady = 'true';
+  if (window.__brooklynWatchdog) clearTimeout(window.__brooklynWatchdog);
   document.getElementById('loading').classList.add('done');
   animate();
 } catch (error) {

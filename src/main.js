@@ -4,7 +4,7 @@ import { buildExterior } from './exterior.js?v=magical-interior-shell-20261126b'
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-final-pass-20261126a';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-final-pass-20261126c';
 import { buildTrainingRoom } from './training-room.js?v=training-room-polish-20261126d';
-import { createInventory } from './inventory.js?v=duat-reach-20261126a';
+import { createInventory } from './inventory.js?v=duat-reach-20261126b';
 import { createCharacter } from './character.js?v=carter-duat-reach-20261126a';
 import { createThirdPersonController } from './third-person.js?v=duat-input-lock-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';

@@ -2135,7 +2135,6 @@ export function buildGrandSalon({
     if(o.name==='parede lateral do salão' || o.name==='sacada de calcário' ||
        o.name==='lateral oeste da mansão' || o.name==='lateral leste da mansão' ||
        o.name==='lintel da passagem para ala' ||
-       o.name==='fachada frontal da mansão direita' ||
        o.name==='moldura da lareira' || o.name==='manto de pedra' ||
        o.name==='boca escura da lareira') o.visible=false;
     if(o.type==='Group' && Math.abs(o.position.x-5.85)<.12 &&

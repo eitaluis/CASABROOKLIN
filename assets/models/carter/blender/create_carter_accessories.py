@@ -55,6 +55,43 @@ def rounded_box(name, dimensions, location, material, bevel=0.008):
     assign_material(obj, material)
     return obj
 
+def soft_satchel_body(name, width, height, depth, location, material, bevel=0.014):
+    # Same subtly tapered silhouette as the live Three.js satchel, extruded from
+    # the rear anchor along local +Z so the side-facing transform matches exactly.
+    w = width * 0.5
+    h = height * 0.5
+    outline = [
+        (-w * 0.37, -h),
+        ( w * 0.37, -h),
+        ( w * 0.50, -h * 0.70),
+        ( w * 0.45,  h * 0.68),
+        ( w * 0.26,  h),
+        (-w * 0.28,  h),
+        (-w * 0.48,  h * 0.68),
+        (-w * 0.50, -h * 0.70)
+    ]
+    count = len(outline)
+    vertices = [(x, y, 0.0) for x, y in outline]
+    vertices.extend((x, y, depth) for x, y in outline)
+    faces = [tuple(reversed(range(count))), tuple(range(count, count * 2))]
+    for index in range(count):
+        following = (index + 1) % count
+        faces.append((index, following, count + following, count + index))
+
+    mesh = bpy.data.meshes.new(name + "_Mesh")
+    mesh.from_pydata(vertices, [], faces)
+    mesh.update()
+    obj = bpy.data.objects.new(name, mesh)
+    bpy.context.collection.objects.link(obj)
+    obj.location = location
+    bevel_mod = obj.modifiers.new("Soft leather silhouette", "BEVEL")
+    bevel_mod.width = bevel
+    bevel_mod.segments = 4
+    bevel_mod.limit_method = "ANGLE"
+    obj.modifiers.new("Weighted corner normals", "WEIGHTED_NORMAL")
+    assign_material(obj, material)
+    return obj
+
 def make_curve(name, points, material, bevel_depth=0.002, resolution=3, cyclic=False):
     curve_data = bpy.data.curves.new(name + "_Curve", "CURVE")
     curve_data.dimensions = "3D"
@@ -157,17 +194,18 @@ bag_width = 0.305 * UNIT
 bag_height = 0.245 * UNIT
 bag_depth = 0.092 * UNIT
 bag_anchor_point = Vector((-0.245 * UNIT, 0.375 * HEIGHT, -0.135 * UNIT))
-# Runtime body geometry is extruded from the anchor along local +Z; after the
-# -90 degree turn this places its centre half a depth toward anatomical right.
-bag_center = Vector((bag_anchor_point.x - bag_depth * 0.5, bag_anchor_point.y, bag_anchor_point.z))
+# The body is extruded from the rear anchor along local +Z, matching the runtime.
+bag_center = bag_anchor_point.copy()
 side_rotation = (0.0, -math.pi / 2.0, 0.0)
 
-body = rounded_box(
+body = soft_satchel_body(
     "Carter_Soft_Satchel_Body",
-    (bag_width, bag_height, bag_depth),
-    bag_center,
+    bag_width,
+    bag_height,
+    bag_depth,
+    bag_anchor_point,
     leather,
-    0.026 * UNIT
+    0.014 * UNIT
 )
 body.rotation_euler = side_rotation
 parent_keep_world(body, bag_anchor)
@@ -215,18 +253,24 @@ seam = make_curve(
 )
 parent_keep_world(seam, bag_anchor)
 
-bpy.ops.mesh.primitive_torus_add(
-    major_radius=0.011 * UNIT,
-    minor_radius=0.0022 * UNIT,
-    major_segments=24,
-    minor_segments=8,
-    location=(bag_anchor_point.x - bag_depth * 1.09, bag_center.y + bag_height * 0.105, bag_center.z),
-    rotation=(0.0, -math.pi / 2.0, 0.0)
-)
-clasp = bpy.context.object
-clasp.name = "Carter_Satchel_Brass_Snap"
-assign_material(clasp, brass_light)
-parent_keep_world(clasp, bag_anchor)
+# Two small brass snaps on the lower pocket, matching the Three.js runtime.
+for index, local_x in enumerate((-0.065, 0.065)):
+    bpy.ops.mesh.primitive_uv_sphere_add(
+        segments=16,
+        ring_count=8,
+        radius=0.0065 * UNIT,
+        location=(
+            bag_anchor_point.x - bag_depth * 1.09,
+            bag_center.y + bag_height * 0.105,
+            bag_center.z + local_x * UNIT
+        )
+    )
+    snap = bpy.context.object
+    snap.name = "Carter_Satchel_Brass_Snap_" + str(index + 1)
+    snap.rotation_euler = side_rotation
+    snap.scale = (1.0, 1.0, 0.45)
+    assign_material(snap, brass_light)
+    parent_keep_world(snap, bag_anchor)
 
 # Strap-to-bag ring sits directly under the strap's rear endpoint.
 bpy.ops.mesh.primitive_torus_add(

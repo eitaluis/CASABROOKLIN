@@ -574,19 +574,15 @@ function createRug(scene) {
     const base=g.createLinearGradient(0,0,w,h);
     base.addColorStop(0,'#0e2025');base.addColorStop(.48,'#233b3d');base.addColorStop(1,'#101e23');
     g.fillStyle=base;g.fillRect(0,0,w,h);
-
     const palettes=['#28474a','#375352','#52604d','#6a583f','#233c40','#40565a'];
     const sw=50,sh=40;
-    for(let row=-1;row<Math.ceil(h/sh)+1;row++){
+    for(let row=-1;row<Math.ceil(h/sh)+1;row++) {
       const offset=(row%2)*sw*.5;
-      for(let col=-1;col<Math.ceil(w/sw)+1;col++){
-        const x=col*sw+offset,y=row*sh;
-        const tone=palettes[Math.floor(rand()*palettes.length)];
+      for(let col=-1;col<Math.ceil(w/sw)+1;col++) {
+        const x=col*sw+offset,y=row*sh,tone=palettes[Math.floor(rand()*palettes.length)];
         const gradient=g.createLinearGradient(x,y-sh*.35,x,y+sh*.55);
         gradient.addColorStop(0,'#6d7460');gradient.addColorStop(.26,tone);gradient.addColorStop(1,'#111f24');
-        g.fillStyle=gradient;
-        g.beginPath();
-        g.moveTo(x-sw*.46,y);
+        g.fillStyle=gradient;g.beginPath();g.moveTo(x-sw*.46,y);
         g.bezierCurveTo(x-sw*.43,y-sh*.44,x+sw*.43,y-sh*.44,x+sw*.46,y);
         g.bezierCurveTo(x+sw*.42,y+sh*.39,x+sw*.18,y+sh*.5,x,y+sh*.52);
         g.bezierCurveTo(x-sw*.2,y+sh*.5,x-sw*.42,y+sh*.39,x-sw*.46,y);
@@ -594,28 +590,20 @@ function createRug(scene) {
         g.strokeStyle='rgba(8,17,20,.72)';g.lineWidth=2.2;g.stroke();
         g.strokeStyle='rgba(205,184,135,.3)';g.lineWidth=1.1;
         g.beginPath();g.moveTo(x-sw*.36,y-sh*.02);g.quadraticCurveTo(x,y-sh*.33,x+sw*.36,y-sh*.02);g.stroke();
-        g.fillStyle='rgba(225,207,165,.12)';g.beginPath();g.ellipse(x,y+sh*.07,sw*.19,sh*.12,0,0,Math.PI*2);g.fill();
-        for(let n=0;n<18;n++){
-          g.fillStyle=rand()>.5?'rgba(220,205,166,.09)':'rgba(0,0,0,.12)';
-          g.fillRect(x+(rand()-.5)*sw*.65,y+(rand()-.5)*sh*.55,1+rand()*2,1+rand()*2);
-        }
+        for(let n=0;n<18;n++){g.fillStyle=rand()>.5?'rgba(220,205,166,.09)':'rgba(0,0,0,.12)';g.fillRect(x+(rand()-.5)*sw*.65,y+(rand()-.5)*sh*.55,1+rand()*2,1+rand()*2);}
       }
     }
     g.strokeStyle='#a27c4e';g.lineWidth=14;g.strokeRect(10,10,w-20,h-20);
     g.strokeStyle='rgba(226,197,143,.48)';g.lineWidth=3;g.strokeRect(27,27,w-54,h-54);
-    for(let i=0;i<1200;i++){
-      g.fillStyle=rand()>.5?'rgba(211,194,150,.06)':'rgba(0,0,0,.08)';
-      g.fillRect(rand()*w,rand()*h,1+rand()*2,1+rand()*2);
-    }
+    for(let i=0;i<1200;i++){g.fillStyle=rand()>.5?'rgba(211,194,150,.06)':'rgba(0,0,0,.08)';g.fillRect(rand()*w,rand()*h,1+rand()*2,1+rand()*2);}
   },1024,1024,1,1);
   const bump=tex((g,w,h)=>{
     g.fillStyle='#727272';g.fillRect(0,0,w,h);
     const sw=50,sh=40;
-    for(let row=-1;row<Math.ceil(h/sh)+1;row++){
+    for(let row=-1;row<Math.ceil(h/sh)+1;row++) {
       const offset=(row%2)*sw*.5;
-      for(let col=-1;col<Math.ceil(w/sw)+1;col++){
-        const x=col*sw+offset,y=row*sh;
-        g.fillStyle='#aaaaaa';g.beginPath();g.moveTo(x-sw*.46,y);
+      for(let col=-1;col<Math.ceil(w/sw)+1;col++) {
+        const x=col*sw+offset,y=row*sh;g.fillStyle='#aaaaaa';g.beginPath();g.moveTo(x-sw*.46,y);
         g.bezierCurveTo(x-sw*.43,y-sh*.44,x+sw*.43,y-sh*.44,x+sw*.46,y);
         g.bezierCurveTo(x+sw*.42,y+sh*.39,x+sw*.18,y+sh*.5,x,y+sh*.52);
         g.bezierCurveTo(x-sw*.2,y+sh*.5,x-sw*.42,y+sh*.39,x-sw*.46,y);g.closePath();g.fill();
@@ -625,13 +613,22 @@ function createRug(scene) {
     for(let i=0;i<16000;i++){const v=Math.floor(90+rand()*75);g.fillStyle='rgb('+v+','+v+','+v+')';g.fillRect(rand()*w,rand()*h,1+rand()*2,1+rand()*2);}
   },1024,1024,1,1);
   bump.colorSpace=THREE.NoColorSpace;
-  const rug=new THREE.Mesh(new THREE.CircleGeometry(1,144),new THREE.MeshStandardMaterial({map:color,bumpMap:bump,bumpScale:.065,roughness:.94}));
-  rug.name='tapete oval de couro com padrão de escamas de serpente do Grande Salão';
-  rug.rotation.x=-Math.PI/2;rug.scale.set(6.1,1,2.3);rug.position.set(0,13.205,-4.6);rug.receiveShadow=true;scene.add(rug);
-  for(const spec of [[5.42,.023],[5.86,.018]]){
-    const ring=new THREE.Mesh(new THREE.TorusGeometry(spec[0],spec[1],7,112),new THREE.MeshStandardMaterial({color:0x957046,metalness:.52,roughness:.58}));
-    ring.rotation.x=Math.PI/2;ring.position.set(0,13.22,-4.6);ring.scale.z=2.3/6.1;scene.add(ring);
-  }
+  const hide=new THREE.Shape();
+  hide.moveTo(-6.05,-.18);
+  hide.bezierCurveTo(-6.12,-1.05,-5.05,-2.12,-3.45,-2.23);
+  hide.bezierCurveTo(-1.5,-2.42,2.75,-2.18,4.75,-1.83);
+  hide.bezierCurveTo(5.82,-1.62,6.24,-.75,6.12,.2);
+  hide.bezierCurveTo(5.96,1.28,4.42,2.06,2.35,2.2);
+  hide.bezierCurveTo(-.15,2.42,-3.92,2.2,-5.35,1.16);
+  hide.bezierCurveTo(-5.95,.72,-6.22,.26,-6.05,-.18);
+  const rug=new THREE.Mesh(new THREE.ShapeGeometry(hide,96),new THREE.MeshStandardMaterial({
+    map:color,bumpMap:bump,bumpScale:.065,roughness:.96,side:THREE.DoubleSide
+  }));
+  rug.name='tapete de pele de serpente de quarenta pés por quinze pés do Grande Salão';
+  rug.rotation.x=-Math.PI/2;rug.position.set(0,13.205,-2.35);
+  rug.receiveShadow=true;scene.add(rug);
+  const edgePoints=hide.getPoints(120).map(p=>[p.x,13.22,-2.35-p.y]);
+  scene.add(tube(edgePoints,.022,new THREE.MeshStandardMaterial({color:0x957046,metalness:.52,roughness:.58}),120,7));
 }
 
 function centerTable(scene,wood,brass) {
@@ -679,12 +676,36 @@ function centerTable(scene,wood,brass) {
   return group;
 }
 
+function addFireplaceHearth(scene,stone,brass) {
+  const dark=new THREE.MeshStandardMaterial({color:0x24201b,roughness:.96});
+  const ash=new THREE.MeshStandardMaterial({color:0x55483b,roughness:.94});
+  const base=new THREE.Mesh(new RoundedBoxGeometry(5.35,.3,2.25,10,.1),stone);
+  base.name='base de calcário maciço da lareira';base.position.set(0,13.31,-8.18);
+  base.castShadow=true;base.receiveShadow=true;scene.add(base);
+  const firebed=new THREE.Mesh(new RoundedBoxGeometry(4.35,.14,1.2,8,.04),dark);
+  firebed.name='câmara profunda de fogo da lareira';firebed.position.set(0,13.49,-8.38);
+  firebed.receiveShadow=true;scene.add(firebed);
+  const rear=new THREE.Mesh(new RoundedBoxGeometry(4.55,2.0,.22,8,.045),ash);
+  rear.name='fundo escuro refratário da lareira';rear.position.set(0,14.45,-9.02);
+  rear.castShadow=true;scene.add(rear);
+  for(const side of [-1,1]) {
+    const cheek=new THREE.Mesh(new RoundedBoxGeometry(.28,1.85,1.15,8,.055),stone);
+    cheek.name='ombreira lateral de pedra da lareira';
+    cheek.position.set(side*2.15,14.36,-8.42);
+    cheek.castShadow=true;cheek.receiveShadow=true;scene.add(cheek);
+    const inner=new THREE.Mesh(new RoundedBoxGeometry(.08,1.55,.93,6,.02),dark);
+    inner.position.set(side*1.99,14.32,-8.42);scene.add(inner);
+  }
+  const frontLip=new THREE.Mesh(new RoundedBoxGeometry(4.35,.23,.25,8,.05),brass);
+  frontLip.name='soleira frontal da lareira';frontLip.position.set(0,13.52,-7.79);
+  frontLip.castShadow=true;scene.add(frontLip);
+}
 function addFire(scene,animated,camera,isTouchDevice=false) {
   const logMat=woodMaterial();
   for(let i=0;i<5;i++){
     const log=new THREE.Mesh(new THREE.CylinderGeometry(.075,.105,1.16,20),logMat);
     log.name='lenha de nogueira carbonizada da lareira';
-    log.position.set(-.78+i*.39,14.33+(i%2)*.075,-8.24);
+    log.position.set(-.78+i*.39,13.62+(i%2)*.075,-8.30);
     log.rotation.z=Math.PI/2+(i%2?.15:-.12);log.rotation.x=i%2?.23:-.18;
     log.castShadow=true;log.receiveShadow=true;scene.add(log);
   }
@@ -692,7 +713,7 @@ function addFire(scene,animated,camera,isTouchDevice=false) {
     color:0x35150b,emissive:0xb23808,emissiveIntensity:1.2,roughness:.9
   }));
   ember.name='leito de brasas incandescentes';
-  ember.scale.set(1.55,.13,.34);ember.position.set(0,14.27,-8.31);scene.add(ember);
+  ember.scale.set(1.55,.13,.34);ember.position.set(0,13.53,-8.34);scene.add(ember);
 
   const textureLoader=new THREE.TextureLoader();
   const noise=textureLoader.load(assetUrl('fire/nzw.png'));
@@ -706,24 +727,24 @@ function addFire(scene,animated,camera,isTouchDevice=false) {
 
   const volume=new VolumetricFire({
     camera,textureNoise:noise,textureProfile:profile,
-    width:3.5,height:2.25,depth:.66,
+    width:3.5,height:2.1,depth:.66,
     // Smaller slices and a denser control lattice reduce the faceted edges of the flame.
     sliceSpacing:isTouchDevice?.052:.024,
     segments:isTouchDevice?34:66,
     debug:false
   });
   volume.name='fogo volumétrico com ruído procedural da lareira';
-  volume.position.set(0,15.35,-8.36);
+  volume.position.set(0,14.58,-8.37);
   volume.material.uniforms.magnitude.value=1.42;
   volume.material.uniforms.lacunarity.value=2.05;
   volume.material.uniforms.gain.value=.54;
   volume.material.uniforms.noiseScale.value.set(1.35,2.45,1.0,.42);
   const identity=new THREE.Quaternion();
   volume.setControlPoints([
-    {pos:new THREE.Vector3(-.02,-1.06,0),scale:new THREE.Vector3(3.55,1,.62),rot:identity.clone()},
+    {pos:new THREE.Vector3(-.02,-.98,0),scale:new THREE.Vector3(3.55,1,.62),rot:identity.clone()},
     {pos:new THREE.Vector3(-.12,-.36,0),scale:new THREE.Vector3(3.25,1,.6),rot:new THREE.Quaternion().setFromEuler(new THREE.Euler(0,0,-.025))},
     {pos:new THREE.Vector3(.10,.38,0),scale:new THREE.Vector3(2.25,1,.43),rot:new THREE.Quaternion().setFromEuler(new THREE.Euler(0,0,.055))},
-    {pos:new THREE.Vector3(-.04,1.1,0),scale:new THREE.Vector3(.12,1,.055),rot:new THREE.Quaternion().setFromEuler(new THREE.Euler(0,0,-.08))}
+    {pos:new THREE.Vector3(-.04,1.02,0),scale:new THREE.Vector3(.12,1,.055),rot:new THREE.Quaternion().setFromEuler(new THREE.Euler(0,0,-.08))}
   ]);
   scene.add(volume);
 
@@ -731,7 +752,7 @@ function addFire(scene,animated,camera,isTouchDevice=false) {
     const mat=new THREE.MeshBasicMaterial({color:i%5===0?0xffe4a3:0xffa13b,transparent:true,opacity:.82,blending:THREE.AdditiveBlending});
     const spark=new THREE.Mesh(new THREE.SphereGeometry(.016+(i%3)*.009,10,8),mat);
     spark.name='faísca ascendente da lareira';
-    spark.position.set((Math.random()-.5)*2.65,14.55+Math.random()*.85,-8.11+Math.random()*.24);
+    spark.position.set((Math.random()-.5)*2.65,13.78+Math.random()*.85,-8.1+Math.random()*.24);
     scene.add(spark);
     animated.push({obj:spark,phase:i*.77,particle:true,baseX:spark.position.x,baseY:spark.position.y,baseZ:spark.position.z});
   }
@@ -745,11 +766,11 @@ function addFire(scene,animated,camera,isTouchDevice=false) {
   const glow=new THREE.Mesh(new THREE.PlaneGeometry(4.5,2.7),new THREE.MeshBasicMaterial({
     map:halo,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide
   }));
-  glow.name='reflexo volumétrico quente da lareira';glow.position.set(0,15.3,-8.57);scene.add(glow);
+  glow.name='reflexo volumétrico quente da lareira';glow.position.set(0,14.62,-8.65);scene.add(glow);
 
   const light=new THREE.PointLight(0xff7b25,4.6,17,1.55);
-  light.name='luz dinâmica do fogo da lareira';light.position.set(0,15.05,-7.35);scene.add(light);
-  const fill=new THREE.PointLight(0xffa54d,1.8,10,1.9);fill.position.set(0,14.55,-8);scene.add(fill);
+  light.name='luz dinâmica do fogo da lareira';light.position.set(0,14.45,-7.45);scene.add(light);
+  const fill=new THREE.PointLight(0xffa54d,1.8,10,1.9);fill.position.set(0,13.95,-8.05);scene.add(fill);
 
   return {
     fireLight:light,

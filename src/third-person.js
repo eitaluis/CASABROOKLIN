@@ -1,4 +1,4 @@
-export function createThirdPersonController({ THREE, camera, canvas, character, zones, colliders = [], stairRamps = [], walkablePlatforms = [], spiralStair = null, onZoneChange }) {
+export function createThirdPersonController({ THREE, camera, canvas, character, zones, colliders = [], stairRamps = [], walkablePlatforms = [], zonePortals = [], spiralStair = null, onZoneChange }) {
   const keys = new Set();
   const touch = { moveX: 0, moveY: 0, sprint: false };
   const position = new THREE.Vector3();

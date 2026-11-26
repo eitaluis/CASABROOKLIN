@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#111619">
+<title>Brooklyn House — Mobile Landscape</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+:root{--gold:#d0ad69;--gold2:#f0d7a0;--ink:#101719;--panel:rgba(13,20,22,.84);--line:rgba(214,183,119,.34);--muted:#a8b0aa}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111719;color:#f0eee7;font-family:"DM Sans",sans-serif}
+#scene{position:fixed;inset:0;display:block;width:100%;height:100%;outline:none}
+#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 38%,rgba(4,8,10,.18) 100%);z-index:2}
+#topbar{position:fixed;z-index:5;top:0;left:0;right:0;padding:22px 28px;display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none}
+.brand{display:flex;gap:13px;align-items:center;text-shadow:0 2px 12px #000}
+.brand-mark{height:42px;width:42px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:var(--gold2);font:600 17px Cinzel,serif;background:rgba(10,15,16,.45)}
+.eyebrow{font:600 9px "DM Sans";letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.brand h1{font:500 18px Cinzel,serif;letter-spacing:.08em;margin:3px 0 0}
+.brand p{margin:4px 0 0;color:#c0c3bd;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+#coordinates{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#d5d0c3;text-align:right;text-shadow:0 2px 12px #000}
+#coordinates strong{display:block;color:var(--gold2);font:500 14px Cinzel,serif;margin-bottom:4px}
+#leftpanel{position:fixed;z-index:5;left:24px;top:116px;width:218px;pointer-events:auto}
+.panel-label{font-size:9px;letter-spacing:.21em;text-transform:uppercase;color:var(--gold);margin:0 0 10px 3px}
+.nav{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(14px);padding:7px;border-radius:3px;box-shadow:0 12px 40px #0005}
+.nav button{display:flex;width:100%;gap:11px;align-items:center;text-align:left;border:0;border-bottom:1px solid rgba(255,255,255,.07);padding:11px 10px;background:transparent;color:#c9cbc5;cursor:pointer;font:500 11px "DM Sans";transition:.2s}
+.nav button:last-child{border-bottom:0}.nav button:hover,.nav button.active{background:rgba(208,173,105,.12);color:#fff}
+.nav .num{font:500 10px Cinzel;color:var(--gold);width:19px}
+.nav small{display:block;color:#7f8b87;font-size:9px;font-weight:400;margin-top:3px}
+.nav button.active small{color:#c2b18c}
+#minimap{position:fixed;right:26px;top:104px;width:154px;background:var(--panel);border:1px solid var(--line);padding:10px;backdrop-filter:blur(14px);z-index:5}
+#minimap canvas{width:132px;height:108px;display:block}
+#minimap .maptitle{font:500 9px Cinzel;letter-spacing:.16em;color:var(--gold);margin-bottom:7px}
+#minimap .mapfoot{font-size:8px;color:#87918d;margin-top:6px;letter-spacing:.08em}
+#bottom{position:fixed;z-index:5;bottom:0;left:0;right:0;padding:13px 25px 18px;display:flex;align-items:flex-end;justify-content:space-between;background:linear-gradient(0deg,rgba(4,8,10,.75),transparent);pointer-events:none}
+#hint{color:#d7d5cc;font-size:10px;letter-spacing:.04em;text-shadow:0 2px 8px #000;line-height:1.7}
+.key{display:inline-grid;place-items:center;min-width:21px;height:21px;padding:0 5px;margin:0 2px;border:1px solid #8d8c7b;border-radius:3px;background:#151d1fbd;color:#eee;font-size:9px}
+#status{font-size:9px;color:#c2b18c;text-transform:uppercase;letter-spacing:.18em;text-align:right}
+#crosshair{position:fixed;z-index:4;left:50%;top:50%;width:5px;height:5px;border:1px solid rgba(244,226,184,.8);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:.65}
+#startscreen{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:linear-gradient(105deg,rgba(5,10,12,.94),rgba(8,14,16,.72) 54%,rgba(8,13,14,.28)),radial-gradient(ellipse at 70% 40%,#9a744533,transparent 48%);transition:opacity .6s}
+#startscreen.hidden{opacity:0;pointer-events:none}
+.startcard{width:min(610px,calc(100% - 40px));padding:36px 40px;border:1px solid var(--line);background:rgba(10,16,18,.68);backdrop-filter:blur(18px);box-shadow:0 22px 90px #0008;position:relative}
+.startcard:before,.startcard:after{content:"";position:absolute;width:32px;height:32px;border-color:var(--gold);opacity:.7}
+.startcard:before{top:9px;left:9px;border-top:1px solid;border-left:1px solid}.startcard:after{bottom:9px;right:9px;border-bottom:1px solid;border-right:1px solid}
+.kicker{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.startcard h2{font:500 clamp(30px,5vw,48px) Cinzel,serif;line-height:1.1;margin:0 0 12px;letter-spacing:.03em}
+.startcard h2 span{color:var(--gold2)}
+.startcard p{font-size:13px;line-height:1.75;color:#c4c9c4;max-width:480px}
+.startmeta{display:flex;gap:20px;flex-wrap:wrap;margin:23px 0;color:#a6aba4;font-size:9px;letter-spacing:.13em;text-transform:uppercase}
+.startmeta span:before{content:"◆";font-size:7px;color:var(--gold);margin-right:7px}
+#enter{border:1px solid var(--gold);background:linear-gradient(110deg,#b58c4f,#d5b477);color:#151818;padding:13px 20px;font:700 10px "DM Sans";letter-spacing:.17em;text-transform:uppercase;cursor:pointer;transition:.2s}
+#enter:hover{filter:brightness(1.12);transform:translateY(-1px)}
+#toast{position:fixed;z-index:7;left:50%;bottom:88px;transform:translate(-50%,12px);padding:10px 16px;background:rgba(8,14,15,.9);border:1px solid var(--line);color:#e8ddc3;font:10px "DM Sans";letter-spacing:.08em;opacity:0;transition:.3s;pointer-events:none}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#loading{position:fixed;z-index:20;inset:0;background:#101719;display:grid;place-items:center;font:12px Cinzel;letter-spacing:.2em;color:var(--gold)}
+#loading.done{display:none}
+#mobile{display:none;position:fixed;z-index:6;bottom:90px;left:18px;gap:5px;pointer-events:auto}
+#mobile button{width:42px;height:42px;background:#101719b8;color:#eee;border:1px solid var(--line);border-radius:4px}
+@media(max-width:700px){#topbar{padding:14px} .brand-mark{width:34px;height:34px}.brand h1{font-size:14px}#coordinates{font-size:8px}#leftpanel{top:auto;bottom:145px;left:12px;width:180px}#minimap{right:12px;top:84px;width:128px;padding:7px}#minimap canvas{width:112px;height:92px}#bottom{padding:10px 13px 14px}#hint{font-size:9px;max-width:62%}.startcard{padding:28px 24px}.startcard p{font-size:12px}#mobile{display:grid;grid-template-columns:repeat(3,42px)}}
+@media(max-height:520px){#leftpanel{top:82px}#minimap{top:78px}#bottom{padding-bottom:8px}}
+
+/* MOBILE LANDSCAPE EXPERIENCE */
+html,body{overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#scene{touch-action:none}
+#topbar{padding:9px 16px}
+.brand-mark{width:30px;height:30px;font-size:13px}
+.brand h1{font-size:13px}
+.brand p{font-size:8px}
+.eyebrow{font-size:7px}
+#coordinates{font-size:7px}
+#coordinates strong{font-size:11px}
+#leftpanel{left:12px;top:58px;width:164px}
+.panel-label{font-size:7px;margin-bottom:5px}
+.nav{padding:4px}
+.nav button{padding:6px 7px;gap:6px;font-size:9px}
+.nav small{font-size:7px}
+.nav .num{font-size:8px;width:14px}
+#minimap{right:12px;top:58px;width:112px;padding:6px}
+#minimap .maptitle{font-size:7px;margin-bottom:4px}
+#minimap canvas{width:98px;height:72px}
+#minimap .mapfoot{font-size:6px}
+#bottom{padding:5px 12px 6px}
+#hint{font-size:7px;line-height:1.4}
+#status{font-size:7px}
+#crosshair{width:4px;height:4px}
+#mobile{display:flex;position:fixed;left:16px;bottom:14px;gap:7px;align-items:flex-end}
+#mobile .move-pad{display:grid;grid-template-columns:repeat(3,43px);grid-template-rows:repeat(2,39px);gap:4px}
+#mobile button{width:43px;height:39px;border:1px solid rgba(208,173,105,.6);border-radius:9px;background:rgba(10,17,19,.72);color:#f1dfbd;font:600 15px "DM Sans";backdrop-filter:blur(8px);touch-action:none;box-shadow:0 3px 14px #0005}
+#mobile button:active{background:rgba(208,173,105,.4);transform:scale(.96)}
+#mobile [data-move="forward"]{grid-column:2;grid-row:1}
+#mobile [data-move="left"]{grid-column:1;grid-row:2}
+#mobile [data-move="back"]{grid-column:2;grid-row:2}
+#mobile [data-move="right"]{grid-column:3;grid-row:2}
+#mobile .actions{display:flex;gap:7px;margin-left:10px}
+#mobile .actions button{width:55px;height:49px;font-size:9px;letter-spacing:.08em}
+#mobile [data-action="jump"]{border-color:rgba(240,215,160,.85);color:#f0d7a0}
+#mobile [data-action="run"]{background:rgba(125,77,42,.78)}
+#startscreen{padding:10px}
+.startcard{width:min(540px,calc(100% - 24px));padding:20px 25px}
+.startcard h2{font-size:clamp(23px,4vw,34px);margin-bottom:6px}
+.startcard p{font-size:10px;line-height:1.5;margin:7px 0}
+.kicker{font-size:7px;margin-bottom:7px}
+.startmeta{margin:10px 0;font-size:7px;gap:12px}
+#enter{padding:10px 14px;font-size:8px}
+#toast{bottom:75px}
+#rotateNotice{display:none;position:fixed;inset:0;z-index:50;background:#101719;color:#f0eee7;align-items:center;justify-content:center;text-align:center;padding:28px}
+#rotateNotice .rotate-card{max-width:300px}
+#rotateNotice .phone{font-size:52px;display:block;margin-bottom:16px;transform:rotate(90deg);color:#d0ad69}
+#rotateNotice h2{font:500 22px Cinzel,serif;color:#f0d7a0}
+#rotateNotice p{font:12px/1.6 "DM Sans",sans-serif;color:#c4c9c4}
+@media (orientation:portrait){#rotateNotice{display:flex}#topbar,#leftpanel,#minimap,#bottom,#mobile,#startscreen,#toast,#crosshair{visibility:hidden}}
+@media (orientation:landscape) and (max-height:430px){#leftpanel{top:55px;left:8px;width:145px}#minimap{right:8px;top:55px;width:98px}#minimap canvas{width:84px;height:60px}#mobile{left:10px;bottom:8px}#mobile .move-pad{grid-template-columns:repeat(3,38px);grid-template-rows:repeat(2,34px)}#mobile button{width:38px;height:34px}#mobile .actions button{width:48px;height:43px}#bottom{padding-bottom:4px}}
+@media (orientation:landscape) and (min-height:431px){#mobile{bottom:18px}}
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas><div id="vignette"></div>
+<div id="loading">BROOKLYN HOUSE <span style="opacity:.45">—</span> CARREGANDO O AMBIENTE</div>
+<header id="topbar">
+  <div class="brand"><div class="brand-mark">𓂀</div><div><div class="eyebrow">As Crônicas dos Kane · Livro I</div><h1>BROOKLYN HOUSE</h1><p>East River · Brooklyn, New York</p></div></div>
+  <div id="coordinates"><strong id="zoneName">DOCA INDUSTRIAL</strong>FIM DE TARDE · 18:42</div>
+</header>
+<aside id="leftpanel">
+  <div class="panel-label">Explorar · teleporte rápido</div>
+  <nav class="nav">
+    <button class="active" data-zone="dock"><span class="num">01</span><span>Doca e fachada<small>O armazém escondido</small></span></button>
+    <button data-zone="hall"><span class="num">02</span><span>Grande Salão<small>O coração da casa</small></span></button>
+    <button data-zone="library"><span class="num">03</span><span>Biblioteca<small>Três níveis abaixo</small></span></button>
+    <button data-zone="bedroom"><span class="num">04</span><span>Ala dos quartos<small>Espaço reconstruído</small></span></button>
+  </nav>
+</aside>
+<aside id="minimap"><div class="maptitle">PLANTA DE EXPLORAÇÃO</div><canvas id="map" width="264" height="216"></canvas><div class="mapfoot">NAVEGAÇÃO · ACESSO RÁPIDO</div></aside>
+<div id="crosshair"></div>
+<div id="bottom"><div id="hint"><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> mover &nbsp; <span class="key">Mouse</span> orbitar câmera<br><span class="key">Shift</span> correr &nbsp; <span class="key">Espaço</span> saltar &nbsp; <span class="key">Esc</span> liberar mouse</div><div id="status">TERCEIRA PESSOA<br>WASD · MOUSE · SHIFT</div></div>
+<div id="toast"></div>
+<div id="mobile" aria-label="Controles de toque">
+  <div class="move-pad">
+    <button data-move="forward" aria-label="Avançar">▲</button>
+    <button data-move="left" aria-label="Esquerda">◀</button>
+    <button data-move="back" aria-label="Recuar">▼</button>
+    <button data-move="right" aria-label="Direita">▶</button>
+  </div>
+  <div class="actions">
+    <button data-action="run" aria-label="Correr">CORRER</button>
+    <button data-action="jump" aria-label="Saltar">SALTAR</button>
+  </div>
+</div>
+<div id="rotateNotice"><div class="rotate-card"><span class="phone">▱</span><h2>Gire seu celular</h2><p>A Brooklyn House foi preparada para explorar em modo paisagem. Vire o aparelho de lado para continuar.</p></div></div>
+<div id="startscreen"><div class="startcard"><div class="kicker">Um lugar escondido à margem do East River</div><h2>A casa que os<br><span>olhos não veem.</span></h2><p>Agora você vê a Brooklyn House por trás do personagem. Caminhe pela doca, suba a escada metálica em caracol, atravesse o portal e explore o Grande Salão e a biblioteca subterrânea. O movimento acompanha a velocidade e a direção de cada passo.</p><div class="startmeta"><span>Brooklyn, New York</span><span>Personagem articulado</span><span>Terceira pessoa</span><span>Mobile · paisagem</span></div><button id="enter">Explorar em terceira pessoa&nbsp; ↗</button></div></div>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module" src="./src/main.js"></script>
+<script>
+  window.__brooklynWatchdog = setTimeout(() => {
+    if (document.documentElement.dataset.appReady === 'true') return;
+    const panel = document.getElementById('loading');
+    if (!panel || panel.classList.contains('done')) return;
+    panel.innerHTML = '<div style="max-width:460px;padding:28px;text-align:center;line-height:1.7;font:12px DM Sans,sans-serif;color:#eee"><div style="font:500 18px Cinzel,serif;color:#d0ad69;margin-bottom:12px">A cena ainda não iniciou</div>O motor 3D não respondeu. O problema pode ser o carregamento do Three.js pelo CDN ou um erro de inicialização. Recarregue a página; se continuar, abra o Console do navegador (F12) e envie a primeira mensagem vermelha.<div style="margin-top:18px"><button onclick="location.reload()" style="border:1px solid #d0ad69;background:#d0ad69;color:#111;padding:10px 18px;font-weight:700;cursor:pointer">RECARREGAR</button></div></div>';
+  }, 12000);
+  window.addEventListener('error', event => {
+    if (document.documentElement.dataset.appReady === 'true') return;
+    const panel = document.getElementById('loading');
+    if (panel) panel.innerHTML = '<div style="max-width:460px;padding:28px;text-align:center;line-height:1.7;font:12px DM Sans,sans-serif;color:#eee"><div style="font:500 18px Cinzel,serif;color:#d0ad69;margin-bottom:12px">Falha ao iniciar a cena 3D</div>' + String(event.message || 'Erro desconhecido') + '<div style="margin-top:18px"><button onclick="location.reload()" style="border:1px solid #d0ad69;background:#d0ad69;color:#111;padding:10px 18px;font-weight:700;cursor:pointer">RECARREGAR</button></div></div>';
+  });
+  window.addEventListener('unhandledrejection', event => {
+    console.error('[Brooklyn House] Unhandled rejection:', event.reason);
+  });
+</script>
+</body></html>

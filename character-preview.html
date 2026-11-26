@@ -26,7 +26,7 @@ button.active,button:hover{background:#9b7542;color:#111}
 <body>
 <canvas id="stage"></canvas>
 <div id="loading">CARREGANDO CARTER · MALHA HUMANA RIGADA</div>
-<header><div class="eyebrow">Brooklyn House · Preview independente</div><h1>CARTER KANE</h1><p>Direção C · rosto natural · bolsa no quadril direito · ações cinematográficas</p></header>
+<header><div class="eyebrow">Brooklyn House · Preview independente</div><h1>CARTER KANE</h1><p>Direção C · mochila removida · bolsa lateral posterior · medalhão ajustado ao tórax</p></header>
 <div id="note">Arraste para orbitar · scroll para aproximar<br>Mesmo modelo do jogo · <span id="action-status">PRONTO</span></div>
 <div id="controls">
   <button data-mode="idle" class="active">PARADO</button>
@@ -42,6 +42,7 @@ button.active,button:hover{background:#9b7542;color:#111}
   <button data-view="front">FRENTE</button>
   <button data-view="side">PERFIL</button>
   <button data-view="back">COSTAS</button>
+  <button data-view="rear-three-quarter">3/4 TRASEIRO</button>
   <button id="game">ABRIR O JOGO ↗</button>
 </div>
 <script type="importmap">
@@ -169,7 +170,8 @@ document.querySelectorAll('[data-view]').forEach(button => button.addEventListen
   const positions = {
     front: [0, 1.62, -4.3],
     side: [4.3, 1.62, 0],
-    back: [0, 1.62, 4.3]
+    back: [0, 1.62, 4.3],
+    'rear-three-quarter': [3.25, 1.62, 3.55]
   };
   camera.position.set(...positions[view]);
   controls.target.set(0, 0.93, 0);

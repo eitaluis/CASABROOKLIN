@@ -1,6 +1,15 @@
 export function buildWorld(ctx){
  const {THREE,scene,colliders,animated,box,cyl,line,texCanvas,addWindow,glyphPanel,addStatue,addColumn,makeGraffiti,addRoomLabel,canvasSign,rugTex,limestone,concrete,metal,gold,stone,brickMat,darkBrick,woodMat,cedarMat,darkGlass,plaster} = ctx;
  const groundSurfaces=[];
+
+ // Caixas invisíveis simplificadas para a primeira camada de colisão.
+ const registerCollider = (x,y,z,width,height,depth) => {
+   colliders.push({
+     minX:x-width/2,maxX:x+width/2,
+     minY:y-height/2,maxY:y+height/2,
+     minZ:z-depth/2,maxZ:z+depth/2
+   });
+ };
 // --- Mundo exterior: doca e armazém industrial ---
 const ground=texCanvas((g,w,h)=>{g.fillStyle='#555650';g.fillRect(0,0,w,h);for(let i=0;i<1700;i++){g.fillStyle=['#74736a','#383d3b','#8b8577','#2d3433'][i%4];g.globalAlpha=Math.random()*.3;g.beginPath();g.arc(Math.random()*w,Math.random()*h,Math.random()*3,0,Math.PI*2);g.fill()}g.globalAlpha=1;for(let i=0;i<30;i++){g.strokeStyle='#252b2a';g.globalAlpha=.25;g.beginPath();g.moveTo(Math.random()*w,Math.random()*h);g.lineTo(Math.random()*w,Math.random()*h);g.stroke()}},512,512,4,4);
 const asphalt=new THREE.MeshStandardMaterial({map:ground,color:0xc2c0b3,roughness:1});
@@ -270,6 +279,25 @@ addRoomLabel('ALA DOS QUARTOS',21,20.8,-6.15);
 const info=box('placa de identificação',[ -22,2.3,24],[.08,2.3,3.2],metal,false);const sign=new THREE.Mesh(new THREE.PlaneGeometry(2.8,1.65),canvasSign('BROOKLYN HOUSE'));sign.position.set(-21.94,2.4,24);sign.rotation.y=Math.PI/2;scene.add(sign);
 // Luzes interiores quentes.
 for(let x of [-8,0,8])for(let z of [-6,5]){const lamp=new THREE.PointLight(0xffd39a,.45,12);lamp.position.set(x,25.5,z);scene.add(lamp)}
+
+ // Colisores do mobiliário e dos elementos centrais. São volumes invisíveis,
+ // independentes das malhas visuais, para manter o mesmo comportamento em desktop e mobile.
+ registerCollider(-4,14.3,1.1,5.2,2.2,2.5);
+ registerCollider(4,14.3,1.1,5.2,2.2,2.5);
+ registerCollider(0,13.75,-1.4,3.2,.7,1.8);
+ registerCollider(0,18.0,-.5,2.7,9.4,1.8);
+
+ // Estantes inferiores da biblioteca, no nível em que o personagem caminha.
+ for(let i=0;i<32;i++){
+   const angle=i/32*Math.PI*2;
+   registerCollider(Math.cos(angle)*10.65,-15.15,Math.sin(angle)*10.65-.5,1.2,2.2,1.1);
+ }
+
+ // Mobiliário principal da ala residencial.
+ registerCollider(17.8,18.05,-1.2,4.3,1.6,5.4);
+ registerCollider(24.2,18.15,-3.8,3.2,1.8,1.5);
+ registerCollider(24.5,18.1,3.2,2.5,1.7,1.0);
+ registerCollider(24,17.9,1.2,3.2,1.2,3.3);
 
  const zones={
  dock:{label:'DOCA INDUSTRIAL',pos:[0,0,31],yaw:0,bounds:[-34,34,-10,58],base:0},

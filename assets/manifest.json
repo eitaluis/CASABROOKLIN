@@ -185,7 +185,7 @@
     {
       "id": "carter-crossbody-satchel-and-medallion",
       "path": "src/character-accessories.js",
-      "role": "geometria e materiais originais Three.js para bolsa transversal de couro conhaque posicionada no quadril direito, alça do ombro esquerdo ao quadril direito, ferragens em latão e medalhão dourado; anexação ao Hips com fallback no root e movimento secundário sutil; compartilhado desktop/mobile",
+      "role": "geometria e materiais originais Three.js para bolsa transversal de couro conhaque no quadril direito (âncora Hips), alça do ombro esquerdo ao quadril direito, ferragens em latão e medalhão dourado com corrente (âncora Spine2/Spine1); oscilação secundária sutil; compartilhado desktop/mobile",
       "license": "project-original-code"
     },
     {

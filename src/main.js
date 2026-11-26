@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
-import { buildGrandSalon } from './grand-salon.js?v=great-hall-asset-first-20261126f';
+import { buildGrandSalon } from './grand-salon.js?v=great-hall-asset-first-20261126g';
 import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
 import { createCharacter } from './character.js?v=carter-ara-approved-restore-20261126d';
 import { createThirdPersonController } from './third-person.js?v=great-hall-collision-interactions-20261126a';

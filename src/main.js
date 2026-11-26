@@ -129,9 +129,11 @@ const controller = createThirdPersonController({
   stairRamps: grandSalon.stairRamps,
   walkablePlatforms: [
     ...(grandSalon.walkablePlatforms || []),
+    ...(trainingRoom.walkablePlatforms || []),
     { minX: -2.4, maxX: 21.2, minZ: 10.0, maxZ: 22.0, height: 13.15 },
     { minX: -14.4, maxX: 14.4, minZ: -10.4, maxZ: 9.7, height: 13.175 }
   ],
+  zonePortals: trainingRoom.zonePortals,
   spiralStair: world.spiralStair,
   onZoneChange: (name, zone) => {
     document.getElementById('zoneName').textContent = zone.label;

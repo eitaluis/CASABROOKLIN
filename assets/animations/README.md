@@ -2,26 +2,45 @@
 
 ## Carter — runtime atual
 
-As animações são geradas localmente em `src/character.js` e dirigidas pela velocidade real do controlador em `src/third-person.js`. A mesma implementação é usada no desktop e no mobile.
+As animações são controladas pelo módulo compartilhado src/character.js e pela velocidade real de src/third-person.js. Desktop e mobile usam os mesmos clips, estados e parâmetros; somente a entrada muda (teclado/mouse ou joystick/toque).
+
+### Locomoção
 
 - **Idle:** respiração, pequenos movimentos de cabeça e transferência de peso.
-- **Walk:** passada alternada, flexão dos joelhos e braços em oposição.
-- **Sprint:** lean para frente, passadas maiores, joelhos mais ativos e braços puxados para trás com cotovelos flexionados — inspiração de silhueta/mecânica corporal de Naruto, sem estética anime.
-- **Jump:** impulso e recolhimento das pernas.
-- **Landing:** flexão amortecida e retorno gradual à locomoção.
-- **Bolsa:** oscilação secundária sutil presa ao quadril direito.
+- **Walk:** passada natural, flexão dos joelhos e braços em oposição.
+- **Run:** passada mais ampla, com inclinação frontal moderada.
+- **Jump:** jump_start, jump_air e jump_land em sequência, com transição suave.
 
-Velocidades-alvo do controlador: caminhada 1,5 unidades/s; sprint 4,2 unidades/s. Aceleração/desaceleração e giro são interpolados pelo controlador de terceira pessoa.
+A velocidade de locomoção é enviada ao blending do Ara a cada frame. Caminhada usa alvo de 1,5 m/s; corrida usa 4,2 m/s. A aceleração, desaceleração, rotação do corpo e câmera receberam uma resposta mais suave para a direção cinematográfica.
 
-## Fontes abertas pesquisadas (não integradas nesta versão)
+### Ações cinematográficas
 
-- [Mesh2Motion app](https://github.com/Mesh2Motion/mesh2motion-app) e [assets](https://github.com/Mesh2Motion/mesh2motion-assets) — código MIT; assets/rigs/animações CC0. Avaliar Sprint, Run_Anime, NinjaJump_Start/Idle/Land, Land_Three_Point e Wall_Run para variedade adicional e retarget.
-- [Quaternius Universal Animation Library](https://quaternius.itch.io/universal-animation-library) — CC0; alternativa futura para clips baked.
-- [KinemIQ Free Game Animations](https://github.com/Kinemiq/free-game-animations) — CC0; clips GLB/FBX de caminhada, corrida, sprint, salto e combate.
-- [three-procedural-locomotion](https://github.com/PabloMesquida/three-procedural-locomotion) — MIT; referência técnica para passada, contato dos pés, IK, aceleração e curvas.
+src/character.js lê o catálogo ANIMATIONS e só carrega os IDs existentes entre os candidatos:
+
+- **look_around:** olhar ao redor; ação de fundo em loop.
+- **talk_gestures:** gesticular enquanto fala; loop.
+- **wave:** aceno de mão.
+- **point:** apontar.
+- **bow:** inclinar-se/cumprimentar.
+
+O preview independente oferece botões para estas ações. Se um clip não estiver presente na versão publicada do catálogo, o botão correspondente é desativado. A locomoção retorna ao terminar uma ação de uma só execução ou ao pressionar RETOMAR.
+
+### Movimento secundário dos acessórios
+
+A bolsa transversal no quadril direito e o medalhão têm pivôs próprios no módulo src/character-accessories.js. O balanço é discreto e proporcional à velocidade; os acessórios são descartados junto com o personagem.
+
+## Fonte e API
+
+- Ara 3D Gen — https://ara3dgen.com/docs/animations/
+- API JavaScript — https://ara3dgen.com/docs/library/
+- O runtime consulta ANIMATIONS antes de pedir clips. O blending idle/walk/run, o mixer e hero.update(delta) seguem a API oficial.
 
 ## QA pendente
 
-- Testar transições de idle/walk/sprint e contato visual dos pés.
-- Observar a bolsa no quadril direito durante corrida, curva e salto.
-- Testar em Chrome desktop e celular em modo paisagem.
+- Confirmar que os IDs de cada ação aparecem na versão carregada e que os botões funcionam.
+- Verificar as transições idle/walk/run/salto.
+- Verificar contato dos pés e ausência de deslizamento em curvas.
+- Observar a bolsa no quadril direito durante caminhada, corrida, mudança de direção e salto.
+- Conferir o medalhão e a alça sem clipping no pescoço, ombro e tronco.
+- Testar Chrome desktop e celular em modo paisagem.
+- Marcar como aprovado somente depois de inspeção no navegador real.

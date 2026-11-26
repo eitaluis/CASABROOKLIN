@@ -14,7 +14,7 @@ header{position:fixed;left:22px;top:18px;z-index:2;pointer-events:none}
 .eyebrow{font-size:9px;letter-spacing:.24em;color:var(--gold);text-transform:uppercase}
 h1{font:500 24px Georgia,serif;letter-spacing:.08em;margin:5px 0}
 p{font-size:11px;color:#bbc3c1;margin:0}
-#controls{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:3;display:flex;gap:7px;flex-wrap:wrap;justify-content:center;width:min(760px,calc(100% - 24px));padding:12px;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(15px)}
+#controls{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:3;display:flex;gap:7px;flex-wrap:wrap;justify-content:center;width:min(920px,calc(100% - 24px));max-height:34vh;overflow:auto;padding:12px;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(15px)}
 button{border:1px solid var(--line);background:#263034;color:#f0eee7;padding:11px 14px;font-size:10px;letter-spacing:.08em;cursor:pointer}
 button.active,button:hover{background:#9b7542;color:#111}
 #note{position:fixed;right:20px;top:20px;z-index:2;color:#d6d0c1;font-size:10px;text-align:right;line-height:1.6}
@@ -26,13 +26,19 @@ button.active,button:hover{background:#9b7542;color:#111}
 <body>
 <canvas id="stage"></canvas>
 <div id="loading">CARREGANDO CARTER · MALHA HUMANA RIGADA</div>
-<header><div class="eyebrow">Brooklyn House · Preview independente</div><h1>CARTER KANE</h1><p>Carter restaurado · bolsa transversal no quadril direito</p></header>
-<div id="note">Arraste para orbitar · scroll para aproximar<br>O mesmo modelo usado no jogo</div>
+<header><div class="eyebrow">Brooklyn House · Preview independente</div><h1>CARTER KANE</h1><p>Direção C · rosto natural · bolsa no quadril direito · ações cinematográficas</p></header>
+<div id="note">Arraste para orbitar · scroll para aproximar<br>Mesmo modelo do jogo · <span id="action-status">PRONTO</span></div>
 <div id="controls">
   <button data-mode="idle" class="active">PARADO</button>
   <button data-mode="walk">CAMINHAR</button>
   <button data-mode="sprint">SPRINT</button>
   <button data-mode="jump">SALTAR</button>
+  <button data-action="look_around">OBSERVAR</button>
+  <button data-action="talk_gestures">GESTICULAR</button>
+  <button data-action="wave">ACENAR</button>
+  <button data-action="point">APONTAR</button>
+  <button data-action="bow">SAUDAR</button>
+  <button data-action="stop">RETOMAR</button>
   <button data-view="front">FRENTE</button>
   <button data-view="side">PERFIL</button>
   <button data-view="back">COSTAS</button>
@@ -102,7 +108,13 @@ scene.add(grid);
 
 let character;
 try {
-  character = await createCharacter({ scene });
+  character = await createCharacter({
+    scene,
+    onActionChange: (action) => {
+      const status = document.getElementById('action-status');
+      if (status) status.textContent = action ? action.replaceAll('_', ' ').toUpperCase() : 'LOCOMOÇÃO';
+    }
+  });
   character.model.position.set(0, 0, 0);
 } catch (error) {
   const loading = document.getElementById('loading');
@@ -118,6 +130,7 @@ let previous = performance.now();
 let disposed = false;
 
 function setMode(mode) {
+  character.stopAction?.();
   document.querySelectorAll('[data-mode]').forEach(button => button.classList.toggle('active', button.dataset.mode === mode));
   if (mode === 'idle') speed = 0;
   if (mode === 'walk') speed = 1.5;
@@ -129,6 +142,28 @@ function setMode(mode) {
 }
 
 document.querySelectorAll('[data-mode]').forEach(button => button.addEventListener('click', () => setMode(button.dataset.mode)));
+
+document.querySelectorAll('[data-action]').forEach(button => {
+  const action = button.dataset.action;
+  const available = character.availableActions || [];
+  if (action !== 'stop' && !available.includes(action)) {
+    button.disabled = true;
+    button.title = 'Ação não disponibilizada pelo catálogo Ara atual';
+  }
+  button.addEventListener('click', () => {
+    if (action === 'stop') {
+      character.stopAction?.();
+      return;
+    }
+    speed = 0;
+    const loops = action === 'look_around' || action === 'talk_gestures';
+    const played = character.playAction?.(action, { loop: loops });
+    if (!played) {
+      const status = document.getElementById('action-status');
+      if (status) status.textContent = 'AÇÃO INDISPONÍVEL';
+    }
+  });
+});
 document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => {
   const view = button.dataset.view;
   const positions = {

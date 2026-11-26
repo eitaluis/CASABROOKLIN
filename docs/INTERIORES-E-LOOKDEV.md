@@ -1,6 +1,6 @@
 # Interiores da Brooklyn House — pesquisa de assets e direção visual
 
-Status: pesquisa e pré-produção. Os pacotes abaixo ainda não foram importados no runtime; manter as opções registradas antes da integração dos binários.
+Status: primeira etapa visual integrada por geometria procedural original. Os modelos Poly Haven listados continuam como candidatos de próxima integração; os binários ainda não foram adicionados ao runtime.
 
 ## Direção visual
 
@@ -99,3 +99,11 @@ A cena já usa ACES tone mapping e sombras suaves. O próximo passo de lookdev �
 - Kenney Furniture Kit: https://kenney.nl/assets/furniture-kit
 - KayKit Furniture Bits: https://kaylousberg.itch.io/furniture-bits
 - Quaternius Fantasy Props MegaKit: https://quaternius.com/packs/fantasypropsmegakit.html
+
+
+## Primeira etapa visual integrada — 26/11/2026
+
+- Grande Salão: lustre cerimonial de bronze em três níveis, arandelas quentes, estandartes egípcios, placas de madeira entalhada e sofá com estrutura, assentos, almofadas e filetes de bronze.
+- Biblioteca: as estantes genéricas foram ocultadas e substituídas por nichos circulares de papiros em três faixas; foi adicionada uma cúpula celeste estrelada (Nut), cartografia de piso em tons de verde e terra (Geb), quatro shabtis em pedestais e objetos de leitura.
+- Lookdev: EffectComposer com SSAO no desktop e bloom controlado; o mobile usa bloom em resolução menor e dispensa SSAO na primeira configuração.
+- O código procedural é original do projeto. Os modelos Sofa 03 e Arm Chair 01 da Poly Haven estão registrados como candidatos CC0, mas ainda não foram importados como arquivos binários.

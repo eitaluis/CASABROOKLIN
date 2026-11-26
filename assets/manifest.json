@@ -519,6 +519,13 @@
       "license": "MIT",
       "role": "visual/technical study for procedural spell VFX, particles and GLSL techniques; no code, textures or assets copied into the CASABROOKLIN runtime",
       "runtimeImported": false
+    },
+    {
+      "id": "noto-egyptian-hieroglyphs",
+      "source": "https://github.com/notofonts/egyptian-hieroglyphs",
+      "license": "SIL Open Font License 1.1",
+      "role": "Noto Sans Egyptian Hieroglyphs loaded through Google Fonts CSS for accurate rendering of the HA-DI Unicode sequence 𓉔𓆓; font file is not vendored locally",
+      "runtimeImported": true
     }
   ]
 }

@@ -107,3 +107,11 @@ A cena já usa ACES tone mapping e sombras suaves. O próximo passo de lookdev �
 - Biblioteca: as estantes genéricas foram ocultadas e substituídas por nichos circulares de papiros em três faixas; foi adicionada uma cúpula celeste estrelada (Nut), cartografia de piso em tons de verde e terra (Geb), quatro shabtis em pedestais e objetos de leitura.
 - Lookdev: EffectComposer com SSAO no desktop e bloom controlado; o mobile usa bloom em resolução menor e dispensa SSAO na primeira configuração.
 - O código procedural é original do projeto. Os modelos Sofa 03 e Arm Chair 01 da Poly Haven estão registrados como candidatos CC0, mas ainda não foram importados como arquivos binários.
+
+
+## Correções de leitura visual — 26/11/2026
+
+- Parede cilíndrica da biblioteca: material `DoubleSide` para renderizar também a face interna.
+- Grande Salão: a lareira deixou de usar esferas soltas e passou a usar línguas de fogo cônicas em camadas, com flicker e luz pontual.
+- Exposição e luz ambiente elevadas moderadamente; SSAO reduzido para evitar escurecimento excessivo.
+- Validação visual final ainda pendente de navegador.

@@ -16,7 +16,9 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   // Colisão de primeira passagem: cápsula vertical simplificada contra caixas estáticas.
   // Mantém o teste leve para funcionar também no celular.
   const characterRadius = 0.34;
-  const characterHeight = 1.72;
+  // Usa a altura real informada pelo rig Ara, mantendo fallback para avatares sem metadados.
+  const characterHeight = Math.max(1.5, character.height || character.ara?.height || 1.72);
+  const cameraFocusHeight = characterHeight * 0.56;
   function blockedAt(x, z, baseY) {
     const actorBottom = baseY + 0.08;
     const actorTop = baseY + characterHeight;
@@ -371,7 +373,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
         break;
       }
     }
-    lookTarget.set(p.x, p.y + 0.98, p.z);
+    lookTarget.set(p.x, p.y + cameraFocusHeight, p.z);
     const horizontalDistance = cameraDistance * Math.cos(cameraPitch);
     desiredCamera.set(
       lookTarget.x + Math.sin(cameraYaw) * horizontalDistance,

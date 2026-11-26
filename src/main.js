@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=grand-salon-circulation-20261126a';
-import { buildExterior } from './exterior.js?v=brooklyn-waterfront-scale-20261126a';
+import { buildWorld } from './world.js?v=brooklyn-exterior-spiralwalk-20261126a';
+import { buildExterior } from './exterior.js?v=brooklyn-exterior-arrival-20261126b';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
 import { buildGrandSalon } from './grand-salon.js?v=grand-salon-circulation-20261126a';
 import { buildTrainingRoom } from './training-room.js?v=training-room-interactive-20261126a';
 import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
 import { createCharacter } from './character.js?v=carter-ara-approved-restore-20261126d';
-import { createThirdPersonController } from './third-person.js?v=grand-salon-stair-navigation-20261126c';
+import { createThirdPersonController } from './third-person.js?v=brooklyn-exterior-spiralwalk-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
@@ -224,8 +224,8 @@ function drawMap() {
   g.fillText('ARMAZÉM', 77, 65); g.fillText('CASA', 111, 87);
   g.fillStyle = '#9eb5b3'; g.fillRect(183, 0, 2, 216);
   g.fillStyle = '#9da8a1'; g.font = '8px DM Sans'; g.fillText('EAST RIVER', 190, 18);
-  g.fillStyle = '#c5a66b'; g.beginPath(); g.arc(229, 42, 3, 0, Math.PI * 2); g.fill();
-  g.fillText('PÍER', 218, 34);
+  g.fillStyle = '#c5a66b'; g.beginPath(); g.arc(171, 140, 3, 0, Math.PI * 2); g.fill();
+  g.fillText('PÍER', 158, 130);
 
   const p = controller.getPosition();
   const mx = THREE.MathUtils.clamp(129 + p.x * 1.25, 8, 256);

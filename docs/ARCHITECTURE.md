@@ -10,6 +10,7 @@ CASABROOKLIN/
 │   ├── world.js
 │   ├── training-room.js
 │   ├── character.js
+│   ├── character-accessories.js
 │   └── third-person.js
 ├── assets/
 │   ├── manifest.json
@@ -29,9 +30,11 @@ CASABROOKLIN/
 - `src/grand-salon.js`: passe asset-first do Grande Salão — GLB Poly Haven Sofa 03, texturas PBR locais, colunas de lótus, escadarias laterais, balaustradas, tapete serpentino, mesa, estátua de Thoth e fogo volumétrico; expõe colliders, superfícies caminháveis e objetos inspecionáveis.
 - `src/training-room.js`: ala de treinamento com quadra, abóbada pintada, efígies de Rá/cestas, bola e placar, prática de alvos mágicos, prova dos quatro shabtis com IA básica de aproximação/ataque, vitalidade do jogador, portas e inspeções; fornece plataformas caminháveis e portais de transição.
 - `src/vendor/volumetric-fire.js`: shader volumétrico Housz MIT adaptado a GLSL3/WebGL2; licença preservada em licenses/THREE-VOLUMETRIC-FIRE-MIT.txt.
-- `src/character.js`: personagem aprovado carregado pelo Ara 3D Gen, pivô de navegação independente, animações de locomoção/salto e descarte seguro do rig. A bolsa transversal não está presente no runtime atual; o inventário procura o socket de equipamento no rig e mantém fallback.
+- `src/character.js`: Carter aprovado carregado pelo Ara 3D Gen, animações centrais e ações cinematográficas filtradas pelo catálogo, API de olhar dirigido e descarte seguro do rig.
+- `src/character-accessories.js`: bolsa transversal autoral no quadril direito, alça diagonal, ferragens, medalhão e movimento secundário; anexação ao Hips quando disponível, com fallback no root.
 - `src/inventory.js`: inventário inicial, cajado, khopesh, encaixe WeaponR e ações de uso.
-- `src/third-person.js`: WASD, corrida com lean frontal, salto, rotação por mouse/toque, câmera com proteção do piso, teleporte e colisão AABB. Altura da cápsula e alvo vertical da câmera usam a altura informada pelo rig quando disponível.
+- `src/third-person.js`: movimento desktop/mobile compartilhado, aceleração e desaceleração suavizadas, curvas e inclinação corporal cinematográficas, salto, rotação por mouse/toque, câmera com proteção do piso, teleporte e colisão AABB. Altura da cápsula e alvo vertical da câmera usam a altura informada pelo rig.
+- `src/main.js`: interação por proximidade, inventário e direcionamento do olhar de Carter para o objeto examinado por E/INTERAGIR.
 - `assets/manifest.json`: proveniência e licenças dos assets locais e referências externas.
 - `docs/OPEN-SOURCES.md`: fontes abertas e decisões de licença.
 

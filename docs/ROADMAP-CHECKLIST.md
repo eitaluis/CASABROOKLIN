@@ -193,3 +193,31 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Criar piso de terraço em segmentos ao redor do recorte da piscina, com bordas de calcário e guarda-corpo de nogueira/bronze.
 - [x] Rebaixar fogo/lenha/brasas para o interior da lareira e adicionar caixa refratária física.
 - [ ] Validar o caminho completo salão → portas de vidro → terraço, a colisão da piscina e as portas de cada galeria em desktop e mobile.
+
+
+## Setor — exterior e entrada da Brooklyn House
+
+### Base canônica e escala
+- [x] Confirmar o lado correto do rio: Brooklyn House fica na margem do Brooklyn; Manhattan é a margem oposta.
+- [x] Registrar a sequência barco → doca → pátio industrial → armazém → mansão → escada → portal.
+- [x] Registrar a escada metálica contornando o armazém como canônica e a planta helicoidal como interpretação.
+
+### Implementação
+- [x] Separar a composição externa em src/exterior.js.
+- [x] Ampliar o East River e posicionar a margem de Manhattan em distância visual.
+- [x] Reconstruir a Williamsburg Bridge com torres, cabos, pendurais, treliças e tabuleiro.
+- [x] Criar skyline em planos de profundidade, barcos e cais industriais.
+- [x] Criar barco de papiro com cobertura de esteiras, leme/remo e tochas; sem piloto visível.
+- [x] Abrir o vão de entrada e animar a porta de madeira para cima.
+- [x] Conectar cálculo de altura da escada, patamar, passarela e piso do Grande Salão.
+- [x] Atualizar minimap e instrução inicial de chegada.
+- [x] Preservar uma única implementação compartilhada entre desktop e mobile.
+
+### QA ainda pendente
+- [ ] Percorrer doca → escada → patamar → portal → Grande Salão em navegador desktop.
+- [ ] Validar subida e descida da escada sem queda, clipping ou salto de altura.
+- [ ] Testar abertura/fechamento e travessia da porta em desktop e mobile.
+- [ ] Conferir composição, escala da ponte, horizonte e neblina em câmera baixa/alta.
+- [ ] Medir FPS, memória, temperatura e estabilidade em celular paisagem.
+- [ ] Integrar mapas PBR locais de tijolo somente após baixar e verificar todos os mapas/licenças.
+- [ ] Não marcar visualmente aprovado antes de inspeção real.

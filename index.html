@@ -90,4 +90,20 @@
 }
 </script>
 <script type="module" src="./src/main.js"></script>
+<script>
+  window.__brooklynWatchdog = setTimeout(() => {
+    if (document.documentElement.dataset.appReady === 'true') return;
+    const panel = document.getElementById('loading');
+    if (!panel || panel.classList.contains('done')) return;
+    panel.innerHTML = '<div style="max-width:460px;padding:28px;text-align:center;line-height:1.7;font:12px DM Sans,sans-serif;color:#eee"><div style="font:500 18px Cinzel,serif;color:#d0ad69;margin-bottom:12px">A cena ainda não iniciou</div>O motor 3D não respondeu. O problema pode ser o carregamento do Three.js pelo CDN ou um erro de inicialização. Recarregue a página; se continuar, abra o Console do navegador (F12) e envie a primeira mensagem vermelha.<div style="margin-top:18px"><button onclick="location.reload()" style="border:1px solid #d0ad69;background:#d0ad69;color:#111;padding:10px 18px;font-weight:700;cursor:pointer">RECARREGAR</button></div></div>';
+  }, 12000);
+  window.addEventListener('error', event => {
+    if (document.documentElement.dataset.appReady === 'true') return;
+    const panel = document.getElementById('loading');
+    if (panel) panel.innerHTML = '<div style="max-width:460px;padding:28px;text-align:center;line-height:1.7;font:12px DM Sans,sans-serif;color:#eee"><div style="font:500 18px Cinzel,serif;color:#d0ad69;margin-bottom:12px">Falha ao iniciar a cena 3D</div>' + String(event.message || 'Erro desconhecido') + '<div style="margin-top:18px"><button onclick="location.reload()" style="border:1px solid #d0ad69;background:#d0ad69;color:#111;padding:10px 18px;font-weight:700;cursor:pointer">RECARREGAR</button></div></div>';
+  });
+  window.addEventListener('unhandledrejection', event => {
+    console.error('[Brooklyn House] Unhandled rejection:', event.reason);
+  });
+</script>
 </body></html>

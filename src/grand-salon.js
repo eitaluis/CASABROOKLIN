@@ -363,7 +363,7 @@ function createSofa(scene,x,z,rotation,upholstery,wood,brass) {
   group.name='sofá de reserva do Grande Salão';
   group.position.set(x,13.175,z);
   group.rotation.y=rotation;
-  group.scale.set(.49,.64,.72);
+  group.scale.set(.44,.72,.42);
 
   const base=new THREE.Mesh(new RoundedBoxGeometry(4.65,.34,1.95,8,.15),wood);
   base.position.y=.25;base.castShadow=true;base.receiveShadow=true;group.add(base);

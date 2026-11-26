@@ -127,12 +127,36 @@ Os mapas estão locais para que a sala não dependa de downloads de textura em t
 - O estudo detalhado e as fichas estão em docs/BROOKLYN-HOUSE-EXTERIOR.md. A geometria da ponte, skyline e barco é original; as páginas acima são referências, não assets runtime.
 
 
-## Sala de Treinamento
+## Sala de Treinamento — revisão asset-first (26/11/2026)
 
-**Geometria e interações originais — `src/training-room.js`.**
-- Piso de madeira com mapas canvas de cor e bump, marcações de quadra, abóbada/afresco, nervuras, arandelas, bustos, efígies de Rá, cesta, placar, bola com assistência de arco ao mirar nas cestas, alvos mágicos, quatro estatuetas shabti que crescem para guerreiros com espada e escudo e portal articulado.
-- Código e modelos sob medida do projeto; não foi importado pacote de modelos de terceiros.
-- A textura [ambientCG Wood Floor 001](https://ambientcg.com/view?id=WoodFloor001) foi avaliada como candidata de referência (CC0), mas não foi baixada/integrada ao runtime desta versão. O material atual é procedural.
-- Referência narrativa detalhada da sala: [Brooklyn House — Riordan Wiki](https://riordan.fandom.com/wiki/Brooklyn_House) (fonte secundária). A existência e o propósito de formação da Casa são corroborados pela página oficial Disney do [Brooklyn House Magician's Manual](https://books.disney.com/book/brooklyn-house-magicians-manual/).
-- A quadra de 15 × 28 m e a faixa de circulação seguem o Art. 2 das [Official Basketball Rules 2026](https://www.nz.basketball/wp-content/uploads/2026/07/documents-corporate-fiba-official-rules-2026-v1-1.pdf); são parâmetros modernos adotados para escala, não uma medida canônica do romance.
-- A altura de 3,05 m para o topo do aro coincide com o documento FIBA 2026 — Basketball Equipment: https://www.nz.basketball/wp-content/uploads/2026/07/documents-corporate-fiba-official-rules-2026-equipment-v1-0.pdf. É uma referência dimensional; a cesta solar fictícia não é uma instalação esportiva certificada.
+**Geometria de produção própria — `src/training-room.js`.** Nenhum pacote de modelos externos foi importado para este espaço. As referências abaixo orientam silhueta, iconografia e material; não são modelos carregados no runtime.
+
+### Referências de narrativa e iconografia
+
+- Rick Riordan — [The Throne of Fire](https://books.disney.com/book/the-throne-of-fire/) (fonte narrativa primária). A sala usa piso de madeira, teto abobadado com arte egípcia, estátuas de divindades, cestas solares de Rá e a aula Magic Problem-Solving 101 / Whatever Works. A sequência dos shabtis apresenta quatro estatuetas que crescem em guerreiros com espada e escudo, a solução hieroglífica SA-PER e a solução da bola de basquete.
+- [Brooklyn House — Riordan Wiki](https://riordan.fandom.com/wiki/Brooklyn_House) (fonte secundária para o resumo espacial e localização do cômodo).
+- The Met — [Statuette of Re-Harakhty](https://www.metmuseum.org/art/collection/search/551042), Período Ptolemaico, faiança. A ficha identifica o deus de cabeça de falcão coroado com um disco solar simples; referência para a leitura visual de Rá. A estátua do jogo é uma composição original, não uma cópia do objeto.
+- The Met — [Stela fragment depicting Pay adoring Re-Harakhty](https://www.metmuseum.org/art/collection/search/546627). Referência adicional para a figura falconiforme, kilt, disco solar e uraeus.
+- Sir John Soane's Museum — [Ushabti figure A47](https://collections.soane.org/object-a47). A ficha documenta faiança com esmalte azul vivo, detalhes em relevo e pequena escala; referência de material/silhueta para as miniaturas shabti. O modelo do jogo é original e mais complexo porque se transforma em guerreiro.
+- The Met — [Head of an anthropomorphic falcon god](https://www.metmuseum.org/art/collection/search/549699). Referência para a leitura do falcão antropomórfico, peruca estriada e possível disco solar.
+
+### Texturas PBR locais
+
+- [Poly Haven Walnut Veneer 02](https://polyhaven.com/a/walnut_veneer_02) — CC0-1.0. Os mapas locais de normal e roughness em `assets/textures/wood-walnut/` são usados no piso de madeira; a cor das tábuas e as juntas continuam num mapa procedural criado para a quadra.
+- [Poly Haven Beige Wall 001](https://polyhaven.com/a/beige_wall_001) — CC0-1.0. Os mapas locais de cor, normal e roughness em `assets/textures/plaster-smooth-beige/` são usados nas paredes como reboco mineral bege-creme. A alvenaria procedural de calcário é mantida como fallback caso o carregamento do mapa de cor falhe.
+- [ambientCG Wood Floor 001](https://ambientcg.com/view?id=WoodFloor001) — CC0-1.0; referência visual avaliada, mas não carregada no runtime.
+
+### Assets e interações da sala
+
+- Piso: tábuas cor de mel, junta e veio procedural, roughness/normal PBR local, acabamento de verniz leve, moldura de nogueira e filetes de bronze.
+- Paredes: reboco mineral bege-creme com PBR local, fallback procedural de calcário, rodapés, cornijas, pilastras e frisos; não utilizar cinza liso como acabamento final.
+- Arandelas: suporte de bronze, motivo de lótus, taça de óleo, pavio e chama emissiva com luz quente.
+- Efígies de Rá: figura humana sentada com cabeça de falcão, bico, olhos, nemes, colar, kilt, trono e estela arqueada. O disco solar externo contém um aro esportivo vazado e rede; a borda superior do aro fica a 3,05 m do piso e a abertura livre foi dimensionada para 45 cm.
+- Bola: 24 cm de diâmetro, pega e arremessa por proximidade; o lançamento pode receber assistência para a cesta ou para a cabeça de um shabti ativo.
+- Shabtis: pequenas figuras mumiformes em faiança vitrificada, com nemes, hieróglifos, espada curva e escudo. Ao iniciar a aula, crescem dentro de uma coluna de luz e usam braços/pernas articulados na aproximação, preparação e golpe.
+- SA-PER: ao interagir com um shabti ativo, Carter pode fazê-lo errar e correr até a parede, reproduzindo a solução hieroglífica descrita na aula do romance.
+- Quadro Magic Problem-Solving 101 / Whatever Works: informa os comandos de início, combate, SA-PER e basquete. Avisos contextuais aparecem perto de objetos interativos e adaptam as instruções aos controles de toque.
+- Alvos de magia, placar e portas duplas permanecem como interações da reconstrução; o treino de precisão com projéteis mágicos é um complemento de gameplay, não uma mecânica apresentada como canônica.
+
+A documentação separa elementos narrativos confirmados, referências históricas de material/iconografia e interpretações de level design. A revisão no código não equivale a aprovação visual: é obrigatório conferir escala, iluminação, mapas UV, sombras, colisões e FPS em navegador real no desktop e em celular paisagem.
+

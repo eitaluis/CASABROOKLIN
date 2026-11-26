@@ -52,6 +52,27 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     cameraPitch = THREE.MathUtils.clamp(cameraPitch - event.movementY * 0.0018, 0.04, 0.82);
   });
 
+  // Em telas sensíveis ao toque, arrastar sobre a cena orbita a câmera sem Pointer Lock.
+  let touchLook = null;
+  canvas.addEventListener('pointerdown', (event) => {
+    if (event.pointerType !== 'touch') return;
+    touchLook = { id: event.pointerId, x: event.clientX, y: event.clientY };
+  });
+  canvas.addEventListener('pointermove', (event) => {
+    if (!touchLook || touchLook.id !== event.pointerId) return;
+    const dx = event.clientX - touchLook.x;
+    const dy = event.clientY - touchLook.y;
+    cameraYaw -= dx * 0.006;
+    cameraPitch = THREE.MathUtils.clamp(cameraPitch - dy * 0.004, 0.04, 0.82);
+    touchLook.x = event.clientX;
+    touchLook.y = event.clientY;
+  });
+  const releaseTouchLook = (event) => {
+    if (touchLook?.id === event.pointerId) touchLook = null;
+  };
+  canvas.addEventListener('pointerup', releaseTouchLook);
+  canvas.addEventListener('pointercancel', releaseTouchLook);
+
   canvas.addEventListener('click', () => {
     if (document.getElementById('startscreen')?.classList.contains('hidden')) capturePointer();
   });

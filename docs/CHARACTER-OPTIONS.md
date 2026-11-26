@@ -1,21 +1,23 @@
 # Carter Kane — direção visual e base técnica
 
-Status: **direção visual aprovada; modelo/rig final ainda em avaliação.** O Carter atual continua no runtime até que o novo modelo seja aprovado em preview e passe pelos testes de animação.
+Status: **direção visual e bolsa aprovadas; base 3D final em avaliação.** O Carter atual continua no runtime até que o novo modelo rigado seja apresentado e aprovado.
 
 ## 1. Direção visual aprovada
 
 **C — Game 3D gráfico.**
 
-A escolha C refere-se à linguagem visual, não a uma escolha automática de um pacote de personagem chamado "opção C".
+A escolha C refere-se à linguagem visual, não a uma escolha automática de um pacote pronto.
 
 - Personagem totalmente 3D, concebido para jogo em tempo real.
 - Formas claras, silhueta atlética e reconhecível, volumes simplificados e materiais limpos.
 - Aparência playful e expressiva, sem parecer infantil ou chibi.
 - Rosto humano natural, com proporções faciais críveis; não anime, não olhos exagerados e não contornos 2D.
 - Menos detalhes de pele/poros e menos realismo de escaneamento; mais acabamento de personagem de videogame.
-- Corpo jovem, ágil e proporcional; sem musculatura adulta exagerada.
-- Manter pele negra, cabelo crespo escuro, camisa azul e calça cáqui.
+- Corpo jovem, lean e ágil; sem musculatura adulta exagerada.
+- Pele negra, cabelo crespo escuro, camisa azul, calça cáqui e tênis azul/branco.
 - Não usar mochila nas costas.
+
+A prancha visual de conceito foi preparada na conversa como guia de look-dev (frente, perfil, costas, sprint e cenas de jogo). Ela não representa um GLB real, não foi integrada ao repositório e não deve ser confundida com um personagem já animado.
 
 ## 2. Bolsa transversal aprovada
 
@@ -26,48 +28,65 @@ A escolha C refere-se à linguagem visual, não a uma escolha automática de um 
 - Corpo em couro conhaque, aba frontal costurada, fecho de latão e argolas laterais.
 - Dimensões aproximadas do corpo: 230 × 86 × 180 mm.
 - **Posição aprovada:** quadril direito do Carter; alça atravessando diagonalmente peito e ombro.
-- Nota técnica: a descrição do asset diz que a alça está disposta atrás da bolsa em laço no chão, não pronta para vestir. A bolsa é a peça aprovada, mas a alça precisará ser remodelada/reposicionada ou substituída por uma curva skinned/rigged ajustada ao tronco. A bolsa deve acompanhar a cintura/quadril com balanço secundário sutil.
-- Ainda não foi baixada nem integrada no runtime.
+- Nota técnica: a descrição do asset diz que a alça está disposta atrás da bolsa em laço no chão, não pronta para vestir. O corpo da bolsa é a peça aprovada; a alça precisará ser remodelada/reposicionada ou substituída por uma curva skinned/rigged ajustada ao tronco.
+- O GLB ainda não foi baixado nem integrado no runtime.
 
-## 3. Malhas-base em avaliação (não aprovadas ainda)
+## 3. Bases e geradores avaliados
+
+### Ara 3D Gen / 3d-gen-TU — primeiro candidato para um teste controlado
+
+- App: https://ara3dgen.com/
+- Repositório de código/fork avaliado: https://github.com/TuriaArt/3d-gen-TU
+- Código MIT; dados de personagem MakeHuman CC0-1.0 (ver LICENSE e scripts/ASSETS_LICENSE.txt).
+- 935 morph targets, 219 sliders de detalhe facial/corporal, diferentes idades, etnias e proporções; cabelo, roupa e acessórios modulares.
+- Níveis de detalhe declarados: Low ~5–10k triângulos; Medium ~30–40k; High ~100–120k.
+- Game rig de 65 ossos com nomes Mixamo, compatível com Unity Humanoid/Unreal/Mixamo, e socket WeaponR.
+- **Risco:** o pipeline gera humanos realistas e skins foto-baseadas; o Carter atual foi percebido como realista demais. Testar Low + materiais gráficos sem textura de pele fotográfica, proporções juvenis e volumes simplificados. Não basta reduzir polígonos e deixar o rosto facetado.
+- É uma via de teste, não a aprovação automática do modelo atual.
+
+### Mesh2Motion — ferramenta e acervo de animações
+
+- App: https://mesh2motion.org/
+- Repositórios: https://github.com/Mesh2Motion/mesh2motion-app e https://github.com/Mesh2Motion/mesh2motion-assets
+- Código MIT; modelos, rigs e animações do acervo CC0-1.0.
+- Importa GLB/GLTF/DAE/FBX, permite mapear um rig humanoide, pré-visualizar animações e exportar GLB/FBX com vários clips.
+- O app usa um rig humano de 66 ossos. É uma fonte de locomoção para retarget, não o modelo final do Carter.
+- Clips relevantes encontrados no manifesto humano: Walk, Jog, Sprint, Run_Anime, Jump_Start, Jump_air, Jump_Land, NinjaJump_Start, NinjaJump_Idle, NinjaJump_Land, Land_Three_Point e Wall_Run.
+- Usar Sprint como ciclo de velocidade; avaliar Run_Anime como gesto/referência (clip não-loop); usar NinjaJump e Land_Three_Point para saltos/aterrissagem.
+- Ainda não integrado. Retarget, nomenclatura dos ossos, root motion e alinhamento dos pés precisam de teste no rig escolhido.
+
+### Blender Studio — Snow (referência visual secundária)
+
+- Página: https://studio.blender.org/characters/snow/v4/
+- Personagem masculino 3D estilizado com rosto articulado e rig completo; gratuito para Blender 4.1+.
+- Licença CC-BY; crédito exigido: “Snow Rig (CC) Blender Foundation | studio.blender.org”.
+- Direção visual útil como referência de personagem 3D playful com rosto humano, não anime.
+- Exige exportação/adaptação do rig Blender para GLB e ajuste visual de pele/cabelo/roupas; não está integrado.
 
 ### Quaternius — Universal Base Characters
-- Página oficial: https://quaternius.com/packs/universalbasecharacters.html
-- Seis modelos base game-ready, incluindo proporções Teen/Regular/Superhero; vinte cabelos; rig humanoide; FBX, glTF e Blend.
-- Média anunciada: aproximadamente 13 mil triângulos.
-- Licença CC0-1.0; uso comercial permitido.
-- Compatível com a Universal Animation Library.
-- Primeiro candidato técnico para teste de desempenho e retarget.
-- Risco visual: algumas peças Quaternius têm tratamento low-poly/facetado. Precisamos inspecionar o modelo Teen concreto e confirmar se o rosto pode ser refinado o suficiente para manter aparência humana natural sem perder a linguagem C. Não integrar automaticamente.
 
-### Ara 3D Gen — reaproveitar ou regenerar o Carter atual
-- Biblioteca: https://github.com/ara3d/ara3d
-- Gerador: https://ara3dgen.com/
-- Código MIT; bases de personagem CC0 segundo a documentação do projeto.
-- Vantagem: o runtime atual já usa Ara, o que reduz risco de migração de rig e preserva o socket WeaponR.
-- Risco: o Carter atual foi percebido como excessivamente realista. Só considerar esta via se for possível simplificar formas, materiais, proporções e detalhes de superfície o suficiente sem apenas aplicar um filtro visual.
+- Página oficial: https://quaternius.com/packs/universalbasecharacters.html
+- Seis bases no pacote completo: proporções Teen/Regular/Superhero, vinte cabelos, rig humanoide, FBX/glTF.
+- Licença CC0-1.0.
+- **Atenção:** a versão Standard gratuita consultada disponibiliza apenas as bases Superhero masculinas/femininas; Teen/Regular estão no Source pago. Como o Carter não deve parecer musculoso, não usar a base Superhero como substituição imediata.
+- O pacote continua útil como referência de malha/rig e pode ser reconsiderado se a base Teen estiver disponível.
 
 ### MPFB 2 / MakeHuman Community
+
 - Add-on: https://extensions.blender.org/add-ons/mpfb/
 - Repositório: https://github.com/makehumancommunity/mpfb2
 - Documentação: https://static.makehumancommunity.org/mpfb.html
 - Código do add-on GPL-3.0; assets centrais do sistema MakeHuman CC0-1.0.
-- Controle de rosto, corpo, assimetria, cabelo, roupa, material, rigging Rigify e exportação.
-- Alternativa para gerar uma face humana mais natural e customizada; exige Blender, trabalho de look development e otimização para mobile.
+- Controle de rosto, corpo, assimetria, cabelo, roupas, material, rigging Rigify e exportação.
+- Alternativa de maior controle facial, mas exige Blender e trabalho de look development.
 
 ### CharacterCreator — kblood
+
 - Repositório: https://github.com/kblood/CharacterCreator
 - Viewer: https://dionysus.dk/webxr/charactercreator/
 - Código GPL-3.0-or-later; o projeto declara CC0-1.0 para GLBs gerados apenas de fontes CC0 e dados próprios.
-- Sliders corporais e faciais, cabelos, roupas, rig e exportação GLB.
-- Projeto relativamente recente; roupas descritas como protótipo e retarget de outros rigs ainda precisa ser testado.
-- Manter apenas como alternativa de pesquisa, não integrar sem validação.
-
-### Ducz Character Creator
-- Demo: https://luanducate.github.io/Ducz.CharacterCreator/
-- Repositório: https://github.com/LuanDucate/Ducz.CharacterCreator
-- Combina partes de outfits Quaternius, recolore materiais e exporta GLB rigged.
-- Os assets Quaternius creditados são CC0; a licença do código do builder não estava explícita na raiz consultada. Usar apenas como referência visual até esclarecer.
+- Sliders corporais/faciais, cabelos, roupas, rig e exportação GLB.
+- Projeto relativamente recente; roupas são descritas como protótipo e retarget ainda precisa ser testado.
 
 ## 4. Movimento aprovado como requisito de design
 
@@ -76,38 +95,41 @@ A inspiração Naruto é de **mecânica corporal e silhueta em movimento**, não
 - Idle: transferência de peso, respiração e microajustes, sem pose rígida.
 - Walk: passos naturais com peso e contato claro dos pés.
 - Run: tronco ligeiramente projetado, braços alternando e passadas mais amplas.
-- Sprint: inclinação mais evidente, aceleração, braços ativos e uma silhueta atlética; não copiar literalmente o gesto de Naruto se isso prejudicar a biomecânica.
+- Sprint: inclinação mais evidente, aceleração, braços ativos e silhueta atlética; sem copiar literalmente o gesto de Naruto se isso prejudicar a biomecânica.
 - Mudanças de direção: inclinação do tronco e ajuste dos pés, sem deslizar.
 - Jump/land: impulso, recolhimento das pernas, antecipação e aterrissagem amortecida.
 - A bolsa transversal tem balanço secundário discreto; não deve flutuar, atravessar o corpo ou girar sem peso.
 
-### Quaternius — Universal Animation Library
-- Página: https://quaternius.itch.io/universal-animation-library
-- 120+ clips humanoides, rig universal, locomoção em oito direções, jog, sprint, combate e emotes.
-- Tem versões com e sem root motion e é compatível com rigs comuns (por exemplo, Mixamo).
-- Licença CC0-1.0; uso comercial permitido.
-- Principal biblioteca a testar para a base de locomoção, se o retarget funcionar corretamente no rig escolhido.
+### Mesh2Motion — clips específicos para teste
 
-### Quaternius — Universal Animation Library 2
-- Página: https://quaternius.itch.io/universal-animation-library-2
-- 130+ animações complementares, incluindo parkour e combos de combate.
-- Licença CC0-1.0; testar como complemento para saltos e ações atléticas.
+- Sprint (loop) para o ciclo rápido.
+- Run_Anime (não-loop) como referência para gesto/silhueta; não assumir que funciona como ciclo de corrida.
+- NinjaJump_Start, NinjaJump_Idle e NinjaJump_Land para salto dinâmico.
+- Land_Three_Point para aterrissagem em três apoios.
+- Wall_Run para avaliar um recurso futuro de mobilidade.
+- Walk, Jog, Jump_Start, Jump_air e Jump_Land para transições gerais.
 
-### KinemIQ — Free Game Animations
-- Repositório: https://github.com/Kinemiq/free-game-animations
-- 35 clips CC0 em GLB/FBX, incluindo idle, walk, run, sprint, jump take-off/air/land, climb, roll e sword slash/idle/block.
-- Um esqueleto humanoide de 66 ossos a 30 fps.
-- Alternativa prática para teste de retarget e integração direta em Three.js.
+### Outras bibliotecas
 
-### Referência técnica
-- three-procedural-locomotion: https://github.com/PabloMesquida/three-procedural-locomotion (MIT).
-- Usar como referência de cadência, contato dos pés, IK, aceleração, curvas e transições.
+**Quaternius — Universal Animation Library**
+- https://quaternius.itch.io/universal-animation-library
+- Licença CC0-1.0; 120+ clips humanoides, locomoção em oito direções, jog, sprint, combate e emotes; opções com/sem root motion.
+- Alternativa caso o retarget Mesh2Motion não funcione no rig final.
+
+**KinemIQ — Free Game Animations**
+- https://github.com/Kinemiq/free-game-animations
+- Licença anunciada CC0-1.0; 35 clips GLB/FBX, rig humanoide de 66 ossos a 30 fps.
+- Fonte complementar para idle, walk, run, sprint, jump, climb, roll e ações com espada.
+
+**three-procedural-locomotion**
+- https://github.com/PabloMesquida/three-procedural-locomotion
+- MIT. Referência de cadência, contato dos pés, IK, aceleração, curvas e transições procedurais.
 
 ## 5. Plano de validação
 
-1. Baixar e inspecionar o GLB Quaternius Teen; avaliar rosto, silhueta, cabelo, rig e peso em triângulos.
-2. Fazer preview com a roupa do Carter e a bolsa Innerscene no quadril direito, com a alça ajustada ao tronco.
-3. Testar clips de idle, walk, jog/run, sprint, jump/land e curvas no Three.js.
-4. Conferir mão direita/WeaponR, mãos/dedos, roupa, clipping da bolsa e comportamento da bolsa em movimento.
-5. Apresentar frente, perfil, costas e sequência de sprint.
-6. Só depois de aprovação explícita substituir src/character.js e integrar o mesmo asset/rig/animador no desktop e mobile.
+1. Gerar uma base humana de detalhe baixo e testar face/pele sem material fotográfico, com proporções juvenis.
+2. Testar o rig de 65 ossos, mão direita e WeaponR no Three.js.
+3. Retarget dos clips Mesh2Motion, em particular Walk, Jog, Sprint, Run_Anime, NinjaJump e Land_Three_Point.
+4. Incorporar a bolsa Innerscene no quadril direito e reconstruir a alça diagonal; validar balanço e clipping.
+5. Apresentar preview 3D rigado com frente, perfil, costas e animações.
+6. Só depois da aprovação explícita substituir src/character.js e integrar o mesmo asset/rig/animador no desktop e mobile.

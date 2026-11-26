@@ -1,6 +1,6 @@
 # Carter Kane — modelo, movimento e refinamento
 
-Status: **inventário Duat com oito objetos e ação de alcance integrados; revisão visual real e refinamento da pose de atravessar a membrana ainda pendentes.**
+Status: **inventário Duat com doze objetos e ação de alcance integrados; revisão visual real e refinamento da pose de atravessar a membrana ainda pendentes.**
 
 ## Decisões confirmadas
 
@@ -22,7 +22,7 @@ Status: **inventário Duat com oito objetos e ação de alcance integrados; revi
 
 ## Inventário e objetos do Duat
 
-`src/inventory.js` mantém o cajado e o khopesh e acrescenta shabti de cera, caixa de magia, papiro, cálamo, recipiente de tinta e amuleto de proteção. Os objetos começam guardados no Duat e são retirados por uma abertura visual presa ao socket da mão; o retorno usa a transição inversa. O catálogo usa IDs estáveis e separa armas, ferramentas, artefatos e recipiente, sem habilitar o comando de ataque para itens que não sejam armas.
+`src/inventory.js` mantém o cajado e o khopesh e acrescenta shabti de cera, caixa de magia, papiro, cálamo, recipiente de tinta, amuleto, cera branca, paleta de escriba, cordão marrom e estátua de gato em ébano. Os objetos começam guardados no Duat e são retirados por uma abertura visual presa ao socket da mão; o retorno usa a transição inversa. O catálogo usa IDs estáveis e separa armas, ferramentas, artefatos, materiais e recipiente, sem habilitar o comando de ataque para itens que não sejam armas.
 
 O portal está ancorado ao tórax (prioridade Spine2, depois Spine1/Chest/Spine) no ponto de contato previsto pelo clipe Ara `use_press`; o socket dos itens continua preso à mão direita. O mesmo clipe é usado para retirar e guardar. O controlador bloqueia deslocamento, salto e joystick durante os 1,65 s da interação, tanto no desktop como no mobile. O clipe original termina com o indicador estendido, como um toque; a pose completa de palma/dedos atravessando uma membrana ainda poderá receber um refinamento próprio. A geometria procedural dos itens e a posição real do portal precisam de inspeção no navegador. Consulte `docs/CHARACTER-INVENTORY-DUAT.md`.
 

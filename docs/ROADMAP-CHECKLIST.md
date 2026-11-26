@@ -135,7 +135,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 
 - [x] Criar módulo independente `src/training-room.js`, conectado ao mundo compartilhado.
-- [x] Criar quadra de madeira 15 × 28 m, marcações, afresco de abóbada, nervuras, frisos e iluminação.
+- [x] Criar quadra de madeira 15 × 28 m, marcações de 5 cm, afresco de abóbada, nervuras, frisos e iluminação.
 - [x] Criar efígies de Rá com discos solares vazados usados como cestas, aro a 3,05 m do piso.
 - [x] Criar bola interativa, arremesso simplificado, detecção de cesta e placar.
 - [x] Criar prática de mira com alvos e orbes mágicos acionados pelo cajado.

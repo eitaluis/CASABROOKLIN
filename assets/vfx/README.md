@@ -13,7 +13,9 @@ The HA-DI spell uses five sprites from the **Kenney Particle Pack**:
 - Original pack: https://kenney.nl/assets/particle-pack
 - Author: Kenney
 - License: CC0 1.0 (public domain dedication): https://creativecommons.org/publicdomain/zero/1.0/
-- Original asset collection mirror used to retrieve the files: https://github.com/Mrice90/TubaExperiment/tree/strip/zeus-poseidon-desktop/game-gui/src/main/resources/vfx/kenney-particle-pack
+- Original asset page: https://kenney.nl/assets/particle-pack
+- Upstream repository mirror: https://github.com/Calinou/kenney-particle-pack (CC0 license text is retained in `LICENSE-KENNEY-PARTICLE-PACK.txt`)
+- File extraction mirror used for this import: https://github.com/Mrice90/TubaExperiment/tree/strip/zeus-poseidon-desktop/game-gui/src/main/resources/vfx/kenney-particle-pack
 
 ## Why the files end in .b64
 

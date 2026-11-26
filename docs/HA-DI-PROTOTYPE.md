@@ -2,7 +2,7 @@
 
 Data: 26/11/2026  
 Projeto: CASABROOKLIN  
-Status: integrado ao código; validação visual final no navegador pendente.
+Status: segunda iteração integrada ao código; validação visual no navegador pendente.
 
 ## Objetivo
 
@@ -23,13 +23,14 @@ A personagem que executa a cena do livro é Sadie. O uso do mesmo gesto por Cart
 
 ## Esfera 1 — Carter / corpo e gesto
 
-- Carter para de se deslocar durante a conjuração.
-- Orienta cabeça e corpo para o Shabti válido.
-- Usa o clipe Ara Point como base para estender o braço direito.
-- O código espelha a cadeia do indicador para o dedo médio, criando a leitura de dois dedos estendidos; o polegar permanece conforme o clipe-base.
+- Carter para de se deslocar e gira o tronco para o Shabti válido.
+- O clipe Ara Point continua como base para estender o braço direito e preservar o gesto de dois dedos + polegar.
+- A cabeça e o pescoço permanecem na orientação neutra vertical do rig durante a conjuração; o personagem não usa rastreamento visual para baixo em direção ao Shabti.
+- Uma pose procedural complementar flexiona levemente quadris e joelhos, baixa discretamente a pelve, inclina o tronco poucos graus para a frente e abre o braço esquerdo para estabilizar a posição de ataque.
+- A pose é aplicada como offset sobre o clip base e suavizada na entrada/saída, sem substituir a animação Point.
 - A mão direita fornece o socket espacial para posicionar o hieróglifo.
 - Os controles de movimento ficam bloqueados durante a janela de conjuração.
-- A pose deve voltar à locomoção sem deixar os dedos presos na posição de feitiço.
+- A pose volta à locomoção sem deixar dedos, pernas ou tronco presos na posição de feitiço.
 
 O clipe Point é uma base técnica disponível no Ara 3D Gen; não é apresentado como gesto canônico do livro. Caso a revisão visual mostre que a silhueta dos dedos ou o braço não correspondem à referência, criar/retargetar um clipe próprio.
 
@@ -40,7 +41,9 @@ O clipe Point é uma base técnica disponível no Ara 3D Gen; não é apresentad
 - Sequência de sinais: 𓉔𓆓.
 - Cor: dourado.
 - Posição: suspenso diante da mão direita, no espaço 3D; nunca como ícone de HUD.
-- Animação: materialização rápida, brilho aditivo, anel energético e desaparecimento breve.
+- Escala: inscrição final aproximadamente 24% menor que a versão anterior, sem perder legibilidade.
+- Brilho: halo radial mais forte, texto mais claro, três anéis concêntricos e luz pontual local pulsante.
+- Animação: materialização rápida, brilho aditivo, anéis em rotação e desaparecimento breve.
 - Efeito: pulso dourado percorre o espaço entre a mão e o alvo.
 
 O texto é desenhado em Canvas com Noto Sans Egyptian Hieroglyphs como primeira opção de fonte e fallbacks do sistema. A fonte não está empacotada localmente neste primeiro protótipo; verificar a cobertura de glifos no Safari/iOS e nos navegadores desktop. Se algum dispositivo não renderizar 𓉔𓆓, substituir por SVG vetorial validado e versionado localmente.
@@ -60,8 +63,9 @@ No impacto:
 1. O corpo inteiro do Shabti é removido da cena.
 2. Cabeça, braços, escudo, espada e demais peças visíveis são separados em fragmentos independentes; o tronco contínuo é substituído por lascas adicionais de faiança.
 3. Os fragmentos recebem impulso, gravidade, rotação e ressalto simples até assentarem no piso.
-4. Todos permanecem no chão por 10 segundos contados a partir do impacto.
-5. Ao completar 10 segundos, fragmentos e materiais temporários são removidos.
+4. Cada peça permanece visível por pelo menos 10 segundos contados a partir do impacto.
+5. Depois dos 10 segundos, cada peça inicia um fade individual, com início e duração levemente variados; a opacidade cai gradualmente durante aproximadamente 1,5–2,2 segundos, evitando que tudo desapareça ao mesmo tempo.
+6. Ao concluir o fade, fragmentos e materiais temporários são removidos.
 6. O mesmo estado de Shabti é reposicionado em uma localização aleatória segura da quadra.
 7. A miniatura reaparece, cresce na coluna de invocação já existente e volta a avançar contra Carter.
 

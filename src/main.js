@@ -4,7 +4,7 @@ import { buildExterior } from './exterior.js?v=brooklyn-east-river-surface-20261
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-final-pass-20261126a';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-final-pass-20261126c';
 import { buildTrainingRoom } from './training-room.js?v=training-room-combat-20261126a';
-import { createInventory } from './inventory.js?v=duat-inventory-20261126b';
+import { createInventory } from './inventory.js?v=duat-inventory-20261126c';
 import { createCharacter } from './character.js?v=carter-side-satchel-20261126f';
 import { createThirdPersonController } from './third-person.js?v=great-hall-final-pass-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';

@@ -142,9 +142,9 @@ function stairFlight(scene,stone,treadMaterial,brass,wood,options) {
   );
 
   const endZ=startZ+direction*count*depth;
-  const landing=new THREE.Mesh(new RoundedBoxGeometry(width+.3,.24,2.2,5,.055),stone);
+  const landing=new THREE.Mesh(new RoundedBoxGeometry(width+.3,.24,1.55,5,.055),stone);
   landing.name='patamar de mudança de nível da escadaria';
-  landing.position.set(centerX,topY-.12,endZ+direction*.93);
+  landing.position.set(centerX,topY-.12,endZ+direction*.33);
   landing.castShadow=true;landing.receiveShadow=true;scene.add(landing);
 
   const postGeo=new THREE.LatheGeometry([

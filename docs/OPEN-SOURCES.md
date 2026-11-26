@@ -151,7 +151,7 @@ Os mapas estão locais para que a sala não dependa de downloads de textura em t
 - Piso: tábuas cor de mel, junta e veio procedural, roughness/normal PBR local, acabamento de verniz leve, moldura de nogueira e filetes de bronze.
 - Paredes: reboco mineral bege-creme com PBR local, fallback procedural de calcário, rodapés, cornijas, pilastras e frisos; não utilizar cinza liso como acabamento final.
 - Arandelas: suporte de bronze, motivo de lótus, taça de óleo, pavio e chama emissiva com luz quente.
-- Efígies de Rá: figura humana sentada com cabeça de falcão, bico, olhos, nemes, colar, kilt, trono e estela arqueada. O disco solar externo contém um aro esportivo vazado e rede; a borda superior do aro fica a 3,05 m do piso e a abertura livre foi dimensionada para 45 cm.
+- Efígies de Rá: figura humana sentada com cabeça de falcão, bico, olhos, nemes, colar, kilt, trono e estela arqueada. O disco solar fica num plano vertical voltado para a quadra; a cesta interna tem 45 cm de abertura e borda superior a 3,05 m. A pontuação verifica a passagem da bola pelo plano vertical, não uma queda sobre um aro horizontal.
 - Bola: 24 cm de diâmetro, pega e arremessa por proximidade; o lançamento pode receber assistência para a cesta ou para a cabeça de um shabti ativo.
 - Shabtis: pequenas figuras mumiformes em faiança vitrificada, com nemes, hieróglifos, espada curva e escudo. Ao iniciar a aula, crescem dentro de uma coluna de luz e usam braços/pernas articulados na aproximação, preparação e golpe.
 - SA-PER: ao interagir com um shabti ativo, Carter pode fazê-lo errar e correr até a parede, reproduzindo a solução hieroglífica descrita na aula do romance.

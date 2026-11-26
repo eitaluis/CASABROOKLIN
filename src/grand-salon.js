@@ -433,8 +433,8 @@ export function buildGrandSalon({ THREE: T, scene, animated=[] }) {
   ceilingOrnament(scene,brass,darkWood);
 
   const upholstery=new T.MeshStandardMaterial({color:0x65402f,map:walnut.map,bumpMap:walnut.bumpMap,bumpScale:.015,roughness:.84});
-  createSofa(scene,-4.45,3.45,Math.PI/2,upholstery,darkWood,brass);
-  createSofa(scene,4.45,3.45,-Math.PI/2,upholstery,darkWood,brass);
+  createSofa(scene,-3.2,3.45,Math.PI/2,upholstery,darkWood,brass);
+  createSofa(scene,3.2,3.45,-Math.PI/2,upholstery,darkWood,brass);
   createRug(scene);
   centerTable(scene,walnut,brass);
   const fireLight=addFire(scene,animated);

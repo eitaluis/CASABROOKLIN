@@ -1,7 +1,7 @@
 # Carter — inventário, objetos do Duat e preparação para magia
 
 Data: 26/11/2026
-Status: **primeira implementação integrada: cajado, khopesh, shabti de cera e portal visual; animação corporal e outros instrumentos pendentes**
+Status: **primeiro catálogo integrado: cajado, khopesh, shabti, caixa, papiro, cálamo, tinta e amuleto; animação corporal e QA visual pendentes**
 
 ## 1. Princípio de desenvolvimento
 
@@ -27,16 +27,16 @@ Referência: Rick Riordan, *As Crônicas dos Kane: Guia de Sobrevivência*, seç
 
 | ID | Objeto | Função / estado | Base |
 |---|---|---|---|
-| `staff` | Cajado mágico | Ferramenta mágica e arma; empunhado na mão direita | Canônico; modelo procedural já existente |
-| `khopesh` | Khopesh | Arma corpo a corpo; empunhada na mão direita | Canônico; modelo procedural já existente |
-| `wax_shabti` | Shabti de cera | Miniatura transportável; futura invocação por magia | Canônico como objeto criado em cera; modelo 3D novo |
-| `papyrus` | Papiro | Suporte para escrever/desenhar feitiços | Canônico; asset a modelar |
-| `reed_pen` | Cálamo | Ferramenta de escrita e desenho mágico | Canônico; asset a modelar |
-| `ink` | Tinta e recipiente | Consumível/ferramenta para inscrições | Canônico; asset a modelar |
-| `protective_amulet` | Amuleto de proteção | Artefato transportável; efeito será configurado depois | Canônico; asset a modelar |
-| `magic_box` | Caixa de magia | Recipiente físico que reúne os instrumentos; também pode ser guardado no Duat | Canônico; asset a modelar |
+| `staff` | Cajado mágico | Ferramenta mágica e arma; empunhado na mão direita | Canônico; modelo procedural integrado |
+| `khopesh` | Khopesh | Arma corpo a corpo; empunhada na mão direita | Canônico; modelo procedural integrado |
+| `wax_shabti` | Shabti de cera | Miniatura transportável; futura invocação por magia | Canônico como objeto criado em cera; primeira geometria procedural integrada |
+| `papyrus` | Papiro | Suporte para escrever/desenhar feitiços | Canônico; primeira geometria/textura procedural integrada; escrita mágica real pendente |
+| `reed_pen` | Cálamo | Ferramenta de escrita e desenho mágico | Canônico; primeira geometria procedural integrada |
+| `ink` | Tinta e recipiente | Consumível/ferramenta para inscrições | Canônico; primeiro recipiente procedural integrado |
+| `protective_amulet` | Amuleto de proteção | Artefato transportável; efeito será configurado depois | Amuleto protetor é canônico; uso do wedjat como desenho é interpretação visual; primeira geometria integrada |
+| `magic_box` | Caixa de magia | Recipiente físico que reúne os instrumentos; também pode ser guardado no Duat | Canônico; primeira geometria procedural integrada; abertura/compartimentos pendentes |
 
-Os dois primeiros objetos já existem em `src/inventory.js`. O primeiro novo objeto de teste será o shabti de cera. Papiro, cálamo, tinta, amuleto e caixa entram no mesmo catálogo, mas devem receber modelos individuais com escala, pivô e material próprios antes de serem considerados finalizados.
+Os oito itens acima já têm IDs estáveis e modelos 3D iniciais no catálogo de `src/inventory.js`. A primeira rodada é procedural e ainda precisa de inspeção no navegador para aprovar escala, orientação, leitura de material e encaixe na mão. O papiro usa marcas gráficas abstratas, não hieróglifos nem palavras mágicas definitivas; a caixa ainda não abre e o amuleto não possui efeito mágico.
 
 ## 4. Estados do inventário
 
@@ -68,11 +68,11 @@ A sequência pretendida para retirar um objeto é:
 5. O objeto surge parcialmente dentro da membrana, é puxado para fora e se encaixa na mão.
 6. A abertura se fecha e os sinais desaparecem.
 
-Para guardar, a sequência acontece ao contrário. A primeira implementação pode usar a animação de interação já disponível no rig e um efeito procedural; a pose exata de atravessar a membrana será refinada sem substituir o rig aprovado do Carter.
+Para guardar, a sequência acontece ao contrário. **Já está implementado:** portal oval procedural junto ao socket da mão, transição de escala/posição do objeto e retorno ao estado guardado. **Pendente:** pose corporal de alcançar e atravessar a membrana, sincronização fina dos dedos, e inspeção visual da orientação do portal no rig real. O rig aprovado do Carter não será substituído.
 
 ## 6. Arquitetura técnica
 
-- `src/inventory.js`: catálogo, estado dos itens, sockets, retirada/armazenamento e efeito visual do portal.
+- `src/inventory.js`: catálogo e estados dos itens, sockets configuráveis por `handBoneCandidates`/`fallbackSocketPosition`, retirada/armazenamento e efeito visual do portal.
 - `src/character.js`: fornece rig, sockets e API de ações; não deve conter regras específicas de cada feitiço.
 - `src/magic-system.js` (etapa futura): catálogo de feitiços, requisitos, animação, gesto, hieróglifo, custo/limite e efeito.
 - `src/training-room.js` (etapa futura): expõe alvos/objetos com capacidades de reação, sem codificar os feitiços dentro de cada objeto.

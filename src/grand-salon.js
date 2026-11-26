@@ -927,6 +927,81 @@ function createWallFluteRack(scene,side,wood,brass,iron,colliders,interactables)
   return group;
 }
 
+function addTerraceGlassWall(scene,brass,colliders) {
+  // The interior south wall becomes a glazed screen; the double doors remain opaque and chained.
+  const glass=new THREE.MeshPhysicalMaterial({
+    color:0xb8d2d3,
+    metalness:.035,
+    roughness:.08,
+    transmission:.72,
+    thickness:.08,
+    transparent:true,
+    opacity:.28,
+    side:THREE.DoubleSide,
+    depthWrite:false
+  });
+  const frame=new THREE.MeshStandardMaterial({
+    color:0x544331,
+    metalness:.72,
+    roughness:.38
+  });
+  const wallY=20.6,wallZ=9.15;
+
+  for(const side of [-1,1]){
+    const start=3.0;
+    const span=10.65;
+    const panelWidth=3.35;
+    const gap=(span-panelWidth*3)/2;
+    for(let i=0;i<3;i++){
+      const localX=start+panelWidth*.5+i*(panelWidth+gap);
+      const x=side*localX;
+      const panel=new THREE.Mesh(new THREE.PlaneGeometry(panelWidth,14.8),glass);
+      panel.name='painel panorâmico de vidro para o terraço';
+      panel.position.set(x,wallY,wallZ);
+      panel.renderOrder=2;
+      panel.receiveShadow=true;
+      scene.add(panel);
+      addBoxCollider(colliders,x,wallY,wallZ,panelWidth,14.8,.12);
+    }
+
+    for(let i=0;i<4;i++){
+      const localX=start+i*(span/3);
+      const mullion=new THREE.Mesh(new RoundedBoxGeometry(.13,15.25,.22,6,.035),frame);
+      mullion.name='montante de bronze da parede envidraçada';
+      mullion.position.set(side*localX,wallY,wallZ-.02);
+      mullion.castShadow=true;
+      scene.add(mullion);
+    }
+
+    for(const y of [13.08,20.6,28.12]){
+      const rail=new THREE.Mesh(new RoundedBoxGeometry(span,.13,.2,6,.035),brass);
+      rail.name='travessa de bronze da parede envidraçada';
+      rail.position.set(side*(start+span*.5),y,wallZ-.03);
+      scene.add(rail);
+    }
+  }
+
+  const transom=new THREE.Mesh(new THREE.PlaneGeometry(4.42,9.25),glass);
+  transom.name='bandeira de vidro sobre as portas';
+  transom.position.set(0,23.12,wallZ);
+  transom.renderOrder=2;
+  scene.add(transom);
+  addBoxCollider(colliders,0,23.12,wallZ,4.42,9.25,.12);
+
+  for(const x of [-2.36,2.36]){
+    const pier=new THREE.Mesh(new RoundedBoxGeometry(.28,15.2,.42,8,.055),brass);
+    pier.name='pilastra de bronze entre portas e envidraçado';
+    pier.position.set(x,wallY,wallZ-.06);
+    pier.castShadow=true;
+    scene.add(pier);
+  }
+
+  const topStone=new THREE.Mesh(new RoundedBoxGeometry(29,.25,.6,8,.06),brass);
+  topStone.name='coroamento da parede envidraçada';
+  topStone.position.set(0,28.26,9.16);
+  scene.add(topStone);
+}
+
 function addThoth(scene,marble,pale,brass,reliefTex,wood) {
   const group=new THREE.Group();group.name='estátua monumental de Thoth em basalto';group.position.set(0,13.175,-.5);
   const plinth=new THREE.Mesh(new RoundedBoxGeometry(3,.48,3,6,.13),pale);plinth.position.y=.24;plinth.castShadow=true;plinth.receiveShadow=true;group.add(plinth);
@@ -1294,6 +1369,8 @@ export function buildGrandSalon({
       'coroa ritual','TV de plasma','tela da TV'
     ].includes(o.name)) o.visible=false;
 
+    if(o.name==='parede interna do salão' && o.position.z>0) o.visible=false;
+
     if(
       o.name==='parede interna do salão' ||
       o.name==='parede lateral do salão' ||
@@ -1347,6 +1424,7 @@ export function buildGrandSalon({
   ceilingOrnament(scene,brass,darkWood);
 
   // Sourced iconography enriches the existing physical props without duplicating them.
+  addTerraceGlassWall(scene,brass,colliders);
   addGreatHallDoors(scene,stone,darkWood,brass,colliders,interactables);
   addIconPlaque(scene,'harp',[-11.65,15.82,-9.84],0,darkWood,brass,.42);
   addIconPlaque(scene,'harp',[11.65,15.82,-9.84],0,darkWood,brass,.42);

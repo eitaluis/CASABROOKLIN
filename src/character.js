@@ -94,6 +94,17 @@ export async function createCharacter({
     findRigBone(['Neck', 'mixamorigNeck'])
   ].filter(Boolean);
   const neutralHeadPose = new Map(headBones.map(bone => [bone, bone.quaternion.clone()]));
+  const castingBones = {
+    hips: findRigBone(['Hips', 'mixamorigHips']),
+    leftUpLeg: findRigBone(['LeftUpLeg', 'mixamorigLeftUpLeg']),
+    rightUpLeg: findRigBone(['RightUpLeg', 'mixamorigRightUpLeg']),
+    leftLeg: findRigBone(['LeftLeg', 'mixamorigLeftLeg']),
+    rightLeg: findRigBone(['RightLeg', 'mixamorigRightLeg']),
+    spine: findRigBone(['Spine', 'mixamorigSpine']),
+    spine1: findRigBone(['Spine1', 'mixamorigSpine1']),
+    leftArm: findRigBone(['LeftArm', 'mixamorigLeftArm']),
+    leftForeArm: findRigBone(['LeftForeArm', 'mixamorigLeftForeArm'])
+  };
 
   // Acessórios originais: bolsa no quadril direito, alça cruzada e medalhão.
   const accessories = attachCarterAccessories ? createCarterAccessories({
@@ -189,17 +200,16 @@ export async function createCharacter({
   }
 
   function removeCastingBodyOffsets() {
-    for (const entry of castingOffsets) {
+    for (let i = castingOffsets.length - 1; i >= 0; i--) {
+      const entry = castingOffsets[i];
       if (entry.quaternion) entry.bone.quaternion.multiply(entry.quaternion.clone().invert());
       if (entry.position) entry.bone.position.copy(entry.position);
     }
     castingOffsets.length = 0;
   }
 
-  function addCastingRotation(aliases, axis, angle) {
-    if (Math.abs(angle) < 0.0001) return;
-    const bone = findRigBone(aliases);
-    if (!bone) return;
+  function addCastingRotation(bone, axis, angle) {
+    if (!bone || Math.abs(angle) < 0.0001) return;
     const offset = new THREE.Quaternion().setFromAxisAngle(axis, angle);
     bone.quaternion.multiply(offset);
     castingOffsets.push({ bone, quaternion: offset });
@@ -219,7 +229,7 @@ export async function createCharacter({
     }
 
     const w = castingBodyWeight;
-    const hips = findRigBone(['Hips', 'mixamorigHips']);
+    const hips = castingBones.hips;
     if (hips) {
       const position = hips.position.clone();
       hips.position.y -= 0.075 * w;
@@ -230,14 +240,14 @@ export async function createCharacter({
     // tronco inclina poucos graus e o braço livre estabiliza o corpo.
     const X = new THREE.Vector3(1, 0, 0);
     const Z = new THREE.Vector3(0, 0, 1);
-    addCastingRotation(['LeftUpLeg', 'mixamorigLeftUpLeg'], X, -0.17 * w);
-    addCastingRotation(['RightUpLeg', 'mixamorigRightUpLeg'], X, -0.17 * w);
-    addCastingRotation(['LeftLeg', 'mixamorigLeftLeg'], X, 0.36 * w);
-    addCastingRotation(['RightLeg', 'mixamorigRightLeg'], X, 0.36 * w);
-    addCastingRotation(['Spine', 'mixamorigSpine'], X, -0.045 * w);
-    addCastingRotation(['Spine1', 'mixamorigSpine1'], X, -0.055 * w);
-    addCastingRotation(['LeftArm', 'mixamorigLeftArm'], Z, -0.10 * w);
-    addCastingRotation(['LeftForeArm', 'mixamorigLeftForeArm'], X, -0.08 * w);
+    addCastingRotation(castingBones.leftUpLeg, X, -0.17 * w);
+    addCastingRotation(castingBones.rightUpLeg, X, -0.17 * w);
+    addCastingRotation(castingBones.leftLeg, X, 0.36 * w);
+    addCastingRotation(castingBones.rightLeg, X, 0.36 * w);
+    addCastingRotation(castingBones.spine, X, -0.045 * w);
+    addCastingRotation(castingBones.spine1, X, -0.055 * w);
+    addCastingRotation(castingBones.leftArm, Z, -0.10 * w);
+    addCastingRotation(castingBones.leftForeArm, X, -0.08 * w);
   }
 
   function handBone(side = 'Right') {

@@ -196,7 +196,7 @@ function animate() {
       item.obj.rotation.z = (item.baseRotationZ ?? 0) + Math.sin(time * 6.2 + item.phase) * 0.055;
     }
   }
-  if (fireLight) fireLight.intensity = 2.8 + Math.sin(time * 7.2) * 0.55;
+  if (fireLight) fireLight.intensity = 4.35 + Math.sin(time * 8.7) * 0.8;
   inventory.update(dt);
   water.material.opacity = 0.9 + 0.03 * Math.sin(time * 1.2);
   drawMap();

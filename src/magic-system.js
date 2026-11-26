@@ -199,6 +199,7 @@ export function createMagicSystem({
     glyphGroup.visible = false;
     glyphMaterial.opacity = 0;
     character.setCastingHandPose?.(false);
+    character.stopAction?.();
     character.lookAt?.(null);
     controller.setLocked(false);
     casting = false;

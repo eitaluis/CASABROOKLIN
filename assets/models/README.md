@@ -34,7 +34,7 @@ Módulo: src/character-accessories.js.
 
 ## Blender — próxima etapa
 
-Ainda não há um arquivo .blend autoral neste commit. A etapa Blender deve usar o Carter Ara como referência de proporção e rig, para refinar:
+O gerador editável assets/models/carter/blender/create_carter_accessories.py já cria as peças-base no Blender. Ainda não há um arquivo .blend salvo neste commit. Execute o script com o Carter Ara disponível como referência de proporção e rig para refinar:
 - costuras e espessura da alça;
 - couro e ferragens da bolsa;
 - medalhão/corrente;

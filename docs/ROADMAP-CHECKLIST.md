@@ -57,7 +57,8 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Substituir o eixo visual das quatro colunas por shafts com caneluras e capitéis de lótus esculpidos.
 - [x] Acrescentar medalhão de cedro, frisos, relevos solares alados e pilastras junto à lareira.
 - [x] Substituir os antigos balaústres cilíndricos por balaústres torneados, corrimãos curvos e filetes de latão.
-- [x] Construir duas escadarias laterais com degraus de pedra arredondados, espelhos, filetes de bronze, corrimãos e patamares para as galerias.
+- [x] Construir duas escadarias laterais em zigue-zague, cada uma com três lances alternados para alcançar os três níveis de galeria; degraus de pedra arredondados, filetes de bronze, balaústres torneados, corrimãos e patamares.
+- [x] Conectar os lances ao controlador de terceira pessoa: a altura do Carter acompanha as rampas, mantém-se nos patamares e retorna ao piso principal ao sair das galerias.
 
 ### Peças de destaque
 - [x] Substituir a estátua central geométrica por uma escultura de Thoth com túnica esculpida, cabeça e bico de íbis, olhos, braços, cetro, papiro e coroa lunar.
@@ -69,7 +70,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 ### QA ainda pendente
 - [ ] Conferir a leitura de fogo, estátua, degraus, capitéis e mobiliário no navegador desktop.
 - [ ] Conferir sombras, texturas, z-fighting e orientação dos relevos em visão 3/4 e de dentro do salão.
-- [ ] Testar a circulação e confirmar se as escadas podem ser subidas; a primeira implementação é visual e ainda não faz a locomoção do controlador mudar de altura.
+- [ ] Testar a subida e descida nos três níveis de galeria, incluindo as transições entre os lances e os patamares.
 - [ ] Ajustar desempenho e densidade visual em mobile paisagem.
 - [ ] Fazer a aprovação visual final antes de marcar o Grande Salão como concluído.
 
@@ -84,7 +85,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Setor 06 — arquitetura, circulação e interiores
 
-- [ ] Implementar subida/descida física pela escada em caracol, com altura dos degraus.
+- [ ] Implementar subida/descida física pela escada em caracol, com altura dos degraus (circulação do Grande Salão foi resolvida separadamente).
 - [ ] Fazer o portal mágico funcionar como passagem física.
 - [ ] Refinar terraço, piscina, refeições e fogueira.
 - [ ] Refinar quarto do Carter, banheiro, deck e pavimentos.

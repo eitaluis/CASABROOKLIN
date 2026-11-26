@@ -22,11 +22,13 @@ Também pode ser executado por um servidor estático local. Abrir o HTML diretam
 | Shift | Correr |
 | Espaço | Saltar (quando disponível) |
 | Esc | Liberar o mouse |
+| I | Abrir/fechar inventário |
+| F | Usar arma equipada |
 | 1–4 | Teleportar entre áreas |
 
 ## Estrutura do repositório
 
-Veja [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) para a divisão dos módulos e [docs/OPEN-SOURCES.md](docs/OPEN-SOURCES.md) para fontes, proveniência e licenças.
+Veja [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) para a divisão dos módulos, [docs/OPEN-SOURCES.md](docs/OPEN-SOURCES.md) para fontes e licenças, [docs/CHARACTER-OPTIONS.md](docs/CHARACTER-OPTIONS.md) para alternativas de personagem e [docs/ROADMAP-CHECKLIST.md](docs/ROADMAP-CHECKLIST.md) para o checklist por setores.
 
 ## Fidelidade ao livro
 

@@ -333,7 +333,7 @@ export function buildInteriorDetails({ THREE, scene }) {
     scene.add(ring);
   }
 
-  // 48 nichos circulares em três faixas, com rolos de papiro guardados.
+  // 72 nichos circulares em três faixas, com rolos de papiro guardados.
   const scrollWood = new THREE.MeshStandardMaterial({ color: 0x765137, roughness: 0.78 });
   const scrollCord = new THREE.MeshStandardMaterial({ color: 0x9d7339, roughness: 0.78 });
   const rows = [-15.05, -11.72, -8.39];
@@ -347,7 +347,7 @@ export function buildInteriorDetails({ THREE, scene }) {
       group.rotation.y = -angle - Math.PI / 2;
       addBox(group, 'fundo escuro do nicho', [0, 0, -0.17], [1.48, 1.55, 0.2], darkCedar, false);
       addBox(group, 'ombreira esquerda do nicho', [-0.76, 0, 0], [0.12, 1.72, 0.36], nicheStone, false);
-      addBox(group, 'ombreira direita do nicho', [0.76, 0, 0], [0.12, 1.72, 0.36], stoneMaterial(), false);
+      addBox(group, 'ombreira direita do nicho', [0.76, 0, 0], [0.12, 1.72, 0.36], nicheStone, false);
       addBox(group, 'lintel do nicho', [0, 0.84, 0], [1.62, 0.14, 0.38], brass, false);
       addBox(group, 'soleira do nicho', [0, -0.84, 0], [1.62, 0.14, 0.38], brass, false);
       for (let n = 0; n < 2; n++) {

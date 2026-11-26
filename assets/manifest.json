@@ -59,7 +59,7 @@
     {
       "id": "great-hall-volumetric-fire",
       "path": "src/grand-salon.js + src/vendor/volumetric-fire.js",
-      "role": "volumetric flame shader with noise/profile textures, local CC0 PBR-compatible log geometry, ember bed, rising sparks and point-light flicker",
+      "role": "Housz view-aligned volumetric flame mesh with local CC0 fire noise/profile textures, increased sampling density (desktop slice spacing 0.042, 38 lattice segments; mobile 0.085, 22 segments), logs, ember bed, rising sparks and animated point lights",
       "license": "MIT-vendor-adaptation + project-original-code; textures from upstream example"
     },
     {
@@ -90,6 +90,48 @@
       "id": "great-hall-modern-television",
       "path": "src/grand-salon.js",
       "role": "rounded metal TV bezel and reflective dark glass screen above the fireplace; inspection prompt",
+      "license": "project-original-code"
+    },
+    {
+      "id": "great-hall-thoth-human-kilt",
+      "path": "src/grand-salon.js",
+      "role": "original human-proportioned black-marble Thoth sculpture with ibis head and beak, separate legs/torso, pleated shendyt kilt, diagonal ceremonial sash, broad collar, open textured papyrus, Per Ankh graphic and writer's stylus; approximately 9.1 m including crown",
+      "license": "project-original-code; material surface maps CC0 ambientCG Marble012; visual reference MIA Thoth CC0, not imported"
+    },
+    {
+      "id": "great-hall-fireplace-surround",
+      "path": "src/grand-salon.js",
+      "role": "original carved limestone fireplace arch, engaged columns, lotus capitals, bronze inlay and rounded mantle; paired with the Housz volumetric fire shader and locally sourced PBR wood/stone maps",
+      "license": "project-original-code; source shader MIT; PBR maps CC0"
+    },
+    {
+      "id": "great-hall-double-eye-doors",
+      "path": "src/grand-salon.js",
+      "role": "original double-leaf paneled wood door, carved stone surround, Eye of Horus SVG medallion, interlinked iron chain, six padlocks and physical blocking collider; inspect prompt reports locked state",
+      "license": "project-original-code geometry; Game-icons SVG CC-BY-3.0"
+    },
+    {
+      "id": "great-hall-terrace-glazing",
+      "path": "src/grand-salon.js",
+      "role": "panoramic translucent glazed wall/transom with bronze mullions and physical colliders, replacing the rear interior stone wall",
+      "license": "project-original-code using Three.js MeshPhysicalMaterial (MIT)"
+    },
+    {
+      "id": "great-hall-flute-racks",
+      "path": "src/grand-salon.js",
+      "role": "two wall-mounted wood flute cases with four flutes each, tuning holes and bronze rings; inspection prompts and colliders; Game-icons flute plaque",
+      "license": "project-original-code geometry; walnut surface maps CC0; icon CC-BY-3.0"
+    },
+    {
+      "id": "great-hall-game-icons",
+      "path": "assets/decor/game-icons/",
+      "role": "seven adapted SVG decals for Eye of Horus, harp, drum, flute, spears, crossed chains and padlock; removed black background and recoloured gold; author credits in assets/decor/README.md",
+      "license": "CC-BY-3.0 (Delapouite and Lorc)"
+    },
+    {
+      "id": "great-hall-per-ankh-mark",
+      "path": "assets/decor/per-ankh.svg",
+      "role": "project-original vector representing the O1 house + S34 ankh sign composition for the open papyrus held by Thoth; illustrative emblem, not an attested epigraphic transcription",
       "license": "project-original-code"
     }
   ],
@@ -141,7 +183,7 @@
       "source": "https://polyhaven.com/a/sofa_03",
       "license": "CC0-1.0",
       "author": "Fran Calvente",
-      "role": "runtime GLB in assets/models/polyhaven-sofa-03.glb; 2.731 x 0.925 x 1.118 m, 8,004 triangles, two PBR materials; scaled to 0.84 and used as both lounge sofas",
+      "role": "runtime GLB in assets/models/polyhaven-sofa-03.glb; native dimensions 2.731 x 0.925 x 1.118 m, 8,004 triangles, two PBR materials; scaled to 0.78 and placed as a pair flanking the monumental fireplace",
       "runtimeImported": true
     },
     {
@@ -178,6 +220,69 @@
       "license": "MIT",
       "role": "source for the vendored volumetric shader class; source modified to GLSL3/WebGL2 for Three.js r165; original MIT license retained in licenses/THREE-VOLUMETRIC-FIRE-MIT.txt",
       "runtimeImported": true
+    },
+    {
+      "id": "game-icons-eye-of-horus",
+      "source": "https://github.com/game-icons/icons/blob/master/delapouite/eye-of-horus.svg",
+      "license": "CC-BY-3.0",
+      "author": "Delapouite",
+      "role": "adapted SVG decal in assets/decor/game-icons; black background removed and glyph recoloured gold; used as iconographic identifier in Great Hall; author and modification credit in assets/decor/README.md",
+      "runtimeImported": true
+    },
+    {
+      "id": "game-icons-harp",
+      "source": "https://github.com/game-icons/icons/blob/master/delapouite/harp.svg",
+      "license": "CC-BY-3.0",
+      "author": "Delapouite",
+      "role": "adapted SVG decal in assets/decor/game-icons; black background removed and glyph recoloured gold; used as iconographic identifier in Great Hall; author and modification credit in assets/decor/README.md",
+      "runtimeImported": true
+    },
+    {
+      "id": "game-icons-drum",
+      "source": "https://github.com/game-icons/icons/blob/master/delapouite/drum.svg",
+      "license": "CC-BY-3.0",
+      "author": "Delapouite",
+      "role": "adapted SVG decal in assets/decor/game-icons; black background removed and glyph recoloured gold; used as iconographic identifier in Great Hall; author and modification credit in assets/decor/README.md",
+      "runtimeImported": true
+    },
+    {
+      "id": "game-icons-flute",
+      "source": "https://github.com/game-icons/icons/blob/master/delapouite/flute.svg",
+      "license": "CC-BY-3.0",
+      "author": "Delapouite",
+      "role": "adapted SVG decal in assets/decor/game-icons; black background removed and glyph recoloured gold; used as iconographic identifier in Great Hall; author and modification credit in assets/decor/README.md",
+      "runtimeImported": true
+    },
+    {
+      "id": "game-icons-spears",
+      "source": "https://github.com/game-icons/icons/blob/master/lorc/spears.svg",
+      "license": "CC-BY-3.0",
+      "author": "Lorc",
+      "role": "adapted SVG decal in assets/decor/game-icons; black background removed and glyph recoloured gold; used as iconographic identifier in Great Hall; author and modification credit in assets/decor/README.md",
+      "runtimeImported": true
+    },
+    {
+      "id": "game-icons-crossed-chains",
+      "source": "https://github.com/game-icons/icons/blob/master/lorc/crossed-chains.svg",
+      "license": "CC-BY-3.0",
+      "author": "Lorc",
+      "role": "adapted SVG decal in assets/decor/game-icons; black background removed and glyph recoloured gold; used as iconographic identifier in Great Hall; author and modification credit in assets/decor/README.md",
+      "runtimeImported": true
+    },
+    {
+      "id": "game-icons-padlock",
+      "source": "https://github.com/game-icons/icons/blob/master/lorc/padlock.svg",
+      "license": "CC-BY-3.0",
+      "author": "Lorc",
+      "role": "adapted SVG decal in assets/decor/game-icons; black background removed and glyph recoloured gold; used as iconographic identifier in Great Hall; author and modification credit in assets/decor/README.md",
+      "runtimeImported": true
+    },
+    {
+      "id": "kevinelliott-giza-hieroglyph-sign-reference",
+      "source": "https://github.com/kevinelliott/giza/blob/claude/giza-plateau-game-7h00a5/js/inscriptions.js",
+      "license": "MIT",
+      "role": "reference to the Gardiner sign mapping for house O1 and ankh S34; no code or font file copied into the runtime",
+      "runtimeImported": false
     }
   ]
 }

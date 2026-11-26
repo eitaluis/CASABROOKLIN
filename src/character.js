@@ -434,9 +434,9 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
     armRig.Right.elbow.rotation.z = -0.12 - Math.max(0, -sin) * gait * 0.2 - airPose * 0.12;
 
     hips.rotation.y = Math.sin(phase * 0.5) * gait * 0.025;
-    spine.rotation.x = (active ? 0.018 + gait * 0.035 : Math.sin(elapsed * 1.25) * 0.008)
-      + airPose * 0.045 + landing * 0.14;
-    chest.rotation.x = active ? gait * 0.035 : Math.sin(elapsed * 1.25 + 0.5) * 0.012;
+    spine.rotation.x = (active ? -0.018 - gait * 0.035 : Math.sin(elapsed * 1.25) * 0.008)
+      + airPose * 0.045 - landing * 0.14;
+    chest.rotation.x = active ? -gait * 0.035 : Math.sin(elapsed * 1.25 + 0.5) * 0.012;
     chest.rotation.z = active ? -Math.sin(phase) * gait * 0.018 : 0;
     neck.rotation.x = -chest.rotation.x * 0.55;
     head.rotation.x = -chest.rotation.x * 0.4 + Math.sin(elapsed * 0.8) * 0.012;

@@ -248,7 +248,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
         character.model.rotation.y = THREE.MathUtils.damp(character.model.rotation.y, targetHeading, 13.5, dt);
       }
       // Inclinação frontal sutil no sprint e compensação lateral ao mudar de direção.
-      const leanTarget = running && fallbackSpeed > 2.4 ? 0.17 : input.moving ? 0.035 : 0;
+      const leanTarget = running && fallbackSpeed > 2.4 ? -0.17 : input.moving ? -0.035 : 0;
       const bankTarget = input.moving ? THREE.MathUtils.clamp(-input.strafe * 0.045, -0.055, 0.055) : 0;
       character.model.rotation.x = THREE.MathUtils.damp(character.model.rotation.x, leanTarget, running ? 7.5 : 10.5, dt);
       character.model.rotation.z = THREE.MathUtils.damp(character.model.rotation.z, bankTarget, 8.5, dt);

@@ -324,62 +324,72 @@ function loadSofaAssets(scene, fallbacks, colliders, interactables) {
   ];
 
   loader.load(source,gltf=>{
-    const sourceRoot=gltf.scene;
-    sourceRoot.updateMatrixWorld(true);
-    const sourceBox=new THREE.Box3().setFromObject(sourceRoot);
-    const sourceSize=sourceBox.getSize(new THREE.Vector3());
-    if(sourceBox.isEmpty() || sourceSize.x<0.1 || sourceSize.y<0.1 || sourceSize.z<0.1){
-      throw new Error('O GLB Sofa 03 não contém uma malha visível ou dimensões válidas.');
-    }
+    try {
+      const sourceRoot=gltf.scene;
+      sourceRoot.updateMatrixWorld(true);
+      const sourceBox=new THREE.Box3().setFromObject(sourceRoot);
+      const sourceSize=sourceBox.getSize(new THREE.Vector3());
+      if(sourceBox.isEmpty() || sourceSize.x<0.1 || sourceSize.y<0.1 || sourceSize.z<0.1){
+        throw new Error('O GLB Sofa 03 não contém uma malha visível ou dimensões válidas.');
+      }
 
-    placements.forEach((place,index)=>{
-      const model=sourceRoot.clone(true);
-      model.name='sofá Poly Haven Sofa 03 · '+place.side;
-      model.scale.setScalar(.78);
-      model.rotation.y=place.rotation;
-      model.updateMatrixWorld(true);
+      placements.forEach((place,index)=>{
+        const model=sourceRoot.clone(true);
+        model.name='sofá Poly Haven Sofa 03 · '+place.side;
+        model.scale.setScalar(.72);
+        model.rotation.y=place.rotation;
+        model.updateMatrixWorld(true);
 
-      let box=new THREE.Box3().setFromObject(model);
-      if(box.isEmpty()) throw new Error('O sofá '+place.side+' veio sem geometria renderizável.');
-      const center=box.getCenter(new THREE.Vector3());
+        let box=new THREE.Box3().setFromObject(model);
+        if(box.isEmpty()) throw new Error('O sofá '+place.side+' veio sem geometria renderizável.');
+        const center=box.getCenter(new THREE.Vector3());
 
-      // Corrige o pivot original do GLB e assenta a malha no piso real do salão.
-      model.position.x += place.x-center.x;
-      model.position.z += place.z-center.z;
-      model.updateMatrixWorld(true);
-      box=new THREE.Box3().setFromObject(model);
-      model.position.y += 13.175-box.min.y;
-      model.updateMatrixWorld(true);
+        // Corrige o pivot original do GLB e assenta a malha no piso real do salão.
+        model.position.x += place.x-center.x;
+        model.position.z += place.z-center.z;
+        model.updateMatrixWorld(true);
+        box=new THREE.Box3().setFromObject(model);
+        model.position.y += 13.175-box.min.y;
+        model.updateMatrixWorld(true);
 
-      model.traverse(object=>{
-        if(object.isMesh){
-          object.visible=true;
-          object.castShadow=true;
-          object.receiveShadow=true;
-          object.frustumCulled=false;
-        }
+        let meshCount=0;
+        model.traverse(object=>{
+          if(object.isMesh){
+            meshCount++;
+            object.visible=true;
+            object.castShadow=true;
+            object.receiveShadow=true;
+            object.frustumCulled=false;
+          }
+        });
+        if(!meshCount) throw new Error('O sofá '+place.side+' não possui meshes visíveis.');
+
+        model.userData.assetId='polyhaven-sofa-03';
+        model.userData.license='CC0-1.0';
+        model.userData.nativeDimensions=[2.731,.925,1.118];
+        model.userData.appliedScale=.72;
+        model.userData.interaction={
+          type:'inspect',
+          label:'Sofá de couro',
+          description:'Sofá Poly Haven Sofa 03 em escala humana, com materiais PBR originais.'
+        };
+        scene.add(model);
+
+        // Só remove o fallback depois de validar e adicionar a instância GLB.
+        if(fallbacks[index]) fallbacks[index].visible=false;
+        console.info('Sofá Poly Haven carregado:',place.side,box.getSize(new THREE.Vector3()).toArray());
       });
-      model.userData.assetId='polyhaven-sofa-03';
-      model.userData.license='CC0-1.0';
-      model.userData.nativeDimensions=[2.731,.925,1.118];
-      model.userData.interaction={
-        type:'inspect',
-        label:'Sofá de couro',
-        description:'Sofá Poly Haven Sofa 03 em escala humana, com materiais PBR originais.'
-      };
-      scene.add(model);
-
-      // Só remove o fallback depois de validar e adicionar a instância GLB.
-      if(fallbacks[index]) fallbacks[index].visible=false;
-      console.info('Sofá Poly Haven carregado:',place.side,box.getSize(new THREE.Vector3()).toArray());
-    });
+    } catch(error) {
+      console.error('Falha ao preparar Sofa 03; os sofás de reserva continuam visíveis.',error);
+      fallbacks.forEach(group=>{if(group)group.visible=true;});
+    }
   },undefined,error=>{
     console.warn('Poly Haven Sofa 03 falhou; mantendo sofá de reserva visível.',error);
     fallbacks.forEach(group=>{if(group)group.visible=true;});
   });
 
   placements.forEach(place=>{
-    addBoxCollider(colliders,place.x,13.72,place.z,1.12,1.05,2.32);
+    addBoxCollider(colliders,place.x,13.68,place.z,1.02,.92,2.18);
     interactables.push({
       name:'Sofá de couro '+place.side,
       kind:'inspect',
@@ -531,8 +541,8 @@ function addFire(scene,animated,camera,isTouchDevice=false) {
     camera,textureNoise:noise,textureProfile:profile,
     width:3.5,height:2.25,depth:.66,
     // Smaller slices and a denser control lattice reduce the faceted edges of the flame.
-    sliceSpacing:isTouchDevice?.085:.042,
-    segments:isTouchDevice?22:38,
+    sliceSpacing:isTouchDevice?.052:.024,
+    segments:isTouchDevice?34:66,
     debug:false
   });
   volume.name='fogo volumétrico com ruído procedural da lareira';

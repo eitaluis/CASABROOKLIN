@@ -162,7 +162,7 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
   characterRoot.updateMatrixWorld(true);
 
   const hipsBone = findBone(characterRoot, ['hips', 'mixamorighips', 'hip']);
-  const chestBone = findBone(characterRoot, ['spine2', 'mixamorighipsine2', 'spine1', 'mixamorispine1', 'chest', 'spine']);
+  const chestBone = findBone(characterRoot, ['spine2', 'mixamorigspine2', 'spine1', 'mixamorigspine1', 'chest', 'spine']);
   if (hipsBone) hipsBone.attach(bagRoot);
   if (chestBone) {
     chestBone.attach(strapRoot);

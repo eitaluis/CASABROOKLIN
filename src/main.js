@@ -5,7 +5,7 @@ import { buildInteriorDetails } from './interior-details.js?v=library-interactio
 import { buildGrandSalon } from './grand-salon.js?v=grand-salon-circulation-20261126a';
 import { buildTrainingRoom } from './training-room.js?v=training-room-interactive-20261126b';
 import { createInventory } from './inventory.js?v=training-weapon-hook-20261126a';
-import { createCharacter } from './character.js?v=carter-ara-approved-restore-20261126d';
+import { createCharacter } from './character.js?v=carter-lifecycle-20261126a';
 import { createThirdPersonController } from './third-person.js?v=brooklyn-exterior-spiralwalk-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';

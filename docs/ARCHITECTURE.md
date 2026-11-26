@@ -55,3 +55,14 @@ O mundo utiliza metros e eixo Y para cima. O personagem tem escala aproximada de
 4. Sons de passos por tipo de superfície.
 5. Refinar skinning contínuo das articulações se o teste visual revelar junções entre segmentos.
 6. Avaliar clips externos de movimento (Mesh2Motion/Quaternius) sem substituir a locomoção compartilhada até validação.
+
+
+## Exterior e sequência de chegada
+
+- src/exterior.js: composição exterior separada dos interiores. Amplia o East River, constrói Williamsburg Bridge e margem distante de Manhattan, cria skyline atmosférico, barco de papiro e interação de abertura do portal.
+- src/world.js: conserva armazém, mansão, doca, escada metálica, passarela e vão aberto do portal; expõe os parâmetros da escada para o controlador.
+- src/third-person.js: resolve a altura da volta correspondente ao caminhar pela escada helicoidal.
+- src/main.js: integra cenário exterior, plataformas caminháveis, minimap e atualização de água/portal.
+- A mesma cena, malha de personagem e lógica de movimento são compartilhadas por desktop e mobile.
+
+A casa está no lado do Brooklyn. Manhattan é a margem oposta e o skyline distante, não uma segunda área explorável. A escada que contorna o armazém é canônica; sua planta helicoidal exata é interpretativa. Consulte docs/BROOKLYN-HOUSE-EXTERIOR.md para a pesquisa, a sequência textual, as fichas e o estado de QA.

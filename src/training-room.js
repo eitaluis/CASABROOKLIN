@@ -425,7 +425,7 @@ export function buildTrainingRoom({
   }
 
   // Frisos, molduras e relevos das paredes laterais.
-  for (const sideX of [westWallX + 0.28, eastWallX - 0.55]) {
+  for (const sideX of [westWallX + 0.48, eastWallX - 0.75]) {
     addBox('friso de calcário gravado', [sideX, floorY + 3.08, centerZ], [0.12, 0.2, roomLength - 0.8], bronze);
     addBox('rodapé de madeira escura', [sideX, floorY + 0.18, centerZ], [0.16, 0.32, roomLength - 0.8], woodDark);
     for (const z of [-12.1, -6.1, 5.1, 11.1]) {
@@ -434,12 +434,12 @@ export function buildTrainingRoom({
     }
   }
   // Relevos, cornijas e rodapés montados na face interior dos muros de fundo (nunca no plano da parede).
-  for (const z of [room.minZ + 0.55, room.maxZ - 0.55]) {
+  for (const z of [room.minZ + 0.7, room.maxZ - 0.7]) {
     addBox('friso de bronze na parede de fundo', [centerX, floorY + 3.1, z], [roomWidth - 0.5, 0.18, 0.12], bronze);
     addBox('cornija moldurada no topo da parede', [centerX, floorY + 3.38, z], [roomWidth - 0.42, 0.24, 0.18], limestoneShade);
     addBox('rodapé monumental de calcário', [centerX, floorY + 0.32, z], [roomWidth - 0.5, 0.56, 0.18], limestoneShade);
   }
-  for (const x of [westWallX + 0.25, eastWallX - 0.25]) {
+  for (const x of [westWallX + 0.48, eastWallX - 0.75]) {
     addBox('cornija lateral de calcário', [x, floorY + 3.4, centerZ], [0.32, 0.24, roomLength - 0.5], limestoneShade);
     addBox('rodapé lateral de calcário', [x, floorY + 0.32, centerZ], [0.3, 0.56, roomLength - 0.5], limestoneShade);
   }
@@ -703,7 +703,7 @@ export function buildTrainingRoom({
     new THREE.MeshBasicMaterial({ map: scoreboardTexture, transparent: false })
   );
   scoreboard.name = 'placar da sala de treinamento';
-  scoreboard.position.set(centerX, floorY + 3.5, room.minZ + 0.52);
+  scoreboard.position.set(centerX, floorY + 3.5, room.minZ + 0.62);
   scoreboard.rotation.y = 0;
   scene.add(scoreboard);
   let baskets = 0, targetHits = 0;
@@ -1336,8 +1336,8 @@ export function buildTrainingRoom({
     const plaque = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 0.72), new THREE.MeshBasicMaterial({ map: texture }));
     plaque.position.set(x, y, z); plaque.rotation.y = rotationY; scene.add(plaque);
   }
-  addWallLabel('SALA DE TREINAMENTO', centerX, floorY + 3.0, room.maxZ - 0.48, Math.PI);
-  addWallLabel('MAGIC PROBLEM-SOLVING 101', centerX, floorY + 3.0, room.minZ + 0.48, 0);
+  addWallLabel('SALA DE TREINAMENTO', centerX, floorY + 3.0, room.maxZ - 0.62, Math.PI);
+  addWallLabel('MAGIC PROBLEM-SOLVING 101', centerX, floorY + 3.0, room.minZ + 0.62, 0);
 
   // Interações de inspeção do próprio ambiente.
   addInteractable({

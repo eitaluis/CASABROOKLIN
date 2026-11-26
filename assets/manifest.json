@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -185,7 +185,7 @@
     {
       "id": "carter-crossbody-satchel-and-medallion",
       "path": "src/character-accessories.js",
-      "role": "geometria e materiais originais Three.js para bolsa transversal de couro conhaque no quadril direito (âncora Hips), alça do ombro esquerdo ao quadril direito, ferragens em latão e medalhão dourado com corrente (âncora Spine2/Spine1); oscilação secundária sutil; compartilhado desktop/mobile",
+      "role": "geometria e materiais originais Three.js para bolsa transversal de couro conhaque no quadril direito (âncora Hips), trecho superior da alça do ombro esquerdo ao quadril direito (âncora Spine2), ferragens em latão e medalhão dourado com corrente (âncora Spine2); oscilação secundária sutil; compartilhado desktop/mobile",
       "license": "project-original-code"
     },
     {
@@ -449,7 +449,7 @@
       "id": "carter-blender-accessories-source",
       "source": "assets/models/carter/blender/create_carter_accessories.py",
       "license": "project-original-code",
-      "role": "script-fonte editável para gerar bolsa transversal, alça, ferragens e medalhão no Blender; ferramenta de lookdev, não carregada no runtime",
+      "role": "script-fonte editável Blender com três anchors: bolsa/Hips, alça/Spine2 e corrente-medalhão/Spine2; ferramenta de lookdev, não carregada no runtime",
       "runtimeImported": false
     }
   ]

@@ -1,0 +1,45 @@
+{
+  "project": "CASABROOKLIN",
+  "version": "0.2.0",
+  "runtimeAssets": [
+    {
+      "id": "human-base-mixamo-rig",
+      "file": "human_mix_propio.glb",
+      "source": "https://github.com/PabloMesquida/three-procedural-locomotion/blob/v0.9.0/modelos/human_mix_propio.glb",
+      "runtimeUrl": "https://cdn.jsdelivr.net/gh/PabloMesquida/three-procedural-locomotion@v0.9.0/modelos/human_mix_propio.glb",
+      "role": "player-character",
+      "meshOrigin": "Blender Studio Human Base Meshes",
+      "meshLicense": "CC0-1.0",
+      "rigOrigin": "PabloMesquida/three-procedural-locomotion",
+      "notes": "Base mesh and Mixamo-compatible rig. Confirm the source repository's current notices before offline redistribution."
+    },
+    {
+      "id": "procedural-locomotion",
+      "source": "https://github.com/PabloMesquida/three-procedural-locomotion/tree/v0.9.0",
+      "runtimeUrl": "https://esm.sh/gh/PabloMesquida/three-procedural-locomotion@v0.9.0/src/index.ts?external=three",
+      "role": "humanoid-gait-and-inverse-kinematics",
+      "license": "MIT",
+      "notes": "Procedural walk/run, foot placement, two-bone IK, acceleration, turns, crouch and jump."
+    },
+    {
+      "id": "three-js",
+      "source": "https://github.com/mrdoob/three.js",
+      "role": "3d-renderer-and-gltf-loader",
+      "license": "MIT"
+    }
+  ],
+  "localGeneratedAssets": [
+    {
+      "id": "procedural-materials",
+      "path": "src/main.js",
+      "role": "canvas-generated masonry, stone, wood, metal and textile textures",
+      "license": "project-original-code"
+    },
+    {
+      "id": "player-outfit",
+      "path": "src/character.js",
+      "role": "runtime-generated clothing shells, backpack, shoes and accessories",
+      "license": "project-original-code"
+    }
+  ]
+}

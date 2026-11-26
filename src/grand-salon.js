@@ -172,24 +172,51 @@ function ceilingOrnament(scene,brass,wood) {
 }
 
 function createSofa(scene,x,z,rotation,upholstery,wood,brass) {
-  const group=new THREE.Group();group.name='sofá estofado do Grande Salão';group.position.set(x,13.18,z);
-  const base=new THREE.Mesh(new RoundedBoxGeometry(4.65,.46,1.95,6,.18),wood);base.position.y=.47;base.castShadow=true;base.receiveShadow=true;group.add(base);
-  const seat=new THREE.Mesh(new RoundedBoxGeometry(4.44,.42,1.72,8,.17),upholstery);seat.position.set(0,.88,.04);seat.castShadow=true;group.add(seat);
-  const back=new THREE.Mesh(new RoundedBoxGeometry(4.48,1.32,.43,8,.19),upholstery);back.position.set(0,1.53,-.68);back.castShadow=true;group.add(back);
-  for(const s of [-1,1]){
-    const arm=new THREE.Mesh(new RoundedBoxGeometry(.66,.93,1.82,7,.24),upholstery);arm.position.set(s*2,1.08,.02);arm.castShadow=true;group.add(arm);
-    const cap=new THREE.Mesh(new RoundedBoxGeometry(.7,.11,1.72,5,.05),wood);cap.position.set(s*2,1.57,.02);group.add(cap);
-    for(const z0 of [-.72,.72]){const foot=new THREE.Mesh(new THREE.CylinderGeometry(.09,.13,.4,16),brass);foot.position.set(s*1.96,.18,z0);group.add(foot);}
+  const group=new THREE.Group();
+  group.name='sofá estofado do Grande Salão';
+  group.position.set(x,13.175,z);
+  group.rotation.y=rotation;
+
+  const base=new THREE.Mesh(new RoundedBoxGeometry(4.65,.34,1.95,8,.15),wood);
+  base.position.y=.27;base.castShadow=true;base.receiveShadow=true;group.add(base);
+
+  const seat=new THREE.Mesh(new RoundedBoxGeometry(4.44,.27,1.72,10,.12),upholstery);
+  seat.position.set(0,.59,.04);seat.castShadow=true;seat.receiveShadow=true;group.add(seat);
+
+  const back=new THREE.Mesh(new RoundedBoxGeometry(4.48,.98,.43,10,.15),upholstery);
+  back.position.set(0,1.16,-.68);back.castShadow=true;group.add(back);
+
+  for(const side of [-1,1]){
+    const arm=new THREE.Mesh(new RoundedBoxGeometry(.66,.82,1.82,9,.2),upholstery);
+    arm.position.set(side*2.0,.89,.02);arm.castShadow=true;group.add(arm);
+
+    const cap=new THREE.Mesh(new RoundedBoxGeometry(.7,.1,1.72,7,.045),wood);
+    cap.position.set(side*2.0,1.34,.02);group.add(cap);
+
+    for(const z0 of [-.72,.72]){
+      const foot=new THREE.Mesh(new THREE.CylinderGeometry(.085,.12,.24,18),brass);
+      foot.position.set(side*1.96,.16,z0);group.add(foot);
+    }
   }
-  for(const x0 of [-1.45,0,1.45]){
-    const cushion=new THREE.Mesh(new RoundedBoxGeometry(1.4,.34,1.36,7,.16),upholstery);cushion.position.set(x0,1.13,.03);cushion.castShadow=true;group.add(cushion);
-    const rear=new THREE.Mesh(new RoundedBoxGeometry(1.4,.91,.3,7,.12),upholstery);rear.position.set(x0,1.57,-.53);rear.castShadow=true;group.add(rear);
-    for(const dx of [-.22,0,.22]){const button=new THREE.Mesh(new THREE.SphereGeometry(.035,8,6),brass);button.position.set(x0+dx,1.61,-.34);group.add(button);}
+
+  for(const offset of [-1.45,0,1.45]){
+    const cushion=new THREE.Mesh(new RoundedBoxGeometry(1.4,.19,1.36,9,.085),upholstery);
+    cushion.position.set(offset,.82,.03);cushion.castShadow=true;group.add(cushion);
+
+    const rear=new THREE.Mesh(new RoundedBoxGeometry(1.4,.72,.3,9,.11),upholstery);
+    rear.position.set(offset,1.33,-.53);rear.castShadow=true;group.add(rear);
+
+    for(const dx of [-.22,0,.22]){
+      const button=new THREE.Mesh(new THREE.SphereGeometry(.032,10,8),brass);
+      button.position.set(offset+dx,1.33,-.34);group.add(button);
+    }
+    const seam=tube([[offset-.58,.91,.68],[offset,.92,.72],[offset+.58,.91,.68]],.008,brass,22,5);
+    group.add(seam);
   }
-  group.add(tube([[-2,.54,.98],[-1,.54,1],[0,.54,1],[1,.54,1],[2,.54,.98]],.035,brass,32,7));
+
+  group.add(tube([[-2,.42,.98],[-1,.42,1],[0,.42,1],[1,.42,1],[2,.42,.98]],.032,brass,32,7));
   scene.add(group);
 }
-
 function createRug(scene) {
   const t=tex((g,w,h)=>{
     g.fillStyle='#182f35';g.fillRect(0,0,w,h);
@@ -201,19 +228,34 @@ function createRug(scene) {
     for(let i=0;i<3500;i++){g.fillStyle=Math.random()>.5?'rgba(245,221,174,.045)':'rgba(2,12,16,.09)';g.fillRect(Math.random()*w,Math.random()*h,1+Math.random()*3,1+Math.random()*2);}
   },1024,1024,1,1);
   const rug=new THREE.Mesh(new THREE.CircleGeometry(1,112),new THREE.MeshStandardMaterial({map:t,roughness:.98}));
-  rug.name='tapete oval de lã do Grande Salão';rug.rotation.x=-Math.PI/2;rug.scale.set(5.25,1,3);rug.position.set(0,13.205,-1.35);rug.receiveShadow=true;scene.add(rug);
-  for(const spec of [[2.7,.023],[4.7,.018]]){const ring=new THREE.Mesh(new THREE.TorusGeometry(spec[0],spec[1],7,100),new THREE.MeshStandardMaterial({color:0xb88b4d,metalness:.58,roughness:.55}));ring.rotation.x=Math.PI/2;ring.position.set(0,13.22,-1.35);ring.scale.z=.57;scene.add(ring);}
+  rug.name='tapete oval de lã do Grande Salão';rug.rotation.x=-Math.PI/2;rug.scale.set(6,1,3);rug.position.set(0,13.205,3.45);rug.receiveShadow=true;scene.add(rug);
+  for(const spec of [[2.7,.023],[4.7,.018]]){const ring=new THREE.Mesh(new THREE.TorusGeometry(spec[0],spec[1],7,100),new THREE.MeshStandardMaterial({color:0xb88b4d,metalness:.58,roughness:.55}));ring.rotation.x=Math.PI/2;ring.position.set(0,13.22,3.45);ring.scale.z=.57;scene.add(ring);}
 }
 
 function centerTable(scene,wood,brass) {
-  const group=new THREE.Group();group.name='mesa redonda do Grande Salão';group.position.set(0,13.2,-1.35);
-  const base=new THREE.Mesh(new THREE.LatheGeometry([new THREE.Vector2(.22,0),new THREE.Vector2(.34,.12),new THREE.Vector2(.23,.32),new THREE.Vector2(.2,.63),new THREE.Vector2(.36,.84),new THREE.Vector2(.42,.96)],36),wood);base.position.y=.18;group.add(base);
-  const top=new THREE.Mesh(new THREE.CylinderGeometry(1.48,1.4,.19,64),wood);top.position.y=1.15;top.castShadow=true;group.add(top);
-  const edge=new THREE.Mesh(new THREE.TorusGeometry(1.43,.05,10,72),brass);edge.rotation.x=Math.PI/2;edge.position.y=1.24;group.add(edge);
-  const inset=new THREE.Mesh(new THREE.CircleGeometry(1.25,64),new THREE.MeshStandardMaterial({color:0x20383b,roughness:.7,metalness:.18}));inset.rotation.x=-Math.PI/2;inset.position.y=1.251;group.add(inset);
-  const sun=new THREE.Mesh(new THREE.TorusGeometry(.48,.032,8,48),brass);sun.rotation.x=Math.PI/2;sun.position.y=1.262;group.add(sun);scene.add(group);
-}
+  const group=new THREE.Group();
+  group.name='mesa redonda do Grande Salão';
+  group.position.set(0,13.175,3.45);
 
+  const base=new THREE.Mesh(new THREE.LatheGeometry([
+    new THREE.Vector2(.22,0),new THREE.Vector2(.34,.12),new THREE.Vector2(.23,.32),
+    new THREE.Vector2(.2,.63),new THREE.Vector2(.36,.84),new THREE.Vector2(.42,.96)
+  ],36),wood);
+  base.position.y=.02;base.scale.y=.58;base.castShadow=true;group.add(base);
+
+  const top=new THREE.Mesh(new THREE.CylinderGeometry(1.48,1.4,.18,64,1),wood);
+  top.position.y=.68;top.castShadow=true;top.receiveShadow=true;group.add(top);
+
+  const edge=new THREE.Mesh(new THREE.TorusGeometry(1.43,.05,10,72),brass);
+  edge.rotation.x=Math.PI/2;edge.position.y=.775;group.add(edge);
+
+  const inset=new THREE.Mesh(new THREE.CircleGeometry(1.25,64),new THREE.MeshStandardMaterial({color:0x20383b,roughness:.7,metalness:.18}));
+  inset.rotation.x=-Math.PI/2;inset.position.y=.773;group.add(inset);
+
+  const sun=new THREE.Mesh(new THREE.TorusGeometry(.48,.032,8,48),brass);
+  sun.rotation.x=Math.PI/2;sun.position.y=.784;group.add(sun);
+  scene.add(group);
+}
 function flameGeometry(width,height,depth,phase) {
   const rows=22,radial=14,pos=[],col=[],idx=[];
   const c0=new THREE.Color(0xc91f08),c1=new THREE.Color(0xff5a0b),c2=new THREE.Color(0xffbd32),c3=new THREE.Color(0xfff0a2);
@@ -316,8 +358,8 @@ export function buildGrandSalon({ THREE: T, scene, animated=[] }) {
   ceilingOrnament(scene,brass,darkWood);
 
   const upholstery=new T.MeshStandardMaterial({color:0x65402f,map:walnut.map,bumpMap:walnut.bumpMap,bumpScale:.015,roughness:.84});
-  createSofa(scene,-4.2,1.45,upholstery,darkWood,brass);
-  createSofa(scene,4.2,1.45,upholstery,darkWood,brass);
+  createSofa(scene,-4.45,3.45,Math.PI/2,upholstery,darkWood,brass);
+  createSofa(scene,4.45,3.45,-Math.PI/2,upholstery,darkWood,brass);
   createRug(scene);
   centerTable(scene,walnut,brass);
   const fireLight=addFire(scene,animated);

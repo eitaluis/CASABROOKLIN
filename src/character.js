@@ -139,13 +139,26 @@ export async function createCharacter({
     return true;
   }
 
+  const castingFingerRest = new Map();
   function applyCastingHandPose() {
     // O clip Point já projeta o braço e estende o indicador. Espelhamos a cadeia
     // do indicador para o dedo médio, formando os dois dedos do gesto descrito no livro.
     for (let joint = 1; joint <= 3; joint++) {
       const indexFinger = hero.scene.getObjectByName('RightHandIndex' + joint);
       const middleFinger = hero.scene.getObjectByName('RightHandMiddle' + joint);
-      if (indexFinger && middleFinger) middleFinger.quaternion.copy(indexFinger.quaternion);
+      if (indexFinger && middleFinger) {
+        if (!castingFingerRest.has(middleFinger)) castingFingerRest.set(middleFinger, middleFinger.quaternion.clone());
+        middleFinger.quaternion.copy(indexFinger.quaternion);
+      }
+    }
+  }
+  function setCastingHandPose(enabled) {
+    castingHandPose = Boolean(enabled);
+    if (castingHandPose) {
+      applyCastingHandPose();
+    } else {
+      for (const [bone, quaternion] of castingFingerRest) bone.quaternion.copy(quaternion);
+      castingFingerRest.clear();
     }
   }
 
@@ -191,10 +204,7 @@ export async function createCharacter({
     jump,
     playAction,
     stopAction,
-    setCastingHandPose(enabled) {
-      castingHandPose = Boolean(enabled);
-      if (castingHandPose) applyCastingHandPose();
-    },
+    setCastingHandPose,
     getHandWorldPosition(side = 'Right', target = new THREE.Vector3()) {
       const hand = handBone(side);
       hero.scene.updateMatrixWorld(true);

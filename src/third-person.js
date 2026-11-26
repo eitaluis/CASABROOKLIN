@@ -201,7 +201,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     const started = character.jump?.();
     if (!started) return false;
     airborne = true;
-    verticalVelocity = 4.55;
+    verticalVelocity = 4.6;
     jumpFloorHeight = ground;
     return true;
   }
@@ -351,7 +351,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       const updated=getPosition();
       const walkingSurface = getWalkingSurface(updated.x, updated.z, airborne ? jumpFloorHeight : updated.y, direction);
       if (airborne) {
-        verticalVelocity -= 10.8 * dt;
+        verticalVelocity -= 9.3 * dt;
         updated.y += verticalVelocity * dt;
         if (updated.y <= walkingSurface.height) {
           updated.y = walkingSurface.height;
@@ -392,7 +392,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       // fora da plataforma, ele retorna ao piso principal sob gravidade.
       const walkingSurface = getWalkingSurface(current.x, current.z, airborne ? jumpFloorHeight : current.y, direction);
       if (airborne) {
-        verticalVelocity -= 10.8 * dt;
+        verticalVelocity -= 9.3 * dt;
         current.y += verticalVelocity * dt;
         if (current.y <= walkingSurface.height) {
           current.y = walkingSurface.height;

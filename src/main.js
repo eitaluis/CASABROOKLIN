@@ -8,7 +8,7 @@ import { buildTrainingRoom } from './training-room.js?v=shabti-attack-motion-202
 import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
 import { createMagicSystem } from './magic-system.js?v=ha-di-energy-cast-20261126a';
 import { createCharacter } from './character.js?v=carter-hit-injury-20261126b';
-import { createThirdPersonController } from './third-person.js?v=jump-arc-hit-shake-20261126b';
+import { createThirdPersonController } from './third-person.js?v=jump-arc-hit-shake-20261126c';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';

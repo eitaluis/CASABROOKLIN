@@ -254,7 +254,7 @@ function addFire(scene,animated) {
 }
 
 function addThoth(scene,marble,pale,brass,reliefTex) {
-  const group=new THREE.Group();group.name='estátua monumental de Thoth em basalto';group.position.set(0,13.45,-.5);
+  const group=new THREE.Group();group.name='estátua monumental de Thoth em basalto';group.position.set(0,13.175,-.5);
   const plinth=new THREE.Mesh(new RoundedBoxGeometry(3,.48,3,6,.13),pale);plinth.position.y=.24;plinth.castShadow=true;plinth.receiveShadow=true;group.add(plinth);
   const step=new THREE.Mesh(new RoundedBoxGeometry(2.62,.28,2.62,6,.1),marble);step.position.y=.6;step.castShadow=true;group.add(step);
   const footRing=new THREE.Mesh(new THREE.TorusGeometry(.96,.055,10,56),brass);footRing.rotation.x=Math.PI/2;footRing.position.y=.78;group.add(footRing);
@@ -290,6 +290,7 @@ function addThoth(scene,marble,pale,brass,reliefTex) {
   group.add(tube([[-.58,5.78,-.18],[-.55,6.08,-.18],[-.3,6.23,-.18],[0,6.28,-.18],[.3,6.23,-.18],[.55,6.08,-.18],[.58,5.78,-.18]],.055,gold,36,8));
   const plaque=new THREE.Mesh(new RoundedBoxGeometry(1.15,.42,.09,4,.04),new THREE.MeshStandardMaterial({color:0x322116,roughness:.82}));plaque.position.set(0,.3,1.52);group.add(plaque);
   const panel=new THREE.Mesh(new THREE.PlaneGeometry(.97,.23),new THREE.MeshBasicMaterial({map:reliefTex}));panel.position.set(0,.3,1.571);group.add(panel);
+  group.scale.setScalar(1.25);
   scene.add(group);
   const spot=new THREE.SpotLight(0xe9d2a0,46,27,Math.PI/7,.62,1.15);spot.position.set(-3.6,27.2,3);spot.target.position.set(0,18.2,-.5);scene.add(spot,spot.target);
   const fill=new THREE.PointLight(0x8ea4a5,1,14,1.8);fill.position.set(2.3,19.4,2.6);scene.add(fill);

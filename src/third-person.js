@@ -1,4 +1,4 @@
-export function createThirdPersonController({ THREE, camera, canvas, character, zones, colliders = [], stairRamps = [], walkablePlatforms = [], onZoneChange }) {
+export function createThirdPersonController({ THREE, camera, canvas, character, zones, colliders = [], stairRamps = [], walkablePlatforms = [], spiralStair = null, onZoneChange }) {
   const keys = new Set();
   const touch = { moveX: 0, moveY: 0, sprint: false };
   const position = new THREE.Vector3();
@@ -49,6 +49,30 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
         height: ramp.bottomY + (ramp.topY - ramp.bottomY) * t,
         raised: true
       };
+    }
+
+    // A escada exterior é helicoidal. Escolhemos a volta que melhor coincide
+    // com a altura atual do Carter, evitando saltos entre voltas sobrepostas.
+    if (spiralStair) {
+      const dx = x - spiralStair.centerX;
+      const dz = z - spiralStair.centerZ;
+      const radius = Math.hypot(dx, dz);
+      if (radius >= spiralStair.radius - 0.9 && radius <= spiralStair.radius + 0.9) {
+        const rawAngle = Math.atan2(dz, dx);
+        let closest = null;
+        for (let turn = 0; turn <= 4; turn++) {
+          const angle = rawAngle + turn * Math.PI * 2;
+          const progress = angle - spiralStair.startAngle;
+          if (progress < -0.2 || progress > spiralStair.totalAngle + 0.2) continue;
+          const t = THREE.MathUtils.clamp(progress / spiralStair.totalAngle, 0, 1);
+          const height = spiralStair.bottomY + (spiralStair.topY - spiralStair.bottomY) * t;
+          const difference = Math.abs(height - currentY);
+          if (!closest || difference < closest.difference) closest = { height, difference };
+        }
+        if (closest && closest.difference <= 1.35) {
+          return { height: closest.height, raised: true };
+        }
+      }
     }
 
     const platforms = walkablePlatforms

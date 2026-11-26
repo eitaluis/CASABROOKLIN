@@ -1,5 +1,5 @@
 export function buildWorld(ctx){
- const {THREE,scene,colliders,animated,box,cyl,line,texCanvas,addWindow,glyphPanel,addStatue,addColumn,makeGraffiti,addRoomLabel,canvasSign,rugTex,metal,gold,stone,brickMat,darkBrick,woodMat,cedarMat,darkGlass,plaster} = ctx;
+ const {THREE,scene,colliders,animated,box,cyl,line,texCanvas,addWindow,glyphPanel,addStatue,addColumn,makeGraffiti,addRoomLabel,canvasSign,rugTex,limestone,concrete,metal,gold,stone,brickMat,darkBrick,woodMat,cedarMat,darkGlass,plaster} = ctx;
  const groundSurfaces=[];
 // --- Mundo exterior: doca e armazém industrial ---
 const ground=texCanvas((g,w,h)=>{g.fillStyle='#555650';g.fillRect(0,0,w,h);for(let i=0;i<1700;i++){g.fillStyle=['#74736a','#383d3b','#8b8577','#2d3433'][i%4];g.globalAlpha=Math.random()*.3;g.beginPath();g.arc(Math.random()*w,Math.random()*h,Math.random()*3,0,Math.PI*2);g.fill()}g.globalAlpha=1;for(let i=0;i<30;i++){g.strokeStyle='#252b2a';g.globalAlpha=.25;g.beginPath();g.moveTo(Math.random()*w,Math.random()*h);g.lineTo(Math.random()*w,Math.random()*h);g.stroke()}},512,512,4,4);

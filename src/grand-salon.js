@@ -1311,10 +1311,16 @@ function addTerrace(scene,stone,wood,brass,colliders,interactables,groundSurface
     normalScale:new THREE.Vector2(.38,.38)
   });
   const sections=[
+    // Main east/front terrace: pool, dining, fire pit and a clear route from the glass doors.
     {x:10.9,z:15.75,w:17.8,d:8.5},
     {x:7.0,z:24.0,w:10.0,d:8.0},
     {x:18.35,z:24.0,w:2.9,d:8.0},
-    {x:10.9,z:29.75,w:17.8,d:3.5}
+    {x:10.9,z:29.75,w:17.8,d:3.5},
+    // Narrow perimeter walks connect both sides and the rear of the mansion.
+    {x:0,z:13.25,w:42,d:2.5},
+    {x:19.5,z:0,w:3,d:24},
+    {x:-19.5,z:0,w:3,d:24},
+    {x:0,z:-13.25,w:42,d:2.5}
   ];
   for(const p of sections) {
     const slab=new THREE.Mesh(new RoundedBoxGeometry(p.w,.35,p.d,8,.05),deckMat);
@@ -1381,15 +1387,29 @@ function addTerrace(scene,stone,wood,brass,colliders,interactables,groundSurface
       leg.position.set(x+dx,13.35,z+dz);leg.castShadow=true;scene.add(leg);
     }
   }
-  for(const x of [2.25,19.45]) {
-    for(let z=13.0;z<=30.5;z+=3.5) {
+  const sideRails=[
+    {x:-20.6,z0:-14.2,z1:14.2},
+    {x:20.6,z0:-14.2,z1:31.0}
+  ];
+  for(const rail of sideRails) {
+    for(let z=rail.z0;z<=rail.z1;z+=3.5) {
       const post=new THREE.Mesh(new RoundedBoxGeometry(.16,1.12,.16,8,.04),brass);
-      post.position.set(x,13.72,z);post.castShadow=true;scene.add(post);
+      post.position.set(rail.x,13.72,z);post.castShadow=true;scene.add(post);
     }
-    scene.add(tube([[x,14.28,12.0],[x,14.28,31.0]],.045,wood,48,8));
-    scene.add(tube([[x,13.28,12.0],[x,13.28,31.0]],.025,brass,48,8));
+    scene.add(tube([[rail.x,14.28,rail.z0],[rail.x,14.28,rail.z1]],.045,wood,64,8));
+    scene.add(tube([[rail.x,13.28,rail.z0],[rail.x,13.28,rail.z1]],.025,brass,64,8));
   }
-  scene.add(tube([[2.2,14.28,31.0],[19.45,14.28,31.0]],.045,wood,40,8));
+  for(let x=-20.6;x<=20.6;x+=3.5) {
+    const post=new THREE.Mesh(new RoundedBoxGeometry(.16,1.12,.16,8,.04),brass);
+    post.position.set(x,13.72,-14.2);post.castShadow=true;scene.add(post);
+  }
+  scene.add(tube([[-20.6,14.28,-14.2],[20.6,14.28,-14.2]],.045,wood,72,8));
+  scene.add(tube([[-20.6,13.28,-14.2],[20.6,13.28,-14.2]],.025,brass,72,8));
+  for(let x=2.2;x<=20.6;x+=3.5) {
+    const post=new THREE.Mesh(new RoundedBoxGeometry(.16,1.12,.16,8,.04),brass);
+    post.position.set(x,13.72,31.0);post.castShadow=true;scene.add(post);
+  }
+  scene.add(tube([[2.2,14.28,31.0],[20.6,14.28,31.0]],.045,wood,48,8));
   interactables.push({
     name:'Piscina do terraço',kind:'inspect',label:'Piscina do terraço',
     description:'Piscina retangular em pedra escura, encaixada no piso externo do terraço.',

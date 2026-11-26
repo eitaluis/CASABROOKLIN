@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=great-hall-asset-first-20261126b';
+import { buildWorld } from './world.js?v=brooklyn-waterfront-scale-20261126a';
+import { buildExterior } from './exterior.js?v=brooklyn-waterfront-scale-20261126a';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-asset-first-20261126i';
 import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
@@ -21,7 +22,7 @@ renderer.setSize(window.innerWidth,window.innerHeight);
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.18;
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x83949a);scene.fog=new THREE.FogExp2(0x87979a,.0048);
-const camera=new THREE.PerspectiveCamera(58,window.innerWidth/window.innerHeight,.1,700);
+const camera=new THREE.PerspectiveCamera(58,window.innerWidth/window.innerHeight,.1,1200);
 
 camera.rotation.order='YXZ';
 
@@ -91,6 +92,7 @@ const world = buildWorld({
   cedarMat, darkGlass, plaster
 });
 const { zones, groundSurfaces, water } = world;
+const exterior = buildExterior({ THREE, scene, world, interactables, isTouchDevice });
 
 // Interior passes are shared by desktop and mobile.
 buildInteriorDetails({ THREE, scene });
@@ -130,7 +132,7 @@ const controller = createThirdPersonController({
       button.classList.toggle('active', button.dataset.zone === name)
     );
     const notices = {
-      dock: 'Doca industrial — a entrada da mansão fica acima do galpão.',
+      dock: 'Margem do Brooklyn — o East River e Manhattan ficam além do cais; a mansão está oculta sobre o armazém.',
       hall: 'Grande Salão — quatro alturas, três níveis de balcões e Tot ao centro.',
       library: 'Biblioteca subterrânea — câmara circular escavada na rocha.',
       bedroom: 'Ala residencial — reconstrução interpretativa dos quartos.'
@@ -188,6 +190,11 @@ function drawMap() {
   for (let x = 18; x < 264; x += 24) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, 216); g.stroke(); }
   for (let y = 12; y < 216; y += 24) { g.beginPath(); g.moveTo(0, y); g.lineTo(264, y); g.stroke(); }
   g.fillStyle = '#34545a'; g.fillRect(184, 0, 80, 216);
+  g.fillStyle = '#667477'; g.fillRect(252, 0, 12, 216);
+  g.fillStyle = '#b89a68'; g.fillRect(183, 103, 72, 3);
+  g.fillStyle = '#d7c18e'; g.fillRect(193, 96, 2, 17); g.fillRect(243, 96, 2, 17);
+  g.fillStyle = '#d7c18e'; g.font = '7px DM Sans'; g.fillText('WILLIAMSBURG BR.', 185, 91);
+  g.fillStyle = '#d4d8d4'; g.font = '7px DM Sans'; g.fillText('MANHATTAN', 214, 208);
   g.fillStyle = '#738178'; g.fillRect(72, 70, 112, 104);
   g.fillStyle = '#b29a72'; g.fillRect(93, 91, 67, 62);
   g.strokeStyle = '#dfc38c'; g.strokeRect(93, 91, 67, 62);
@@ -232,7 +239,7 @@ function animate() {
   if (fireLight) fireLight.intensity = 4.25 + Math.sin(time * 8.7) * 0.72;
   grandSalon.update?.(time);
   inventory.update(dt);
-  water.material.opacity = 0.9 + 0.03 * Math.sin(time * 1.2);
+  exterior.update(dt, time);
   drawMap();
   composer.render();
 }

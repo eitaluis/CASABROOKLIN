@@ -194,7 +194,7 @@ A graphic novel de *The Red Pyramid* é ilustrada por Orpheus Collar (Disney-Hyp
 
 ## Varanda panorâmica — reconstrução interpretativa
 
-A descrição textual estabelece paredes envidraçadas e um terraço que contorna a casa, com piscina, jantar e fogueira. O acesso lateral de vidro e a abertura alinhada na fachada externa são decisões de level design para tornar essa área realmente caminhável. A disposição exata do terraço, sua planta e as salas atrás das portas das galerias não são fixadas pelo romance; mantê-las identificadas como interpretação.
+A descrição textual estabelece paredes envidraçadas e um terraço que contorna a casa, com piscina, jantar e fogueira. O acesso lateral de vidro e a abertura alinhada na fachada externa são decisões de level design para tornar essa área realmente caminhável. A disposição exata do terraço, sua planta e as salas atrás das portas das galerias não são fixadas pelo romance; mantê-las identificadas como interpretação. A revisão atual entrega o setor principal caminhável do terraço, com acesso pelo vidro e piscina/jantar/fogueira; a extensão de todo o percurso ao redor da casa permanece como etapa seguinte.
 
 
 ## Sala de Treinamento — estudo e direção visual
@@ -225,3 +225,6 @@ As peças de destaque são geometria original em Three.js, em vez de um pacote 3
 O segundo andar, a escala de quadra, o piso de madeira, a abóbada pintada, as divindades, Rá como cesta e o exercício do shabti são os elementos narrativos que orientam a sala. A implantação a oeste do Grande Salão, o desenho exato da abóbada, as divindades selecionadas, o quadro de tiro mágico, os três alvos e as regras de combate são decisões interpretativas. As medidas 15 × 28 m seguem a FIBA 2026 como referência de basquete moderno, não como medida escrita no romance.
 
 A sala já está ligada ao inventário e ao controlador comuns; a validação real de câmera, escala, colisões e desempenho desktop/mobile permanece pendente.
+
+
+A pele de serpente foi orientada com o eixo longo (40 pés) no sentido longitudinal do Grande Salão; validar a posição final no enquadramento 3/4 e na escala do avatar antes de marcar a etapa visual como concluída.

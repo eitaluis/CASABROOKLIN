@@ -64,6 +64,9 @@ export async function createCharacter({
   let finishAction = null;
   let currentAction = null;
   let castingHandPose = false;
+  let castingBodyPose = false;
+  let castingBodyWeight = 0;
+  const castingOffsets = [];
   let state = null;
 
   // O pivô separa a orientação de navegação da rotação interna do rig Ara.
@@ -72,6 +75,25 @@ export async function createCharacter({
   root.add(hero.scene);
   scene.add(root);
   hero.scene.rotation.y = Math.PI;
+
+  function normalizedBoneName(name) {
+    return String(name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+  function findRigBone(aliases) {
+    const wanted = aliases.map(normalizedBoneName);
+    let found = null;
+    hero.scene.traverse((object) => {
+      if (found) return;
+      const name = normalizedBoneName(object.name);
+      if (wanted.some(alias => name === alias || name.endsWith(alias))) found = object;
+    });
+    return found;
+  }
+  const headBones = [
+    findRigBone(['Head', 'mixamorigHead']),
+    findRigBone(['Neck', 'mixamorigNeck'])
+  ].filter(Boolean);
+  const neutralHeadPose = new Map(headBones.map(bone => [bone, bone.quaternion.clone()]));
 
   // Acessórios originais: bolsa no quadril direito, alça cruzada e medalhão.
   const accessories = attachCarterAccessories ? createCarterAccessories({
@@ -162,6 +184,62 @@ export async function createCharacter({
     }
   }
 
+  function setCastingBodyPose(enabled) {
+    castingBodyPose = Boolean(enabled);
+  }
+
+  function removeCastingBodyOffsets() {
+    for (const entry of castingOffsets) {
+      if (entry.quaternion) entry.bone.quaternion.multiply(entry.quaternion.clone().invert());
+      if (entry.position) entry.bone.position.copy(entry.position);
+    }
+    castingOffsets.length = 0;
+  }
+
+  function addCastingRotation(aliases, axis, angle) {
+    if (Math.abs(angle) < 0.0001) return;
+    const bone = findRigBone(aliases);
+    if (!bone) return;
+    const offset = new THREE.Quaternion().setFromAxisAngle(axis, angle);
+    bone.quaternion.multiply(offset);
+    castingOffsets.push({ bone, quaternion: offset });
+  }
+
+  function updateCastingBodyPose(dt) {
+    castingBodyWeight = THREE.MathUtils.damp(castingBodyWeight, castingBodyPose ? 1 : 0, castingBodyPose ? 12 : 7, dt);
+    if (castingBodyWeight < 0.001) {
+      castingBodyWeight = 0;
+      return;
+    }
+
+    // A cabeça fica no eixo neutro do rig durante o feitiço: não acompanha
+    // a altura do Shabti e não inclina para baixo.
+    if (castingBodyPose) {
+      for (const [bone, quaternion] of neutralHeadPose) bone.quaternion.copy(quaternion);
+    }
+
+    const w = castingBodyWeight;
+    const hips = findRigBone(['Hips', 'mixamorigHips']);
+    if (hips) {
+      const position = hips.position.clone();
+      hips.position.y -= 0.075 * w;
+      castingOffsets.push({ bone: hips, position });
+    }
+
+    // Agachamento curto, de combate: quadris e joelhos flexionam,
+    // tronco inclina poucos graus e o braço livre estabiliza o corpo.
+    const X = new THREE.Vector3(1, 0, 0);
+    const Z = new THREE.Vector3(0, 0, 1);
+    addCastingRotation(['LeftUpLeg', 'mixamorigLeftUpLeg'], X, -0.17 * w);
+    addCastingRotation(['RightUpLeg', 'mixamorigRightUpLeg'], X, -0.17 * w);
+    addCastingRotation(['LeftLeg', 'mixamorigLeftLeg'], X, 0.36 * w);
+    addCastingRotation(['RightLeg', 'mixamorigRightLeg'], X, 0.36 * w);
+    addCastingRotation(['Spine', 'mixamorigSpine'], X, -0.045 * w);
+    addCastingRotation(['Spine1', 'mixamorigSpine1'], X, -0.055 * w);
+    addCastingRotation(['LeftArm', 'mixamorigLeftArm'], Z, -0.10 * w);
+    addCastingRotation(['LeftForeArm', 'mixamorigLeftForeArm'], X, -0.08 * w);
+  }
+
   function handBone(side = 'Right') {
     return hero.scene.getObjectByName(side + 'Hand')
       || hero.scene.getObjectByName(side === 'Right' ? 'wrist.R' : 'wrist.L')
@@ -205,6 +283,7 @@ export async function createCharacter({
     playAction,
     stopAction,
     setCastingHandPose,
+    setCastingBodyPose,
     getHandWorldPosition(side = 'Right', target = new THREE.Vector3()) {
       const hand = handBone(side);
       hero.scene.updateMatrixWorld(true);
@@ -249,8 +328,10 @@ export async function createCharacter({
         restoreLocomotion();
       }
       if (!jumping && !actionSequence) locomotion.speed = speed;
+      removeCastingBodyOffsets();
       mixer.update(dt);
       hero.update(dt);
+      updateCastingBodyPose(dt);
       if (castingHandPose) applyCastingHandPose();
       accessories?.update(dt, movementSpeed);
     },
@@ -263,6 +344,9 @@ export async function createCharacter({
         jumping = false;
       }
       cancelAction();
+      castingBodyPose = false;
+      castingBodyWeight = 0;
+      removeCastingBodyOffsets();
       movementSpeed = 0;
       locomotion.speed = 0;
       root.rotation.set(0, 0, 0);
@@ -272,6 +356,8 @@ export async function createCharacter({
       if (disposed) return;
       disposed = true;
       castingHandPose = false;
+      castingBodyPose = false;
+      removeCastingBodyOffsets();
       clearJumpListener();
       clearActionListener();
       jumpSequence?.stop();

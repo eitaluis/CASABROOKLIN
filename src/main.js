@@ -162,7 +162,7 @@ window.addEventListener('resize', () => {
 
 try {
   document.getElementById('zoneName').textContent = zones.dock.label;
-  document.getElementById('status').innerHTML = 'TERCEIRA PESSOA<br>WASD · MOUSE · SHIFT';
+  document.getElementById('status').innerHTML = 'TERCEIRA PESSOA<br>' + character.locomotionName.toUpperCase();
   document.getElementById('loading').classList.add('done');
   animate();
 } catch (error) {

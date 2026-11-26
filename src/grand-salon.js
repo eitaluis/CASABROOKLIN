@@ -1323,6 +1323,67 @@ function addWallSpear(scene,x,baseY,z,rotation,wood,brass,colliders,interactable
   return group;
 }
 
+function addWallKhopesh(scene,x,baseY,z,rotation,wood,brass,interactables) {
+  const group=new THREE.Group();
+  group.name='khopesh cerimonial de bronze exposto';
+  group.position.set(x,baseY,z);
+  group.rotation.y=rotation;
+
+  const grip=new THREE.Mesh(new THREE.CylinderGeometry(.045,.052,.48,24),wood);
+  grip.name='cabo de madeira do khopesh';
+  grip.position.y=.25;grip.castShadow=true;group.add(grip);
+
+  const guard=new THREE.Mesh(new THREE.TorusGeometry(.095,.025,10,32),brass);
+  guard.rotation.x=Math.PI/2;guard.position.y=.51;group.add(guard);
+
+  const shape=new THREE.Shape();
+  shape.moveTo(-.06,.48);
+  shape.quadraticCurveTo(-.01,.75,.16,.91);
+  shape.quadraticCurveTo(.39,1.08,.56,1.28);
+  shape.quadraticCurveTo(.73,1.48,.63,1.70);
+  shape.quadraticCurveTo(.55,1.87,.35,1.83);
+  shape.quadraticCurveTo(.23,1.76,.27,1.62);
+  shape.quadraticCurveTo(.39,1.59,.46,1.47);
+  shape.quadraticCurveTo(.51,1.36,.38,1.24);
+  shape.quadraticCurveTo(.22,1.08,.03,.98);
+  shape.quadraticCurveTo(-.16,.83,-.17,.58);
+  shape.lineTo(-.06,.48);
+
+  const bladeGeo=new THREE.ExtrudeGeometry(shape,{
+    depth:.055,bevelEnabled:true,bevelSegments:4,
+    steps:1,bevelSize:.018,bevelThickness:.018,curveSegments:28
+  });
+  const bladeMat=new THREE.MeshPhysicalMaterial({
+    color:0xb99153,metalness:.88,roughness:.24,
+    clearcoat:.4,clearcoatRoughness:.18
+  });
+  const blade=new THREE.Mesh(bladeGeo,bladeMat);
+  blade.name='lâmina curva do khopesh';
+  blade.position.z=.035;blade.castShadow=true;group.add(blade);
+
+  const fuller=tube([
+    [-.015,.73,.105],[.11,.98,.105],[.35,1.2,.105],
+    [.55,1.47,.105],[.49,1.68,.105],[.35,1.72,.105]
+  ],.009,brass,36,6);
+  fuller.name='sulco gravado da lâmina curva';group.add(fuller);
+
+  for(const y of [.1,.4,.52]){
+    const ferrule=new THREE.Mesh(new THREE.TorusGeometry(y===.52?.072:.052,.018,8,28),brass);
+    ferrule.rotation.x=Math.PI/2;ferrule.position.y=y;group.add(ferrule);
+  }
+
+  scene.add(group);
+  interactables.push({
+    name:'Khopesh de bronze',
+    kind:'inspect',
+    label:'Khopesh cerimonial',
+    description:'Lâmina curva egípcia em bronze polido, com cabo de nogueira e sulco gravado',
+    position:new THREE.Vector3(x,baseY+.9,z),
+    radius:4.8
+  });
+  return group;
+}
+
 function addModernTelevision(scene,brass,colliders,interactables) {
   const group=new THREE.Group();
   group.name='televisor moderno emoldurado no Grande Salão';
@@ -1441,6 +1502,8 @@ export function buildGrandSalon({
   addCeremonialDrum(scene,10.65,13.18,-6.2,walnut,brass,colliders,interactables);
   addWallSpear(scene,-11.8,15.65,8.82,Math.PI,walnut,brass,colliders,interactables);
   addWallSpear(scene,11.8,15.65,8.82,Math.PI,walnut,brass,colliders,interactables);
+  addWallKhopesh(scene,-10.4,15.9,8.82,Math.PI,walnut,brass,interactables);
+  addWallKhopesh(scene,10.4,15.9,8.82,Math.PI,walnut,brass,interactables);
   addModernTelevision(scene,brass,colliders,interactables);
 
   addWallReliefs(scene,brass,darkWood,stone,relief);

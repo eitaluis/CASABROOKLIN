@@ -1,6 +1,6 @@
 # Interiores da Brooklyn House — pesquisa de assets e direção visual
 
-Status: o Grande Salão recebeu uma etapa asset-first: sofá Poly Haven Sofa 03 CC0 em GLB local com fallback proporcional e normalização pela bounding box, fogo volumétrico MIT com amostragem ampliada, conjuntos PBR CC0 locais, portas dos três níveis de galeria, ferragens e iconografia CC BY em vetores locais. A inspeção visual no navegador e a validação desktop/mobile ainda estão pendentes.
+Status: reestruturação do Grande Salão em átrio central implementada: escadarias principais simétricas, passarela elevada de travessia, lances superiores em faixas distintas, assentos circulares junto ao pedestal e passagens inferiores interpretativas. A inspeção visual no navegador e a validação desktop/mobile ainda estão pendentes.
 
 ## Direção visual
 
@@ -37,6 +37,10 @@ Referência textual: *The Red Pyramid*, passagem da descida à biblioteca. A bib
 - A decoração deve mesclar conforto contemporâneo com objetos egípcios funcionais.
 
 Referência textual: *The Red Pyramid*, descrição do quarto de Carter.
+
+### Reconstrução espacial interpretativa
+
+A prancha da graphic novel mostra a estátua como foco de um grande espaço comum, com assentos em torno de sua base e escadarias que alcançam galerias elevadas. O texto confirma três níveis de balcões que circundam o salão, fileiras de portas voltadas para o espaço principal, a estátua de Thoth e mobiliário de grande escala; não fornece planta cotada nem fixa o desenho exato das escadas, passarelas ou corredores. A solução atual usa duas escadarias centrais simétricas até a primeira galeria, uma passarela que conecta as alas, acessos escalonados aos dois níveis superiores e duas passagens no piso inferior. Esses detalhes de circulação e a forma dos assentos são interpretação de projeto, não fatos canônicos.
 
 ### Elementos a tratar como interpretação
 

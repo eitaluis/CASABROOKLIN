@@ -26,12 +26,12 @@ export function createMagicSystem({
     glyphContext.textAlign = 'center';
     glyphContext.textBaseline = 'middle';
     glyphContext.shadowColor = '#ffbd42';
-    glyphContext.shadowBlur = 34;
-    glyphContext.fillStyle = '#fff0bd';
+    glyphContext.shadowBlur = 52;
+    glyphContext.fillStyle = '#fff8dc';
     glyphContext.font = '190px "Noto Sans Egyptian Hieroglyphs", "Segoe UI Historic", serif';
     glyphContext.fillText('𓉔𓆓', 384, 222);
-    glyphContext.shadowBlur = 13;
-    glyphContext.fillStyle = '#ffd36a';
+    glyphContext.shadowBlur = 24;
+    glyphContext.fillStyle = '#ffe19a';
     glyphContext.font = '600 42px Georgia, serif';
     glyphContext.letterSpacing = '12px';
     glyphContext.fillText('HA-DI', 384, 420);
@@ -56,6 +56,24 @@ export function createMagicSystem({
     blending: THREE.AdditiveBlending,
     toneMapped: false
   });
+  const haloCanvas = document.createElement('canvas');
+  haloCanvas.width = haloCanvas.height = 256;
+  const haloContext = haloCanvas.getContext('2d');
+  const haloGradient = haloContext.createRadialGradient(128, 128, 4, 128, 128, 126);
+  haloGradient.addColorStop(0, 'rgba(255,248,218,0.92)');
+  haloGradient.addColorStop(0.2, 'rgba(255,211,106,0.62)');
+  haloGradient.addColorStop(0.58, 'rgba(255,164,40,0.18)');
+  haloGradient.addColorStop(1, 'rgba(255,164,40,0)');
+  haloContext.fillStyle = haloGradient;
+  haloContext.fillRect(0, 0, 256, 256);
+  const haloTexture = new THREE.CanvasTexture(haloCanvas);
+  haloTexture.colorSpace = THREE.SRGBColorSpace;
+  const glyphHalo = new THREE.Mesh(new THREE.PlaneGeometry(1.02, 0.86), new THREE.MeshBasicMaterial({
+    map: haloTexture, color: 0xffd36a, transparent: true, opacity: 0.84,
+    blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
+  }));
+  glyphHalo.position.z = -0.022;
+  glyphGroup.add(glyphHalo);
   const glyphPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.78, 0.62), glyphMaterial);
   glyphPlane.position.z = 0.012;
   glyphGroup.add(glyphPlane);
@@ -71,9 +89,59 @@ export function createMagicSystem({
   const glyphRing = new THREE.Mesh(new THREE.TorusGeometry(0.43, 0.012, 8, 72), ringMaterial);
   glyphGroup.add(glyphRing);
   const glyphRingInner = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.006, 6, 72), ringMaterial.clone());
-  glyphRingInner.material.opacity = 0.42;
+  glyphRingInner.material.opacity = 0.68;
   glyphRingInner.scale.set(1, 0.72, 1);
   glyphGroup.add(glyphRingInner);
+  const glyphRingOuter = new THREE.Mesh(new THREE.TorusGeometry(0.53, 0.008, 6, 88), ringMaterial.clone());
+  glyphRingOuter.material.opacity = 0.78;
+  glyphRingOuter.scale.set(1, 0.78, 1);
+  glyphGroup.add(glyphRingOuter);
+  const glyphLight = new THREE.PointLight(GOLD, 2.8, 2.8, 2);
+  glyphGroup.add(glyphLight);
+
+  // Sprites CC0 do Kenney Particle Pack: decodificados localmente no navegador.
+  function fallbackSprite(kind) {
+    const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    const gradient = ctx.createRadialGradient(64, 64, 2, 64, 64, 62);
+    if (kind === 'smoke') {
+      gradient.addColorStop(0, 'rgba(220,190,140,0.48)');
+      gradient.addColorStop(0.45, 'rgba(160,135,100,0.22)');
+      gradient.addColorStop(1, 'rgba(120,100,75,0)');
+    } else {
+      gradient.addColorStop(0, 'rgba(255,255,235,1)');
+      gradient.addColorStop(0.2, 'rgba(255,220,130,0.88)');
+      gradient.addColorStop(0.55, 'rgba(255,170,55,0.35)');
+      gradient.addColorStop(1, 'rgba(255,150,40,0)');
+    }
+    ctx.fillStyle = gradient; ctx.fillRect(0, 0, 128, 128);
+    const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace;
+    return texture;
+  }
+  const spriteTextures = {
+    magic: fallbackSprite('magic'), smoke: fallbackSprite('smoke'),
+    circle: fallbackSprite('magic'), spark: fallbackSprite('magic'), slash: fallbackSprite('magic')
+  };
+  async function loadKenneySprite(key, filename) {
+    try {
+      const response = await fetch(new URL('../assets/vfx/' + filename + '.b64', import.meta.url));
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const encoded = (await response.text()).replace(/\s/g, '');
+      const image = new Image(); image.src = 'data:image/png;base64,' + encoded;
+      if (image.decode) await image.decode();
+      else await new Promise((resolve, reject) => { image.onload = resolve; image.onerror = reject; });
+      const texture = new THREE.Texture(image); texture.colorSpace = THREE.SRGBColorSpace;
+      texture.anisotropy = 4; texture.needsUpdate = true;
+      spriteTextures[key].dispose(); spriteTextures[key] = texture;
+    } catch (error) {
+      console.warn('HA-DI: usando sprite procedural de fallback para ' + filename, error);
+    }
+  }
+  loadKenneySprite('magic', 'kenney-magic-01.png');
+  loadKenneySprite('smoke', 'kenney-smoke-03.png');
+  loadKenneySprite('circle', 'kenney-circle-03.png');
+  loadKenneySprite('spark', 'kenney-spark-07.png');
+  loadKenneySprite('slash', 'kenney-slash-02.png');
 
   const activeEffects = [];
   let casting = false;
@@ -150,48 +218,78 @@ export function createMagicSystem({
     };
   }
 
-  function createImpact(position) {
-    const flash = new THREE.Mesh(
-      new THREE.SphereGeometry(0.28, 18, 14),
-      new THREE.MeshBasicMaterial({
-        color: 0xffe2a0, transparent: true, opacity: 0.92,
+  function createImpact(position, floorHeight = position.y - 1) {
+    const group = new THREE.Group();
+    group.name = 'HA-DI · explosão dourada em camadas';
+    group.position.copy(position); scene.add(group);
+    const flash = new THREE.Mesh(new THREE.SphereGeometry(0.25, 24, 16), new THREE.MeshBasicMaterial({
+      color: 0xffefb8, transparent: true, opacity: 0.98, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
+    }));
+    const shell = new THREE.Mesh(new THREE.SphereGeometry(0.42, 22, 16), new THREE.MeshBasicMaterial({
+      color: 0xffc34f, transparent: true, opacity: 0.78, wireframe: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
+    }));
+    group.add(flash, shell);
+    const coreSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: spriteTextures.magic, color: 0xffe6a0, transparent: true, opacity: 0.98,
+      blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
+    }));
+    coreSprite.scale.set(0.9, 0.9, 1); group.add(coreSprite);
+    const floorSigil = new THREE.Mesh(new THREE.PlaneGeometry(1.75, 1.75), new THREE.MeshBasicMaterial({
+      map: spriteTextures.circle, color: 0xffc04b, transparent: true, opacity: 0.82,
+      blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, toneMapped: false
+    }));
+    floorSigil.rotation.x = -Math.PI / 2; floorSigil.position.y = floorHeight - position.y + 0.025; group.add(floorSigil);
+    const shockwave = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.035, 8, 64), new THREE.MeshBasicMaterial({
+      color: 0xffe3a0, transparent: true, opacity: 0.98, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
+    }));
+    shockwave.quaternion.copy(camera.quaternion); group.add(shockwave);
+    const groundWave = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.026, 8, 64), new THREE.MeshBasicMaterial({
+      color: GOLD, transparent: true, opacity: 0.94, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
+    }));
+    groundWave.rotation.x = -Math.PI / 2; groundWave.position.y = floorHeight - position.y + 0.045; group.add(groundWave);
+    const slash = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: spriteTextures.slash, color: 0xffd36a, transparent: true, opacity: 0.9,
+      blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
+    }));
+    slash.scale.set(1.9, 1.15, 1); slash.material.rotation = -0.35; group.add(slash);
+    const rays = [];
+    for (let i = 0; i < 18; i++) {
+      const direction = new THREE.Vector3(Math.random() * 2 - 1, 0.12 + Math.random() * 1.15, Math.random() * 2 - 1).normalize();
+      const ray = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.032, 1, 5, 1), new THREE.MeshBasicMaterial({
+        color: i % 4 === 0 ? PALE_GOLD : GOLD, transparent: true, opacity: 0.94,
         blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
-      })
-    );
-    flash.position.copy(position);
-    scene.add(flash);
-
-    const shockwave = new THREE.Mesh(
-      new THREE.TorusGeometry(0.28, 0.045, 8, 48),
-      new THREE.MeshBasicMaterial({
-        color: GOLD, transparent: true, opacity: 0.9,
-        blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
-      })
-    );
-    shockwave.position.copy(position);
-    shockwave.quaternion.copy(camera.quaternion);
-    scene.add(shockwave);
-
-    const sparks = [];
-    for (let i = 0; i < 24; i++) {
-      const mesh = new THREE.Mesh(
-        new THREE.OctahedronGeometry(0.025 + Math.random() * 0.025, 0),
-        new THREE.MeshBasicMaterial({
-          color: i % 3 === 0 ? PALE_GOLD : GOLD,
-          transparent: true, opacity: 0.95,
-          blending: THREE.AdditiveBlending, toneMapped: false
-        })
-      );
-      mesh.position.copy(position);
-      scene.add(mesh);
-      const direction = new THREE.Vector3(
-        Math.random() * 2 - 1,
-        Math.random() * 1.6 - 0.25,
-        Math.random() * 2 - 1
-      ).normalize();
-      sparks.push({ mesh, velocity: direction.multiplyScalar(2.2 + Math.random() * 4.5) });
+      }));
+      ray.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
+      ray.position.copy(direction).multiplyScalar(0.22);
+      const length = 0.72 + Math.random() * 0.72; ray.scale.y = length; group.add(ray);
+      rays.push({ mesh: ray, direction, length });
     }
-    activeEffects.push({ flash, shockwave, sparks, age: 0, duration: 0.62 });
+    const sparks = [];
+    for (let i = 0; i < 46; i++) {
+      const mesh = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: spriteTextures.spark, color: i % 4 === 0 ? 0xfff3c0 : 0xffbd42,
+        transparent: true, opacity: 0.98, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
+      }));
+      const size = 0.075 + Math.random() * 0.12; mesh.scale.set(size, size, 1); group.add(mesh);
+      const direction = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 1.8 - 0.05, Math.random() * 2 - 1).normalize();
+      mesh.position.copy(direction).multiplyScalar(0.12 + Math.random() * 0.18);
+      sparks.push({ mesh, velocity: direction.multiplyScalar(2.8 + Math.random() * 4.8), baseSize: size });
+    }
+    const smoke = [];
+    for (let i = 0; i < 9; i++) {
+      const mesh = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: spriteTextures.smoke, color: 0xc7a36a, transparent: true, opacity: 0.28,
+        blending: THREE.NormalBlending, depthWrite: false, toneMapped: false
+      }));
+      const size = 0.3 + Math.random() * 0.34; mesh.scale.set(size, size, 1);
+      mesh.position.set((Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.42, (Math.random() - 0.5) * 0.5);
+      group.add(mesh);
+      smoke.push({
+        mesh, velocity: new THREE.Vector3((Math.random() - 0.5) * 0.65, 0.18 + Math.random() * 0.48, (Math.random() - 0.5) * 0.65),
+        baseSize: size, phase: Math.random() * Math.PI * 2
+      });
+    }
+    activeEffects.push({ group, flash, shell, coreSprite, floorSigil, shockwave, groundWave, slash, rays, sparks, smoke, age: 0, duration: 1.42 });
   }
 
   function finishCast() {
@@ -199,6 +297,7 @@ export function createMagicSystem({
     glyphGroup.visible = false;
     glyphMaterial.opacity = 0;
     character.setCastingHandPose?.(false);
+    character.setCastingBodyPose?.(false);
     character.stopAction?.();
     character.lookAt?.(null);
     controller.setLocked(false);
@@ -238,8 +337,9 @@ export function createMagicSystem({
     glyphGroup.scale.setScalar(0.12);
     glyphMaterial.opacity = 1;
     controller.setLocked(true);
+    character.lookAt?.(null);
     character.faceTarget?.(target.position);
-    character.lookAt?.(target.position, { amount: 0.9, smoothing: 0.28 });
+    character.setCastingBodyPose?.(true);
     character.playAction?.('point');
     character.setCastingHandPose?.(true);
     updateGlyphAnchor();
@@ -255,9 +355,11 @@ export function createMagicSystem({
       } else {
         updateGlyphAnchor();
         const reveal = THREE.MathUtils.clamp(castElapsed / 0.16, 0, 1);
-        glyphGroup.scale.setScalar(0.12 + reveal * 0.88);
+        glyphGroup.scale.setScalar((0.12 + reveal * 0.64) * (1 + Math.sin(castElapsed * 23) * 0.035));
         glyphRing.rotation.z += dt * 1.15;
         glyphRingInner.rotation.z -= dt * 1.8;
+        glyphRingOuter.rotation.z += dt * 2.15;
+        glyphLight.intensity = 2.8 + Math.sin(castElapsed * 28) * 1.05;
         glyphMaterial.opacity = castElapsed < 0.7
           ? 1
           : THREE.MathUtils.clamp(1 - (castElapsed - 0.7) / 0.38, 0, 1);
@@ -280,10 +382,11 @@ export function createMagicSystem({
           projectile.halo.scale.setScalar(0.8 + pulse * 0.35);
           if (t >= 1 && !impactApplied) {
             impactApplied = true;
+            const targetFloorY = activeTarget.state.group.position.y;
             const impactPosition = activeTarget.state.group.position.clone()
               .add(new THREE.Vector3(0, 1.05 * activeTarget.state.fullScale, 0));
             const destroyed = trainingRoom.applyHaDi(activeTarget);
-            if (destroyed) createImpact(impactPosition);
+            if (destroyed) createImpact(impactPosition, targetFloorY);
             disposeProjectile();
           }
         }
@@ -293,28 +396,38 @@ export function createMagicSystem({
     }
 
     for (let i = activeEffects.length - 1; i >= 0; i--) {
-      const effect = activeEffects[i];
-      effect.age += dt;
-      const t = Math.min(1, effect.age / effect.duration);
-      effect.flash.scale.setScalar(0.25 + t * 2.6);
-      effect.flash.material.opacity = 0.92 * (1 - t);
-      effect.shockwave.scale.setScalar(0.4 + t * 3.1);
-      effect.shockwave.material.opacity = 0.9 * (1 - t);
+      const effect = activeEffects[i]; effect.age += dt;
+      const t = Math.min(1, effect.age / effect.duration), fade = 1 - t;
+      effect.flash.scale.setScalar(0.18 + t * 3.1); effect.flash.material.opacity = 0.98 * fade;
+      effect.shell.scale.setScalar(0.18 + t * 2.9); effect.shell.material.opacity = 0.78 * fade;
+      effect.coreSprite.scale.setScalar(0.35 + t * 2.3); effect.coreSprite.material.opacity = 0.98 * fade;
+      effect.floorSigil.scale.setScalar(0.34 + t * 2.55); effect.floorSigil.material.opacity = 0.82 * fade;
+      effect.shockwave.scale.setScalar(0.3 + t * 3.8); effect.shockwave.material.opacity = 0.98 * fade;
+      effect.groundWave.scale.setScalar(0.24 + t * 4.2); effect.groundWave.material.opacity = 0.94 * fade;
+      effect.slash.scale.set(1.1 + t * 2.5, 0.8 + t * 1.1, 1);
+      effect.slash.material.opacity = 0.9 * fade; effect.slash.material.rotation += dt * 1.8;
+      for (const ray of effect.rays) {
+        ray.mesh.position.copy(ray.direction).multiplyScalar(0.2 + t * 0.48);
+        ray.mesh.scale.y = ray.length * (0.82 + t * 0.9); ray.mesh.material.opacity = 0.94 * fade;
+      }
       for (const spark of effect.sparks) {
-        spark.velocity.y -= 5.8 * dt;
-        spark.mesh.position.addScaledVector(spark.velocity, dt);
-        spark.mesh.rotation.x += dt * 8;
-        spark.mesh.rotation.y += dt * 11;
-        spark.mesh.material.opacity = Math.max(0, 1 - t);
+        spark.velocity.y -= 5.4 * dt; spark.mesh.position.addScaledVector(spark.velocity, dt);
+        spark.mesh.material.rotation += dt * 7; spark.mesh.material.opacity = Math.max(0, fade);
+        spark.mesh.scale.setScalar(spark.baseSize * (0.78 + fade * 0.4));
+      }
+      for (const puff of effect.smoke) {
+        puff.mesh.position.addScaledVector(puff.velocity, dt); puff.mesh.material.rotation += dt * 0.35;
+        puff.mesh.material.opacity = 0.28 * fade;
+        const size = puff.baseSize * (0.8 + t * 1.65); puff.mesh.scale.set(size, size, 1);
+        puff.mesh.position.y += Math.sin(effect.age * 3.2 + puff.phase) * dt * 0.08;
       }
       if (t >= 1) {
-        scene.remove(effect.flash, effect.shockwave);
-        effect.flash.geometry.dispose(); effect.flash.material.dispose();
-        effect.shockwave.geometry.dispose(); effect.shockwave.material.dispose();
-        for (const spark of effect.sparks) {
-          scene.remove(spark.mesh);
-          spark.mesh.geometry.dispose(); spark.mesh.material.dispose();
-        }
+        scene.remove(effect.group);
+        effect.group.traverse(object => {
+          object.geometry?.dispose?.();
+          if (Array.isArray(object.material)) object.material.forEach(material => material.dispose());
+          else object.material?.dispose?.();
+        });
         activeEffects.splice(i, 1);
       }
     }

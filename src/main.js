@@ -135,6 +135,26 @@ trainingHudStyle.textContent = [
 ].join('');
 document.head.appendChild(trainingHudStyle);
 
+const interactionPrompt=document.createElement('aside');
+interactionPrompt.id='interactionPrompt'; interactionPrompt.hidden=true;
+interactionPrompt.setAttribute('aria-live','polite');
+interactionPrompt.style.cssText=[
+  'position:fixed','left:50%','bottom:104px','transform:translateX(-50%)','z-index:10',
+  'max-width:min(720px,calc(100vw - 32px))','padding:11px 17px',
+  'border:1px solid rgba(208,173,105,.62)','background:rgba(8,15,17,.9)',
+  'backdrop-filter:blur(14px)','box-shadow:0 10px 34px rgba(0,0,0,.42)',
+  'color:#f0e4ca','font:600 11px/1.55 DM Sans,sans-serif',
+  'letter-spacing:.055em','text-align:center','pointer-events:none'
+].join(';');
+document.body.appendChild(interactionPrompt);
+const interactionPromptStyle=document.createElement('style');
+interactionPromptStyle.textContent=[
+  '#interactionPrompt[hidden]{display:none!important}',
+  '@media(max-width:900px) and (pointer:coarse){#interactionPrompt{bottom:140px!important;max-width:calc(100vw - 32px);padding:8px 11px;font-size:9px;line-height:1.45}}',
+  '@media(max-height:430px) and (pointer:coarse){#interactionPrompt{bottom:100px!important;max-width:calc(100vw - 180px);font-size:8px;padding:6px 8px}}'
+].join('');
+document.head.appendChild(interactionPromptStyle);
+
 function toast(message) {
   const element = document.getElementById('toast');
   element.textContent = message;
@@ -305,6 +325,25 @@ function animate() {
   const trainingMessage = trainingRoom.update(time, dt, controller.getPosition(), controller.getForward());
   if (trainingMessage) toast(trainingMessage);
   const trainingStatus = trainingRoom.getStatus();
+  let nearbyTrainingItem=null, nearbyTrainingDistance=Infinity;
+  if(controller.zone==='training'){
+    const player=controller.getPosition();
+    for(const item of interactables){
+      const distance=player.distanceTo(item.position);
+      if(distance<=item.radius&&distance<nearbyTrainingDistance){
+        nearbyTrainingItem=item;nearbyTrainingDistance=distance;
+      }
+    }
+  }
+  if(nearbyTrainingItem){
+    let prompt=typeof nearbyTrainingItem.prompt==='function'?nearbyTrainingItem.prompt():nearbyTrainingItem.prompt;
+    if(!prompt)prompt=nearbyTrainingItem.label||nearbyTrainingItem.name;
+    if(isTouchDevice)prompt=String(prompt).replace(/E\\s*\\/\\s*INTERAGIR/gi,'TOQUE · INTERAGIR').replace(/E\\s*·/gi,'TOQUE ·').replace(/F\\s*\\/\\s*USAR/gi,'BOTÃO USAR');
+    interactionPrompt.textContent=prompt;
+    interactionPrompt.hidden=false;
+  }else{
+    interactionPrompt.hidden=true;
+  }
   const showTrainingHud = controller.zone === 'training'
     && (trainingStatus.challengeActive || trainingStatus.targetPracticeActive);
   trainingHud.hidden = !showTrainingHud;

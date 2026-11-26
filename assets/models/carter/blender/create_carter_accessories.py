@@ -189,17 +189,26 @@ seam = make_curve(
 )
 parent_keep_world(seam)
 
-clasp = make_curve(
-    "Carter_Satchel_Brass_Clasp",
-    [
-        (bag_center.x, bag_center.y + bag_height * 0.205, bag_depth * 1.13),
-        (bag_center.x + 0.0001, bag_center.y + bag_height * 0.205, bag_depth * 1.13)
-    ],
-    brass_light,
-    0.004 * UNIT,
-    3
+bpy.ops.mesh.primitive_torus_add(
+    major_radius=0.013 * UNIT,
+    minor_radius=0.0026 * UNIT,
+    major_segments=24,
+    minor_segments=8,
+    location=(bag_center.x, bag_center.y + bag_height * 0.205, bag_depth * 1.115)
 )
+clasp = bpy.context.object
+clasp.name = "Carter_Satchel_Brass_Clasp"
+assign_material(clasp, brass_light)
 parent_keep_world(clasp)
+
+clasp_bar = rounded_box(
+    "Carter_Satchel_Brass_Clasp_Bar",
+    (0.004 * UNIT, 0.019 * UNIT, 0.003 * UNIT),
+    (bag_center.x, bag_center.y + bag_height * 0.205, bag_depth * 1.12),
+    brass_light,
+    0.001 * UNIT
+)
+parent_keep_world(clasp_bar)
 
 # Diagonal strap: the illustration's left shoulder to the character's right hip.
 strap_points = [

@@ -1,6 +1,6 @@
 export function createThirdPersonController({ THREE, camera, canvas, character, zones, onZoneChange }) {
   const keys = new Set();
-  const touch = { forward: false, back: false, left: false, right: false };
+  const touch = { forward: false, back: false, left: false, right: false, sprint: false };
   const position = new THREE.Vector3();
   const lookTarget = new THREE.Vector3();
   const desiredCamera = new THREE.Vector3();
@@ -93,7 +93,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   window.addEventListener('keyup', (event) => keys.delete(event.code));
   window.addEventListener('blur', () => keys.clear());
 
-  document.querySelectorAll('#mobile button').forEach((button) => {
+  document.querySelectorAll('#mobile [data-move]').forEach((button) => {
     const key = button.dataset.move;
     button.addEventListener('pointerdown', (event) => {
       event.preventDefault();
@@ -101,6 +101,20 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       button.setPointerCapture?.(event.pointerId);
     });
     const release = () => { touch[key] = false; };
+    button.addEventListener('pointerup', release);
+    button.addEventListener('pointercancel', release);
+    button.addEventListener('lostpointercapture', release);
+  });
+
+  document.querySelectorAll('#mobile [data-action]').forEach((button) => {
+    const action = button.dataset.action;
+    button.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      if (action === 'run') touch.sprint = true;
+      if (action === 'jump' && character.human) character.human.jump();
+      button.setPointerCapture?.(event.pointerId);
+    });
+    const release = () => { if (action === 'run') touch.sprint = false; };
     button.addEventListener('pointerup', release);
     button.addEventListener('pointercancel', release);
     button.addEventListener('lostpointercapture', release);
@@ -132,7 +146,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     const direction = forward.multiplyScalar(input.forward).add(right.multiplyScalar(input.strafe));
     if (direction.lengthSq() > 0.0001) direction.normalize();
 
-    const running = keys.has('ShiftLeft') || keys.has('ShiftRight');
+    const running = keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint;
     const speedTarget = input.moving ? (running ? 3.2 : 1.45) : 0;
     const currentPosition = getPosition();
     limitToZone(currentPosition, direction, Math.max(speedTarget, 1.45) * dt * 1.4);

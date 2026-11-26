@@ -156,7 +156,10 @@ def parent_keep_world(obj, parent=None):
 bag_width = 0.305 * UNIT
 bag_height = 0.245 * UNIT
 bag_depth = 0.092 * UNIT
-bag_center = Vector((-0.245 * UNIT, 0.375 * HEIGHT, -0.135 * UNIT))
+bag_anchor_point = Vector((-0.245 * UNIT, 0.375 * HEIGHT, -0.135 * UNIT))
+# Runtime body geometry is extruded from the anchor along local +Z; after the
+# -90 degree turn this places its centre half a depth toward anatomical right.
+bag_center = Vector((bag_anchor_point.x - bag_depth * 0.5, bag_anchor_point.y, bag_anchor_point.z))
 side_rotation = (0.0, -math.pi / 2.0, 0.0)
 
 body = rounded_box(
@@ -172,7 +175,7 @@ parent_keep_world(body, bag_anchor)
 flap = rounded_box(
     "Carter_Satchel_Soft_Flap",
     (bag_width * 0.94, bag_height * 0.39, 0.018 * UNIT),
-    (bag_center.x - bag_depth * 0.82, bag_center.y + bag_height * 0.285, bag_center.z),
+    (bag_anchor_point.x - (bag_depth * 0.92 + 0.009 * UNIT), bag_center.y + bag_height * 0.285, bag_center.z),
     leather_dark,
     0.018 * UNIT
 )
@@ -182,7 +185,7 @@ parent_keep_world(flap, bag_anchor)
 pocket = rounded_box(
     "Carter_Satchel_Rounded_Pocket",
     (bag_width * 0.56, bag_height * 0.27, 0.012 * UNIT),
-    (bag_center.x - bag_depth * 0.91, bag_center.y - bag_height * 0.235, bag_center.z),
+    (bag_anchor_point.x - (bag_depth * 0.94 + 0.006 * UNIT), bag_center.y - bag_height * 0.235, bag_center.z),
     leather_light,
     0.014 * UNIT
 )
@@ -192,7 +195,7 @@ parent_keep_world(pocket, bag_anchor)
 gusset = rounded_box(
     "Carter_Satchel_Soft_Gusset",
     (0.016 * UNIT, bag_height * 0.78, bag_depth * 0.88),
-    (bag_center.x - bag_depth * 0.48, bag_center.y, bag_center.z - bag_width * 0.455),
+    (bag_anchor_point.x - bag_depth * 0.49, bag_center.y, bag_center.z - bag_width * 0.455),
     leather_dark,
     0.006 * UNIT
 )
@@ -202,9 +205,9 @@ parent_keep_world(gusset, bag_anchor)
 seam = make_curve(
     "Carter_Pocket_Stitch",
     [
-        (bag_center.x - bag_depth * 1.08, bag_center.y - bag_height * 0.235, bag_center.z - bag_width * 0.20),
-        (bag_center.x - bag_depth * 1.08, bag_center.y - bag_height * 0.235, bag_center.z),
-        (bag_center.x - bag_depth * 1.08, bag_center.y - bag_height * 0.235, bag_center.z + bag_width * 0.20)
+        (bag_anchor_point.x - bag_depth * 1.105, bag_center.y - bag_height * 0.235, bag_center.z - bag_width * 0.20),
+        (bag_anchor_point.x - bag_depth * 1.105, bag_center.y - bag_height * 0.235, bag_center.z),
+        (bag_anchor_point.x - bag_depth * 1.105, bag_center.y - bag_height * 0.235, bag_center.z + bag_width * 0.20)
     ],
     stitch,
     0.0012 * UNIT,
@@ -217,13 +220,31 @@ bpy.ops.mesh.primitive_torus_add(
     minor_radius=0.0022 * UNIT,
     major_segments=24,
     minor_segments=8,
-    location=(bag_center.x - bag_depth * 1.08, bag_center.y + bag_height * 0.105, bag_center.z),
+    location=(bag_anchor_point.x - bag_depth * 1.09, bag_center.y + bag_height * 0.105, bag_center.z),
     rotation=(0.0, -math.pi / 2.0, 0.0)
 )
 clasp = bpy.context.object
 clasp.name = "Carter_Satchel_Brass_Snap"
 assign_material(clasp, brass_light)
 parent_keep_world(clasp, bag_anchor)
+
+# Strap-to-bag ring sits directly under the strap's rear endpoint.
+bpy.ops.mesh.primitive_torus_add(
+    major_radius=0.012 * UNIT,
+    minor_radius=0.0022 * UNIT,
+    major_segments=24,
+    minor_segments=8,
+    location=(
+        bag_anchor_point.x - 0.011 * UNIT,
+        bag_anchor_point.y + bag_height * 0.28,
+        bag_anchor_point.z - 0.018 * UNIT
+    ),
+    rotation=(0.0, -math.pi / 2.0, 0.0)
+)
+attachment_ring = bpy.context.object
+attachment_ring.name = "Carter_Satchel_Rear_Strap_Ring"
+assign_material(attachment_ring, brass)
+parent_keep_world(attachment_ring, bag_anchor)
 
 # Crossbody strap crosses the chest, rounds the right flank and ends at the rear hip.
 strap_points = [

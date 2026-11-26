@@ -19,6 +19,12 @@ Status: **revisão da bolsa, remoção da mochila-base e ajuste de encaixe do co
 - A escala é obtida do próprio rig, com fallback de 1,75 m.
 - As animações centrais continuam sendo idle, walk, run, jump_start, jump_air e jump_land.
 
+## Inventário e objetos do Duat
+
+`src/inventory.js` mantém o cajado e o khopesh existentes e acrescenta o shabti de cera como primeiro artefato portátil. Os objetos começam guardados no Duat e são retirados por uma abertura visual presa ao socket da mão direita; o retorno ao Duat usa a transição inversa. O catálogo usa IDs estáveis e separa `weapon` de `artifact`, para que futuros itens não precisem ser tratados como armas.
+
+A primeira camada visual do portal está implementada. A animação corporal específica de Carter atravessando a membrana, assim como a caixa de magia, papiros, cálamo, tinta e amuletos individuais, permanece pendente de implementação e validação. Consulte `docs/CHARACTER-INVENTORY-DUAT.md`.
+
 ## Acessórios autorais integrados
 
 Módulo: src/character-accessories.js.

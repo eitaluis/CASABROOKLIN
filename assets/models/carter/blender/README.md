@@ -27,7 +27,7 @@ The script creates editable mesh and curve objects with materials, bevels and gr
 
 The game currently creates the corresponding lightweight geometry in src/character-accessories.js and attaches it to the Ara Hips bone when available. The Blender generator is the editable look-development source for future refinement; it is not yet imported as a GLB in the game.
 
-The script creates separate anchors: Carter_Bag_Hips_Anchor for the bag/strap and Carter_Necklace_Spine2_Anchor for the chain/medallion. When the Ara rig is present, parent the first to Hips and the second to Spine2 (or the nearest upper-chest bone), preserving the rest-pose placement. Do not export the body or replace the approved character from this script.
+The script creates three separate anchors: Carter_Bag_Hips_Anchor for the bag, Carter_Strap_Spine2_Anchor for the shoulder strap, and Carter_Necklace_Spine2_Anchor for the chain/medallion. When the Ara rig is present, parent the bag anchor to Hips and the strap/necklace anchors to Spine2 (or the nearest upper-chest bone), preserving rest-pose placement. Do not export the body or replace the approved character from this script.
 
 ## Art direction
 

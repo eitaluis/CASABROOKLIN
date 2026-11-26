@@ -79,6 +79,18 @@
       "path": "assets/textures/{wood-walnut,tile-limestone-beige,marble-white,plaster-smooth-beige}",
       "role": "local 1K colour/normal/roughness maps to improve walnut, limestone floor, dark marble microrelief and interior plaster",
       "license": "CC0-1.0"
+    },
+    {
+      "id": "great-hall-egyptian-instruments-weapons",
+      "path": "src/grand-salon.js",
+      "role": "bespoke arched Egyptian harps with individual strings and resonator boxes, ceremonial drums with hide heads and ties, leaf-shaped bronze spearheads with walnut shafts; includes object colliders and inspection prompts",
+      "license": "project-original-code; surface materials use CC0 Poly Haven Walnut Veneer 02"
+    },
+    {
+      "id": "great-hall-modern-television",
+      "path": "src/grand-salon.js",
+      "role": "rounded metal TV bezel and reflective dark glass screen above the fireplace; inspection prompt",
+      "license": "project-original-code"
     }
   ],
   "openSourceReferences": [

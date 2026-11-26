@@ -66,6 +66,10 @@ export function buildTrainingRoom({
   scene.traverse((obj) => {
     if (obj.name === 'lateral oeste da mansão') obj.visible = false;
     if (obj.name === 'parede lateral do salão' && obj.position.x < 0) obj.visible = false;
+    // A fachada exterior recortava a sala ao nível do piso e competia com as paredes internas.
+    if (obj.name === 'fachada posterior da mansão'
+      || obj.name === 'fachada frontal da mansão esquerda'
+      || obj.name === 'fachada frontal da mansão direita') obj.visible = false;
   });
   // Retira a colisão da parede original antes de recriar os segmentos em torno do portal.
   for (let i = colliders.length - 1; i >= 0; i--) {
@@ -98,7 +102,7 @@ export function buildTrainingRoom({
   groundSurfaces.push(bridge);
   const walkablePlatforms = [
     { minX: room.minX, maxX: room.maxX, minZ: room.minZ, maxZ: room.maxZ, height: floorTop },
-    { minX: -15.75, maxX: -12.15, minZ: centerZ - 2.25, maxZ: centerZ + 2.25, height: floorTop }
+    { minX: -16.45, maxX: -12.15, minZ: centerZ - 2.25, maxZ: centerZ + 2.25, height: floorTop }
   ];
   zones.hall.bounds[0] = Math.min(zones.hall.bounds[0], -15.9);
   zones.training = {
@@ -275,6 +279,7 @@ export function buildTrainingRoom({
   }
   const wallMaps=makeLimestoneWallMaps();
   const wallMat=new THREE.MeshStandardMaterial({map:wallMaps.map,bumpMap:wallMaps.bump,bumpScale:.035,color:0xfff4df,roughness:.88,metalness:0});
+  const endWallMat=new THREE.MeshStandardMaterial({map:wallMaps.map,bumpMap:wallMaps.bump,bumpScale:.048,color:0xffe4b7,roughness:.92,metalness:0});
   // Reboco mineral PBR local CC0; alvenaria procedural permanece como fallback offline.
   const wallPbrColor=roomTextureLoader.load('./assets/textures/plaster-smooth-beige/color.webp',
     tex=>{tex.colorSpace=THREE.SRGBColorSpace;},undefined,
@@ -286,23 +291,20 @@ export function buildTrainingRoom({
   wallMat.roughnessMap=loadRoomPbr('./assets/textures/plaster-smooth-beige/roughness.webp',false,[5,2]);
   wallMat.bumpMap=null;wallMat.normalScale.set(.32,.32);
   const westWallX = room.minX + 0.25;
-  const eastWallX = room.maxX - 0.18;
+  const eastWallX = -15.6; // Reutiliza a parede oeste original da mansão, reconstruída uma única vez no portal.
   const wallBottom = floorY;
   const wallTop = springY + 0.08;
   const wallHeight = wallTop - wallBottom;
   addBox('parede oeste da sala de treinamento', [westWallX, wallBottom + wallHeight / 2, centerZ], [0.5, wallHeight, roomLength], wallMat, true, false);
-  addBox('parede norte da sala de treinamento', [centerX, wallBottom + wallHeight / 2, room.minZ + 0.22], [roomWidth, wallHeight, 0.5], wallMat, true, false);
-  addBox('parede sul da sala de treinamento', [centerX, wallBottom + wallHeight / 2, room.maxZ - 0.22], [roomWidth, wallHeight, 0.5], wallMat, true, false);
+  addBox('parede de fundo norte em calcário quente', [centerX, wallBottom + wallHeight / 2, room.minZ + 0.22], [roomWidth, wallHeight, 0.5], endWallMat, true, false);
+  addBox('parede de fundo sul em calcário quente', [centerX, wallBottom + wallHeight / 2, room.maxZ - 0.22], [roomWidth, wallHeight, 0.5], endWallMat, true, false);
   // A parede leste é seccionada para deixar o portal aberto.
   const openingWidth = 4.5;
   const openingHalf = openingWidth / 2;
   const openingStart = centerZ - openingHalf;
   const openingEnd = centerZ + openingHalf;
-  const northWallLength = openingStart - room.minZ;
-  const southWallLength = room.maxZ - openingEnd;
-  addBox('parede leste antes do portal', [eastWallX, wallBottom + wallHeight / 2, room.minZ + northWallLength / 2], [0.5, wallHeight, northWallLength], wallMat, true, false);
-  addBox('parede leste depois do portal', [eastWallX, wallBottom + wallHeight / 2, openingEnd + southWallLength / 2], [0.5, wallHeight, southWallLength], wallMat, true, false);
-  addBox('verga interna do portal', [eastWallX, floorY + 3.98, centerZ], [0.5, wallTop - (floorY + 3.75), openingWidth], wallMat, true, false);
+  // A parede leste já foi reconstruída por rebuildSideWall() sobre a parede original.
+  // Não criar uma segunda camada de caixas coplanares: isso provocava z-fighting e cintilação.
   addBox('base do portal', [eastWallX, floorY + 0.08, centerZ], [0.5, 0.16, openingWidth], limestone, false, false);
   // Batentes e lintel entalhados.
   for (const z of [centerZ - openingHalf, centerZ + openingHalf]) {
@@ -403,7 +405,7 @@ export function buildTrainingRoom({
   }
 
   // Frisos, molduras e relevos das paredes laterais.
-  for (const sideX of [westWallX + 0.28, eastWallX - 0.28]) {
+  for (const sideX of [westWallX + 0.28, eastWallX - 0.55]) {
     addBox('friso de calcário gravado', [sideX, floorY + 3.08, centerZ], [0.12, 0.2, roomLength - 0.8], bronze);
     addBox('rodapé de madeira escura', [sideX, floorY + 0.18, centerZ], [0.16, 0.32, roomLength - 0.8], woodDark);
     for (const z of [-12.1, -6.1, 5.1, 11.1]) {
@@ -665,7 +667,7 @@ export function buildTrainingRoom({
   addTarget(-10.0, 1); addTarget(-0.5, 2); addTarget(9.0, 3);
   const noticeBoard = new THREE.Group();
   noticeBoard.name = 'quadro de aviso para prática de alvos';
-  noticeBoard.position.set(eastWallX - 0.42, floorY + 2.15, 8.2);
+  noticeBoard.position.set(eastWallX - 0.62, floorY + 2.15, 8.2);
   noticeBoard.rotation.y = -Math.PI / 2;
   const boardBacking = new THREE.Mesh(new THREE.BoxGeometry(2.1, 1.7, 0.18), woodDark);
   noticeBoard.add(boardBacking);
@@ -903,7 +905,7 @@ export function buildTrainingRoom({
   const doorLeaves = [];
   for (const side of [-1, 1]) {
     const hinge = new THREE.Group();
-    hinge.position.set(eastWallX - 0.16, floorY, centerZ + side * openingHalf);
+    hinge.position.set(eastWallX - 0.55, floorY, centerZ + side * openingHalf);
     const leaf = new THREE.Mesh(new THREE.BoxGeometry(0.15, 3.65, openingHalf), woodDark);
     leaf.position.set(0, 1.825, -side * openingHalf / 2);
     leaf.castShadow = true; leaf.receiveShadow = true; hinge.add(leaf);
@@ -920,7 +922,7 @@ export function buildTrainingRoom({
   addInteractable({
     name: 'Portas duplas da sala de treinamento', label: 'Portas de nogueira e bronze',
     description: 'Portas duplas entalhadas no portal entre o Grande Salão e a sala de treinamento.',
-    position: new THREE.Vector3(eastWallX, floorY + 1.6, centerZ), radius: 2.5,
+    position: new THREE.Vector3(eastWallX - 0.55, floorY + 1.6, centerZ), radius: 2.5,
     onInteract: () => {
       doorOpen = !doorOpen;
       doorLeaves.forEach(({ hinge, side }) => {
@@ -935,7 +937,7 @@ export function buildTrainingRoom({
       } else {
         for (const side of [-1, 1]) {
           const item = {
-            minX: eastWallX - 0.12, maxX: eastWallX + 0.12,
+            minX: eastWallX - 0.67, maxX: eastWallX - 0.43,
             minY: floorY, maxY: floorY + 3.65,
             minZ: side < 0 ? centerZ - openingHalf : centerZ,
             maxZ: side < 0 ? centerZ : centerZ + openingHalf

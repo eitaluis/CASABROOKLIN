@@ -135,3 +135,10 @@ Não fixar a magia a um botão ou a um tipo de dispositivo. Desktop e mobile cha
 - [ ] A sala de treinamento reage aos objetos/alvos por capacidades, não por lógica exclusiva do botão.
 
 Status de validação: implementação de código não equivale a aprovação visual; testes reais em navegador continuam obrigatórios.
+
+## 10. Bancada de validação no preview
+
+`character-preview.html` reutiliza `src/character.js` e `src/inventory.js` do jogo. A coluna “Inventário do Duat” permite retirar os oito itens, guardar o item ativo e observar o personagem em frente, perfil, costas e três-quartos. A ação `use_press` também pode ser acionada isoladamente no painel inferior.
+
+A bancada ajuda a revisar escala, orientação, clipping, posição do portal e transição de mão. Ela não substitui o teste no mundo completo: colisões, iluminação real da casa, desempenho mobile e enquadramento em terceira pessoa ainda exigem inspeção no jogo.
+

@@ -79,6 +79,9 @@ export function createInventory({
   }
 
   const items = new Map();
+  // O pivô fica no ponto de pega, não na base do cajado. Ajustável no preview.
+  let staffGripOffset = 0.72;
+  let staffGripMesh = null;
 
   function buildStaff() {
     const group = new THREE.Group();
@@ -111,6 +114,11 @@ export function createInventory({
     staff.name = 'PlainDarkWoodStaff';
     staff.castShadow = true;
     staff.receiveShadow = true;
+    // A origem do grupo coincide com a mão; a haste de 2 m desce 72 cm
+    // até a base e sobe 1,28 m até a ponta, mantendo a silhueta acima da cabeça.
+    staffGripMesh = staff;
+    staff.position.y = -staffGripOffset;
+    group.userData.gripPointFromBase = staffGripOffset;
     group.add(staff);
 
     return registerItem('staff', group, 'weapon', 'Cajado reto de madeira escura com ponta superior discretamente alargada');
@@ -738,6 +746,15 @@ export function createInventory({
     beginStore();
   };
 
+  const setStaffGripOffset = (meters) => {
+    if (!Number.isFinite(meters) || !staffGripMesh) return staffGripOffset;
+    staffGripOffset = THREE.MathUtils.clamp(meters, 0.35, 1.2);
+    staffGripMesh.position.y = -staffGripOffset;
+    const staff = items.get('staff');
+    if (staff) staff.userData.gripPointFromBase = staffGripOffset;
+    return staffGripOffset;
+  };
+
   const use = () => {
     if (transition) return;
     if (activeItem !== 'staff' && activeItem !== 'khopesh') {
@@ -767,7 +784,8 @@ export function createInventory({
   refresh();
 
   return {
-    toggle, equip, unequip, use,
+    toggle, equip, unequip, use, setStaffGripOffset,
+    get staffGripOffset() { return staffGripOffset; },
     update(dt) {
       if (transition) {
         transition.elapsed = Math.min(transition.duration, transition.elapsed + dt);

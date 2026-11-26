@@ -15,6 +15,20 @@
       "version": "0.18.1",
       "role": "geração local no navegador da malha humana contínua, game rig, skin weights e clips de locomoção do Carter",
       "license": "MIT-library-CC0-MakeHuman-base-and-animations"
+    },
+    {
+      "id": "three-meshopt-decoder",
+      "source": "https://github.com/mrdoob/three.js/blob/r165/examples/jsm/libs/meshopt_decoder.module.js",
+      "version": "Three.js r165",
+      "role": "decoder for EXT_meshopt_compression required by the Poly Haven Sofa 03 GLB",
+      "license": "MIT"
+    },
+    {
+      "id": "housz-volumetric-fire",
+      "source": "https://github.com/Housz/ThreeVolumetricFire",
+      "version": "vendored-and-adapted-2026-11-26",
+      "role": "view-aligned volumetric fire mesh and procedural noise shader; local WebGL2 GLSL3 adaptation",
+      "license": "MIT"
     }
   ],
   "localGeneratedAssets": [
@@ -37,16 +51,34 @@
       "license": "project-original-code"
     },
     {
-      "id": "great-hall-layered-fire",
-      "path": "src/grand-salon.js",
-      "role": "organic layered flame meshes with vertex-colour gradients, log/ember bed, sparks and animated point lighting",
-      "license": "project-original-code"
-    },
-    {
       "id": "great-hall-sculpted-finish",
       "path": "src/grand-salon.js",
       "role": "sculpted Thoth ibis-headed statue, fluted lotus columns, twin stair flights, turned balustrades, textured stone/wood materials, softened sofas, oval woven rug and carved wall/ceiling reliefs",
       "license": "project-original-code"
+    },
+    {
+      "id": "great-hall-volumetric-fire",
+      "path": "src/grand-salon.js + src/vendor/volumetric-fire.js",
+      "role": "volumetric flame shader with noise/profile textures, local CC0 PBR-compatible log geometry, ember bed, rising sparks and point-light flicker",
+      "license": "MIT-vendor-adaptation + project-original-code; textures from upstream example"
+    },
+    {
+      "id": "great-hall-snake-scale-carpet",
+      "path": "src/grand-salon.js",
+      "role": "oval snake-scale hide carpet based on the book description, with procedural albedo and bump detail",
+      "license": "project-original-code"
+    },
+    {
+      "id": "great-hall-object-interactions",
+      "path": "src/grand-salon.js + src/main.js + src/third-person.js",
+      "role": "inspection prompts and physical colliders for Sofa 03, centre table, Thoth statue and fireplace; shared desktop/mobile controller",
+      "license": "project-original-code"
+    },
+    {
+      "id": "great-hall-pbr-surfaces",
+      "path": "assets/textures/{wood-walnut,tile-limestone-beige,marble-white,plaster-smooth-beige}",
+      "role": "local 1K colour/normal/roughness maps to improve walnut, limestone floor, dark marble microrelief and interior plaster",
+      "license": "CC0-1.0"
     }
   ],
   "openSourceReferences": [
@@ -91,6 +123,49 @@
       "license": "CC0-1.0",
       "role": "visual reference for historic bronze Thoth with ibis head from Minneapolis Institute of Art; referenced for the original procedural statue, not imported",
       "runtimeImported": false
+    },
+    {
+      "id": "polyhaven-sofa-03",
+      "source": "https://polyhaven.com/a/sofa_03",
+      "license": "CC0-1.0",
+      "author": "Fran Calvente",
+      "role": "runtime GLB in assets/models/polyhaven-sofa-03.glb; 2.731 x 0.925 x 1.118 m, 8,004 triangles, two PBR materials; scaled to 0.84 and used as both lounge sofas",
+      "runtimeImported": true
+    },
+    {
+      "id": "polyhaven-walnut-veneer-02",
+      "source": "https://polyhaven.com/a/walnut_veneer_02",
+      "license": "CC0-1.0",
+      "role": "runtime PBR color/normal/roughness maps in assets/textures/wood-walnut",
+      "runtimeImported": true
+    },
+    {
+      "id": "ambientcg-tiles139",
+      "source": "https://ambientcg.com/a/Tiles139",
+      "license": "CC0-1.0",
+      "role": "runtime PBR limestone floor color/normal/roughness maps in assets/textures/tile-limestone-beige",
+      "runtimeImported": true
+    },
+    {
+      "id": "ambientcg-marble012",
+      "source": "https://ambientcg.com/a/Marble012",
+      "license": "CC0-1.0",
+      "role": "runtime normal/roughness maps on the custom dark Thoth basalt albedo to preserve reflections with richer surface texture",
+      "runtimeImported": true
+    },
+    {
+      "id": "polyhaven-beige-wall-001",
+      "source": "https://polyhaven.com/a/beige_wall_001",
+      "license": "CC0-1.0",
+      "role": "runtime normal/roughness maps on interior limestone/plaster material in assets/textures/plaster-smooth-beige",
+      "runtimeImported": true
+    },
+    {
+      "id": "housz-three-volumetric-fire",
+      "source": "https://github.com/Housz/ThreeVolumetricFire",
+      "license": "MIT",
+      "role": "source for the vendored volumetric shader class; source modified to GLSL3/WebGL2 for Three.js r165; original MIT license retained in licenses/THREE-VOLUMETRIC-FIRE-MIT.txt",
+      "runtimeImported": true
     }
   ]
 }

@@ -1,6 +1,6 @@
 # Interiores da Brooklyn House — pesquisa de assets e direção visual
 
-Status: o Grande Salão recebeu uma etapa asset-first: sofá Poly Haven Sofa 03 CC0 em GLB local, fogo volumétrico MIT, conjuntos PBR CC0 locais para piso/paredes/madeira/mármore, colisões e inspeção por proximidade. A inspeção visual no navegador e a validação desktop/mobile ainda estão pendentes.
+Status: o Grande Salão recebeu uma etapa asset-first: sofá Poly Haven Sofa 03 CC0 em GLB local com fallback proporcional e normalização pela bounding box, fogo volumétrico MIT com amostragem ampliada, conjuntos PBR CC0 locais, portas dos três níveis de galeria, ferragens e iconografia CC BY em vetores locais. A inspeção visual no navegador e a validação desktop/mobile ainda estão pendentes.
 
 ## Direção visual
 
@@ -169,3 +169,8 @@ A partir de agora, cada sala é construída segundo [docs/ASSET-FIRST-ROOM-BUILD
 - Conferir a leitura do tapete como pele de serpente em vista de jogo, não apenas visto de cima.
 - Verificar interação E/INTERAGIR para todos os elementos hero e o comportamento das colisões nos dois perfis.
 - Confirmar harpas, tambores, flautas, lanças e khopeshes em escala humana; os modelos de geometria são locais originais e os SVGs auxiliares têm atribuição CC BY 3.0 no manifesto e em assets/decor/README.md. Verificar inspeção e colisões.
+
+
+## Informação arquitetónica adicional do texto-fonte
+
+O Grande Salão tem três níveis de galerias circundantes com fileiras de portas que dão para a área principal. A implementação acrescentou três portas por lado em cada nível como interpretação de layout; a quantidade exata, desenho das portas e localização das escadas não são especificados no trecho do livro. As escadas em zigue-zague existem para permitir a navegação em terceira pessoa pelos balcões, não como alegação de que o texto descreva aquele desenho particular.

@@ -57,15 +57,25 @@ for(let x of [-15.6])for(let y=13.4;y<30;y+=3.3)box('pilastra de canto',[x,y,-.5
 for(let x=-14;x<15;x+=3.5){box('moldura superior',[x,30.0,11.5],[2.5,.22,.28],gold)}
 // Porta sem maçaneta: um bloco maciço de madeira gravada.
 box('portal de pedra',[0,16.1,11.42],[4.1,6.2,.8],darkBrick,false);
-const door=box('porta de madeira sem maçaneta',[0,16.15,11.93],[2.45,4.9,.34],woodMat,false);door.material=cedarMat;
+const door=box('porta de madeira sem maçaneta',[0,15.9,11.93],[2.45,4.9,.34],woodMat,false);door.material=cedarMat;
 for(let i=0;i<5;i++){glyphPanel(-.75+(i%2)*1.5,14.9+Math.floor(i/2)*.9,12.13,0,.5)}
-box('soleira monumental',[0,13.65,12.1],[4.3,.35,1.2],stone,false);
+box('soleira monumental',[0,13.24,12.1],[4.3,.18,1.2],stone,false);
 for(let side of [-1,1]){box('pilar do portal',[side*2.35,16.1,11.7],[.55,6.3,.75],stone);for(let y=13.5;y<19;y+=.85)box('detalhe dourado do portal',[side*2.35,y,12.12],[.62,.06,.06],gold)}
-// Escadaria metálica externa até a entrada, com patamar.
-for(let i=0;i<18;i++){const y=.55+i*.69,z=24-i*.68;box('degrau de aço da entrada',[0,y,z],[4,.18,1.0],metal,false)}
-for(let side of [-2.0,2.0]){line([[side,.8,25],[side,7,18],[side,12.8,12]],metal,.11);for(let i=0;i<7;i++)cyl('poste do corrimão',[side,.9+i*1.8,24-i*1.05],.07,.07,1.2,metal,8)}
-box('patamar da entrada',[0,12.5,11],[5,.3,4],metal,false);
-line([[18,12.7,13],[18,13.5,12],[18,14.0,11]],gold,.04);
+// Escada metálica externa em caracol: 66 degraus, cerca de duas voltas.
+const stairCenter=new THREE.Vector2(19,18),stairRadius=2.05,stairCount=66,stairRise=12.8;
+const exteriorSteps=[];
+for(let i=0;i<stairCount;i++){
+ const a=-Math.PI/2+i*.195,y=.08+i*(stairRise/(stairCount-1));
+ const x=stairCenter.x+Math.cos(a)*stairRadius,z=stairCenter.y+Math.sin(a)*stairRadius;
+ const step=box('degrau de aço da escada em caracol',[x,y,z],[1.5,.18,.72],metal,false);
+ step.rotation.y=a+Math.PI/2;exteriorSteps.push([a,y,x,z]);groundSurfaces.push(step);
+}
+const railPoints=exteriorSteps.map(([a,y])=>[stairCenter.x+Math.cos(a)*(stairRadius+1.0),y+.78,stairCenter.y+Math.sin(a)*(stairRadius+1.0)]);
+line(railPoints,metal,.075);
+for(let i=0;i<stairCount;i+=4){const [a,y]=exteriorSteps[i];cyl('montante do corrimão',[stairCenter.x+Math.cos(a)*(stairRadius+1),y+.39,stairCenter.y+Math.sin(a)*(stairRadius+1)],.045,.045,.78,metal,8)}
+box('patamar da entrada',[18.7,13.05,13.0],[4.4,.2,4.2],metal,false);
+box('passarela entre a escada e a entrada',[9,13.05,11.0],[18,.2,2.2],stone,false);
+line([[18,13.18,13],[9,13.18,11],[0,13.18,11]],gold,.035);
 // Sinais discretos da camuflagem mágica.
 const magicMat=new THREE.MeshBasicMaterial({color:0xdab96f,transparent:true,opacity:.42,wireframe:true});
 const halo=new THREE.Mesh(new THREE.TorusGeometry(2.9,.025,8,96),magicMat);halo.position.set(0,16.1,12.35);scene.add(halo);animated.push({obj:halo,spin:true});
@@ -176,5 +186,11 @@ const info=box('placa de identificação',[ -22,2.3,24],[.08,2.3,3.2],metal,fals
 // Luzes interiores quentes.
 for(let x of [-8,0,8])for(let z of [-6,5]){const lamp=new THREE.PointLight(0xffd39a,.45,12);lamp.position.set(x,25.5,z);scene.add(lamp)}
 
- return {zones,groundSurfaces,water,fireLight};
+ const zones={
+ dock:{label:'DOCA INDUSTRIAL',pos:[0,0,31],yaw:0,bounds:[-34,34,-10,58],base:0},
+ hall:{label:'GRANDE SALÃO',pos:[0,13.175,2.2],yaw:0,bounds:[-13,13,-8,8],base:13.175},
+ library:{label:'BIBLIOTECA SUBTERRÂNEA',pos:[0,-17.4,2.5],yaw:0,bounds:[-10.8,10.8,-10.8,10.8],base:-17.4},
+ bedroom:{label:'ALA DOS QUARTOS',pos:[21,17.275,2.5],yaw:0,bounds:[15.5,26.5,-5.5,5.5],base:17.275}
+};
+return {zones,groundSurfaces,water,fireLight};
 }

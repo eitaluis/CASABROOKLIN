@@ -51,3 +51,8 @@ A escada metálica em caracol, o armazém na margem do East River, os blocos de 
 ## Licenças
 
 Consulte [docs/OPEN-SOURCES.md](docs/OPEN-SOURCES.md) e [assets/manifest.json](assets/manifest.json). Assets remotos permanecem nos seus repositórios de origem; confirme as licenças antes de redistribuir binários offline.
+
+
+## Estudo do exterior
+
+A geografia narrativa da Brooklyn House, a chegada pelo East River, a Williamsburg Bridge, a doca, a escada e o portal estão documentados em [docs/BROOKLYN-HOUSE-EXTERIOR.md](docs/BROOKLYN-HOUSE-EXTERIOR.md). Manhattan fica do outro lado do rio; não é a localização da casa. A escada metálica contorna o armazém no romance, mas o formato helicoidal exato adotado no jogo é uma interpretação.

@@ -106,7 +106,7 @@ A cena já usa ACES tone mapping e sombras suaves. O próximo passo de lookdev �
 - Grande Salão: lustre cerimonial de bronze em três níveis, arandelas quentes, estandartes egípcios, placas de madeira entalhada e sofá com estrutura, assentos, almofadas e filetes de bronze.
 - Biblioteca: as estantes genéricas foram ocultadas e substituídas por nichos circulares de papiros em três faixas; foi adicionada uma cúpula celeste estrelada (Nut), cartografia de piso em tons de verde e terra (Geb), quatro shabtis em pedestais e objetos de leitura.
 - Lookdev: EffectComposer com SSAO no desktop e bloom controlado; o mobile usa bloom em resolução menor e dispensa SSAO na primeira configuração.
-- O código procedural é original do projeto. Os modelos Sofa 03 e Arm Chair 01 da Poly Haven estão registrados como candidatos CC0, mas ainda não foram importados como arquivos binários.
+- O código procedural das peças arquitetónicas é original do projeto. Poly Haven Sofa 03 CC0 já está importado como GLB local; Arm Chair 01 permanece apenas como candidato e não foi inserido.
 
 
 ## Correções de leitura visual — 26/11/2026

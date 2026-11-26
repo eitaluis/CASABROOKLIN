@@ -205,7 +205,7 @@ Documento de produção: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 
 A editora Disney descreve oficialmente a Brooklyn House como espaço de treinamento de jovens magos, e o *Brooklyn House Magician's Manual* como manual para iniciados, com quizzes, histórias e informação sobre divindades, criaturas e o Duat: https://books.disney.com/book/brooklyn-house-magicians-manual/
 
-Para a configuração específica da sala (quadra de basquete, piso de madeira, abóbada pintada, estátuas divinas e cestas formadas pelos discos solares de Rá), foi consultada a descrição secundária do universo Kane Chronicles: https://riordan.fandom.com/wiki/Brooklyn_House. A mesma referência relaciona a aula *Magic Problem-Solving 101 / Whatever Works* a um guerreiro shabti de barro. Não foi encontrada nesta pesquisa uma imagem oficial inequívoca da sala; a imagem que aparecia identificada como Great Room foi descartada como referência para este cômodo.
+Para a configuração específica da sala (quadra de basquete, piso de madeira, abóbada pintada, estátuas divinas e cestas formadas pelos discos solares de Rá), foi consultada a descrição secundária do universo Kane Chronicles: https://riordan.fandom.com/wiki/Brooklyn_House. A mesma referência relaciona a aula *Magic Problem-Solving 101 / Whatever Works* a guerreiros shabti de barro. Na cena do romance, quatro pequenas estatuetas colocadas em pontos diferentes da quadra crescem até se tornarem guerreiros armados com espadas e escudos. Não foi encontrada nesta pesquisa uma imagem oficial inequívoca da sala; a imagem que aparecia identificada como Great Room foi descartada como referência para este cômodo.
 
 ### Programa visual da reconstrução
 
@@ -214,7 +214,8 @@ Para a configuração específica da sala (quadra de basquete, piso de madeira, 
 - Pilastras, nervuras metálicas, acabamento de calcário/bronze e iluminação quente por arandelas.
 - Bustos de divindades como interpretação artística; seleção atual: Anúbis, Sekhmet, Hórus, Ísis e Bastet.
 - Efígies de Rá com cabeça de falcão e discos solares vazados como cestas.
-- Bola de basquete, alvos mágicos, placar e guerreiro shabti como objetos jogáveis.
+- Bola de basquete, alvos mágicos e placar como objetos jogáveis; quatro pequenas estatuetas shabti que crescem para guerreiros de barro com espada e escudo.
+- Os guerreiros viram-se para encarar Carter, mas ainda não têm IA de perseguição/ataque.
 
 ### Materiais e assets
 

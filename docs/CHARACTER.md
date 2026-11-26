@@ -73,9 +73,9 @@ Abra character-preview.html para conferir o mesmo módulo usado pelo jogo. O pre
 ## Próximas etapas
 
 1. Abrir o preview no navegador e corrigir posição/orientação dos acessórios com base na inspeção real.
-2. Criar o arquivo-fonte Blender de lookdev para bolsa, medalhão e eventuais ajustes de roupa que não alterem a identidade do rosto.
+2. Executar assets/models/carter/blender/create_carter_accessories.py no Blender, comparar a posição com o Carter Ara e salvar a cena-fonte .blend após a inspeção.
 3. Fazer revisão de materiais e costuras à escala real, mantendo leitura clara no mobile.
-4. Integrar interações situacionais — observar estátuas, livros e objetos, cumprimentar e gesticular — sem interromper indevidamente a locomoção.
+4. Ampliar as interações situacionais — observar estátuas, livros e objetos, cumprimentar e gesticular — sem interromper indevidamente a locomoção. O olhar dirigido ao objeto já está integrado ao exame por proximidade.
 5. Só então avaliar exportação de um GLB consolidado; a fonte Ara permanece a referência regenerável do corpo e do rig.
 
 ## Regra de produção

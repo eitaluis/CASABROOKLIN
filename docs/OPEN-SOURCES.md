@@ -126,7 +126,7 @@ Os mapas estão locais para que a sala não dependa de downloads de textura em t
 ## Sala de Treinamento
 
 **Geometria e interações originais — `src/training-room.js`.**
-- Piso de madeira com mapas canvas de cor e bump, marcações de quadra, abóbada/afresco, nervuras, arandelas, bustos, efígies de Rá, cesta, placar, bola, alvos mágicos, guerreiro shabti e portal articulado.
+- Piso de madeira com mapas canvas de cor e bump, marcações de quadra, abóbada/afresco, nervuras, arandelas, bustos, efígies de Rá, cesta, placar, bola com assistência de arco ao mirar nas cestas, alvos mágicos, quatro estatuetas shabti que crescem para guerreiros com espada e escudo e portal articulado.
 - Código e modelos sob medida do projeto; não foi importado pacote de modelos de terceiros.
 - A textura [ambientCG Wood Floor 001](https://ambientcg.com/view?id=WoodFloor001) foi avaliada como candidata de referência (CC0), mas não foi baixada/integrada ao runtime desta versão. O material atual é procedural.
 - Referência narrativa detalhada da sala: [Brooklyn House — Riordan Wiki](https://riordan.fandom.com/wiki/Brooklyn_House) (fonte secundária). A existência e o propósito de formação da Casa são corroborados pela página oficial Disney do [Brooklyn House Magician's Manual](https://books.disney.com/book/brooklyn-house-magicians-manual/).

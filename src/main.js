@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js';
-import { createCharacter } from './character.js?v=carter-local-20261126';
-import { createThirdPersonController } from './third-person.js?v=carter-local-20261126';
+import { createCharacter } from './character.js?v=carter-stylized-20261126';
+import { createThirdPersonController } from './third-person.js?v=carter-stylized-20261126';
 
 
 

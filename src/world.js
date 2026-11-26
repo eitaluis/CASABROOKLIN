@@ -232,7 +232,24 @@ const totSpot=new THREE.SpotLight(0xe3c68e,32,24,Math.PI/5,.65,1.2);totSpot.posi
 
 // Sofás de couro e tapete com padrão de escamas.
 const leather=new THREE.MeshStandardMaterial({color:0x59402f,roughness:.58});
-function sofa(x,z,rot=0){const group=new THREE.Group();group.position.set(x,13.45,z);group.rotation.y=rot;const b=new THREE.Mesh(new THREE.BoxGeometry(5.2,1.0,1.8),leather);b.position.y=.55;group.add(b);const back=new THREE.Mesh(new THREE.BoxGeometry(5.2,1.2,.38),leather);back.position.set(0,1.3,-.72);group.add(back);for(let xx of [-1.65,0,1.65]){const c=new THREE.Mesh(new THREE.BoxGeometry(1.4,.2,1.2),new THREE.MeshStandardMaterial({color:0x80634a,roughness:.7}));c.position.set(xx,1.12,-.1);group.add(c)}scene.add(group);return group}
+function sofa(x,z,rot=0){
+ const group=new THREE.Group();group.position.set(x,13.45,z);group.rotation.y=rot;
+ const frame=new THREE.Mesh(new THREE.BoxGeometry(5.35,.42,1.9),cedarMat);frame.position.y=.28;group.add(frame);
+ const base=new THREE.Mesh(new THREE.BoxGeometry(5.12,.72,1.72),leather);base.position.y=.78;group.add(base);
+ const back=new THREE.Mesh(new THREE.BoxGeometry(5.12,1.38,.38),leather);back.position.set(0,1.46,-.73);group.add(back);
+ for(const side of [-1,1]){
+  const arm=new THREE.Mesh(new THREE.BoxGeometry(.58,1.05,1.92),leather);arm.position.set(side*2.34,1.0,.02);group.add(arm);
+  const cap=new THREE.Mesh(new THREE.BoxGeometry(.64,.13,1.98),cedarMat);cap.position.set(side*2.34,1.56,.02);group.add(cap);
+  for(const xx of [-2.18,2.18]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.2,.58,.2),darkBrick);leg.position.set(side*2.18,.02,xx===-2.18?-.72:.72);group.add(leg)}
+ }
+ for(let xx of [-1.65,0,1.65]){
+  const seat=new THREE.Mesh(new THREE.BoxGeometry(1.48,.22,1.18),new THREE.MeshStandardMaterial({color:0x79523b,roughness:.88}));seat.position.set(xx,1.18,.02);group.add(seat);
+  const backCushion=new THREE.Mesh(new THREE.BoxGeometry(1.48,.76,.2),new THREE.MeshStandardMaterial({color:0x684632,roughness:.92}));backCushion.position.set(xx,1.58,-.48);group.add(backCushion);
+ }
+ const frontRail=new THREE.Mesh(new THREE.BoxGeometry(4.6,.16,.08),gold);frontRail.position.set(0,.62,.91);group.add(frontRail);
+ for(let i=0;i<25;i++){const stud=new THREE.Mesh(new THREE.SphereGeometry(.035,6,5),gold);stud.position.set(-2.18+i*.18,.65,.97);group.add(stud)}
+ scene.add(group);return group
+}
 sofa(-4,1.5,0);sofa(4,1.5,0);
 const rug=new THREE.Mesh(new THREE.PlaneGeometry(10,6),new THREE.MeshStandardMaterial({map:rugTex,roughness:1,side:THREE.DoubleSide}));rug.rotation.x=-Math.PI/2;rug.position.set(0,13.2,-1.3);scene.add(rug);
 box('mesa de centro',[0,13.65,-1.4],[3.2,.38,1.8],woodMat,false);cyl('pé mesa',[0,13.4,-1.4],.18,.3,.55,gold,12);
@@ -247,8 +264,8 @@ const cylWall=new THREE.Mesh(new THREE.CylinderGeometry(libRadius,libRadius,11.4
 const libFloorMesh=new THREE.Mesh(new THREE.CircleGeometry(libRadius,64),new THREE.MeshStandardMaterial({color:0x33484b,roughness:.8}));libFloorMesh.rotation.x=-Math.PI/2;libFloorMesh.position.set(0,libFloor,-.5);libFloorMesh.receiveShadow=true;scene.add(libFloorMesh);groundSurfaces.push(libFloorMesh);
 const mosaic=texCanvas((g,w,h)=>{g.fillStyle='#23383a';g.fillRect(0,0,w,h);for(let i=0;i<12;i++){g.strokeStyle=i%2?'#b28c52':'#71908a';g.lineWidth=7;g.beginPath();g.arc(w/2,h/2,30+i*17,0,Math.PI*2);g.stroke()}for(let i=0;i<12;i++){g.save();g.translate(w/2,h/2);g.rotate(i*Math.PI/6);g.fillStyle=i%2?'#bb9b64':'#71938a';g.fillRect(-7,-195,14,38);g.restore()}},512,512,1,1);
 const mosaicMesh=new THREE.Mesh(new THREE.CircleGeometry(8.5,64),new THREE.MeshStandardMaterial({map:mosaic,roughness:.8,side:THREE.DoubleSide}));mosaicMesh.rotation.x=-Math.PI/2;mosaicMesh.position.set(0,libFloor+.035,-.5);scene.add(mosaicMesh);
-const ceiling=new THREE.Mesh(new THREE.CircleGeometry(libRadius,64),new THREE.MeshStandardMaterial({color:0x192c39,roughness:.9,side:THREE.DoubleSide}));ceiling.rotation.x=Math.PI/2;ceiling.position.set(0,-6.65,-.5);scene.add(ceiling);
-for(let i=0;i<180;i++){const star=new THREE.Mesh(new THREE.SphereGeometry(.025+Math.random()*.035,6,6),new THREE.MeshBasicMaterial({color:i%4?0xc6a66e:0x8fb2b4}));const a=Math.random()*Math.PI*2,r=Math.random()*11.5;star.position.set(Math.cos(a)*r,-6.55,Math.sin(a)*r-.5);scene.add(star)}
+const ceiling=new THREE.Mesh(new THREE.CircleGeometry(libRadius,64),new THREE.MeshStandardMaterial({color:0x192c39,roughness:.9,side:THREE.DoubleSide}));ceiling.name='biblioteca teto plano provisório';ceiling.rotation.x=Math.PI/2;ceiling.position.set(0,-6.65,-.5);scene.add(ceiling);
+for(let i=0;i<0;i++){const star=new THREE.Mesh(new THREE.SphereGeometry(.025+Math.random()*.035,6,6),new THREE.MeshBasicMaterial({color:i%4?0xc6a66e:0x8fb2b4}));const a=Math.random()*Math.PI*2,r=Math.random()*11.5;star.position.set(Math.cos(a)*r,-6.55,Math.sin(a)*r-.5);scene.add(star)}
 // Estantes circulares em três níveis.
 for(let tier=0;tier<3;tier++){const y=-16.2+tier*3.3;for(let a=0;a<32;a++){const angle=a/32*Math.PI*2;const x=Math.cos(angle)*10.65,z=Math.sin(angle)*10.65-.5;const shelf=box('estante curva',[x,y+1.05,z],[1.15,2.2,.55],woodMat,false);shelf.rotation.y=-angle+Math.PI/2;for(let n=0;n<6;n++){const book=box('livro antigo',[x+Math.cos(angle)*.03,y+.22+(n%3)*.58,z+Math.sin(angle)*.03],[.24,.42,.34],new THREE.MeshStandardMaterial({color:[0x754c37,0x334d50,0x8e7447,0x523d59][n%4],roughness:.9}),false,false);book.rotation.y=-angle+Math.PI/2}}}
 for(let a=0;a<8;a++){const angle=a*Math.PI/4;cyl('coluna da biblioteca',[Math.cos(angle)*7.4,-11.65,Math.sin(angle)*7.4-.5],.3,.4,10,stone,12)}

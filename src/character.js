@@ -130,12 +130,21 @@ function addOutfit(root) {
     }
 
     const pendant = new THREE.Group();
-    const loop = new THREE.Mesh(new THREE.TorusGeometry(0.035, 0.009, 6, 14), palette.brass);
-    loop.position.y = 0.03;
-    pendant.add(loop);
-    const stem = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.10, 0.012), palette.brass);
-    stem.position.y = -0.035;
-    pendant.add(stem);
+    const eyeShape = new THREE.Shape();
+    eyeShape.moveTo(-0.055, 0);
+    eyeShape.quadraticCurveTo(0, 0.045, 0.055, 0);
+    eyeShape.quadraticCurveTo(0, -0.035, -0.055, 0);
+    const eye = new THREE.Mesh(new THREE.ShapeGeometry(eyeShape), palette.brass);
+    eye.position.z = 0.012;
+    pendant.add(eye);
+    const eyeLine = new THREE.Mesh(new THREE.TorusGeometry(0.018, 0.006, 5, 12, Math.PI * 1.45), palette.brass);
+    eyeLine.position.set(0.012, -0.018, 0.014);
+    eyeLine.rotation.z = -0.8;
+    pendant.add(eyeLine);
+    const tail = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.055, 0.012), palette.brass);
+    tail.position.set(0.038, -0.055, 0.01);
+    tail.rotation.z = -0.28;
+    pendant.add(tail);
     pendant.position.set(0, -0.18, -0.13);
     chest?.add(pendant);
   }

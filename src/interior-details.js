@@ -385,11 +385,11 @@ export function buildInteriorDetails({ THREE, scene, interactables = [] }) {
         group.add(openedSheet);
         for (let line = 0; line < 5; line++) {
           const ink = new THREE.Mesh(
-            new THREE.BoxGeometry(0.012, 0.008, 0.31 + (line % 2) * 0.08),
+            new THREE.BoxGeometry(0.48 - (line % 2) * 0.08, 0.012, 0.008),
             darkBrass
           );
           ink.name = 'linha de tinta do papiro aberto';
-          ink.position.set(-0.24 + (line % 2) * 0.035, -0.08 - line * 0.055, 0.278);
+          ink.position.set(0, -0.08 - line * 0.055, 0.008);
           openedSheet.add(ink);
         }
         let isOpen = false;

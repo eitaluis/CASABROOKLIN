@@ -1452,7 +1452,7 @@ function addModernTelevision(scene,brass,colliders,interactables) {
   const shell=new THREE.Mesh(new RoundedBoxGeometry(4.72,2.58,.2,8,.09),shellMat);
   shell.name='moldura metálica arredondada da TV';shell.castShadow=true;group.add(shell);
 
-  const screen=new THREE.Mesh(new RoundedBoxGeometry(4.48,2.32,.035,8,.055),glassMat);
+  const screen=new THREE.Mesh(new RoundedBoxGeometry(4.48,2.32,.06,8,.025),glassMat);
   screen.name='painel de vidro refletivo da TV';screen.position.z=.115;group.add(screen);
 
   const innerRim=new THREE.Mesh(new THREE.RingGeometry(2.08,2.14,96,1),brass);

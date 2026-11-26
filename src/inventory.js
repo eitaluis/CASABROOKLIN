@@ -656,6 +656,8 @@ export function createInventory({
       return activeItem === 'staff' || activeItem === 'khopesh' ? activeItem : null;
     },
     get activeItem() { return activeItem; },
+    get isTransitioning() { return Boolean(transition); },
+    get transitionMode() { return transition?.mode || null; },
     get hasWeaponSocket() { return Boolean(weaponBone); },
     get itemIds() { return [...items.keys()]; }
   };

@@ -290,7 +290,7 @@ for(let x of [-8,0,8])for(let z of [-6,5]){const lamp=new THREE.PointLight(0xffd
 
  const zones={
  dock:{label:'DOCA · BROOKLYN',pos:[0,0,31],yaw:0,bounds:[-34,34,-14,58],base:0},
- hall:{label:'GRANDE SALÃO',pos:[0,13.175,2.2],yaw:0,bounds:[-18.35,19.8,-10,32],base:13.175},
+ hall:{label:'GRANDE SALÃO',pos:[0,13.175,2.2],yaw:0,bounds:[-21,21,-15,32],base:13.175},
  library:{label:'BIBLIOTECA SUBTERRÂNEA',pos:[0,-17.4,2.5],yaw:0,bounds:[-10.8,10.8,-10.8,10.8],base:-17.4},
  bedroom:{label:'ALA DOS QUARTOS',pos:[25,17.275,2.5],yaw:0,bounds:[19.3,32.2,-5.5,5.5],base:17.275}
 };

@@ -63,25 +63,31 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Substituir os antigos balaústres cilíndricos por balaústres torneados, corrimãos curvos e filetes de latão.
 - [x] Substituir harpas/tambores/lanças placeholders por modelos sob medida: harpas arqueadas e cordas tensionadas, tambores com pele e amarrações, lanças com ponta foliácea de bronze e khopeshes de lâmina curva.
 - [x] Substituir a TV em bloco por moldura metálica arredondada e vidro escuro refletivo.
+- [x] Acrescentar uma parede envidraçada panorâmica com montantes/travessas de bronze e colisores, mantendo a abertura das portas centrais.
 - [x] Construir duas escadarias laterais em zigue-zague, cada uma com três lances alternados para alcançar os três níveis de galeria; degraus de pedra arredondados, filetes de bronze, balaústres torneados, corrimãos e patamares.
+- [x] Adicionar portas duplas de madeira em painéis, Olho de Hórus, correntes de ferro, seis cadeados, collider e interação de inspeção; a porta continua trancada.
+- [x] Adicionar placas SVG CC BY 3.0 (Eye of Horus, harp, drum, flute, spears, crossed chains, padlock) com atribuição por autor e notas das modificações.
 - [x] Conectar os lances ao controlador de terceira pessoa: a altura do Carter acompanha as rampas, mantém-se nos patamares e retorna ao piso principal ao sair das galerias.
 
 ### Peças de destaque
-- [x] Substituir a estátua central geométrica por uma escultura de Thoth com túnica esculpida, cabeça e bico de íbis, olhos, braços, cetro, papiro e coroa lunar.
+- [x] Atualizar Thoth para uma figura humana com pernas/tronco separados, kilt shendyt pregueado, faixa diagonal, colar largo, cabeça/bico de íbis, papiro aberto com sinal Per Ankh e estilete de escriba; altura aproximada de 9,1 m.
 - [x] Substituir as línguas poligonais por fogo volumétrico de shader MIT com ruído, textura de perfil, lenha, brasas, faíscas e luz dinâmica.
-- [x] Substituir sofás reserva por GLB Poly Haven Sofa 03 CC0, com MeshoptDecoder, materiais PBR embutidos e escala 0,84.
+- [x] Aumentar a densidade de amostragem do volume (desktop: slice spacing 0,042 / 38 segmentos; mobile: 0,085 / 22 segmentos) para reduzir arestas visíveis.
+- [x] Substituir a moldura quadrada da lareira por arco de calcário, pilastras, capitéis, inlay de bronze e manto arredondado.
+- [x] Substituir sofás reserva por GLB Poly Haven Sofa 03 CC0, com MeshoptDecoder, materiais PBR embutidos e escala 0,78; colocados um de cada lado da lareira.
 - [x] Reduzir a mesa central para altura/diâmetro de mesa baixa e aplicar walnut PBR, bronze e medalhão solar.
-- [x] Refazer o tapete como pele de serpente em escamas sobrepostas, com color/bump procedural.
+- [x] Refazer o tapete como pele de serpente em escamas sobrepostas, com color/bump procedural e dimensões de cerca de 12,2 × 4,6 m conforme o livro.
 - [x] Manter lustre, arandelas e estandartes da decoração anterior.
 
 ### QA ainda pendente
 - [ ] Conferir se o novo fogo volumétrico está orgânico e corretamente orientado à câmera; avaliar custo no mobile.
-- [ ] Conferir o tamanho do Sofa 03 com o Carter e ajustar posição/rotação caso necessário.
+- [ ] Conferir o tamanho do Sofa 03 (escala 0,78) com o Carter e ajustar posição/rotação caso necessário.
 - [ ] Conferir se as interações E/INTERAGIR estão acessíveis para sofás, mesa, estátua, lareira, harpas, tambores, lanças, khopeshes e TV, e se as colisões não bloqueiam passagem útil.
-- [ ] Conferir a leitura da estátua com os mapas de normal/roughness, preservando a reflexão.
-- [ ] Conferir sombras, texturas PBR, z-fighting e orientação dos relevos em visão 3/4 e de dentro do salão.
+- [ ] Conferir a leitura da estátua humana com kilt, faixa, colar, papiro e estilete; verificar mapas de normal/roughness e preservar a reflexão.
+- [ ] Conferir arco e pilastras da lareira, portas/fechaduras, transparência da parede envidraçada, sombras, texturas PBR, z-fighting e placas SVG em visão 3/4 e de dentro do salão.
 - [ ] Testar a subida e descida nos três níveis de galeria, incluindo as transições entre os lances e os patamares.
 - [ ] Ajustar desempenho e densidade visual em mobile paisagem.
+- [ ] Testar as portas trancadas, inspeção de harpas/tambores/flautas/armas/TV e colisões da parede de vidro em desktop e mobile.
 - [ ] Fazer a aprovação visual final antes de marcar o Grande Salão como concluído.
 
 ## Setor 05 — Biblioteca subterrânea

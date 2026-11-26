@@ -82,29 +82,37 @@ export function createInventory({
 
   function buildStaff() {
     const group = new THREE.Group();
-    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.058, 1.62, 12), wood);
-    shaft.position.y = 0.82;
-    shaft.castShadow = true;
-    group.add(shaft);
-    for (const y of [0.12, 0.2, 1.36, 1.48]) metalBand(group, y);
-    const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.075, 0.16, 12), darkBrass);
-    collar.position.y = 1.62;
-    group.add(collar);
-    const sunDisk = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.075, 20), brass);
-    sunDisk.position.y = 1.79;
-    group.add(sunDisk);
-    const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.105, 1), lapis);
-    gem.position.set(0, 1.91, 0);
-    group.add(gem);
-    const halo = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.025, 8, 24), brass);
-    halo.position.y = 1.8;
-    halo.rotation.x = Math.PI / 2;
-    group.add(halo);
-    const pommel = new THREE.Mesh(new THREE.SphereGeometry(0.065, 10, 8), brass);
-    pommel.position.y = 0.025;
-    group.add(pommel);
-    group.traverse(obj => { if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; } });
-    return registerItem('staff', group, 'weapon', 'Cajado mágico egípcio');
+
+    // Cajado simples de madeira: haste reta e ponta superior discretamente mais larga.
+    // A silhueta evita metais, discos, gemas, halos ou motivos zoomórficos.
+    const profile = [
+      new THREE.Vector2(0, 0),
+      new THREE.Vector2(0.039, 0),
+      new THREE.Vector2(0.043, 0.035),
+      new THREE.Vector2(0.043, 1.47),
+      new THREE.Vector2(0.046, 1.52),
+      new THREE.Vector2(0.058, 1.56),
+      new THREE.Vector2(0.071, 1.61),
+      new THREE.Vector2(0.074, 1.68),
+      new THREE.Vector2(0.068, 1.72),
+      new THREE.Vector2(0.045, 1.75),
+      new THREE.Vector2(0, 1.75)
+    ];
+    const geometry = new THREE.LatheGeometry(profile, 16);
+    geometry.computeVertexNormals();
+
+    const staffWood = new THREE.MeshStandardMaterial({
+      color: 0x30221b,
+      roughness: 0.88,
+      metalness: 0
+    });
+    const staff = new THREE.Mesh(geometry, staffWood);
+    staff.name = 'PlainDarkWoodStaff';
+    staff.castShadow = true;
+    staff.receiveShadow = true;
+    group.add(staff);
+
+    return registerItem('staff', group, 'weapon', 'Cajado reto de madeira escura com ponta superior discretamente alargada');
   }
 
   function buildKhopesh() {

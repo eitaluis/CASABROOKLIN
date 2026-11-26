@@ -152,54 +152,59 @@ def parent_keep_world(obj, parent=None):
     obj.matrix_world = world
     return obj
 
-# Bag body. Its position is offset to the Carter's anatomical right (-X).
-bag_width = 0.36 * UNIT
-bag_height = 0.285 * UNIT
-bag_depth = 0.105 * UNIT
-bag_center = Vector((-0.255 * UNIT, 0.375 * HEIGHT, bag_depth * 0.5))
+# Compact posterior/right-hip satchel. The broad leather panel turns toward the side.
+bag_width = 0.305 * UNIT
+bag_height = 0.245 * UNIT
+bag_depth = 0.092 * UNIT
+bag_center = Vector((-0.245 * UNIT, 0.375 * HEIGHT, -0.135 * UNIT))
+side_rotation = (0.0, -math.pi / 2.0, 0.0)
 
 body = rounded_box(
-    "Carter_Satchel_Body",
+    "Carter_Soft_Satchel_Body",
     (bag_width, bag_height, bag_depth),
     bag_center,
     leather,
-    0.022 * UNIT
+    0.026 * UNIT
 )
+body.rotation_euler = side_rotation
 parent_keep_world(body, bag_anchor)
 
 flap = rounded_box(
-    "Carter_Satchel_Flap",
-    (bag_width * 0.94, bag_height * 0.40, 0.018 * UNIT),
-    (bag_center.x, bag_center.y + bag_height * 0.285, bag_depth * 0.92 + 0.009 * UNIT),
+    "Carter_Satchel_Soft_Flap",
+    (bag_width * 0.94, bag_height * 0.39, 0.018 * UNIT),
+    (bag_center.x - bag_depth * 0.82, bag_center.y + bag_height * 0.285, bag_center.z),
     leather_dark,
-    0.016 * UNIT
+    0.018 * UNIT
 )
+flap.rotation_euler = side_rotation
 parent_keep_world(flap, bag_anchor)
 
 pocket = rounded_box(
-    "Carter_Satchel_Front_Pocket",
-    (bag_width * 0.62, bag_height * 0.30, 0.012 * UNIT),
-    (bag_center.x, bag_center.y - bag_height * 0.205, bag_depth * 0.96 + 0.006 * UNIT),
+    "Carter_Satchel_Rounded_Pocket",
+    (bag_width * 0.56, bag_height * 0.27, 0.012 * UNIT),
+    (bag_center.x - bag_depth * 0.91, bag_center.y - bag_height * 0.235, bag_center.z),
     leather_light,
-    0.009 * UNIT
+    0.014 * UNIT
 )
+pocket.rotation_euler = side_rotation
 parent_keep_world(pocket, bag_anchor)
 
 gusset = rounded_box(
-    "Carter_Satchel_Right_Gusset",
-    (0.018 * UNIT, 0.205 * UNIT, 0.082 * UNIT),
-    (bag_center.x - bag_width * 0.47, bag_center.y - 0.005 * UNIT, bag_depth * 0.48),
+    "Carter_Satchel_Soft_Gusset",
+    (0.016 * UNIT, bag_height * 0.78, bag_depth * 0.88),
+    (bag_center.x - bag_depth * 0.48, bag_center.y, bag_center.z - bag_width * 0.455),
     leather_dark,
     0.006 * UNIT
 )
+gusset.rotation_euler = side_rotation
 parent_keep_world(gusset, bag_anchor)
 
 seam = make_curve(
     "Carter_Pocket_Stitch",
     [
-        (bag_center.x - bag_width * 0.25, bag_center.y - bag_height * 0.205, bag_depth * 1.12),
-        (bag_center.x, bag_center.y - bag_height * 0.205, bag_depth * 1.12),
-        (bag_center.x + bag_width * 0.25, bag_center.y - bag_height * 0.205, bag_depth * 1.12)
+        (bag_center.x - bag_depth * 1.08, bag_center.y - bag_height * 0.235, bag_center.z - bag_width * 0.20),
+        (bag_center.x - bag_depth * 1.08, bag_center.y - bag_height * 0.235, bag_center.z),
+        (bag_center.x - bag_depth * 1.08, bag_center.y - bag_height * 0.235, bag_center.z + bag_width * 0.20)
     ],
     stitch,
     0.0012 * UNIT,
@@ -208,35 +213,31 @@ seam = make_curve(
 parent_keep_world(seam, bag_anchor)
 
 bpy.ops.mesh.primitive_torus_add(
-    major_radius=0.013 * UNIT,
-    minor_radius=0.0026 * UNIT,
+    major_radius=0.011 * UNIT,
+    minor_radius=0.0022 * UNIT,
     major_segments=24,
     minor_segments=8,
-    location=(bag_center.x, bag_center.y + bag_height * 0.205, bag_depth * 1.115)
+    location=(bag_center.x - bag_depth * 1.08, bag_center.y + bag_height * 0.105, bag_center.z),
+    rotation=(0.0, -math.pi / 2.0, 0.0)
 )
 clasp = bpy.context.object
-clasp.name = "Carter_Satchel_Brass_Clasp"
+clasp.name = "Carter_Satchel_Brass_Snap"
 assign_material(clasp, brass_light)
 parent_keep_world(clasp, bag_anchor)
 
-clasp_bar = rounded_box(
-    "Carter_Satchel_Brass_Clasp_Bar",
-    (0.004 * UNIT, 0.019 * UNIT, 0.003 * UNIT),
-    (bag_center.x, bag_center.y + bag_height * 0.205, bag_depth * 1.12),
-    brass_light,
-    0.001 * UNIT
-)
-parent_keep_world(clasp_bar, bag_anchor)
-
-# Diagonal strap: the illustration's left shoulder to the character's right hip.
+# Crossbody strap crosses the chest, rounds the right flank and ends at the rear hip.
 strap_points = [
-    (0.155 * UNIT, 0.835 * HEIGHT, 0.125 * UNIT),
-    (0.145 * UNIT, 0.765 * HEIGHT, 0.155 * UNIT),
-    (0.075 * UNIT, 0.645 * HEIGHT, 0.170 * UNIT),
-    (-0.075 * UNIT, 0.515 * HEIGHT, 0.160 * UNIT),
-    (-0.235 * UNIT, 0.405 * HEIGHT, 0.145 * UNIT)
+    (0.145 * UNIT, 0.835 * HEIGHT, 0.115 * UNIT),
+    (0.125 * UNIT, 0.765 * HEIGHT, 0.135 * UNIT),
+    (0.045 * UNIT, 0.665 * HEIGHT, 0.135 * UNIT),
+    (-0.095 * UNIT, 0.555 * HEIGHT, 0.125 * UNIT),
+    (-0.205 * UNIT, 0.475 * HEIGHT, 0.105 * UNIT),
+    (-0.255 * UNIT, 0.425 * HEIGHT, 0.045 * UNIT),
+    (-0.265 * UNIT, 0.405 * HEIGHT, -0.035 * UNIT),
+    (-0.265 * UNIT, 0.405 * HEIGHT, -0.105 * UNIT),
+    (-0.255 * UNIT, 0.415 * HEIGHT, -0.155 * UNIT)
 ]
-strap = make_ribbon("Carter_Crossbody_Strap", strap_points, 0.047 * UNIT, leather_dark)
+strap = make_ribbon("Carter_Crossbody_Strap", strap_points, 0.038 * UNIT, leather_dark)
 parent_keep_world(strap, strap_anchor)
 
 # Fine edge seams along the strap.
@@ -250,33 +251,34 @@ for sign, suffix in [(-1, "L"), (1, "R")]:
         side = Vector((-tangent.y, tangent.x, 0.0))
         if side.length > 0.0001:
             side.normalize()
-        edge_points.append(tuple(point + side * (0.015 * UNIT * sign) + Vector((0, 0, 0.002 * UNIT))))
+        edge_points.append(tuple(point + side * (0.013 * UNIT * sign) + Vector((0, 0, 0.002 * UNIT))))
     edge = make_curve("Carter_Strap_Stitch_" + suffix, edge_points, stitch, 0.0011 * UNIT, 2)
     parent_keep_world(edge, strap_anchor)
 
 adjuster = rounded_box(
     "Carter_Strap_Brass_Adjuster",
     (0.055 * UNIT, 0.025 * UNIT, 0.009 * UNIT),
-    (0.132 * UNIT, 0.748 * HEIGHT, 0.173 * UNIT),
+    (0.102 * UNIT, 0.73 * HEIGHT, 0.151 * UNIT),
     brass,
     0.003 * UNIT
 )
 parent_keep_world(adjuster, strap_anchor)
 
-# Gold necklace and round medallion on the front of the chest.
+# Keep the approved medallion design, but bring chain and pendant 4.5 cm closer to the torso.
+NECKLACE_INSET = 0.045 * UNIT
 necklace_points = [
-    (-0.105 * UNIT, 0.86 * HEIGHT, 0.125 * UNIT),
-    (-0.092 * UNIT, 0.795 * HEIGHT, 0.155 * UNIT),
-    (-0.045 * UNIT, 0.735 * HEIGHT, 0.170 * UNIT),
-    (0.0, 0.695 * HEIGHT, 0.175 * UNIT),
-    (0.045 * UNIT, 0.735 * HEIGHT, 0.170 * UNIT),
-    (0.092 * UNIT, 0.795 * HEIGHT, 0.155 * UNIT),
-    (0.105 * UNIT, 0.86 * HEIGHT, 0.125 * UNIT)
+    (-0.105 * UNIT, 0.86 * HEIGHT, 0.125 * UNIT - NECKLACE_INSET),
+    (-0.092 * UNIT, 0.795 * HEIGHT, 0.155 * UNIT - NECKLACE_INSET),
+    (-0.045 * UNIT, 0.735 * HEIGHT, 0.170 * UNIT - NECKLACE_INSET),
+    (0.0, 0.695 * HEIGHT, 0.175 * UNIT - NECKLACE_INSET),
+    (0.045 * UNIT, 0.735 * HEIGHT, 0.170 * UNIT - NECKLACE_INSET),
+    (0.092 * UNIT, 0.795 * HEIGHT, 0.155 * UNIT - NECKLACE_INSET),
+    (0.105 * UNIT, 0.86 * HEIGHT, 0.125 * UNIT - NECKLACE_INSET)
 ]
 chain = make_curve("Carter_Medallion_Chain", necklace_points, brass_light, 0.0032 * UNIT, 4)
 parent_keep_world(chain, necklace_anchor)
 
-pendant_location = (0.0, 0.695 * HEIGHT, 0.182 * UNIT)
+pendant_location = (0.0, 0.695 * HEIGHT, 0.182 * UNIT - NECKLACE_INSET)
 bpy.ops.mesh.primitive_cylinder_add(
     vertices=48,
     radius=0.032 * UNIT,

@@ -5,23 +5,19 @@
     {
       "id": "three-js",
       "source": "https://github.com/mrdoob/three.js",
-      "role": "3d-renderer-and-geometry",
+      "version": "0.165.0",
+      "role": "renderização WebGL, geometria, materiais, iluminação e pós-processamento",
+      "license": "MIT"
+    },
+    {
+      "id": "ara3d-js",
+      "source": "https://github.com/ara3d/ara3d",
+      "version": "0.18.1",
+      "role": "geração/carregamento de personagem humanoide, rig, locomoção e animações",
       "license": "MIT"
     }
   ],
   "localGeneratedAssets": [
-    {
-      "id": "carter-kane-stylized-teen",
-      "path": "src/character.js",
-      "role": "original smooth humanoid mesh, face, curly hair, clothing, satchel and articulated rig",
-      "license": "project-original-code"
-    },
-    {
-      "id": "carter-locomotion",
-      "path": "src/character.js",
-      "role": "procedural idle, walk and run cycle with gait blending, body lean, arm swing and bag inertia",
-      "license": "project-original-code"
-    },
     {
       "id": "great-hall-cinematic-decor",
       "path": "src/interior-details.js",
@@ -38,6 +34,24 @@
       "id": "egyptian-staff-and-khopesh",
       "path": "src/inventory.js",
       "role": "procedural Egyptian-inspired staff and khopesh props attached to the character WeaponR socket",
+      "license": "project-original-code"
+    },
+    {
+      "id": "great-hall-layered-fire",
+      "path": "src/world.js",
+      "role": "procedural layered fireplace flames and flicker animation",
+      "license": "project-original-code"
+    },
+    {
+      "id": "carter-ara-share-character",
+      "path": "src/character.js",
+      "role": "character assembled from Ara 3D Gen shared character data; model binary is loaded from the Ara asset CDN",
+      "license": "Ara library MIT; character base data and motion sources documented by Ara"
+    },
+    {
+      "id": "egyptian-staff-and-khopesh",
+      "path": "src/inventory.js",
+      "role": "procedural Egyptian-inspired magic staff and khopesh props attached to WeaponR",
       "license": "project-original-code"
     },
     {
@@ -89,6 +103,41 @@
       "license": "CC0-1.0",
       "role": "selected candidate for future hall seating and lounge details",
       "runtimeImported": false
+    },
+    {
+      "id": "mpfb-character-generator",
+      "source": "https://github.com/makehumancommunity/mpfb2",
+      "license": "GPL-3.0-code-CC0-1.0-system-assets",
+      "role": "evaluated customizable humanoid character creator pipeline",
+      "runtimeImported": false
+    },
+    {
+      "id": "kblood-charactercreator",
+      "source": "https://github.com/kblood/CharacterCreator",
+      "license": "GPL-3.0-or-later-code-CC0-1.0-generated-assets-when-sources-CC0",
+      "role": "evaluated realistic morphable character creator and GLB exporter",
+      "runtimeImported": false
+    },
+    {
+      "id": "quaternius-universal-base-characters",
+      "source": "https://quaternius.com/packs/universalbasecharacters.html",
+      "license": "CC0-1.0",
+      "role": "evaluated modular teen and regular humanoid character alternatives",
+      "runtimeImported": false
+    },
+    {
+      "id": "ducz-charactercreator",
+      "source": "https://github.com/LuanDucate/Ducz.CharacterCreator",
+      "license": "repository-license-not-confirmed; credited-Quaternius-assets-CC0",
+      "role": "browser-based character builder evaluated as reference only",
+      "runtimeImported": false
+    },
+    {
+      "id": "ara3d-character-generator",
+      "source": "https://ara3dgen.com/docs/library/",
+      "license": "MIT-library-CC0-character-bases",
+      "role": "runtime character generator and WeaponR attachment socket",
+      "runtimeImported": true
     },
     {
       "id": "mpfb-character-generator",

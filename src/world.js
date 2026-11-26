@@ -100,14 +100,6 @@ for(const z of [-7,5,17,29,41]){
  tire.name='defensa de borracha do píer';tire.position.set(30.15,.0,z);tire.rotation.y=Math.PI/2;scene.add(tire);
  if(z===5||z===29)line([[28.7,1.05,z],[30.8,.45,z+2.3],[32,-.2,z+3.2]],woodMat,.045);
 }
-// Mastro central e corrimão interno da escada externa.
-cyl('mastro central da escada espiral',[stairCenter.x,6.5,stairCenter.y],.16,.16,13.2,outdoorSteel,12);
-const innerRail=exteriorSteps.map(([a,y])=>[stairCenter.x+Math.cos(a)*(stairRadius-.82),y+.72,stairCenter.y+Math.sin(a)*(stairRadius-.82)]);
-line(innerRail,outdoorSteel,.052);
-for(let i=0;i<stairCount;i+=6){
- const [a,y]=exteriorSteps[i];
- beamBetween('suporte interno do corrimão',[stairCenter.x+Math.cos(a)*(stairRadius-.82),y,stairCenter.y+Math.sin(a)*(stairRadius-.82)],[stairCenter.x+Math.cos(a)*(stairRadius-.82),y+.72,stairCenter.y+Math.sin(a)*(stairRadius-.82)],.028,outdoorSteel);
-}
 // Reforço visual da margem: blocos de concreto e postes de atracação.
 for(const z of [-12,0,12,24,36,48]){
  box('bloco de proteção da margem',[31.4,-.02,z],[1.0,1.15,2.0],concrete,false);
@@ -156,6 +148,15 @@ for(let i=0;i<stairCount;i++){
 }
 const railPoints=exteriorSteps.map(([a,y])=>[stairCenter.x+Math.cos(a)*(stairRadius+1.0),y+.78,stairCenter.y+Math.sin(a)*(stairRadius+1.0)]);
 line(railPoints,metal,.075);
+// Mastro central e corrimão interno da escada externa.
+cyl('mastro central da escada espiral',[stairCenter.x,6.5,stairCenter.y],.16,.16,13.2,outdoorSteel,12);
+const innerRail=exteriorSteps.map(([a,y])=>[stairCenter.x+Math.cos(a)*(stairRadius-.82),y+.72,stairCenter.y+Math.sin(a)*(stairRadius-.82)]);
+line(innerRail,outdoorSteel,.052);
+for(let i=0;i<stairCount;i+=6){
+ const [a,y]=exteriorSteps[i];
+ beamBetween('suporte interno do corrimão',[stairCenter.x+Math.cos(a)*(stairRadius-.82),y,stairCenter.y+Math.sin(a)*(stairRadius-.82)],[stairCenter.x+Math.cos(a)*(stairRadius-.82),y+.72,stairCenter.y+Math.sin(a)*(stairRadius-.82)],.028,outdoorSteel);
+}
+
 for(let i=0;i<stairCount;i+=4){const [a,y]=exteriorSteps[i];cyl('montante do corrimão',[stairCenter.x+Math.cos(a)*(stairRadius+1),y+.39,stairCenter.y+Math.sin(a)*(stairRadius+1)],.045,.045,.78,metal,8)}
 box('patamar da entrada',[18.7,13.05,13.0],[4.4,.2,4.2],metal,false);
 box('passarela entre a escada e a entrada',[9,13.05,11.0],[18,.2,2.2],stone,false);

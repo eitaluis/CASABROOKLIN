@@ -84,3 +84,8 @@ Os mapas estão locais para que a sala não dependa de downloads de textura em t
 - As páginas Poly Haven Television 01 (Gabriel Radić) e Television 02 (Benny Weimer) foram verificadas como assets CC0, mas ambas são televisores CRT antigos e não correspondem à televisão de plasma descrita no livro.
 - Mantivemos uma geometria original de tela plana, com vidro físico refletivo, moldura metálica e toggle de energia integrado à inspeção por proximidade. Os modelos CRT não foram baixados/importados.
 - Fontes avaliadas: https://polyhaven.com/a/Television_01 e https://polyhaven.com/a/television_02.
+
+
+## Estudo visual/técnico — água do East River
+
+- [mqnc/cheapwater](https://github.com/mqnc/cheapwater) — MIT. Referência de estudo para superfícies de água Three.js com normais animadas e baixo custo. **Não foi incorporado código, textura ou shader deste repositório**; a superfície da Brooklyn House usa um mapa de altura procedural original documentado em `src/exterior.js`.

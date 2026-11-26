@@ -32,8 +32,8 @@ CASABROOKLIN/
 - `src/vendor/volumetric-fire.js`: shader volumétrico Housz MIT adaptado a GLSL3/WebGL2; licença preservada em licenses/THREE-VOLUMETRIC-FIRE-MIT.txt.
 - `src/character.js`: Carter aprovado carregado pelo Ara 3D Gen, `carry: 'none'` para remover a mochila do share original, animações centrais e ações cinematográficas filtradas pelo catálogo, API de olhar dirigido e descarte seguro do rig.
 - `src/character-accessories.js`: bolsa transversal autoral menor, arredondada e virada para a lateral/posterior do quadril direito; alça que cruza o peito e contorna o flanco; medalhão recuado contra o tórax e movimento secundário. Bolsa presa ao Hips; alça e colar ao Spine2 quando disponível.
-- `src/inventory.js`: catálogo do Duat com cajado, khopesh, shabti de cera, caixa de magia, papiro, cálamo, tinta e amuleto; socket configurável da mão, transições visuais de retirada/armazenamento e uso de armas.
-- `src/third-person.js`: movimento desktop/mobile compartilhado, aceleração e desaceleração suavizadas, curvas e inclinação corporal cinematográficas, salto, rotação por mouse/toque, câmera com proteção do piso, teleporte e colisão AABB. Altura da cápsula e alvo vertical da câmera usam a altura informada pelo rig.
+- `src/inventory.js`: catálogo do Duat com cajado, khopesh, shabti de cera, caixa de magia, papiro, cálamo, tinta e amuleto; socket configurável da mão, portal ancorado ao tórax, clipe `use_press`, transições de retirada/armazenamento e uso de armas.
+- `src/third-person.js`: movimento desktop/mobile compartilhado, aceleração e desaceleração suavizadas, curvas e inclinação corporal cinematográficas, salto, rotação por mouse/toque, câmera com proteção do piso, teleporte, colisão AABB e `setLocked()` para ações diegéticas que exigem imobilidade temporária. Altura da cápsula e alvo vertical da câmera usam a altura informada pelo rig.
 - `src/main.js`: interação por proximidade, inventário e direcionamento do olhar de Carter para o objeto examinado por E/INTERAGIR.
 - `assets/manifest.json`: proveniência e licenças dos assets locais e referências externas.
 - `docs/OPEN-SOURCES.md`: fontes abertas e decisões de licença.

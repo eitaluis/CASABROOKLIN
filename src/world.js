@@ -62,7 +62,7 @@ for(let i=0;i<5;i++){glyphPanel(-.75+(i%2)*1.5,14.9+Math.floor(i/2)*.9,12.13,0,.
 box('soleira monumental',[0,13.24,12.1],[4.3,.18,1.2],stone,false);
 for(let side of [-1,1]){box('pilar do portal',[side*2.35,16.1,11.7],[.55,6.3,.75],stone);for(let y=13.5;y<19;y+=.85)box('detalhe dourado do portal',[side*2.35,y,12.12],[.62,.06,.06],gold)}
 // Escada metálica externa em caracol: 66 degraus, cerca de duas voltas.
-const stairCenter=new THREE.Vector2(19,18),stairRadius=2.05,stairCount=66,stairRise=12.8;
+const stairCenter=new THREE.Vector2(19,18),stairRadius=2.05,stairCount=78,stairRise=12.8;
 const exteriorSteps=[];
 for(let i=0;i<stairCount;i++){
  const a=-Math.PI/2+i*.195,y=.08+i*(stairRise/(stairCount-1));

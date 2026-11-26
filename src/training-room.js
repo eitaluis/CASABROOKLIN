@@ -670,102 +670,107 @@ export function buildTrainingRoom({
 
   // Quatro estatuetas shabti de barro que crescem para guerreiros de treino.
   // O arranjo adapta a aula Magic Problem-Solving 101 / Whatever Works.
+  // Um shabti começa como estatueta vitrificada de cerca de 18 cm e cresce até a escala humana.
+  const shabtiMiniScale = 0.085;
+  const shabtiFullScale = 0.82;
   const shabtiTemplate = new THREE.Group();
-  shabtiTemplate.name = 'modelo de estatueta shabti de barro';
-  function addShabtiMesh(geometry, material, position, scale) {
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(position[0], position[1], position[2]);
-    if (scale) mesh.scale.set(scale[0], scale[1], scale[2]);
-    mesh.castShadow = true; mesh.receiveShadow = true;
-    shabtiTemplate.add(mesh);
-    return mesh;
+  shabtiTemplate.name = 'modelo de guerreiro shabti de faiança';
+  function shabtiMesh(parent, name, geometry, material, pos, scale = null) {
+    const mesh = new THREE.Mesh(geometry, material); mesh.name = name;
+    mesh.position.set(pos[0],pos[1],pos[2]); if(scale) mesh.scale.set(scale[0],scale[1],scale[2]);
+    mesh.castShadow=true; mesh.receiveShadow=true; parent.add(mesh); return mesh;
   }
-  // Pés, corpo mumiforme, cabeça, nemes e colar.
-  for (const side of [-1, 1]) {
-    addShabtiMesh(new THREE.BoxGeometry(0.2, 0.2, 0.34), clayLight, [side * 0.2, 0.12, 0.08]);
-    const leg = addShabtiMesh(new THREE.CapsuleGeometry(0.115, 0.34, 8, 14), clay, [side * 0.2, 0.37, 0]);
-    leg.rotation.z = side * -0.035;
+  const body = shabtiMesh(shabtiTemplate,'corpo vitrificado mumiforme',new THREE.CapsuleGeometry(.31,.62,8,20),faience,[0,1.07,0],[.96,1,.84]);
+  const chest = shabtiMesh(shabtiTemplate,'peitoral de faiança',new THREE.CylinderGeometry(.27,.31,.48,16,2),faienceLight,[0,1.22,.17],[1,1,.72]);
+  const kilt = shabtiMesh(shabtiTemplate,'saiote cerimonial',new THREE.CylinderGeometry(.27,.40,.56,6,1),lapis,[0,.67,.02]); kilt.rotation.y=Math.PI/6;
+  for(let fold=-2;fold<=2;fold++) shabtiMesh(shabtiTemplate,'pregas do saiote',new THREE.BoxGeometry(.018,.44,.018),bronze,[fold*.11,.66,.36-Math.abs(fold)*.035]);
+  const legs=[];
+  for(const side of [-1,1]){
+    const leg=new THREE.Group(); leg.name=side<0?'shabti-perna-esquerda':'shabti-perna-direita'; leg.position.set(side*.17,.44,.02); shabtiTemplate.add(leg);
+    shabtiMesh(leg,'perna de faiança',new THREE.CapsuleGeometry(.105,.42,6,14),faience,[0,-.16,0]);
+    shabtiMesh(leg,'sandália de bronze',new THREE.BoxGeometry(.22,.09,.34),bronze,[0,-.42,.09]); legs.push(leg);
   }
-  addShabtiMesh(new THREE.CylinderGeometry(0.42, 0.55, 1.1, 32, 2), clay, [0, 1.05, 0], [1, 1, 0.82]);
-  addShabtiMesh(new THREE.SphereGeometry(0.39, 32, 24), clayLight, [0, 1.83, 0.04], [0.9, 1.12, 0.86]);
-  addShabtiMesh(new THREE.SphereGeometry(0.48, 28, 20), lapis, [0, 1.91, -0.13], [1.12, 0.87, 0.88]);
-  addShabtiMesh(new THREE.BoxGeometry(0.76, 0.15, 0.12), bronze, [0, 1.42, 0.34]);
-  addShabtiMesh(new THREE.SphereGeometry(0.055, 14, 10), darkBronze, [-0.14, 1.86, 0.37]);
-  addShabtiMesh(new THREE.SphereGeometry(0.055, 14, 10), darkBronze, [0.14, 1.86, 0.37]);
-  addShabtiMesh(new THREE.ConeGeometry(0.12, 0.48, 20), bronze, [0, 1.67, 0.51], [1, 1, 0.75]);
-  for (const side of [-1, 1]) {
-    const arm = addShabtiMesh(new THREE.CapsuleGeometry(0.13, 0.56, 8, 16), clayLight, [side * 0.48, 1.05, 0.03]);
-    arm.rotation.z = side * 0.42;
-    addShabtiMesh(new THREE.SphereGeometry(0.15, 16, 12), clay, [side * 0.69, 0.72, 0.12]);
+  const neck=shabtiMesh(shabtiTemplate,'pescoço',new THREE.CylinderGeometry(.13,.15,.22,16),faienceLight,[0,1.72,.02]);
+  const head=shabtiMesh(shabtiTemplate,'rosto de guerreiro',new THREE.SphereGeometry(.235,24,18),faienceLight,[0,1.94,.045],[.88,1.08,.82]);
+  shabtiMesh(shabtiTemplate,'sobrancelha esquerda',new THREE.BoxGeometry(.12,.028,.025),darkBronze,[-.105,2.0,.225]);
+  shabtiMesh(shabtiTemplate,'sobrancelha direita',new THREE.BoxGeometry(.12,.028,.025),darkBronze,[.105,2.0,.225]);
+  for(const side of [-1,1]) shabtiMesh(shabtiTemplate,'olho escuro',new THREE.SphereGeometry(.032,12,10),darkBronze,[side*.09,1.96,.235]);
+  shabtiMesh(shabtiTemplate,'nariz',new THREE.ConeGeometry(.045,.12,5),faience,[0,1.89,.24]);
+  const nemes=shabtiMesh(shabtiTemplate,'nemes listrado',new THREE.SphereGeometry(.29,24,18),lapis,[0,2.03,-.055],[1.12,.78,.92]);
+  for(const side of [-1,1]){
+    const flap=shabtiMesh(shabtiTemplate,'aba lateral do nemes',new THREE.BoxGeometry(.16,.52,.18),lapis,[side*.245,1.69,.015]); flap.rotation.z=side*-.08;
+    for(let stripe=0;stripe<3;stripe++) shabtiMesh(shabtiTemplate,'friso dourado do nemes',new THREE.BoxGeometry(.17,.025,.19),bronze,[side*.245,1.53+stripe*.14,.03]);
   }
-  addShabtiMesh(new THREE.CylinderGeometry(0.22, 0.27, 0.7, 24), lapis, [0, 0.42, 0], [1.8, 1, 0.95]);
-  addShabtiMesh(new THREE.TorusGeometry(0.42, 0.075, 10, 36), bronze, [0, 1.48, 0.02]);
-
-  // Espada reta de treino com guarda e ponta metálica.
-  const swordGrip = addShabtiMesh(new THREE.CylinderGeometry(0.035, 0.035, 0.36, 10), woodDark, [0.78, 0.98, 0.12]);
-  swordGrip.rotation.z = -0.28;
-  const swordGuard = addShabtiMesh(new THREE.BoxGeometry(0.42, 0.075, 0.12), bronze, [0.82, 1.2, 0.12]);
-  swordGuard.rotation.z = -0.28;
-  const swordBlade = addShabtiMesh(new THREE.CylinderGeometry(0.022, 0.07, 0.96, 8), darkBronze, [0.93, 1.67, 0.12]);
-  swordBlade.rotation.z = -0.28;
-  const swordTip = addShabtiMesh(new THREE.ConeGeometry(0.07, 0.2, 8), bronze, [1.06, 2.24, 0.12]);
-  swordTip.rotation.z = -0.28;
-
-  // Escudo oval facetado preso ao braço esquerdo.
-  const shield = addShabtiMesh(new THREE.CylinderGeometry(0.31, 0.36, 0.12, 8), clayLight, [-0.72, 1.02, 0.2], [1.0, 1.18, 1.0]);
-  shield.rotation.x = Math.PI / 2;
-  const shieldBoss = addShabtiMesh(new THREE.SphereGeometry(0.105, 16, 12), bronze, [-0.72, 1.02, 0.28], [1, 1, 0.42]);
-
-  const miniaturePedestal = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.68, 0.14, 32), limestoneShade);
-  miniaturePedestal.name = 'base exclusiva das miniaturas shabti';
-  miniaturePedestal.position.y = 0.07;
-  miniaturePedestal.userData.miniatureOnly = true;
-  miniaturePedestal.castShadow = true;
-  shabtiTemplate.add(miniaturePedestal);
-  const miniatureSeal = new THREE.Mesh(new THREE.TorusGeometry(0.78, 0.035, 8, 48), warmEmissive);
-  miniatureSeal.name = 'selo mágico das miniaturas shabti';
-  miniatureSeal.rotation.x = Math.PI / 2;
-  miniatureSeal.position.y = 0.035;
-  miniatureSeal.userData.miniatureOnly = true;
-  shabtiTemplate.add(miniatureSeal);
-
-  const shabtiOffsets = [
-    [-6.2, -10.2], [6.2, -10.2],
-    [-6.2, 10.2], [6.2, 10.2]
-  ];
-  const shabtiWarriors = shabtiOffsets.map((offset, index) => {
-    const group = index === 0 ? shabtiTemplate : shabtiTemplate.clone(true);
-    group.name = 'guerreiro shabti ' + (index + 1);
-    group.position.set(centerX + offset[0], floorY, centerZ + offset[1]);
-    group.scale.setScalar(0.24);
-    group.traverse(obj => {
-      if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; }
-    });
-    scene.add(group);
-    const state = {
-      group, index, health: 2, spawnScale: 0.24, hitAt: 0,
-      defeatTime: 0, active: false, defeated: false, collider: null,
-      aiState: 'idle', windup: 0, strike: 0, strikeResolved: false,
-      attackCooldown: 0, moveSpeed: 1.55, origin: group.position.clone()
+  const uraeus=shabtiMesh(shabtiTemplate,'uraeus frontal',new THREE.TorusGeometry(.07,.018,8,20),bronze,[0,2.19,.15]); uraeus.rotation.x=Math.PI/2;
+  const collar=shabtiMesh(shabtiTemplate,'colar largo usekh',new THREE.TorusGeometry(.29,.075,10,36),bronze,[0,1.57,.10]); collar.rotation.x=Math.PI/2;
+  for(let row=0;row<3;row++){
+    const line=shabtiMesh(shabtiTemplate,'filete de esmalte do colar',new THREE.TorusGeometry(.29-row*.035,.018,6,36),row%2?lapis:faienceLight,[0,1.57-row*.045,.11]); line.rotation.x=Math.PI/2;
+  }
+  // Braços articulados: um sustenta a espada, o outro o escudo.
+  const swordArm=new THREE.Group(); swordArm.name='shabti-sword-arm'; swordArm.position.set(.37,1.45,.02); shabtiTemplate.add(swordArm);
+  shabtiMesh(swordArm,'braço superior armado',new THREE.CapsuleGeometry(.105,.40,6,14),faience,[0,-.22,0]);
+  const swordForearm=new THREE.Group(); swordForearm.name='cotovelo armado'; swordForearm.position.set(0,-.43,.02); swordArm.add(swordForearm);
+  shabtiMesh(swordForearm,'antebraço armado',new THREE.CapsuleGeometry(.085,.32,6,12),faienceLight,[0,-.16,.015]);
+  shabtiMesh(swordForearm,'mão direita',new THREE.SphereGeometry(.095,12,10),faience,[0,-.36,.04]);
+  const swordGrip=shabtiMesh(swordForearm,'punho de madeira da espada',new THREE.CylinderGeometry(.035,.04,.32,10),woodDark,[0,-.48,.08]); swordGrip.rotation.z=-.12;
+  shabtiMesh(swordForearm,'guarda de bronze da espada',new THREE.BoxGeometry(.32,.07,.11),bronze,[0,-.64,.08]);
+  const bladeShape=new THREE.Shape(); bladeShape.moveTo(-.045,0); bladeShape.lineTo(.045,0); bladeShape.lineTo(.06,.48); bladeShape.quadraticCurveTo(.08,.72,.24,.94); bladeShape.quadraticCurveTo(.30,1.04,.25,1.10); bladeShape.lineTo(.13,1.02); bladeShape.quadraticCurveTo(-.015,.86,-.06,.62); bladeShape.closePath();
+  const blade=new THREE.Mesh(new THREE.ExtrudeGeometry(bladeShape,{depth:.035,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.012,bevelThickness:.012}),new THREE.MeshStandardMaterial({color:0x8f9897,metalness:.82,roughness:.24})); blade.name='lâmina curva de bronze e ferro'; blade.position.set(-.02,-.62,.12); blade.castShadow=true; swordForearm.add(blade);
+  shabtiMesh(swordForearm,'nervura dourada da lâmina',new THREE.BoxGeometry(.018,.58,.02),bronze,[.035,-.27,.16]);
+  const shieldArm=new THREE.Group(); shieldArm.name='shabti-shield-arm'; shieldArm.position.set(-.38,1.4,.02); shabtiTemplate.add(shieldArm);
+  shabtiMesh(shieldArm,'braço do escudo',new THREE.CapsuleGeometry(.105,.46,6,14),faience,[-.02,-.23,0]);
+  const shield=new THREE.Group(); shield.name='escudo oval de faiança'; shield.position.set(-.13,-.48,.16); shieldArm.add(shield);
+  const shieldDisk=shabtiMesh(shield,'escudo esmaltado',new THREE.SphereGeometry(.32,18,12),faienceLight,[0,0,.0],[.82,1.12,.22]);
+  const shieldRim=shabtiMesh(shield,'aro de bronze do escudo',new THREE.TorusGeometry(.27,.028,8,32),bronze,[0,0,.05]); shieldRim.scale.set(.82,1.12,1);
+  shabtiMesh(shield,'umbigo do escudo',new THREE.SphereGeometry(.09,14,12),bronze,[0,0,.08]);
+  for(let rib=0;rib<6;rib++){const a=rib/6*Math.PI*2; const r=new THREE.Mesh(new THREE.BoxGeometry(.018,.43,.018),bronze);r.position.set(Math.cos(a)*.09,Math.sin(a)*.17,.055);r.rotation.z=a;shield.add(r);}
+  // Inscrição vertical e pequenos sinais pintados, como na cerâmica vitrificada.
+  const glyphCanvas=document.createElement('canvas'); glyphCanvas.width=256; glyphCanvas.height=512;
+  const gx=glyphCanvas.getContext('2d'); gx.clearRect(0,0,256,512); gx.fillStyle='#d8c08b'; gx.globalAlpha=.92; gx.font='42px serif'; gx.textAlign='center';
+  ['𓋹','𓂀','𓊹','𓆣','𓇳'].forEach((symbol,i)=>gx.fillText(symbol,128,56+i*92));
+  const glyphTexture=new THREE.CanvasTexture(glyphCanvas); glyphTexture.colorSpace=THREE.SRGBColorSpace;
+  const chestGlyph=new THREE.Mesh(new THREE.PlaneGeometry(.22,.54),new THREE.MeshBasicMaterial({map:glyphTexture,transparent:true,side:THREE.DoubleSide})); chestGlyph.name='hieróglifos pintados no peitoral'; chestGlyph.position.set(0,1.18,.405); shabtiTemplate.add(chestGlyph);
+  const miniaturePedestal=new THREE.Mesh(new THREE.CylinderGeometry(.43,.48,.12,24),limestoneShade); miniaturePedestal.name='base exclusiva da miniatura shabti'; miniaturePedestal.position.y=.055; miniaturePedestal.userData.miniatureOnly=true; shabtiTemplate.add(miniaturePedestal);
+  const miniatureSeal=new THREE.Mesh(new THREE.TorusGeometry(.52,.022,8,36),warmEmissive); miniatureSeal.name='selo luminoso da miniatura shabti'; miniatureSeal.rotation.x=Math.PI/2; miniatureSeal.position.y=.025; miniatureSeal.userData.miniatureOnly=true; shabtiTemplate.add(miniatureSeal);
+  const shabtiOffsets=[[-6.2,-10.2],[6.2,-10.2],[-6.2,10.2],[6.2,10.2]];
+  const shabtiWarriors = shabtiOffsets.map((offset,index)=>{
+    const group=index===0?shabtiTemplate:shabtiTemplate.clone(true);
+    group.name='guerreiro shabti '+(index+1);
+    group.position.set(centerX+offset[0],floorY,centerZ+offset[1]);
+    group.scale.setScalar(shabtiMiniScale);
+    group.traverse(obj=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;}}); scene.add(group);
+    const aura=new THREE.Group(); aura.name='aura de invocação shabti'; aura.position.copy(group.position);
+    const beamMat=new THREE.MeshBasicMaterial({color:0x66d8d0,transparent:true,opacity:.16,side:THREE.DoubleSide,depthWrite:false});
+    const beam=new THREE.Mesh(new THREE.CylinderGeometry(.22,.46,2.65,18,1,true),beamMat); beam.name='coluna de magia'; beam.position.y=1.3; aura.add(beam);
+    const auraRing=new THREE.Mesh(new THREE.TorusGeometry(.68,.025,8,48),warmEmissive); auraRing.name='círculo de invocação'; auraRing.rotation.x=Math.PI/2; auraRing.position.y=.04; aura.add(auraRing);
+    scene.add(aura); aura.visible=false;
+    const state={
+      group,index,health:2,spawnProgress:1,hitAt:0,defeatTime:0,active:false,defeated:false,collider:null,
+      aiState:'idle',windup:0,strike:0,strikeResolved:false,attackCooldown:0,moveSpeed:1.32,
+      origin:group.position.clone(),miniScale:shabtiMiniScale,fullScale:shabtiFullScale,
+      aura,beamMat,swordArm:group.getObjectByName('shabti-sword-arm'),shieldArm:group.getObjectByName('shabti-shield-arm'),
+      leftLeg:group.getObjectByName('shabti-perna-esquerda'),rightLeg:group.getObjectByName('shabti-perna-direita'),
+      stumbleTimer:0,stumbleDirection:new THREE.Vector3(),marked:false
     };
     addInteractable({
-      name: 'Guerreiro shabti ' + (index + 1),
-      label: 'Estatueta shabti ' + String(index + 1).padStart(2, '0'),
-      description: 'Pequena estatueta mumiforme de barro, com espada e escudo. A figura parece inerte.',
-      position: group.position, radius: 1.85,
-      onInteract: () => {
-        if (!state.active) return state.defeated
-          ? 'Este guerreiro já foi derrotado. Use o quadro para reiniciar a prova.'
-          : 'Estatueta shabti inerte. Inicie a aula no quadro Whatever Works.';
-        return 'Guerreiro shabti ativo. Energia restante: ' + state.health + '. Use o cajado ou o khopesh.';
+      name:'Guerreiro shabti '+(index+1),label:'Estatueta shabti '+String(index+1).padStart(2,'0'),
+      description:'Pequena figura de faiança vitrificada, com espada e escudo. Aproxime-se do quadro Whatever Works e inicie a aula para despertá-la.',
+      prompt:'E · examinar estatueta · inicie a aula no quadro para despertá-la',
+      position:group.position,radius:1.55,
+      onInteract:()=>{
+        if(!state.active) return state.defeated?'O guerreiro voltou à forma de estatueta. A prova pode ser reiniciada no quadro.':'Estatueta shabti de faiança. Para despertá-la, vá até o quadro de aula e pressione E / INTERAGIR.';
+        state.marked=true; state.aiState='stumble'; state.stumbleTimer=3.2;
+        state.stumbleDirection.copy(group.position).sub(latestPlayerPosition).setY(0);
+        if(state.stumbleDirection.lengthSq()<.01) state.stumbleDirection.set(1,0,0);
+        state.stumbleDirection.normalize();
+        return 'SA-PER — “errar”. Você inscreveu o hieróglifo no barro. O shabti vai errar os golpes e cambalear até a parede.';
       }
     });
     return state;
   });
-  let shabtiActive = false, shabtiRemaining = 0;
-  const maxPlayerHealth = 5;
-  let playerHealth = maxPlayerHealth, playerInvulnerability = 0;
-
+  let shabtiActive=false,shabtiRemaining=0;
+  const maxPlayerHealth=5;
+  let playerHealth=maxPlayerHealth,playerInvulnerability=0;
   function addShabtiCollider(state) {
     const p = state.group.position;
     const collider = {
@@ -783,31 +788,24 @@ export function buildTrainingRoom({
     state.collider = null;
   }
   function startShabtiChallenge() {
-    shabtiActive = true;
-    shabtiRemaining = shabtiWarriors.length;
-    playerHealth = maxPlayerHealth;
-    playerInvulnerability = 0;
-    for (const state of shabtiWarriors) {
-      removeShabtiCollider(state);
-      state.health = 2;
-      state.spawnScale = 0.24;
-      state.aiState = 'approach';
-      state.windup = 0; state.strike = 0; state.strikeResolved = false;
-      state.attackCooldown = 0.35 + state.index * 0.22;
-      state.moveSpeed = 1.45 + (state.index % 2) * 0.18;
-      state.hitAt = 0;
-      state.defeatTime = 0;
-      state.active = true;
-      state.defeated = false;
-      state.group.visible = true;
-      state.group.position.copy(state.origin);
-      state.group.rotation.set(0, 0, 0);
-      state.group.scale.setScalar(0.24);
-      state.group.traverse(obj => {
-        if (obj.userData?.miniatureOnly) obj.visible = true;
-      });
+    shabtiActive=true; shabtiRemaining=shabtiWarriors.length;
+    playerHealth=maxPlayerHealth; playerInvulnerability=0;
+    for(const state of shabtiWarriors){
+      removeShabtiCollider(state); state.health=2; state.spawnProgress=0; state.aiState='approach';
+      state.windup=0;state.strike=0;state.strikeResolved=false;state.attackCooldown=.7+state.index*.22;state.moveSpeed=1.18+(state.index%2)*.15;
+      state.hitAt=0;state.defeatTime=0;state.active=true;state.defeated=false;state.marked=false;
+      state.group.visible=true;state.group.position.copy(state.origin);state.group.rotation.set(0,0,0);state.group.scale.setScalar(state.miniScale);
+      state.swordArm.rotation.set(0,0,0);state.shieldArm.rotation.set(0,0,0);state.leftLeg.rotation.set(0,0,0);state.rightLeg.rotation.set(0,0,0);
+      state.group.traverse(obj=>{if(obj.userData?.miniatureOnly)obj.visible=true;});
+      state.aura.visible=true;state.aura.position.copy(state.origin);state.aura.scale.setScalar(1);state.beamMat.opacity=.16;
       addShabtiCollider(state);
     }
+  }
+  function completeShabti(state,reason){
+    if(!state?.active)return null;
+    state.active=false;state.defeated=true;state.defeatTime=2.4;removeShabtiCollider(state);shabtiRemaining=Math.max(0,shabtiRemaining-1);
+    if(shabtiRemaining===0){shabtiActive=false;return reason+' A prova terminou: todos os quatro shabtis foram neutralizados.';}
+    return reason+' Restam '+shabtiRemaining+' guerreiros.';
   }
 
   const problemBoard = new THREE.Group();
@@ -816,16 +814,14 @@ export function buildTrainingRoom({
   problemBoard.rotation.y = Math.PI / 2;
   const problemBack = new THREE.Mesh(new THREE.BoxGeometry(0.14, 2.4, 3.1), darkBronze);
   problemBoard.add(problemBack);
-  const paperCanvas = document.createElement('canvas');
-  paperCanvas.width = 768; paperCanvas.height = 512;
-  const pg = paperCanvas.getContext('2d');
-  pg.fillStyle = '#e4d1a6'; pg.fillRect(0, 0, 768, 512);
-  pg.strokeStyle = '#765431'; pg.lineWidth = 16; pg.strokeRect(10, 10, 748, 492);
-  pg.fillStyle = '#332a20'; pg.textAlign = 'center'; pg.font = 'bold 52px Georgia';
-  pg.fillText('MAGIC PROBLEM-SOLVING 101', 384, 108);
-  pg.font = 'bold 66px Georgia'; pg.fillText('WHATEVER WORKS', 384, 222);
-  pg.font = '34px Georgia'; pg.fillText('Defeat all four clay shabti', 384, 322);
-  pg.font = '28px Georgia'; pg.fillText('Use your staff or khopesh', 384, 397);
+  const paperCanvas=document.createElement('canvas'); paperCanvas.width=768;paperCanvas.height=512;
+  const pg=paperCanvas.getContext('2d'); pg.fillStyle='#ead9b5';pg.fillRect(0,0,768,512);pg.strokeStyle='#765431';pg.lineWidth=16;pg.strokeRect(10,10,748,492);
+  pg.fillStyle='#24424a';pg.fillRect(24,24,720,76);pg.fillStyle='#f1d7a0';pg.textAlign='center';pg.font='bold 36px Georgia';pg.fillText('MAGIC PROBLEM-SOLVING 101',384,76);
+  pg.fillStyle='#332a20';pg.font='bold 66px Georgia';pg.fillText('WHATEVER WORKS',384,190);
+  pg.font='bold 30px Georgia';pg.fillText('E / INTERAGIR  ·  DESPERTAR OS QUATRO SHABTIS',384,270);
+  pg.font='26px Georgia';pg.fillText('Aproxime-se e use E para marcar SA-PER (errar)',384,330);
+  pg.fillText('Use F / USAR com cajado ou khopesh para golpear',384,380);
+  pg.fillText('Ou pegue a bola e acerte a cabeça do guerreiro',384,430);
   const paperTexture = new THREE.CanvasTexture(paperCanvas);
   paperTexture.colorSpace = THREE.SRGBColorSpace;
   const problemFace = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 1.92), new THREE.MeshBasicMaterial({ map: paperTexture }));
@@ -833,35 +829,21 @@ export function buildTrainingRoom({
   scene.add(problemBoard);
   addInteractable({
     name: 'Quadro da aula Magic Problem-Solving 101', label: 'Whatever Works — prova prática',
-    description: 'O quadro anuncia uma prova de combate mágico: as quatro estatuetas shabti crescem e se tornam guerreiros de barro.',
-    position: problemBoard.position, radius: 2.5,
+    description: 'Aula de resolução de problemas mágicos. Pressione E para despertar quatro guerreiros shabti. Neutralize-os com o cajado/khopesh, marque SA-PER numa estatueta ativa ou use a bola de basquete.',
+    prompt: 'E / INTERAGIR · começar a aula WHATEVER WORKS',
+    position: problemBoard.position, radius: 2.8,
     onInteract: () => {
-      if (shabtiActive) return 'A prova já está em andamento. Derrote os quatro guerreiros com o cajado ou o khopesh.';
+      if (shabtiActive) return 'A prova já está em andamento. Use F/USAR com o cajado ou khopesh, E numa estatueta para aplicar SA-PER, ou arremesse a bola na cabeça de um guerreiro.';
       startShabtiChallenge();
-      return 'Prova iniciada! As quatro estatuetas cresceram e despertaram como guerreiros shabti. Derrote todos.';
+      return 'Aula iniciada! As quatro estatuetas estão despertando. Prepare-se: elas vão avançar. Neutralize-as com arma, SA-PER ou basquete.';
     }
   });
 
   function hitShabti(state, weaponName) {
-    if (!shabtiActive || !state?.active) return null;
-    state.health -= 1;
-    state.hitAt = 0.42;
-    state.aiState = 'stunned';
-    state.attackCooldown = 0.45;
-    if (state.health <= 0) {
-      state.active = false;
-      state.defeated = true;
-      state.defeatTime = 2.4;
-      removeShabtiCollider(state);
-      shabtiRemaining -= 1;
-      if (shabtiRemaining <= 0) {
-        shabtiActive = false;
-        return 'Prova concluída! Você derrotou os quatro guerreiros shabti e resolveu o desafio.';
-      }
-      return 'Guerreiro shabti ' + (state.index + 1) + ' derrotado. Restam ' + shabtiRemaining + '.';
-    }
-    return (weaponName === 'staff' ? 'O cajado atingiu o shabti. ' : 'O khopesh atingiu o shabti. ')
-      + 'Restam ' + state.health + ' golpes neste guerreiro.';
+    if(!shabtiActive||!state?.active)return null;
+    state.health-=1;state.hitAt=.48;state.aiState='stunned';state.attackCooldown=.55;
+    if(state.health<=0) return completeShabti(state,'Guerreiro shabti '+(state.index+1)+' se quebrou em fragmentos de faiança.');
+    return (weaponName==='staff'?'O cajado atingiu o peitoral vitrificado. ':'O khopesh atingiu o guerreiro. ')+'Falta um golpe para neutralizá-lo.';
   }
 
   // Portal duplo de madeira e bronze, inicialmente aberto para permitir circulação.

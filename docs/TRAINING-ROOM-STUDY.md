@@ -10,7 +10,7 @@ A Brooklyn House é apresentada oficialmente pela Disney como local onde jovens 
 
 A descrição detalhada da sala de treinamento foi consultada em referência secundária do universo Kane Chronicles: https://riordan.fandom.com/wiki/Brooklyn_House. Ela descreve a sala no segundo andar, aproximadamente do tamanho de uma quadra de basquete, com piso de madeira, teto abobadado pintado com cenas do Egito Antigo e estátuas de divindades ao longo das paredes. Nas linhas de fundo, estátuas de Rá com cabeça de falcão e discos solares ocos funcionam como cestas.
 
-A mesma referência associa as aulas de Carter ao exercício *Magic Problem-Solving 101*, apelidado pelos alunos de “Whatever Works”, no qual os iniciados precisam enfrentar um guerreiro shabti de barro.
+A página oficial de *The Throne of Fire* também descreve a Brooklyn House como um campo de treinamento para jovens magos: https://books.disney.com/book/the-throne-of-fire/. A mesma referência secundária associa as aulas de Carter ao exercício *Magic Problem-Solving 101*, apelidado pelos alunos de “Whatever Works”, no qual os iniciados precisam enfrentar um guerreiro shabti de barro.
 
 A Disney também lista oficialmente *The Throne of Fire: The Graphic Novel* como parte do universo Kane Chronicles: https://books.disney.com/kane-chronicals/. A busca visual realizada nesta etapa não localizou um painel oficial inequívoco da sala de treinamento. Uma imagem pública identificada como “Great Room” não foi reutilizada como referência da quadra, para evitar confundir dois espaços.
 
@@ -39,12 +39,13 @@ A Disney também lista oficialmente *The Throne of Fire: The Graphic Novel* como
 - Sala: aproximadamente **20,4 × 32,3 m** de piso.
 - Quadra marcada: **15 × 28 m**, de acordo com a dimensão de jogo indicada no Artigo 2 das Official Basketball Rules 2026 da FIBA.
 - A FIBA 2026 indica ainda uma faixa desobstruída de pelo menos 2 m ao redor da área de jogo, produzindo um piso mínimo de 19 × 32 m. A sala construída deixa margens um pouco maiores em parte do perímetro para circulação e para os elementos decorativos.
-- Altura do aro solar: **3,05 m acima do piso**, usando a altura regulamentar de uma cesta de basquete como referência de construção.
+- Altura do aro solar: **3,05 m acima do piso**, igual à altura da borda superior do aro indicada no documento de equipamentos das Official Basketball Rules 2026 da FIBA.
 - Piso da sala: nível 16,875 m no sistema vertical atual do modelo.
 - Ligação: passagem física a partir da primeira galeria do Grande Salão, com passarela, portal de portas duplas e troca de zona ao cruzar o vão.
 
 Referências técnicas:
-- FIBA — Official Basketball Rules 2026, Artigo 2: https://www.nz.basketball/wp-content/uploads/2026/07/documents-corporate-fiba-official-rules-2026-v1-1.pdf
+- FIBA — Official Basketball Rules 2026, Artigo 2 (quadra e faixa livre): https://www.nz.basketball/wp-content/uploads/2026/07/documents-corporate-fiba-official-rules-2026-v1-1.pdf
+- FIBA — Official Basketball Rules 2026, Basketball Equipment (altura do aro a 3.050 mm): https://www.nz.basketball/wp-content/uploads/2026/07/documents-corporate-fiba-official-rules-2026-equipment-v1-0.pdf
 - FIBA — confirmação de entrada em vigor das regras 2026 em 1º de outubro: https://about.fiba.basketball/en/news/fiba-official-basketball-rules-2026-to-take-effect-october-1
 - Página oficial de downloads da FIBA: https://about.fiba.basketball/en/services/resource-hub/downloads
 

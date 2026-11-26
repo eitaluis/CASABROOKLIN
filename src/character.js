@@ -18,6 +18,7 @@ const CORE_ANIMATIONS = [
 // A lista pública do Ara é consultada antes do carregamento:
 // somente IDs existentes entram no pedido de clips cinematográficos.
 const CINEMATIC_ANIMATIONS = [
+  'use_press',
   'look_around',
   'talk_gestures',
   'wave',

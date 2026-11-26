@@ -1,4 +1,4 @@
-export function createThirdPersonController({ THREE, camera, canvas, character, zones, onZoneChange }) {
+export function createThirdPersonController({ THREE, camera, canvas, character, zones, colliders = [], onZoneChange }) {
   const keys = new Set();
   const touch = { moveX: 0, moveY: 0, sprint: false };
   const position = new THREE.Vector3();
@@ -8,10 +8,29 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   let zoneName = 'dock';
   let cameraYaw = 0;
   let cameraPitch = 0.20;
-  let cameraDistance = 1.9;
+  let cameraDistance = 2.65;
   let pointerLocked = false;
   let firstCameraFrame = true;
   let fallbackSpeed = 0;
+
+  // Colisão de primeira passagem: cápsula vertical simplificada contra caixas estáticas.
+  // Mantém o teste leve para funcionar também no celular.
+  const characterRadius = 0.34;
+  const characterHeight = 1.72;
+  function blockedAt(x, z, baseY) {
+    const actorBottom = baseY + 0.08;
+    const actorTop = baseY + characterHeight;
+    for (const obstacle of colliders) {
+      if (actorTop <= obstacle.minY || actorBottom >= obstacle.maxY) continue;
+      if (
+        x + characterRadius > obstacle.minX &&
+        x - characterRadius < obstacle.maxX &&
+        z + characterRadius > obstacle.minZ &&
+        z - characterRadius < obstacle.maxZ
+      ) return true;
+    }
+    return false;
+  }
 
   function getPosition() {
     return character.human ? character.human.position : character.model.position;
@@ -207,10 +226,21 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       const response = input.moving ? 12.5 : 17.5;
       smoothVelocity.lerp(targetVelocity, 1 - Math.exp(-response * dt));
       const current = character.model.position;
-      const next = current.clone().addScaledVector(smoothVelocity, dt);
+      const nextX = current.x + smoothVelocity.x * dt;
+      const nextZ = current.z + smoothVelocity.z * dt;
       const bounds = zones[zoneName].bounds;
-      if (next.x >= bounds[0] && next.x <= bounds[1]) current.x = next.x;
-      if (next.z >= bounds[2] && next.z <= bounds[3]) current.z = next.z;
+
+      // Resolver cada eixo separadamente permite deslizar junto à parede em vez de travar diagonalmente.
+      if (nextX >= bounds[0] && nextX <= bounds[1] && !blockedAt(nextX, current.z, current.y)) {
+        current.x = nextX;
+      } else {
+        smoothVelocity.x = 0;
+      }
+      if (nextZ >= bounds[2] && nextZ <= bounds[3] && !blockedAt(current.x, nextZ, current.y)) {
+        current.z = nextZ;
+      } else {
+        smoothVelocity.z = 0;
+      }
       fallbackSpeed = smoothVelocity.length();
       if (direction.lengthSq() > 0.0001) {
         // O modelo Ara começa com rotação PI; manter esse offset evita que ele vire para a câmera ao andar.

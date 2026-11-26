@@ -1506,8 +1506,8 @@ export function buildGrandSalon({
   // because no compatible licensed Egyptian instrument pack was verified.
   addHarpDisplay(scene,-11.65,13.32,-9.64,walnut,brass,colliders,interactables);
   addHarpDisplay(scene,11.65,13.32,-9.64,walnut,brass,colliders,interactables);
-  addCeremonialDrum(scene,-10.65,13.18,-6.2,walnut,brass,colliders,interactables);
-  addCeremonialDrum(scene,10.65,13.18,-6.2,walnut,brass,colliders,interactables);
+  addCeremonialDrum(scene,-12.6,13.18,1.2,walnut,brass,colliders,interactables);
+  addCeremonialDrum(scene,12.6,13.18,1.2,walnut,brass,colliders,interactables);
   addWallSpear(scene,-11.8,15.65,8.82,Math.PI,walnut,brass,colliders,interactables);
   addWallSpear(scene,11.8,15.65,8.82,Math.PI,walnut,brass,colliders,interactables);
   addWallKhopesh(scene,-10.4,15.9,8.82,Math.PI,walnut,brass,interactables);

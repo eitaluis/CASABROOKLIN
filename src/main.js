@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
+import { buildGrandSalon } from './grand-salon.js?v=grand-salon-sculpted-20261126a';
 import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
 import { createCharacter } from './character.js?v=carter-ara-approved-restore-20261126d';
 import { createThirdPersonController } from './third-person.js?v=carter-lean-forward-20261126a';
@@ -89,10 +90,12 @@ const world = buildWorld({
   canvasSign, rugTex, limestone, concrete, metal, gold, stone, brickMat, darkBrick, woodMat,
   cedarMat, darkGlass, plaster
 });
-const { zones, groundSurfaces, water, fireLight } = world;
+const { zones, groundSurfaces, water } = world;
 
-// Interior pass shared by desktop and mobile.
+// Interior passes are shared by desktop and mobile.
 buildInteriorDetails({ THREE, scene });
+const grandSalon = buildGrandSalon({ THREE, scene, animated });
+const fireLight = grandSalon.fireLight;
 
 function toast(message) {
   const element = document.getElementById('toast');

@@ -181,6 +181,11 @@ export async function createCharacter({
     updateFallback(dt, speed) {
       if (disposed) return;
       movementSpeed = speed;
+      // Release one-shot/gesture poses as soon as navigation resumes to avoid foot sliding.
+      if (actionSequence && speed > 0.25) {
+        cancelAction();
+        restoreLocomotion();
+      }
       if (!jumping && !actionSequence) locomotion.speed = speed;
       mixer.update(dt);
       hero.update(dt);

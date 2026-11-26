@@ -379,13 +379,15 @@ export function createInventory({
   // The portal stays in chest space while the right hand reaches through it.
   // Ara's use_press clip places the right-hand contact at (-0.20, -0.16, 0.46)
   // in chest-space coordinates for a 1.8 m reference character.
-  const chestBoneNames = new Set(['spine2', 'mixamorispine2', 'spine1', 'mixamorispine1', 'chest', 'spine']);
-  let chestBone = null;
+  const chestBoneCandidates = ['spine2', 'mixamorigspine2', 'spine1', 'mixamorigspine1', 'chest', 'spine'];
+  const chestBones = new Map();
+  const chestBoneNames = new Set(chestBoneCandidates);
   character.model.traverse((node) => {
-    if (!node.isBone || chestBone) return;
+    if (!node.isBone) return;
     const name = String(node.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-    if (chestBoneNames.has(name)) chestBone = node;
+    if (chestBoneNames.has(name) && !chestBones.has(name)) chestBones.set(name, node);
   });
+  const chestBone = chestBoneCandidates.map(name => chestBones.get(name)).find(Boolean) || null;
   const duatUnit = (character.height || character.ara?.height || 1.75) / 1.8;
   const portalAnchor = new THREE.Group();
   portalAnchor.name = 'DuatChestSpaceAnchor';

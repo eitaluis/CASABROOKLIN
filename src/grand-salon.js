@@ -381,5 +381,19 @@ export function buildGrandSalon({ THREE: T, scene, animated=[] }) {
   addThoth(scene,marble,pale,brass,relief);
 
   const sideLight=new T.PointLight(0xffbe78,.9,12,1.8);sideLight.position.set(0,20.3,7.9);scene.add(sideLight);
-  return {fireLight};
+
+  // Superfícies de circulação associadas às duas escadarias e às galerias laterais.
+  const stairRamps=[-1,1].map(side=>({
+    centerX:side*10.35,
+    width:2.75,
+    startZ:7.35,
+    endZ:7.35-14*.59,
+    bottomY:13.175,
+    topY:16.6
+  }));
+  const walkablePlatforms=[
+    {minX:-13,maxX:-7.6,minZ:-8,maxZ:8,height:16.6},
+    {minX:7.6,maxX:13,minZ:-8,maxZ:8,height:16.6}
+  ];
+  return {fireLight,stairRamps,walkablePlatforms};
 }

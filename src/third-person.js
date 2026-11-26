@@ -10,6 +10,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   let cameraPitch = 0.20;
   let cameraDistance = 3.2;
   let pointerLocked = false;
+  let controlsLocked = false;
   let firstCameraFrame = true;
   let fallbackSpeed = 0;
   let cameraCue = null;
@@ -120,6 +121,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   }
 
   function teleport(name) {
+    if (controlsLocked) return;
     const zone = zones[name];
     if (!zone) return;
     zoneName = name;
@@ -185,6 +187,10 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   }, { passive: true });
 
   window.addEventListener('keydown', (event) => {
+    if (controlsLocked) {
+      if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)) event.preventDefault();
+      return;
+    }
     keys.add(event.code);
     if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)) event.preventDefault();
     if (event.code === 'Digit1') teleport('dock');
@@ -253,6 +259,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     const action = button.dataset.action;
     button.addEventListener('pointerdown', (event) => {
       event.preventDefault();
+      if (controlsLocked) return;
       if (action === 'run') touch.sprint = true;
       if (action === 'jump') character.jump?.();
       button.setPointerCapture?.(event.pointerId);
@@ -264,6 +271,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   });
 
   function inputDirection() {
+    if (controlsLocked) return { forward: 0, strafe: 0, magnitude: 0, moving: false };
     let forward = (keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0)
       - (keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0) - touch.moveY;
     let strafe = (keys.has('KeyD') || keys.has('ArrowRight') ? 1 : 0)
@@ -290,7 +298,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     const direction = forward.multiplyScalar(input.forward).add(right.multiplyScalar(input.strafe));
     if (direction.lengthSq() > 0.0001) direction.normalize();
 
-    const running = keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint;
+    const running = !controlsLocked && (keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint);
     const speedTarget = input.moving ? (running ? 4.2 : 1.5) * input.magnitude : 0;
     const currentPosition = getPosition();
     limitToZone(currentPosition, direction, Math.max(speedTarget, 2.25) * dt * 1.35);
@@ -431,9 +439,21 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     return { position: p, speed: character.human ? character.human.speed : fallbackSpeed, zone: zoneName };
   }
 
+  function setLocked(locked) {
+    controlsLocked = Boolean(locked);
+    if (controlsLocked) {
+      keys.clear();
+      touch.moveX = 0;
+      touch.moveY = 0;
+      touch.sprint = false;
+      resetJoystick();
+    }
+  }
+
   return {
     update,
     teleport,
+    setLocked,
     capturePointer,
     getPosition,
     focusOnRoof,

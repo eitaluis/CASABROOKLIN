@@ -63,6 +63,7 @@ export async function createCharacter({
   let finishJump = null;
   let finishAction = null;
   let currentAction = null;
+  let castingHandPose = false;
   let state = null;
 
   // O pivô separa a orientação de navegação da rotação interna do rig Ara.
@@ -138,6 +139,22 @@ export async function createCharacter({
     return true;
   }
 
+  function applyCastingHandPose() {
+    // O clip Point já projeta o braço e estende o indicador. Espelhamos a cadeia
+    // do indicador para o dedo médio, formando os dois dedos do gesto descrito no livro.
+    for (let joint = 1; joint <= 3; joint++) {
+      const indexFinger = hero.scene.getObjectByName('RightHandIndex' + joint);
+      const middleFinger = hero.scene.getObjectByName('RightHandMiddle' + joint);
+      if (indexFinger && middleFinger) middleFinger.quaternion.copy(indexFinger.quaternion);
+    }
+  }
+
+  function handBone(side = 'Right') {
+    return hero.scene.getObjectByName(side + 'Hand')
+      || hero.scene.getObjectByName(side === 'Right' ? 'wrist.R' : 'wrist.L')
+      || null;
+  }
+
   function jump() {
     if (disposed || jumping) return;
     if (!hero.clip('jump_start') || !hero.clip('jump_air') || !hero.clip('jump_land')) {
@@ -174,6 +191,22 @@ export async function createCharacter({
     jump,
     playAction,
     stopAction,
+    setCastingHandPose(enabled) {
+      castingHandPose = Boolean(enabled);
+      if (castingHandPose) applyCastingHandPose();
+    },
+    getHandWorldPosition(side = 'Right', target = new THREE.Vector3()) {
+      const hand = handBone(side);
+      hero.scene.updateMatrixWorld(true);
+      if (hand) return hand.getWorldPosition(target);
+      return root.localToWorld(target.set(side === 'Right' ? 0.34 : -0.34, 1.34, 0.22));
+    },
+    getHandWorldQuaternion(side = 'Right', target = new THREE.Quaternion()) {
+      const hand = handBone(side);
+      hero.scene.updateMatrixWorld(true);
+      if (hand) return hand.getWorldQuaternion(target);
+      return root.getWorldQuaternion(target);
+    },
     lookAt(target, options) {
       if (!disposed && typeof hero.lookAt === 'function') hero.lookAt(target, options);
     },
@@ -197,6 +230,7 @@ export async function createCharacter({
       if (!jumping && !actionSequence) locomotion.speed = speed;
       mixer.update(dt);
       hero.update(dt);
+      if (castingHandPose) applyCastingHandPose();
       accessories?.update(dt, movementSpeed);
     },
     resetFallback() {
@@ -216,6 +250,7 @@ export async function createCharacter({
     dispose() {
       if (disposed) return;
       disposed = true;
+      castingHandPose = false;
       clearJumpListener();
       clearActionListener();
       jumpSequence?.stop();

@@ -31,6 +31,90 @@ for(let x of [-18,18]){box('tubo de drenagem',[x,6,15.95],[.2,11,.2],metal);cyl(
 for(let i=0;i<15;i++){const x=-28+Math.random()*17,z=8+Math.random()*20,y=.55+Math.random()*1.4;const m=box('sucata metálica',[x,y,z],[1.5+Math.random()*2,.35+Math.random()*1.1,.7+Math.random()*1.8],i%2?metal:darkBrick);m.rotation.y=Math.random()*1.8;m.rotation.z=(Math.random()-.5)*.4}
 const crane=box('estrutura de guindaste',[28,5,0],[.7,10,.7],metal);box('braço do guindaste',[28,10,0],[10,.5,.5],metal);line([[32,10,0],[32,5,0],[33,4,0]],metal,.06);
 box('caixa de ferramentas',[24,1.05,22],[2.2,1.9,1.5],new THREE.MeshStandardMaterial({color:0x475c5a,metalness:.45,roughness:.65}));box('escavadeira abandonada',[31,1.5,10],[4,2.3,2.3],new THREE.MeshStandardMaterial({color:0x94713c,roughness:.8}));cyl('roda',[29,1.0,11.4],.8,.8,.6,metal,20);cyl('roda',[33,1.0,11.4],.8,.8,.6,metal,20);
+
+/* Camada cinematográfica do exterior: detalhes originais e leves, inspirados
+   em kits industriais CC0 e em materiais PBR da Poly Haven. */
+const outdoorSteel=new THREE.MeshStandardMaterial({color:0x465254,metalness:.72,roughness:.62});
+const fadedPaint=new THREE.MeshStandardMaterial({color:0x596b68,metalness:.28,roughness:.82});
+const darkRubber=new THREE.MeshStandardMaterial({color:0x202627,roughness:.96});
+const warmLamp=new THREE.MeshStandardMaterial({color:0xe3bd7a,emissive:0x9c642b,emissiveIntensity:1.25,roughness:.4});
+function beamBetween(name,a,b,r,mat){
+ const va=new THREE.Vector3(...a),vb=new THREE.Vector3(...b),delta=new THREE.Vector3().subVectors(vb,va);
+ const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,delta.length(),8),mat);
+ mesh.name=name;mesh.position.copy(va).add(vb).multiplyScalar(.5);
+ mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());
+ mesh.castShadow=true;mesh.receiveShadow=true;scene.add(mesh);return mesh;
+}
+function barrel(x,y,z,mat=fadedPaint){
+ cyl('corpo de tambor industrial',[x,y+.62,z],.48,.48,1.24,mat,16);
+ cyl('aro superior do tambor',[x,y+1.08,z],.495,.495,.09,outdoorSteel,16);
+ cyl('aro inferior do tambor',[x,y+.18,z],.495,.495,.09,outdoorSteel,16);
+}
+function pallet(x,z,rot=0){
+ const group=new THREE.Group();group.position.set(x,.18,z);group.rotation.y=rot;
+ for(let i=0;i<5;i++){const plank=new THREE.Mesh(new THREE.BoxGeometry(2.1,.13,.34),woodMat);plank.position.set(0,0,(i-2)*.39);group.add(plank)}
+ for(let i=-1;i<=1;i++){const runner=new THREE.Mesh(new THREE.BoxGeometry(1.9,.2,.24),cedarMat);runner.position.set(0,-.15,i*.62);group.add(runner)}
+ group.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});scene.add(group);return group;
+}
+// Cobertura da doca de carga, com vigas e lâmpadas protegidas.
+box('marquise industrial sobre portão',[0,8.45,17.25],[12.8,.32,3.6],outdoorSteel,false);
+for(const x of [-6.0,6.0]){
+ beamBetween('mão francesa da marquise',[x,8.2,15.9],[x,7.0,18.7],.09,outdoorSteel);
+ box('pilar da marquise',[x,4.0,18.55],[.18,8,.18],outdoorSteel,false);
+ const lamp=new THREE.PointLight(0xffc783,.7,10);lamp.position.set(x*.72,8.0,18.2);scene.add(lamp);
+ const bulb=new THREE.Mesh(new THREE.SphereGeometry(.13,10,8),warmLamp);bulb.position.copy(lamp.position);scene.add(bulb);
+}
+for(let x=-5.5;x<=5.5;x+=1.1)box('nervura da marquise',[x,8.22,17.2],[.07,.16,3.3],metal,false,false);
+// Tubulações, exaustores e reforços de cobertura do galpão.
+for(const x of [-19.6,19.6]){
+ line([[x,1,14.9],[x,10.8,14.9],[x,11.5,13.9]],outdoorSteel,.085);
+ for(let y of [2.2,6.2,10.1])box('abraçadeira de tubulação',[x,y,14.9],[.34,.12,.3],gold,false,false);
+}
+for(const x of [-13,-4,5,14]){
+ const vent=new THREE.Mesh(new THREE.CylinderGeometry(.42,.55,.7,12),outdoorSteel);
+ vent.name='exaustor industrial';vent.position.set(x,12.75,-5.5);vent.castShadow=true;scene.add(vent);
+ const cap=new THREE.Mesh(new THREE.CylinderGeometry(.58,.48,.12,12),metal);cap.position.set(x,13.15,-5.5);scene.add(cap);
+}
+for(const x of [-18,-9,0,9,18]){
+ beamBetween('tesoura metálica do telhado',[x-4,12.05,-14.5],[x,14.0,0],.075,outdoorSteel);
+ beamBetween('tesoura metálica do telhado',[x,14.0,0],[x+4,12.05,14.5],.075,outdoorSteel);
+}
+// Pallets, tambores, caixas e entulho em agrupamentos legíveis.
+pallet(-26,11,.12);pallet(-23,15,-.18);pallet(-27,20,.32);
+barrel(-25,.05,24);barrel(-22,.05,25);barrel(-19,.05,24,fadedPaint);
+barrel(34,.05,24);barrel(36,.05,22,new THREE.MeshStandardMaterial({color:0x76513a,metalness:.35,roughness:.8}));
+for(const [x,z,s] of [[-31,7,1.7],[-29,10,1.25],[-24,7,1.5],[35,8,1.4],[38,12,1.8]]){
+ box('caixote industrial de madeira',[x,.55,z],[s,1.1,s*.85],woodMat,false);
+ for(let y=.12;y<1.05;y+=.28)box('travessa do caixote',[x,y,z+s*.43],[s,.055,.07],cedarMat,false,false);
+}
+for(let i=0;i<9;i++){
+ const x=-31+(i%3)*1.1,z=27+Math.floor(i/3)*1.0;
+ const scrap=box('chapa de metal descartada',[x,.2+(i%2)*.12,z],[1.5,.12,.7],i%2?outdoorSteel:metal,false);
+ scrap.rotation.y=(i%3)*.31;scrap.rotation.z=(i%2?.12:-.08);
+}
+// Cabeços de amarração, defensas de borracha e cabos no píer.
+for(const z of [-7,5,17,29,41]){
+ cyl('cabeço de amarração',[28.7,.75,z],.22,.22,.72,outdoorSteel,12);
+ cyl('base do cabeço',[28.7,.43,z],.34,.34,.14,metal,12);
+ const tire=new THREE.Mesh(new THREE.TorusGeometry(.47,.13,8,18),darkRubber);
+ tire.name='defensa de borracha do píer';tire.position.set(30.15,.0,z);tire.rotation.y=Math.PI/2;scene.add(tire);
+ if(z===5||z===29)line([[28.7,1.05,z],[30.8,.45,z+2.3],[32,-.2,z+3.2]],woodMat,.045);
+}
+// Mastro central e corrimão interno da escada externa.
+cyl('mastro central da escada espiral',[stairCenter.x,6.5,stairCenter.y],.16,.16,13.2,outdoorSteel,12);
+const innerRail=exteriorSteps.map(([a,y])=>[stairCenter.x+Math.cos(a)*(stairRadius-.82),y+.72,stairCenter.y+Math.sin(a)*(stairRadius-.82)]);
+line(innerRail,outdoorSteel,.052);
+for(let i=0;i<stairCount;i+=6){
+ const [a,y]=exteriorSteps[i];
+ beamBetween('suporte interno do corrimão',[stairCenter.x+Math.cos(a)*(stairRadius-.82),y,stairCenter.y+Math.sin(a)*(stairRadius-.82)],[stairCenter.x+Math.cos(a)*(stairRadius-.82),y+.72,stairCenter.y+Math.sin(a)*(stairRadius-.82)],.028,outdoorSteel);
+}
+// Reforço visual da margem: blocos de concreto e postes de atracação.
+for(const z of [-12,0,12,24,36,48]){
+ box('bloco de proteção da margem',[31.4,-.02,z],[1.0,1.15,2.0],concrete,false);
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(.22,.055,8,16),outdoorSteel);
+ ring.name='argola de amarração';ring.position.set(31.95,.55,z);ring.rotation.y=Math.PI/2;scene.add(ring);
+}
+
 // Mansão oculta no telhado: cinco pavimentos, blocos de calcário e caixilhos de aço.
 const mansionBase=box('base elevada da mansão',[0,12.55,-.5],[32,.5,23],stone,false);
 const houseY=21.45,houseH=17.6;

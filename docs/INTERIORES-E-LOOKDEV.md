@@ -194,7 +194,7 @@ A graphic novel de *The Red Pyramid* é ilustrada por Orpheus Collar (Disney-Hyp
 
 ## Varanda panorâmica — reconstrução interpretativa
 
-A descrição textual estabelece paredes envidraçadas e um terraço que contorna a casa, com piscina, jantar e fogueira. O acesso lateral de vidro e a abertura alinhada na fachada externa são decisões de level design para tornar essa área realmente caminhável. A disposição exata do terraço, sua planta e as salas atrás das portas das galerias não são fixadas pelo romance; mantê-las identificadas como interpretação. A revisão atual entrega o setor principal caminhável do terraço, com acesso pelo vidro e piscina/jantar/fogueira; a extensão de todo o percurso ao redor da casa permanece como etapa seguinte.
+A descrição textual estabelece paredes envidraçadas e um terraço que contorna a casa, com piscina, jantar e fogueira. O acesso lateral de vidro e a abertura alinhada na fachada externa são decisões de level design para tornar essa área realmente caminhável. A disposição exata do terraço, sua planta e as salas atrás das portas das galerias não são fixadas pelo romance; mantê-las identificadas como interpretação. A revisão atual implementa um percurso perimetral caminhável, conectado às portas de vidro. Piscina, área de jantar e fogueira concentram-se no setor principal; a posição exata desses elementos e a planta das salas laterais continuam sendo reconstruções interpretativas.
 
 
 ## Sala de Treinamento — estudo e direção visual

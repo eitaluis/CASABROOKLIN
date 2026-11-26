@@ -64,3 +64,18 @@ A geometria, o personagem e os controladores são compartilhados entre desktop e
 - [ ] Conferir o custo dos prédios e janelas instanciados no perfil mobile.
 - [ ] Integrar mapas PBR locais de tijolo CC0 apenas depois de verificar licença, resolução, UV scale e color/normal/roughness.
 - [ ] Não marcar o exterior como aprovado visualmente antes da inspeção em navegador real.
+
+
+## Regra canônica de percepção exterior — 26/11/2026
+
+A primeira leitura do local deve ser apenas um galpão/fábrica antigo na margem do Brooklyn: graffiti pesado, janelas fechadas com tábuas, pátio de sucata e equipamentos de construção. Carter e Sadie chegam pelo East River, passam sob a Williamsburg Bridge e param junto a uma pequena doca. Amos pede que olhem novamente para o telhado; então Carter percebe a mansão de cinco andares sobre o armazém. O texto também descreve a dificuldade de mantê-la visível quando se desvia o olhar. Referência: *The Red Pyramid*, capítulo 5, chegada ao Twenty-first Nome.
+
+**Regra para os ambientes em desenvolvimento:** Grande Salão, biblioteca subterrânea, sala de treinamento, quartos e demais anexos são espaços mágicos internos. Nenhum deles ganha torre, ala, volume, claraboia ou anexo exterior para anunciar sua existência. A fachada externa permanece uma única silhueta de galpão antigo na percepção comum. A mansão de calcário sobre o telhado e a escada metálica só se tornam perceptíveis após o comando de foco mágico na doca.
+
+**Implementação:** fachada, porta e escada são mantidas no mundo como geometrias de oclusão sem escrita de cor, de modo que os ambientes internos continuem invisíveis do lado de fora. O ponto da doca ativa a troca gradual para os materiais reais e uma breve câmera de descoberta do telhado. A revelação é uma mudança de percepção, não uma animação de construção.
+
+**Escada:** reposicionada para a lateral leste do armazém, fora de sua caixa de colisão. O último lance encontra um patamar e a passarela segue até o portal frontal. A escada e o caminho continuam invisíveis até a percepção mágica.
+
+**Williamsburg Bridge:** a ponte cruza o East River acima do corredor do barco. O texto diz que a embarcação passa sob a ponte e depois para junto à doca no lado do Brooklyn; não descreve a ponte como cobertura sobre a mansão. A estrutura foi agrupada e afastada da projeção do telhado, permanecendo alinhada sobre a água. O barco fica sob o vão, próximo ao extremo do cais.
+
+**QA ainda necessário:** validar ângulo de aproximação, escala aparente, passagem do barco sob o tabuleiro, distância visual entre ponte e armazém, subida da escada e entrada no portal nas versões desktop e mobile.

@@ -1,13 +1,32 @@
-# Carter Kane — histórico de decisões de direção visual
+# Carter Kane — decisões de direção visual
 
-Status: **redesign pausado a pedido do usuário; o Carter do Ara 3D Gen aprovado anteriormente está ativo novamente.**
+Status: **direção confirmada e primeira integração em andamento.**
 
-## Ideias preservadas para uma fase futura
-- Interesse em um personagem 3D carismático, mais playful do que realista.
-- Rosto humano natural, sem estética anime.
-- Movimento com inspiração atlética/ninja: inclinação de sprint, braços ativos, passadas largas e aterrissagens com controle.
-- O usuário rejeitou o protótipo procedural feito de primitivas e também rejeitou o primeiro candidato Quaternius Casual_2 por sua aparência quadrada/low-poly.
-- A bolsa transversal e o novo visual de roupa/cabelo não devem ser adicionados ao runtime atual sem novo estudo e aprovação.
+## Escolhas aprovadas pelo usuário em 26/11/2026
+
+- Método: hybrid — Ara 3D Gen como base humana, rig e animações; Three.js e Blender para personalização e assets autorais.
+- Movimento: cinematic — gestos e ações expressivas, locomoção fluida, curvas suaves, aceleração e câmera com easing.
+- Rosto: natural.
+- Direção visual: C — game 3D gráfico, totalmente tridimensional, anatomia legível, materiais estilizados e sem aparência low-poly/chibi.
+- Referência: Carter à esquerda na arte de Karen de la Vega: https://cdnb.artstation.com/p/assets/images/images/032/344/645/large/karen-de-la-vega-asset.jpg?1606172873.
+- Bolsa transversal no quadril direito do personagem, alça do ombro esquerdo ao quadril direito.
+- Medalhão dourado no pescoço.
+
+## Identidade a preservar
+
+- Carter adolescente negro, cabelo crespo curto e rosto humano natural.
+- Camisa azul, calça cáqui, calçado escuro/marrom.
+- Silhueta esguia e atlética, mas não musculosa em excesso.
+- Não converter em personagem anime, chibi, low-poly ou escaneamento fotorrealista.
+- A base aprovada no Ara permanece como referência de identidade. Mudanças de rosto, cabelo e proporção exigem comparação com a ilustração antes de serem aplicadas.
+
+## Histórico
+
+- O protótipo procedural feito de primitivas foi rejeitado.
+- O primeiro candidato Quaternius Casual_2 foi rejeitado por aparência quadrada/low-poly.
+- O Carter Ara aprovado voltou a ser a base ativa.
+- A bolsa transversal e as ações cinematográficas foram autorizadas novamente pelo usuário nesta etapa; não se aplica mais a pausa anterior desses itens.
 
 ## Regra
-Não substituir nem redesenhar o Carter ativo nesta fase. O trabalho segue no ambiente da Brooklyn House, com prioridade no Grande Salão.
+
+Não substituir a malha base do Ara nesta etapa. Construir os detalhes de forma reversível e manter uma única implementação para desktop e mobile.

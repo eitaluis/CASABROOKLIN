@@ -7,7 +7,7 @@ const CARTER_SHARE_URL = 'https://ara3dgen.com/app/#c=XVDLboQwDPyVyr2iClbs87ZdqZ
 export async function createCharacter({ scene, onModeChange = () => {} }) {
   const loading = document.getElementById('loading');
   const hero = await createAraCharacter(CARTER_SHARE_URL, {
-    animations: ['idle', 'walk', 'run', 'jump'],
+    animations: ['idle', 'walk', 'run', 'jump_start', 'jump_air', 'jump_land'],
     detail: 'medium',
     onProgress: (label, fraction) => {
       if (!loading || loading.classList.contains('done')) return;
@@ -26,20 +26,24 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
 
   function jump() {
     if (jumping) return;
-    if (!hero.clip('jump')) {
-      console.warn('A animação jump não foi carregada pelo Ara 3D.');
+    const startClip = hero.clip('jump_start');
+    const airClip = hero.clip('jump_air');
+    const landClip = hero.clip('jump_land');
+    if (!startClip || !airClip || !landClip) {
+      console.warn('O conjunto de animações jump_start/jump_air/jump_land não está completo.');
       return;
     }
     jumping = true;
     locomotion.stop();
-    const sequence = hero.playSequence(mixer, 'jump', { repeat: false });
+    const sequence = hero.playSequence(mixer, 'jump_start, jump_air 0.45s, jump_land', { repeat: false });
     const finishJump = (event) => {
-      if (event.action.getClip().name.toLowerCase() !== 'jump') return;
+      if (event.action.getClip() !== landClip) return;
       mixer.removeEventListener('finished', finishJump);
       sequence.stop();
       jumping = false;
       locomotion = hero.locomotion(mixer);
       locomotion.speed = movementSpeed;
+      state.locomotion = locomotion;
     };
     mixer.addEventListener('finished', finishJump);
   }
@@ -60,7 +64,7 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
     },
     resetFallback() {
       locomotion.speed = 0;
-      hero.scene.rotation.set(0, 0, 0);
+      hero.scene.rotation.set(0, Math.PI, 0);
     },
     dispose() {
       hero.dispose();

@@ -279,8 +279,10 @@ export function createMagicSystem({
           projectile.halo.scale.setScalar(0.8 + pulse * 0.35);
           if (t >= 1 && !impactApplied) {
             impactApplied = true;
+            const impactPosition = activeTarget.state.group.position.clone()
+              .add(new THREE.Vector3(0, 1.05 * activeTarget.state.fullScale, 0));
             const destroyed = trainingRoom.applyHaDi(activeTarget);
-            if (destroyed) createImpact(activeTarget.position.clone());
+            if (destroyed) createImpact(impactPosition);
             disposeProjectile();
           }
         }

@@ -707,7 +707,7 @@ export function buildTrainingRoom({
       group, index, health: 2, spawnScale: 0.24, hitAt: 0,
       defeatTime: 0, active: false, defeated: false, collider: null,
       aiState: 'idle', windup: 0, strike: 0, strikeResolved: false,
-      attackCooldown: 0, moveSpeed: 1.55
+      attackCooldown: 0, moveSpeed: 1.55, origin: group.position.clone()
     };
     addInteractable({
       name: 'Guerreiro shabti ' + (index + 1),
@@ -746,6 +746,8 @@ export function buildTrainingRoom({
   function startShabtiChallenge() {
     shabtiActive = true;
     shabtiRemaining = shabtiWarriors.length;
+    playerHealth = maxPlayerHealth;
+    playerInvulnerability = 0;
     for (const state of shabtiWarriors) {
       removeShabtiCollider(state);
       state.health = 2;
@@ -759,7 +761,8 @@ export function buildTrainingRoom({
       state.active = true;
       state.defeated = false;
       state.group.visible = true;
-      state.group.position.y = floorY;
+      state.group.position.copy(state.origin);
+      state.group.rotation.set(0, 0, 0);
       state.group.scale.setScalar(0.24);
       state.group.traverse(obj => {
         if (obj.userData?.miniatureOnly) obj.visible = true;
@@ -1076,6 +1079,8 @@ export function buildTrainingRoom({
         state.defeatTime = Math.max(0, state.defeatTime - dt);
         if (state.defeatTime === 0) {
           state.group.visible = true;
+          state.group.position.copy(state.origin);
+          state.group.rotation.set(0, 0, 0);
           state.group.scale.setScalar(0.24);
           state.spawnScale = 0.24;
           state.group.traverse(obj => {

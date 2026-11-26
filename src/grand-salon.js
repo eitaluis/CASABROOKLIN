@@ -153,10 +153,10 @@ function stairFlight(scene,stone,treadMaterial,brass,wood,options) {
     new THREE.Vector2(.22,.83),new THREE.Vector2(.1,1.1),
     new THREE.Vector2(.06,1.23)
   ],20);
-  for(const z of [startZ,endZ+direction*.15]){
+  for(const [z,y] of [[startZ,baseY],[endZ+direction*.15,topY]]){
     for(const dx of [-1,1]){
       const post=new THREE.Mesh(postGeo,brass);
-      post.position.set(centerX+dx*(width*.52),baseY+.08,z);
+      post.position.set(centerX+dx*(width*.52),y+.08,z);
       post.name='poste de início ou fim da escadaria';
       post.castShadow=true;scene.add(post);
     }
@@ -418,15 +418,15 @@ export function buildGrandSalon({ THREE: T, scene, animated=[] }) {
   const walkablePlatforms=[];
   for(const side of [-1,1]){
     const flights=[
-      {centerX:side*10.35,baseY:13.175,topY:16.6,startZ:7.35,direction:-1,width:2.38},
-      {centerX:side*8.55,baseY:16.6,topY:20.35,startZ:-.91,direction:1,width:1.5},
-      {centerX:side*12.25,baseY:20.35,topY:24.1,startZ:7.35,direction:-1,width:1.35}
+      {centerX:side*10.35,baseY:13.175,topY:16.875,startZ:7.35,direction:-1,width:2.38},
+      {centerX:side*8.55,baseY:16.875,topY:20.625,startZ:-.91,direction:1,width:1.42},
+      {centerX:side*12.25,baseY:20.625,topY:24.375,startZ:7.35,direction:-1,width:1.35}
     ];
     for(const flight of flights) stairRamps.push(stairFlight(scene,stone,pale,brass,darkWood,flight));
     walkablePlatforms.push(
-      {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:16.6},
-      {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:20.35},
-      {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:24.1}
+      {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:16.875},
+      {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:20.625},
+      {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:24.375}
     );
   }
   addWallReliefs(scene,brass,darkWood,stone,relief);

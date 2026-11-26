@@ -67,7 +67,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 ## Setor 04 — Grande Salão
 
 ### Arquitetura e materiais
-- [x] Aplicar variação de blocos de calcário e material PBR de plaster com mapas normal/roughness às paredes, sacadas e colunas.
+- [x] Aplicar blocos de calcário sob medida nas paredes e mapas PBR CC0 de normal/roughness limestone nas estruturas, pilares e molduras; manter roughness alta e baixo relevo para leitura de pedra maciça.
 - [x] Piso recebe mapas PBR CC0 do ambientCG Tiles139.
 - [x] Walnut PBR CC0 (color, normal e roughness) aplicado aos acabamentos e mesa.
 - [x] Substituir o eixo visual das quatro colunas por shafts com caneluras e capitéis de lótus esculpidos.
@@ -75,30 +75,31 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Substituir os antigos balaústres cilíndricos por balaústres torneados, corrimãos curvos e filetes de latão.
 - [x] Substituir harpas/tambores/lanças placeholders por modelos sob medida: harpas arqueadas e cordas tensionadas, tambores com pele e amarrações, lanças com ponta foliácea de bronze e khopeshes de lâmina curva.
 - [x] Substituir a TV em bloco por tela plana física refletiva e toggle de energia via E/INTERAGIR. Os modelos CC0 Poly Haven Television 01/02 foram avaliados e rejeitados por serem CRT, não plasma.
-- [x] Acrescentar uma parede envidraçada panorâmica com montantes/travessas de bronze e colisores, mantendo a abertura das portas centrais.
-- [x] Criar fileiras de portas de madeira em cada galeria (três por lado/nível como decisão de layout, não uma contagem canônica), com molduras de calcário PBR e painéis de nogueira PBR.
-- [x] Construir duas escadarias laterais em zigue-zague, cada uma com três lances alternados para alcançar os três níveis de galeria; degraus de pedra arredondados, filetes de bronze, balaústres torneados, corrimãos e patamares.
+- [x] Parede panorâmica envidraçada com montantes/travessas de bronze; portas duplas de vidro funcionais para o terraço (E/INTERAGIR), mais bandeiras fixas nos níveis superiores.
+- [x] Criar fileiras de portas de madeira em cada galeria (três por lado/nível como decisão de layout, não uma contagem canônica), com molduras de calcário PBR, painéis de nogueira e interação abrir/fechar; cada vão leva a uma sala lateral interpretativa.
+- [x] Construir duas escadarias laterais, com três lances alternados por nível; abrir vazios contínuos nos pisos das galerias, patamares de virada, balaústres torneados, corrimãos e filetes de bronze.
 - [x] Adicionar portas duplas de madeira em painéis, Olho de Hórus, correntes de ferro, seis cadeados, collider e interação de inspeção; a porta continua trancada.
 - [x] Adicionar placas SVG CC BY 3.0 (Eye of Horus, harp, drum, flute, spears, crossed chains, padlock) com atribuição por autor e notas das modificações.
-- [x] Conectar os lances ao controlador de terceira pessoa: a altura do Carter acompanha as rampas, mantém-se nos patamares e retorna ao piso principal ao sair das galerias.
+- [x] Conectar os lances ao controlador de terceira pessoa e ao rig Ara: resolver altura nas rampas e patamares compartilhados pela direção do movimento, além de deslizar ao longo das colisões.
 
 ### Peças de destaque
 - [x] Atualizar Thoth para uma figura humana com pernas/tronco separados, kilt shendyt pregueado, faixa diagonal, colar largo, cabeça/bico de íbis, papiro aberto com sinal Per Ankh e estilete de escriba; altura aproximada de 9,1 m.
 - [x] Substituir as línguas poligonais por fogo volumétrico de shader MIT com ruído, textura de perfil, lenha, brasas, faíscas e luz dinâmica.
 - [x] Aumentar a densidade de amostragem do volume (desktop: slice spacing 0,024 / 66 segmentos; mobile: 0,052 / 34 segmentos) para reduzir arestas visíveis.
 - [x] Substituir a moldura quadrada da lareira por arco de calcário, pilastras, capitéis, inlay de bronze e manto arredondado.
-- [x] Usar o GLB Poly Haven Sofa 03 CC0 com MeshoptDecoder, materiais PBR, normalização por bounding box e escala 0,72 (~1,97 m), um de cada lado da lareira; manter fallback proporcional visível se o GLB falhar.
-- [x] Reduzir a mesa central para altura/diâmetro de mesa baixa e aplicar walnut PBR, bronze e medalhão solar.
-- [x] Refazer o tapete como pele de serpente em escamas sobrepostas, com color/bump procedural e dimensões de cerca de 12,2 × 4,6 m conforme o livro.
-- [x] Manter lustre, arandelas e estandartes da decoração anterior.
+- [x] Usar o GLB Poly Haven Sofa 03 CC0 com MeshoptDecoder, materiais PBR, normalização por bounding box e escala 1,05 (~2,87 m), um de cada lado da lareira; manter fallback proporcional visível se o GLB falhar.
+- [x] Aumentar a presença da mesa central de nogueira e o collider proporcional, mantendo altura baixa, bronze e medalhão solar.
+- [x] Refazer o tapete como pele de serpente orgânica (contorno irregular, não oval), escamas sobrepostas e dimensões de cerca de 12,2 × 4,6 m conforme o livro.
+- [x] Suavizar gotas de vidro âmbar do lustre e chamas das arandelas; remover pingentes triangulares octaédricos que eram escolha de modelagem, não detalhe canônico.
+- [x] Assentar fogo volumétrico em uma câmara de lareira com soleira, leito de brasas, fundo refratário e ombreiras de pedra.
 
 ### QA ainda pendente
 - [ ] Conferir se o novo fogo volumétrico está orgânico e corretamente orientado à câmera; avaliar custo no mobile.
-- [ ] Conferir o tamanho do Sofa 03 (escala 0,72) com o Carter e ajustar posição/rotação caso necessário.
+- [ ] Conferir o tamanho do Sofa 03 (escala 1,05) com o Carter e ajustar posição/rotação caso necessário.
 - [ ] Conferir se as interações E/INTERAGIR estão acessíveis para sofás, mesa, estátua, lareira, harpas, tambores, flautas, lanças, khopeshes, portas e TV (toggle), e se as colisões não bloqueiam passagem útil.
 - [ ] Conferir a leitura da estátua humana com kilt, faixa, colar, papiro e estilete; verificar mapas de normal/roughness e preservar a reflexão.
 - [ ] Conferir arco e pilastras da lareira, portas/fechaduras, transparência da parede envidraçada, sombras, texturas PBR, z-fighting e placas SVG em visão 3/4 e de dentro do salão.
-- [ ] Testar a subida e descida nos três níveis de galeria, incluindo as transições entre os lances e os patamares.
+- [ ] Testar a subida e descida nos três níveis de galeria, incluindo transições nos patamares sobrepostos e entrada/saída de todas as salas laterais.
 - [ ] Ajustar desempenho e densidade visual em mobile paisagem.
 - [ ] Testar as portas trancadas, inspeção de harpas/tambores/flautas/armas/TV e colisões da parede de vidro em desktop e mobile.
 - [ ] Fazer a aprovação visual final antes de marcar o Grande Salão como concluído.
@@ -181,3 +182,14 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 2. Conferir colisões e interação contextual E/INTERAGIR; ajustar o raio/posições se algo não puder ser alcançado.
 3. Testar desktop e mobile em modo paisagem, mantendo o mesmo mundo, assets e gameplay; comparar FPS, carregamento e temperatura.
 4. Preencher a matriz asset-first e fechar as lacunas de instrumentos/armas expostos antes de marcar o Grande Salão como aprovado.
+
+
+### Revisão de circulação e varanda — 26/11/2026
+- [x] Remover colisores residuais de sofás/mesa antigos que permaneciam após esconder as malhas e bloqueavam o acesso ao mobiliário atual.
+- [x] Remover colisores de paredes laterais antigas e substituir as paredes por vãos de porta; deslocar a ala dos quartos para liberar a área dos cômodos laterais.
+- [x] Criar três faixas de piso por nível com vazio contínuo para a escada, em vez de uma laje atravessando os degraus.
+- [x] Criar portas laterais articuladas que removem o collider quando abertas; salas atrás delas são reconstrução interpretativa, não layout canônico detalhado.
+- [x] Abrir a parede envidraçada e a fachada externa no mesmo eixo; portas de vidro duplas dão acesso ao terraço panorâmico, com piscina, mesa de jantar e fogueira.
+- [x] Criar piso de terraço em segmentos ao redor do recorte da piscina, com bordas de calcário e guarda-corpo de nogueira/bronze.
+- [x] Rebaixar fogo/lenha/brasas para o interior da lareira e adicionar caixa refratária física.
+- [ ] Validar o caminho completo salão → portas de vidro → terraço, a colisão da piscina e as portas de cada galeria em desktop e mobile.

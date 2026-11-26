@@ -211,6 +211,12 @@
       "path": "src/papyrus-boat.js",
       "role": "original woven-fiber hull made of rounded tapering papyrus bundles and lashings, continuous arched reed-mat cabin, small cloaked/hatted stern steersman, two bow torches, mooring ropes and boarding plank",
       "license": "project-original-code"
+    },
+    {
+      "id": "ha-di-spell-prototype",
+      "path": "src/magic-system.js + src/character.js + src/training-room.js + src/main.js",
+      "role": "original Three.js HA-DI prototype: floating golden ḥḏ hieroglyph 𓉔𓆓 anchored to Carter's right hand, Ara Point gesture with two-finger adaptation, golden energy pulse and impact, Shabti ceramic fragments with gravity/bounce, 10-second floor persistence and random respawn",
+      "license": "project-original-code"
     }
   ],
   "openSourceReferences": [
@@ -225,7 +231,7 @@
       "id": "ara3d-character-generator",
       "source": "https://github.com/olatunde85/3d-gen",
       "license": "MIT-code; CC0-1.0-MakeHuman-data; CMU-motion-capture-free-commercial-use",
-      "role": "runtime: geração de malha humana contínua, skin weights, game rig, WeaponR e clips de locomoção/salto e ações cinematográficas selecionadas do catálogo ANIMATIONS",
+      "role": "runtime: geração de malha humana contínua, skin weights, game rig, WeaponR, clips de locomoção/salto e ações cinematográficas; o clipe Point é usado como base corporal da conjuração HA-DI, com adaptação original dos dedos em src/character.js",
       "runtimeImported": true
     },
     {
@@ -505,6 +511,13 @@
       "source": "https://www.nyc.gov/site/planning/plans/greenpoint-williamsburg/greenpoint-williamsburg.page",
       "license": "official urban-planning/context reference",
       "role": "context for Brooklyn waterfront industrial uses and neighborhood-to-factory transitions; no model or image imported",
+      "runtimeImported": false
+    },
+    {
+      "id": "threejs-vfx-ha-di-study",
+      "source": "https://github.com/majidmanzarpour/threejs-vfx",
+      "license": "MIT",
+      "role": "visual/technical study for procedural spell VFX, particles and GLSL techniques; no code, textures or assets copied into the CASABROOKLIN runtime",
       "runtimeImported": false
     }
   ]

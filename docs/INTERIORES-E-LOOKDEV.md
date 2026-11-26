@@ -11,12 +11,13 @@ Manter a direção **híbrida cinematográfica** já escolhida para o exterior: 
 ### Grande Salão — canônico
 
 - Pé-direito de quatro pavimentos, com vigas de cedro e pilares de pedra gravados com hieróglifos.
-- Três níveis de sacadas voltadas para o salão.
+- Três níveis de balcões circundam o salão, com fileiras de portas que se abrem para a área principal.
 - Instrumentos musicais e armas egípcias antigas expostos nas paredes.
 - Lareira monumental, TV acima do manto e dois sofás grandes de couro.
 - Tapete enorme com aparência de pele de serpente.
-- Estátua de Thoth em mármore negro no centro.
-- Terraço envidraçado que contorna a casa, com piscina, área de refeições e fogueira externa.
+- Estátua de Thoth em mármore negro, com cerca de 9,1 m, no centro: corpo humano, cabeça e pescoço longos de íbis, kilt, faixa, colar, estilete de escriba e pergaminho/papiro aberto com o sinal Per Ankh.
+- Paredes de vidro voltadas para um terraço que contorna a casa, com piscina, área de refeições e fogueira externa.
+- No extremo oposto, portas duplas com o Olho de Hórus, correntes e meia dúzia de cadeados.
 
 Referência textual: *The Red Pyramid*, capítulo da primeira visita dos Kane à mansão. A geometria atual já representa parte desse programa, mas ainda precisa de escala, silhueta e decoração para deixar de parecer um blockout.
 
@@ -106,14 +107,14 @@ A cena já usa ACES tone mapping e sombras suaves. O próximo passo de lookdev �
 - Grande Salão: lustre cerimonial de bronze em três níveis, arandelas quentes, estandartes egípcios, placas de madeira entalhada e sofá com estrutura, assentos, almofadas e filetes de bronze.
 - Biblioteca: as estantes genéricas foram ocultadas e substituídas por nichos circulares de papiros em três faixas; foi adicionada uma cúpula celeste estrelada (Nut), cartografia de piso em tons de verde e terra (Geb), quatro shabtis em pedestais e objetos de leitura.
 - Lookdev: EffectComposer com SSAO no desktop e bloom controlado; o mobile usa bloom em resolução menor e dispensa SSAO na primeira configuração.
-- O código procedural das peças arquitetónicas é original do projeto. Poly Haven Sofa 03 CC0 já está importado como GLB local; Arm Chair 01 permanece apenas como candidato e não foi inserido.
+- O código procedural das peças arquitetónicas é original do projeto. Poly Haven Sofa 03 CC0 está importado como GLB local. Arm Chair 01 permanece apenas como candidato e não foi inserido.
 
 
 ## Correções de leitura visual — 26/11/2026
 
 - Parede cilíndrica da biblioteca: material `DoubleSide` para renderizar também a face interna.
 - Grande Salão: a lareira passou de cones poligonais para shader de fogo volumétrico baseado em ruído e textura de perfil, com lenha, brasas, faíscas ascendentes e duas luzes pontuais.
-- Sofás: Poly Haven Sofa 03 (CC0) integrado a partir de GLB local otimizado, escala 0,84; modelo com 8.004 triângulos, dois materiais e mapas PBR embutidos.
+- Sofás: Poly Haven Sofa 03 (CC0) integrado a partir de GLB local otimizado, escala 0,72; modelo com 8.004 triângulos, dois materiais e mapas PBR embutidos.
 - Materiais PBR: Walnut Veneer 02 (Poly Haven), Beige Wall 001 (Poly Haven), Tiles139 e Marble012 (ambientCG), com mapas color/normal/roughness locais.
 - Estátua de Thoth: mantém malha original figurativa e brilho; adicionados mapas de normal/roughness reais sobre albedo de basalto escuro.
 - Tapete: novo padrão de escamas de serpente com bump procedimental; mesa circular redimensionada para escala de mesa baixa e materiais de nogueira/bronze.
@@ -153,7 +154,7 @@ A partir de agora, cada sala é construída segundo [docs/ASSET-FIRST-ROOM-BUILD
 
 ### Grande Salão — fontes e decisões atuais
 
-- Sofa 03: Poly Haven CC0, autor Fran Calvente, dimensões 2,731 × 0,925 × 1,118 m, 8.004 triângulos, dois materiais PBR. O GLB local é carregado por GLTFLoader e MeshoptDecoder e reduzido para 0,84. A malha de reserva só permanece visível se o GLB falhar.
+- Sofa 03: Poly Haven CC0, autor Fran Calvente, dimensões 2,731 × 0,925 × 1,118 m, 8.004 triângulos, dois materiais PBR. O GLB local é carregado por GLTFLoader e MeshoptDecoder e reduzido para 0,72. O código alinha o pivot e a base pela bounding box; o sofá de reserva proporcional permanece visível se o GLB falhar.
 - Fogo: Housz/ThreeVolumetricFire, MIT, adaptado para GLSL3/WebGL2 e preservado com aviso de licença. O fogo é view-aligned e recebe os mapas de ruído e perfil do exemplo original.
 - Texturas: os mapas PBR estão locais no projeto, evitando dependência de download remoto durante a exploração. A base de pedra ainda mantém a variação de blocos própria; normal e roughness CC0 dão relevo fino.
 - Estatua: a escultura atual é geometria original; a referência CC0 do Minneapolis Institute of Art orienta a leitura de Thoth, mas não foi importada como substituição direta.
@@ -167,7 +168,7 @@ A partir de agora, cada sala é construída segundo [docs/ASSET-FIRST-ROOM-BUILD
 - Comparar o assento do sofá com a altura do Carter, e validar o collider para não bloquear passagem útil.
 - Verificar a estatua com iluminação em movimento e o efeito de normal/roughness; o reflexo visual deve continuar presente.
 - Conferir a leitura do tapete como pele de serpente em vista de jogo, não apenas visto de cima.
-- Verificar interação E/INTERAGIR para todos os elementos hero e o comportamento das colisões nos dois perfis.
+- Verificar interação E/INTERAGIR para todos os elementos hero, incluindo o toggle ligado/desligado da TV, e o comportamento das colisões nos dois perfis.
 - Confirmar harpas, tambores, flautas, lanças e khopeshes em escala humana; os modelos de geometria são locais originais e os SVGs auxiliares têm atribuição CC BY 3.0 no manifesto e em assets/decor/README.md. Verificar inspeção e colisões.
 
 

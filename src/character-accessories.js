@@ -17,19 +17,33 @@ function roundedRect(width, height, radius) {
   return shape;
 }
 
-function extrudedPanel(width, height, depth, radius, bevel) {
-  const geometry = new THREE.ExtrudeGeometry(
-    roundedRect(width, height, radius),
-    {
-      depth,
-      bevelEnabled: bevel > 0,
-      bevelSegments: 3,
-      steps: 1,
-      bevelSize: bevel,
-      bevelThickness: bevel,
-      curveSegments: 8
-    }
-  );
+function softSatchelShape(width, height) {
+  const w = width * 0.5;
+  const h = height * 0.5;
+  const shape = new THREE.Shape();
+  // A soft, slightly tapered leather body; broader at the bottom than at the opening.
+  shape.moveTo(-w * 0.37, -h);
+  shape.lineTo(w * 0.37, -h);
+  shape.quadraticCurveTo(w * 0.51, -h, w * 0.50, -h * 0.70);
+  shape.lineTo(w * 0.45, h * 0.68);
+  shape.quadraticCurveTo(w * 0.44, h, w * 0.26, h);
+  shape.lineTo(-w * 0.28, h);
+  shape.quadraticCurveTo(-w * 0.47, h, -w * 0.48, h * 0.68);
+  shape.lineTo(-w * 0.50, -h * 0.70);
+  shape.quadraticCurveTo(-w * 0.51, -h, -w * 0.37, -h);
+  return shape;
+}
+
+function extrudeShape(shape, depth, bevel) {
+  const geometry = new THREE.ExtrudeGeometry(shape, {
+    depth,
+    bevelEnabled: bevel > 0,
+    bevelSegments: 4,
+    steps: 1,
+    bevelSize: bevel,
+    bevelThickness: bevel,
+    curveSegments: 12
+  });
   geometry.computeVertexNormals();
   return geometry;
 }
@@ -42,14 +56,13 @@ function findBone(root, candidates) {
     const name = String(node.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
     if (wanted.has(name) && !found.has(name)) found.set(name, node);
   });
-  // Candidate order takes precedence, so Spine2 is chosen over a lower Spine bone.
   for (const candidate of candidates) {
     if (found.has(candidate)) return found.get(candidate);
   }
   return null;
 }
 
-function createRibbonGeometry(curve, width, segments = 40) {
+function createRibbonGeometry(curve, width, segments = 48) {
   const points = curve.getPoints(segments);
   const positions = [];
   const indices = [];
@@ -83,7 +96,7 @@ function createRibbonGeometry(curve, width, segments = 40) {
   return geometry;
 }
 
-function offsetRibbonEdge(curve, width, sideSign, segments = 40) {
+function offsetRibbonEdge(curve, width, sideSign, segments = 48) {
   const points = curve.getPoints(segments);
   const edgePoints = points.map((point, i) => {
     const previous = points[Math.max(0, i - 1)];
@@ -98,40 +111,43 @@ function offsetRibbonEdge(curve, width, sideSign, segments = 40) {
 
 export function createCarterAccessories({ characterRoot, height = 1.75 }) {
   const unit = height / 1.75;
-  const bagWidth = 0.36 * unit;
-  const bagHeight = 0.285 * unit;
-  const bagDepth = 0.105 * unit;
+
+  // The satchel is about 15% smaller than the first pass and sits on the
+  // posterior/right side of the pelvis. Its broad panel faces sideways.
+  const bagWidth = 0.305 * unit;
+  const bagHeight = 0.245 * unit;
+  const bagDepth = 0.092 * unit;
   const geometries = new Set();
   const materials = new Set();
 
   const leather = new THREE.MeshStandardMaterial({
     color: 0x80502f,
-    roughness: 0.84,
-    metalness: 0.02
+    roughness: 0.91,
+    metalness: 0.01
   });
   const leatherDark = new THREE.MeshStandardMaterial({
     color: 0x593820,
-    roughness: 0.88,
+    roughness: 0.92,
     metalness: 0.01
   });
   const leatherLight = new THREE.MeshStandardMaterial({
     color: 0x98643c,
-    roughness: 0.82,
-    metalness: 0.02
+    roughness: 0.88,
+    metalness: 0.01
   });
   const stitching = new THREE.MeshStandardMaterial({
     color: 0xc9a477,
-    roughness: 0.72
+    roughness: 0.8
   });
   const brass = new THREE.MeshStandardMaterial({
     color: 0xb68a42,
-    roughness: 0.32,
-    metalness: 0.72
+    roughness: 0.38,
+    metalness: 0.62
   });
   const brassHighlight = new THREE.MeshStandardMaterial({
     color: 0xd7b56e,
-    roughness: 0.28,
-    metalness: 0.78
+    roughness: 0.34,
+    metalness: 0.68
   });
 
   [leather, leatherDark, leatherLight, stitching, brass, brassHighlight].forEach((material) => materials.add(material));
@@ -146,13 +162,9 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
   characterRoot.updateMatrixWorld(true);
 
   const hipsBone = findBone(characterRoot, ['hips', 'mixamorighips', 'hip']);
-  const chestBone = findBone(characterRoot, ['spine2', 'mixamorigspine2', 'spine1', 'mixamorigspine1', 'chest', 'spine']);
-  if (hipsBone) {
-    // Preserve model-space placement at rest while following pelvic movement.
-    hipsBone.attach(bagRoot);
-  }
+  const chestBone = findBone(characterRoot, ['spine2', 'mixamorighipsine2', 'spine1', 'mixamorispine1', 'chest', 'spine']);
+  if (hipsBone) hipsBone.attach(bagRoot);
   if (chestBone) {
-    // The strap's shoulder section and necklace follow the upper torso, not the pelvis.
     chestBone.attach(strapRoot);
     chestBone.attach(necklaceRoot);
   }
@@ -169,131 +181,143 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
     return mesh;
   }
 
-  function addTube(curve, radius, material, parent, name, tubularSegments = 36) {
-    const geometry = new THREE.TubeGeometry(curve, tubularSegments, radius, 7, false);
-    return addMesh(geometry, material, parent, name);
+  function addTube(curve, radius, material, parent, name, tubularSegments = 40) {
+    return addMesh(
+      new THREE.TubeGeometry(curve, tubularSegments, radius, 8, false),
+      material,
+      parent,
+      name
+    );
   }
 
-  // Cross-body strap: left shoulder to the right hip, as in the illustration.
+  // The strap crosses the chest, rounds the character's right flank and
+  // returns to the satchel at the back of the right hip.
   const strapCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0.155 * unit, 0.835 * height, 0.125 * unit),
-    new THREE.Vector3(0.145 * unit, 0.765 * height, 0.155 * unit),
-    new THREE.Vector3(0.075 * unit, 0.645 * height, 0.17 * unit),
-    new THREE.Vector3(-0.075 * unit, 0.515 * height, 0.16 * unit),
-    new THREE.Vector3(-0.235 * unit, 0.405 * height, 0.145 * unit)
+    new THREE.Vector3(0.145 * unit, 0.835 * height, 0.115 * unit),
+    new THREE.Vector3(0.125 * unit, 0.765 * height, 0.135 * unit),
+    new THREE.Vector3(0.045 * unit, 0.665 * height, 0.135 * unit),
+    new THREE.Vector3(-0.095 * unit, 0.555 * height, 0.125 * unit),
+    new THREE.Vector3(-0.205 * unit, 0.475 * height, 0.105 * unit),
+    new THREE.Vector3(-0.255 * unit, 0.425 * height, 0.045 * unit),
+    new THREE.Vector3(-0.265 * unit, 0.405 * height, -0.035 * unit),
+    new THREE.Vector3(-0.265 * unit, 0.405 * height, -0.105 * unit),
+    new THREE.Vector3(-0.255 * unit, 0.415 * height, -0.155 * unit)
   ]);
-  const strapGeometry = createRibbonGeometry(strapCurve, 0.047 * unit, 44);
-  addMesh(
-    strapGeometry,
-    new THREE.MeshStandardMaterial({
-      color: 0x70472a,
-      roughness: 0.86,
-      side: THREE.DoubleSide
-    }),
-    strapRoot,
-    'CarterBagStrap'
-  );
+  const strapWidth = 0.038 * unit;
+  const strapMaterial = new THREE.MeshStandardMaterial({
+    color: 0x70472a,
+    roughness: 0.9,
+    metalness: 0.01,
+    side: THREE.DoubleSide
+  });
+  addMesh(createRibbonGeometry(strapCurve, strapWidth), strapMaterial, strapRoot, 'CarterBagStrap');
 
-  const edgeLeft = offsetRibbonEdge(strapCurve, 0.047 * unit, -1, 44);
-  const edgeRight = offsetRibbonEdge(strapCurve, 0.047 * unit, 1, 44);
-  addTube(edgeLeft, 0.0018 * unit, stitching, strapRoot, 'CarterBagStrapStitchLeft', 44);
-  addTube(edgeRight, 0.0018 * unit, stitching, strapRoot, 'CarterBagStrapStitchRight', 44);
+  addTube(offsetRibbonEdge(strapCurve, strapWidth, -1), 0.0015 * unit, stitching, strapRoot, 'CarterBagStrapStitchLeft', 48);
+  addTube(offsetRibbonEdge(strapCurve, strapWidth, 1), 0.0015 * unit, stitching, strapRoot, 'CarterBagStrapStitchRight', 48);
 
   const adjuster = addMesh(
-    new THREE.BoxGeometry(0.055 * unit, 0.025 * unit, 0.009 * unit),
+    new THREE.BoxGeometry(0.043 * unit, 0.021 * unit, 0.008 * unit),
     brass,
     strapRoot,
     'CarterBagStrapAdjuster'
   );
-  adjuster.position.set(0.132 * unit, 0.748 * height, 0.173 * unit);
+  adjuster.position.set(0.102 * unit, 0.73 * height, 0.151 * unit);
 
-  // The satchel is its own pivot so it can lag subtly behind the torso during movement.
+  // Anatomical right / posterior placement: local -X and local -Z.
   const bagPivot = new THREE.Group();
   bagPivot.name = 'CarterRightHipSatchelPivot';
-  bagPivot.position.set(-0.255 * unit, 0.375 * height, 0.105 * unit);
+  bagPivot.position.set(-0.245 * unit, 0.375 * height, -0.135 * unit);
+  bagPivot.rotation.y = -Math.PI / 2;
+  bagPivot.rotation.z = -0.055;
   bagRoot.add(bagPivot);
 
-  addMesh(
-    extrudedPanel(bagWidth, bagHeight, bagDepth, 0.036 * unit, 0.009 * unit),
-    leather,
-    bagPivot,
-    'CarterSatchelBody'
-  );
+  const bodyGeometry = extrudeShape(softSatchelShape(bagWidth, bagHeight), bagDepth, 0.014 * unit);
+  addMesh(bodyGeometry, leather, bagPivot, 'CarterSoftSatchelBody');
 
-  const sideGusset = addMesh(
-    new THREE.BoxGeometry(0.018 * unit, 0.205 * unit, 0.082 * unit),
+  // A dark leather gusset creates a visible, padded side seam rather than a hard box edge.
+  const gusset = addMesh(
+    new THREE.BoxGeometry(0.016 * unit, bagHeight * 0.78, bagDepth * 0.88),
     leatherDark,
     bagPivot,
-    'CarterSatchelSideGusset'
+    'CarterSatchelGusset'
   );
-  sideGusset.position.set(-bagWidth * 0.47, -0.005 * unit, bagDepth * 0.48);
+  gusset.position.set(-bagWidth * 0.475, 0, bagDepth * 0.49);
 
+  const flapWidth = bagWidth * 0.94;
+  const flapHeight = bagHeight * 0.39;
   const flap = addMesh(
-    extrudedPanel(bagWidth * 0.94, bagHeight * 0.40, 0.018 * unit, 0.025 * unit, 0.005 * unit),
+    extrudeShape(roundedRect(flapWidth, flapHeight, 0.035 * unit), bagDepth * 0.15, 0.006 * unit),
     leatherDark,
     bagPivot,
-    'CarterSatchelFlap'
+    'CarterSatchelSoftFlap'
   );
   flap.position.set(0, bagHeight * 0.285, bagDepth * 0.92);
 
+  const pocketWidth = bagWidth * 0.56;
+  const pocketHeight = bagHeight * 0.27;
   const frontPocket = addMesh(
-    extrudedPanel(bagWidth * 0.62, bagHeight * 0.30, 0.012 * unit, 0.018 * unit, 0.003 * unit),
+    extrudeShape(roundedRect(pocketWidth, pocketHeight, 0.026 * unit), 0.009 * unit, 0.004 * unit),
     leatherLight,
     bagPivot,
-    'CarterSatchelFrontPocket'
+    'CarterSatchelRoundedPocket'
   );
-  frontPocket.position.set(0, -bagHeight * 0.205, bagDepth * 0.96);
+  frontPocket.position.set(0, -bagHeight * 0.235, bagDepth * 0.94);
 
-  const pocketSeam = addMesh(
-    new THREE.BoxGeometry(bagWidth * 0.52, 0.0025 * unit, 0.002 * unit),
-    stitching,
-    bagPivot,
-    'CarterSatchelPocketSeam'
-  );
-  pocketSeam.position.set(0, -bagHeight * 0.205, bagDepth * 1.105);
+  // Hand-finished seam lines and two restrained brass snaps make it read as leather goods.
+  const pocketSeam = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-pocketWidth * 0.39, -bagHeight * 0.235, bagDepth * 1.105),
+    new THREE.Vector3(0, -bagHeight * 0.235, bagDepth * 1.105),
+    new THREE.Vector3(pocketWidth * 0.39, -bagHeight * 0.235, bagDepth * 1.105)
+  ]);
+  addTube(pocketSeam, 0.0013 * unit, stitching, bagPivot, 'CarterSatchelPocketStitch', 28);
 
-  const clasp = addMesh(
-    new THREE.TorusGeometry(0.013 * unit, 0.0026 * unit, 7, 18),
-    brassHighlight,
-    bagPivot,
-    'CarterSatchelBrassClasp'
-  );
-  clasp.position.set(0, bagHeight * 0.205, bagDepth * 1.115);
-
-  const claspBar = addMesh(
-    new THREE.BoxGeometry(0.004 * unit, 0.019 * unit, 0.003 * unit),
-    brassHighlight,
-    bagPivot,
-    'CarterSatchelClaspBar'
-  );
-  claspBar.position.set(0, bagHeight * 0.205, bagDepth * 1.12);
-
-  // Small brass rings mark the two leather strap attachment points.
-  for (const [index, x] of [[0, 0.17], [1, -0.245]]) {
-    const ring = addMesh(
-      new THREE.TorusGeometry(0.018 * unit, 0.003 * unit, 7, 18),
-      brass,
-      index === 0 ? strapRoot : bagRoot,
-      'CarterSatchelAttachmentRing' + index
+  for (const [index, x] of [-0.065, 0.065].entries()) {
+    const snap = addMesh(
+      new THREE.SphereGeometry(0.0065 * unit, 12, 8),
+      brassHighlight,
+      bagPivot,
+      'CarterSatchelBrassSnap' + index
     );
-    ring.position.set(x * unit, (index === 0 ? 0.805 : 0.405) * height, 0.16 * unit);
+    snap.scale.set(1, 1, 0.45);
+    snap.position.set(x * unit, bagHeight * 0.105, bagDepth * 1.09);
   }
 
-  // Fine necklace and round gold medallion remain separate from the shirt mesh.
+  // A discreet attachment ring sits on the rear/top corner where the strap meets the bag.
+  const attachmentRing = addMesh(
+    new THREE.TorusGeometry(0.012 * unit, 0.0022 * unit, 7, 18),
+    brass,
+    bagPivot,
+    'CarterSatchelRearAttachmentRing'
+  );
+  attachmentRing.position.set(-0.018 * unit, bagHeight * 0.43, bagDepth * 0.12);
+  attachmentRing.rotation.y = Math.PI / 2;
+
+  // The top half of the strap stays on the shoulder/chest; the bag itself follows the pelvis.
+  const topRing = addMesh(
+    new THREE.TorusGeometry(0.014 * unit, 0.0022 * unit, 7, 18),
+    brass,
+    strapRoot,
+    'CarterSatchelShoulderRing'
+  );
+  topRing.position.set(0.145 * unit, 0.835 * height, 0.115 * unit);
+  topRing.rotation.x = Math.PI / 2;
+
+  // Keep the pendant design intact, but pull the chain and medallion closer to the chest surface.
+  const necklaceInset = 0.045 * unit;
   const necklaceCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-0.105 * unit, 0.86 * height, 0.125 * unit),
-    new THREE.Vector3(-0.092 * unit, 0.795 * height, 0.155 * unit),
-    new THREE.Vector3(-0.045 * unit, 0.735 * height, 0.17 * unit),
-    new THREE.Vector3(0, 0.695 * height, 0.175 * unit),
-    new THREE.Vector3(0.045 * unit, 0.735 * height, 0.17 * unit),
-    new THREE.Vector3(0.092 * unit, 0.795 * height, 0.155 * unit),
-    new THREE.Vector3(0.105 * unit, 0.86 * height, 0.125 * unit)
+    new THREE.Vector3(-0.105 * unit, 0.86 * height, 0.125 * unit - necklaceInset),
+    new THREE.Vector3(-0.092 * unit, 0.795 * height, 0.155 * unit - necklaceInset),
+    new THREE.Vector3(-0.045 * unit, 0.735 * height, 0.17 * unit - necklaceInset),
+    new THREE.Vector3(0, 0.695 * height, 0.175 * unit - necklaceInset),
+    new THREE.Vector3(0.045 * unit, 0.735 * height, 0.17 * unit - necklaceInset),
+    new THREE.Vector3(0.092 * unit, 0.795 * height, 0.155 * unit - necklaceInset),
+    new THREE.Vector3(0.105 * unit, 0.86 * height, 0.125 * unit - necklaceInset)
   ]);
-  addTube(necklaceCurve, 0.0032 * unit, brassHighlight, necklaceRoot, 'CarterMedallionChain', 40);
+  addTube(necklaceCurve, 0.0032 * unit, brassHighlight, necklaceRoot, 'CarterMedallionChain', 44);
 
   const pendantPivot = new THREE.Group();
   pendantPivot.name = 'CarterGoldMedallionPivot';
-  pendantPivot.position.set(0, 0.695 * height, 0.182 * unit);
+  pendantPivot.position.set(0, 0.695 * height, 0.182 * unit - necklaceInset);
   necklaceRoot.add(pendantPivot);
 
   const medallion = addMesh(
@@ -348,10 +372,10 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
   function update(delta, speed = 0) {
     elapsed += delta;
     const gait = THREE.MathUtils.clamp(speed / 4.2, 0, 1);
-    bagPivot.rotation.z = Math.sin(elapsed * (3.8 + gait * 3.5)) * (0.004 + gait * 0.035);
-    bagPivot.rotation.x = Math.cos(elapsed * (4.2 + gait * 4.2)) * gait * 0.018;
-    pendantPivot.rotation.x = Math.sin(elapsed * 2.9) * (0.012 + gait * 0.048);
-    pendantPivot.rotation.z = Math.cos(elapsed * 3.6) * gait * 0.014;
+    bagPivot.rotation.x = Math.sin(elapsed * (3.4 + gait * 3.0)) * gait * 0.014;
+    bagPivot.rotation.z = -0.055 + Math.cos(elapsed * (3.8 + gait * 3.3)) * (0.003 + gait * 0.024);
+    pendantPivot.rotation.x = Math.sin(elapsed * 2.9) * (0.008 + gait * 0.035);
+    pendantPivot.rotation.z = Math.cos(elapsed * 3.6) * gait * 0.01;
   }
 
   function dispose() {
@@ -368,6 +392,8 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
     root: bagRoot,
     update,
     dispose,
-    attachment: (hipsBone ? 'hips-bone' : 'model-root') + ' + strap-' + (chestBone ? 'chest-bone' : 'model-root') + ' + necklace-' + (chestBone ? 'chest-bone' : 'model-root')
+    attachment: (hipsBone ? 'hips-bone' : 'model-root')
+      + ' + strap-' + (chestBone ? 'chest-bone' : 'model-root')
+      + ' + necklace-' + (chestBone ? 'chest-bone' : 'model-root')
   };
 }

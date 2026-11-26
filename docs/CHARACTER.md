@@ -64,7 +64,7 @@ As ações expressivas são expostas por playAction() e stopAction(). Se algum I
 
 ## Preview
 
-Abra character-preview.html para conferir o mesmo módulo usado pelo jogo. O preview permite orbitar o personagem, verificar frente/perfil/costas, alternar locomoção e testar as ações cinematográficas, incluindo ALCANÇAR O DUAT (`use_press`). Use-o para revisar a extensão do braço, o gesto do indicador e a posição dos acessórios antes da inspeção no jogo.
+Abra character-preview.html para conferir o mesmo módulo usado pelo jogo. O preview permite orbitar o personagem, verificar frente/perfil/costas, alternar locomoção, testar as ações cinematográficas (incluindo ALCANÇAR O DUAT) e retirar/guardar os oito objetos na bancada do Duat à direita. Use-o para revisar a extensão do braço, o portal, a escala dos objetos e o encaixe na mão antes da inspeção no cenário.
 
 ## QA obrigatório — não marcar como concluído antes de testar
 

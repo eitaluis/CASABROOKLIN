@@ -22,8 +22,12 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
   let locomotion = hero.locomotion(mixer);
   let jumping = false;
   let movementSpeed = 0;
-  scene.add(hero.scene);
-  // Inicia voltado para o interior do cenário, com a câmera atrás do personagem.
+  // Um pivô separado controla a orientação sem disputar a rotação do rig/animações Ara.
+  const root = new THREE.Group();
+  root.name = 'CarterMovementRoot';
+  scene.add(root);
+  root.add(hero.scene);
+  // O modelo Ara tem o eixo frontal invertido em relação ao eixo de movimento do jogo.
   hero.scene.rotation.y = Math.PI;
 
   function jump() {
@@ -51,7 +55,7 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
   }
 
   const state = {
-    model: hero.scene,
+    model: root,
     human: null,
     ara: hero,
     mixer,
@@ -66,7 +70,7 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
     },
     resetFallback() {
       locomotion.speed = 0;
-      hero.scene.rotation.set(0, Math.PI, 0);
+      root.rotation.set(0, 0, 0);
     },
     dispose() {
       hero.dispose();

@@ -144,12 +144,14 @@ Os mapas estão locais para que a sala não dependa de downloads de textura em t
 
 - The Metropolitan Museum of Art — [Statuette of Re-Harakhty](https://www.metmuseum.org/art/collection/search/551042): referência iconográfica para a figura de cabeça de falcão e disco solar.
 - The Metropolitan Museum of Art — [Head of an anthropomorphic falcon god](https://www.metmuseum.org/art/collection/search/549699): referência para crânio, bico e nemes estriado.
+- The Metropolitan Museum of Art — [Stela with man offering to Re-Harakhty](https://www.metmuseum.org/art/collection/search/553249): referência para a representação sentada em trono de bloco, cabeça de falcão, disco solar com uraeus e peruca tripartida.
 - Sir John Soane's Museum — [Ushabti figure A47](https://collections.soane.org/object-a47): referência de pequena escala e faiança azul vitrificada.
-- Smarthistory — [Meet an Ushabti](https://smarthistory.org/meet-an-ushabti/): referência para silhueta mumiiforme, braços cruzados, barba postiça e material de faiança.
+- National Gallery of Victoria — [Ushabti figure, 44-D1](https://www.ngv.vic.gov.au/explore/collection/work/1388/): referência especialmente próxima para plinto, pilar dorsal, peruca estriada, barba postiça trançada, braços cruzados e coluna hieroglífica.
+- Smarthistory — [Meet an Ushabti](https://smarthistory.org/ushabti-ancient-egyptian-afterlife/): referência para silhueta mumiiforme, braços cruzados e faiança azul-esverdeada.
 - Australian Museum — [Shabti](https://australian.museum/learn/cultures/museum-archives/egyptian-collection/shabti/): consulta complementar sobre atributos e iconografia de ushabtis.
 - Art Institute of Chicago — [About Shabtis and Ushabtis](https://www.artic.edu/articles/1012/about-shabtis-and-ushabtis): referência para variação de forma e atributos dos shabtis.
 
-Essas páginas foram usadas como referência de pesquisa. Nenhuma digitalização, fotografia ou malha 3D desses acervos foi importada para o runtime. A geometria de Rá, dos shabtis e dos relevos é original do projeto; não há licença de terceiros atribuída a esses modelos.
+Essas páginas foram usadas como referência de pesquisa. Nenhuma digitalização, fotografia ou malha 3D desses acervos foi importada para o runtime. A geometria de Rá, dos shabtis e dos relevos é original do projeto; não há licença de terceiros atribuída a esses modelos. A pose mumiiforme, o plinto, o pilar dorsal, a peruca e a barba pertencem à referência histórica dos ushabtis; espada e escudo surgem apenas na transformação ficcional do guerreiro de treinamento descrito em The Throne of Fire.
 
 ### Texturas PBR locais
 

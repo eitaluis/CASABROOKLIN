@@ -14,6 +14,10 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   let firstCameraFrame = true;
   let fallbackSpeed = 0;
   let cameraCue = null;
+  let airborne = false;
+  let verticalVelocity = 0;
+  let jumpFloorHeight = 0;
+  let cameraShakeRemaining = 0;
 
   // Colisão de primeira passagem: cápsula vertical simplificada contra caixas estáticas.
   // Mantém o teste leve para funcionar também no celular.
@@ -126,6 +130,9 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     if (!zone) return;
     zoneName = name;
     cameraCue = null;
+    airborne = false;
+    verticalVelocity = 0;
+    cameraShakeRemaining = 0;
     character.model.position.set(...zone.pos);
     if (character.human) character.human.reset();
     else character.resetFallback?.();
@@ -186,6 +193,19 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     cameraDistance = THREE.MathUtils.clamp(cameraDistance + Math.sign(event.deltaY) * 0.25, 1.2, 6.5);
   }, { passive: true });
 
+  function startJump() {
+    if (controlsLocked || airborne) return false;
+    const p = getPosition();
+    const ground = getWalkingSurface(p.x, p.z, p.y).height;
+    if (p.y < ground) p.y = ground;
+    const started = character.jump?.();
+    if (!started) return false;
+    airborne = true;
+    verticalVelocity = 4.55;
+    jumpFloorHeight = ground;
+    return true;
+  }
+
   window.addEventListener('keydown', (event) => {
     if (controlsLocked) {
       if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)) event.preventDefault();
@@ -198,7 +218,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     if (event.code === 'Digit3') teleport('library');
     if (event.code === 'Digit4') teleport('bedroom');
     if (event.code === 'Digit5') teleport('training');
-    if (event.code === 'Space') character.jump?.();
+    if (event.code === 'Space') startJump();
   });
   window.addEventListener('keyup', (event) => keys.delete(event.code));
   window.addEventListener('blur', () => keys.clear());
@@ -261,7 +281,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       event.preventDefault();
       if (controlsLocked) return;
       if (action === 'run') touch.sprint = true;
-      if (action === 'jump') character.jump?.();
+      if (action === 'jump') startJump();
       button.setPointerCapture?.(event.pointerId);
     });
     const release = () => { if (action === 'run') touch.sprint = false; };
@@ -299,7 +319,8 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     if (direction.lengthSq() > 0.0001) direction.normalize();
 
     const running = !controlsLocked && (keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint);
-    const speedTarget = input.moving ? (running ? 4.2 : 1.5) * input.magnitude : 0;
+    const injuryMultiplier = Number.isFinite(character.movementMultiplier) ? character.movementMultiplier : 1;
+    const speedTarget = input.moving ? (running ? 4.2 : 1.7) * input.magnitude * injuryMultiplier : 0;
     const currentPosition = getPosition();
     limitToZone(currentPosition, direction, Math.max(speedTarget, 2.25) * dt * 1.35);
 
@@ -328,10 +349,25 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       // The Ara rig previously skipped the stair solver used by the fallback avatar.
       // Keep its root aligned with the same ramps, landings and elevated room floors.
       const updated=getPosition();
-      const walkingSurface=getWalkingSurface(updated.x,updated.z,updated.y,direction);
-      if(walkingSurface.raised) updated.y=walkingSurface.height;
-      else if(updated.y>walkingSurface.height) updated.y=Math.max(walkingSurface.height,updated.y-9.81*dt);
-      else updated.y=walkingSurface.height;
+      const walkingSurface = getWalkingSurface(updated.x, updated.z, airborne ? jumpFloorHeight : updated.y, direction);
+      if (airborne) {
+        verticalVelocity -= 10.8 * dt;
+        updated.y += verticalVelocity * dt;
+        if (updated.y <= walkingSurface.height) {
+          updated.y = walkingSurface.height;
+          airborne = false;
+          verticalVelocity = 0;
+          jumpFloorHeight = walkingSurface.height;
+        }
+      } else if (walkingSurface.raised) {
+        updated.y = walkingSurface.height;
+        jumpFloorHeight = walkingSurface.height;
+      } else if (updated.y > walkingSurface.height) {
+        updated.y = Math.max(walkingSurface.height, updated.y - 9.81 * dt);
+      } else {
+        updated.y = walkingSurface.height;
+        jumpFloorHeight = walkingSurface.height;
+      }
     } else {
       const targetVelocity = direction.clone().multiplyScalar(speedTarget);
       const response = input.moving ? 8.8 : 10.8;
@@ -354,13 +390,24 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       }
       // As escadarias laterais elevam o Carter gradualmente até a galeria;
       // fora da plataforma, ele retorna ao piso principal sob gravidade.
-      const walkingSurface = getWalkingSurface(current.x,current.z,current.y,direction);
-      if (walkingSurface.raised) {
+      const walkingSurface = getWalkingSurface(current.x, current.z, airborne ? jumpFloorHeight : current.y, direction);
+      if (airborne) {
+        verticalVelocity -= 10.8 * dt;
+        current.y += verticalVelocity * dt;
+        if (current.y <= walkingSurface.height) {
+          current.y = walkingSurface.height;
+          airborne = false;
+          verticalVelocity = 0;
+          jumpFloorHeight = walkingSurface.height;
+        }
+      } else if (walkingSurface.raised) {
         current.y = walkingSurface.height;
+        jumpFloorHeight = walkingSurface.height;
       } else if (current.y > walkingSurface.height) {
         current.y = Math.max(walkingSurface.height, current.y - 9.81 * dt);
       } else {
         current.y = walkingSurface.height;
+        jumpFloorHeight = walkingSurface.height;
       }
 
       fallbackSpeed = smoothVelocity.length();
@@ -425,7 +472,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       lookTarget.y+Math.sin(renderPitch)*renderDistance+0.15,
       lookTarget.z+Math.cos(renderYaw)*horizontalDistance
     );
-    const floorY = getWalkingSurface(p.x, p.z, p.y).height;
+    const floorY = getWalkingSurface(p.x, p.z, airborne ? jumpFloorHeight : p.y).height;
     desiredCamera.y = Math.max(desiredCamera.y, floorY + 0.28);
     if (firstCameraFrame) {
       camera.position.copy(desiredCamera);
@@ -433,7 +480,16 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     } else {
       camera.position.lerp(desiredCamera, 1 - Math.exp(-8.5 * dt));
     }
-    // O clamp final elimina qualquer passagem do corpo da câmera pelo piso durante o smoothing.
+    // Impacto: micro-tremor curto, amortecido e independente da simulação física.
+    if (cameraShakeRemaining > 0) {
+      cameraShakeRemaining = Math.max(0, cameraShakeRemaining - dt);
+      const strength = 0.15 * (cameraShakeRemaining / 0.42);
+      const phase = (0.42 - cameraShakeRemaining) * 58;
+      camera.position.x += Math.sin(phase * 1.7) * strength;
+      camera.position.y += Math.cos(phase * 2.1) * strength * 0.62;
+      camera.position.z += Math.sin(phase * 1.3) * strength * 0.35;
+    }
+    // O clamp final elimina qualquer passagem da câmera pelo piso durante o smoothing.
     camera.position.y = Math.max(camera.position.y, floorY + 0.28);
     camera.lookAt(lookTarget);
     return { position: p, speed: character.human ? character.human.speed : fallbackSpeed, zone: zoneName };
@@ -457,10 +513,14 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     capturePointer,
     getPosition,
     focusOnRoof,
+    triggerHit() {
+      cameraShakeRemaining = 0.42;
+    },
     getForward() {
       return new THREE.Vector3(-Math.sin(cameraYaw), 0, -Math.cos(cameraYaw));
     },
     get zone() { return zoneName; },
+    get isAirborne() { return airborne; },
     get pointerLocked() { return pointerLocked; }
   };
 }

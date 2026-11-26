@@ -30,7 +30,7 @@ Também pode ser executado por um servidor estático local. Abrir o HTML diretam
 
 ## Personagem — Carter Kane
 
-O jogo voltou ao Carter Kane do Ara 3D Gen que havia sido aprovado antes das tentativas de substituição. O arquivo `src/character.js` foi restaurado à implementação compartilhada anterior, com os clips de locomoção do modelo. O estudo modular foi descartado e não faz parte do jogo.
+O jogo preserva o Carter Kane aprovado no Ara 3D Gen. O módulo `src/character.js` mantém o modelo compartilhado e os clips de locomoção/salto; o controlador usa a altura informada pelo rig para calibrar hitbox e alvo da câmera. O estudo modular Quaternius e o protótipo procedural foram descartados. O [preview independente do Carter](character-preview.html) usa o mesmo módulo do jogo e permite conferir frente, perfil, costas e animações. A validação visual final ainda depende de teste em navegador real.
 
 
 

@@ -27,8 +27,8 @@ Módulo: src/character-accessories.js.
 
 ## Rig e compatibilidade
 
-- A bolsa localiza o osso Hips; corrente e medalhão localizam Spine2/Spine1/Chest/Spine. Se o osso adequado não existir, usam o root do modelo.
-- O gerador Blender cria âncoras distintas para a bolsa (Hips) e para o colar (Spine2), facilitando a edição e a futura exportação.
+- A bolsa localiza o osso Hips; o trecho superior da alça e a corrente/medalhão localizam Spine2/Spine1/Chest/Spine. Se o osso adequado não existir, usam o root do modelo.
+- O gerador Blender cria âncoras distintas para bolsa (Hips), alça (Spine2) e colar/medalhão (Spine2), facilitando a edição e a futura exportação.
 - O corpo, a bolsa e o medalhão compartilham o mesmo root e a mesma origem.
 - O socket WeaponR do inventário deve permanecer intacto.
 - A integração usa a malha e o rig do Ara; não é um segundo esqueleto.

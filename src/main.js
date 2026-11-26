@@ -105,6 +105,36 @@ const trainingRoom = buildTrainingRoom({
   THREE, scene, zones, groundSurfaces, colliders, interactables, animated
 });
 
+const trainingHud = document.createElement('aside');
+trainingHud.id = 'trainingHud';
+trainingHud.hidden = true;
+trainingHud.setAttribute('aria-live', 'polite');
+trainingHud.style.cssText = [
+  'position:fixed','top:78px','left:50%','transform:translateX(-50%)',
+  'z-index:9','display:flex','align-items:center','gap:16px',
+  'padding:9px 14px','border:1px solid rgba(208,173,105,.52)',
+  'background:rgba(8,15,17,.84)','backdrop-filter:blur(12px)',
+  'box-shadow:0 8px 28px rgba(0,0,0,.32)','color:#ead9b6',
+  'font:600 10px DM Sans,sans-serif','letter-spacing:.12em',
+  'white-space:nowrap','pointer-events:none'
+].join(';');
+const trainingHudTitle = document.createElement('span');
+trainingHudTitle.textContent = 'PROVA DE TREINAMENTO';
+trainingHudTitle.style.color = '#cda96b';
+const trainingHudHealth = document.createElement('strong');
+trainingHudHealth.style.cssText = 'font:600 15px Georgia,serif;letter-spacing:.12em;color:#f0d7a0';
+const trainingHudInfo = document.createElement('span');
+trainingHudInfo.style.color = '#c5c7bd';
+trainingHud.append(trainingHudTitle, trainingHudHealth, trainingHudInfo);
+document.body.appendChild(trainingHud);
+const trainingHudStyle = document.createElement('style');
+trainingHudStyle.textContent = [
+  '#trainingHud[hidden]{display:none!important}',
+  '@media(max-width:900px) and (pointer:coarse){#trainingHud{top:52px!important;padding:6px 9px!important;gap:8px!important;font-size:8px!important;letter-spacing:.06em!important}#trainingHud strong{font-size:12px!important}}',
+  '@media(max-width:560px){#trainingHud{max-width:calc(100vw - 24px);white-space:normal!important;justify-content:center;flex-wrap:wrap}}'
+].join('');
+document.head.appendChild(trainingHudStyle);
+
 function toast(message) {
   const element = document.getElementById('toast');
   element.textContent = message;
@@ -263,6 +293,17 @@ function animate() {
   grandSalon.update?.(time);
   const trainingMessage = trainingRoom.update(time, dt, controller.getPosition(), controller.getForward());
   if (trainingMessage) toast(trainingMessage);
+  const trainingStatus = trainingRoom.getStatus();
+  const showTrainingHud = controller.zone === 'training'
+    && (trainingStatus.challengeActive || trainingStatus.targetPracticeActive);
+  trainingHud.hidden = !showTrainingHud;
+  if (showTrainingHud) {
+    trainingHudHealth.textContent = '♥ '.repeat(trainingStatus.playerHealth).trim()
+      + ' ' + '♡ '.repeat(trainingStatus.maxPlayerHealth - trainingStatus.playerHealth).trim();
+    trainingHudInfo.textContent = trainingStatus.challengeActive
+      ? 'SHABTI · ' + trainingStatus.shabtiRemaining + '/' + trainingStatus.totalShabti
+      : 'ALVOS · ' + trainingStatus.targetHits + ' ACERTOS';
+  }
   inventory.update(dt);
   exterior.update(dt, time);
   drawMap();

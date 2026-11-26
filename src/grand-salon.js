@@ -319,8 +319,8 @@ function loadSofaAssets(scene, fallbacks, colliders, interactables) {
   loader.setMeshoptDecoder(MeshoptDecoder);
   const source=assetUrl('models/polyhaven-sofa-03.glb');
   const placements=[
-    {x:-2.55,z:3.45,rotation:Math.PI/2,side:'oeste'},
-    {x:2.55,z:3.45,rotation:-Math.PI/2,side:'leste'}
+    {x:-4.35,z:-4.6,rotation:-Math.PI/2,side:'oeste'},
+    {x:4.35,z:-4.6,rotation:Math.PI/2,side:'leste'}
   ];
   loader.load(source,gltf=>{
     placements.forEach((place,index)=>{
@@ -413,17 +413,17 @@ function createRug(scene) {
   bump.colorSpace=THREE.NoColorSpace;
   const rug=new THREE.Mesh(new THREE.CircleGeometry(1,144),new THREE.MeshStandardMaterial({map:color,bumpMap:bump,bumpScale:.065,roughness:.94}));
   rug.name='tapete oval de couro com padrão de escamas de serpente do Grande Salão';
-  rug.rotation.x=-Math.PI/2;rug.scale.set(6.1,1,2.3);rug.position.set(0,13.205,3.45);rug.receiveShadow=true;scene.add(rug);
+  rug.rotation.x=-Math.PI/2;rug.scale.set(6.1,1,2.3);rug.position.set(0,13.205,-4.6);rug.receiveShadow=true;scene.add(rug);
   for(const spec of [[5.42,.023],[5.86,.018]]){
     const ring=new THREE.Mesh(new THREE.TorusGeometry(spec[0],spec[1],7,112),new THREE.MeshStandardMaterial({color:0x957046,metalness:.52,roughness:.58}));
-    ring.rotation.x=Math.PI/2;ring.position.set(0,13.22,3.45);ring.scale.z=2.3/6.1;scene.add(ring);
+    ring.rotation.x=Math.PI/2;ring.position.set(0,13.22,-4.6);ring.scale.z=2.3/6.1;scene.add(ring);
   }
 }
 
 function centerTable(scene,wood,brass) {
   const group=new THREE.Group();
   group.name='mesa baixa circular de nogueira e bronze do Grande Salão';
-  group.position.set(0,13.175,3.45);
+  group.position.set(0,13.175,-4.6);
 
   const base=new THREE.Mesh(new THREE.LatheGeometry([
     new THREE.Vector2(.18,0),new THREE.Vector2(.27,.05),new THREE.Vector2(.34,.12),
@@ -1367,20 +1367,20 @@ export function buildGrandSalon({
   // Fallback sofa proportions match the physical Poly Haven model. It disappears only
   // after the local GLB has loaded successfully.
   const sofaFallbacks=[
-    createSofa(scene,-2.55,3.45,Math.PI/2,upholstery,darkWood,brass),
-    createSofa(scene,2.55,3.45,-Math.PI/2,upholstery,darkWood,brass)
+    createSofa(scene,-4.35,-4.6,-Math.PI/2,upholstery,darkWood,brass),
+    createSofa(scene,4.35,-4.6,Math.PI/2,upholstery,darkWood,brass)
   ];
   loadSofaAssets(scene,sofaFallbacks,colliders,interactables);
 
   const rug=createRug(scene);
   const table=centerTable(scene,walnut,brass);
-  addBoxCollider(colliders,0,13.47,3.45,1.58,.62,1.58);
+  addBoxCollider(colliders,0,13.47,-4.6,1.58,.62,1.58);
   interactables.push({
     name:'Mesa de centro de nogueira',
     kind:'inspect',
     label:'Mesa de centro entalhada',
     description:'Mesa circular baixa de nogueira, com medalhão solar e filetes de bronze',
-    position:new T.Vector3(0,13.62,3.45),
+    position:new T.Vector3(0,13.62,-4.6),
     radius:1.55
   });
 
@@ -1402,7 +1402,7 @@ export function buildGrandSalon({
     name:'Estátua de Thoth',
     kind:'inspect',
     label:'Thoth, deus da escrita',
-    description:'Estátua monumental de Thoth em basalto negro, com cabeça de íbis, papiro e cetro. A superfície preserva reflexos profundos e veios minerais.',
+    description:'Estátua monumental de Thoth em mármore negro, com cabeça de íbis, kilt, faixa, colar, estilete de escriba e papiro aberto com o sinal Per Ankh. A superfície preserva reflexos profundos e veios minerais.',
     position:new T.Vector3(0,15.0,-.5),
     radius:2.6
   });

@@ -9,7 +9,8 @@ Todo novo objeto ou espaço deve seguir [ASSET-FIRST-ROOM-BUILDING.md](ASSET-FIR
 **Ara 3D Gen** — https://github.com/olatunde85/3d-gen — pacote JavaScript MIT; os dados de personagem usam MakeHuman CC0 e os clips de captura de movimento vêm da base CMU, livres para uso comercial conforme a licença/documentação do projeto.
 - O corpo, rosto, cabelo, rig e clips principais preservam o Carter aprovado no share salvo do Ara.
 - src/character.js carrega idle, walk, run e a sequência de salto, além de consultar ANIMATIONS para selecionar ações cinematográficas disponíveis (look_around, talk_gestures, wave, point e bow).
-- src/character-accessories.js acrescenta geometria original do projeto: bolsa de couro conhaque, alça do ombro esquerdo ao quadril direito, ferragens e medalhão; bolsa presa à pelve, alça presa ao alto do tronco e colar preso ao tórax. Não utiliza um GLB de terceiro.
+- src/character.js sobrescreve o item carregado do share Ara com `carry: 'none'`, removendo a mochila original.
+- src/character-accessories.js acrescenta geometria original do projeto: bolsa de couro conhaque menor, arredondada e virada para a lateral/posterior do quadril direito; alça cruza o peito e contorna o flanco. A bolsa segue Hips; alça e colar seguem o alto do tronco. O medalhão foi recuado para assentar sobre a camisa. Não utiliza GLB de terceiro.
 - assets/models/carter/blender/create_carter_accessories.py é a fonte editável de lookdev no Blender; ainda não é um .blend nem um asset carregado em runtime.
 - src/main.js direciona o olhar para o objeto examinado por E/INTERAGIR.
 - src/third-person.js suaviza aceleração, curvas, inclinação e câmera; o mesmo controlador e os mesmos assets são usados no desktop e mobile.

@@ -83,3 +83,15 @@ O programa textual do Grande Salão em *A Pirâmide Vermelha* inclui pé-direito
 ## Regra de crédito
 
 Cada asset externo e cada conjunto de texturas precisa de registo individual em assets/manifest.json, incluindo fonte, licença, autor quando exigido, localização local e função. Nunca creditar geometria original ao fornecedor de textura nem afirmar que um modelo foi importado quando foi usado apenas como referência.
+
+
+## Matriz de assets — Exterior da Brooklyn House
+
+| Elemento | Asset/estudo escolhido | Material e visual | Interação prevista | Estado |
+|---|---|---|---|---|
+| East River — superfície | Shader/normal-map procedural original, com estudo técnico de [mqnc/cheapwater](https://github.com/mqnc/cheapwater) (MIT) e implementação própria simplificada; não há código externo incorporado | CanvasTexture periódica em escala de cinza aplicada como bumpMap ao plano de água existente; deslocamento UV lento em dois eixos; intensidade reduzida no mobile; mantém o material e a geometria de água já existentes | Superfície visual sem collider; barco permanece como objeto inspecionável | Implementado; validar reflexo, escala das ondas e custo visual em desktop/mobile |
+| Williamsburg Bridge | Geometria estrutural original no módulo exterior; proporções de referência histórica registradas em comentários do código | Aço escuro, treliças instanciadas, cabos e pendurais; skyline em camadas atmosféricas | Marco visual distante, sem colisão navegável nesta fase | Implementado; validação de silhueta e escala pendente |
+| Barco de papiro | Geometria original sob medida, baseada na descrição narrativa da chegada | Fibras vegetais, amarrações, cobertura de esteiras, banco, leme e luzes quentes | Inspeção contextual por proximidade | Implementado; QA visual e escala pendentes |
+| Cais e doca | Geometria original no módulo world.js, com tábuas, estacas, cabeços, defensas e argolas | Madeira envelhecida, concreto gasto, aço oxidado e borracha | Caminhabilidade e colisões conforme as superfícies já registradas no mundo | Implementado; QA de circulação e clipping pendente |
+
+**Nota de produção:** a água usa um mapa de altura procedural periódico, sem dependência de arquivo externo. A referência MIT foi estudada, mas nenhum código, textura ou shader de terceiros foi copiado. O mesmo material e a mesma geometria são usados em desktop e mobile; apenas repetição, anisotropia e intensidade do bump são ajustadas por perfil de dispositivo.

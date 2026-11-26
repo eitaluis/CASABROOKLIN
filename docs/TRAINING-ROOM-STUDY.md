@@ -143,3 +143,25 @@ Essa sequência se inspira na cena do romance em que quatro pequenas estatuetas 
 - [ ] Revisar escala dos bustos, do guerreiro, da bola e das estátuas de Rá em relação ao Carter.
 
 **Não marcar como concluído visualmente até a revisão real em navegador desktop e mobile.**
+
+## 9. Preparação para alvos reativos da magia
+
+A sala já contém dois conjuntos úteis para a futura camada de magia:
+
+- **Quatro guerreiros shabti:** atualmente despertam, aproximam-se de Carter, atacam, recebem dano e retornam à forma de estatueta quando derrotados.
+- **Três alvos circulares:** atualmente recebem os orbes da prática de mira e sinalizam visualmente o acerto.
+
+Na próxima etapa, esses objetos devem deixar de responder apenas ao sistema de armas e passar a expor capacidades reutilizáveis. A magia consulta as capacidades do objeto atingido e executa a reação apropriada; o feitiço não deve conter código exclusivo para cada boneco.
+
+| Alvo futuro / existente | Capacidades previstas | Reações visuais |
+|---|---|---|
+| Manequim arcano de treino (novo asset) | breakable, burnable, repairable, levitable, bindable, forceable | Rachar/desmontar, queimar, reconstruir, subir e flutuar, ficar preso por faixas de luz, receber impacto |
+| Guerreiros shabti existentes | animated, breakable, bindable, forceable, repairable | Despertar, cambalear, ser imobilizado, desmontar em barro e recompor-se |
+| Alvos circulares existentes | impactReceiver, glowable | Registrar acerto, emitir pulso e atualizar placar |
+| Objetos comuns do mundo | Capacidades declaradas por objeto, quando fizer sentido | Reações limitadas ao material, massa e estado do objeto |
+
+O manequim arcano será uma **interpretação de gameplay**, não um objeto confirmado no romance. Deve ser modelado como asset final, com materiais coerentes com a sala, articulações e peças separáveis; não será apresentado como um cilindro ou boneco placeholder.
+
+**Levitação:** a lista de oito feitiços favoritos do *Guia de Sobrevivência* não inclui uma palavra identificada como “levitar”. O efeito pode ser testado no manequim, mas seu nome mágico só será associado ao cânone depois de localizar uma passagem específica nos romances ou no material oficial.
+
+A sala de treinamento serve para demonstrar os efeitos, mas a magia não ficará restrita a ela. Qualquer alvo no Grande Salão, biblioteca, exterior ou outra área poderá reagir quando declarar a capacidade correspondente.

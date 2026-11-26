@@ -820,6 +820,7 @@ export function buildTrainingRoom({
   // As miniaturas seguem a forma histórica de um shabti mumiiforme; a animação desperta o guerreiro do romance.
   const shabtiMiniScale=.085;
   const shabtiFullScale=.82;
+  const combatBounds={minX:room.minX+1.45,maxX:eastWallX-1.0,minZ:room.minZ+1.7,maxZ:room.maxZ-1.7};
   const shabtiTemplate=new THREE.Group();shabtiTemplate.name='shabti mumiiforme de faiança azul-esverdeada';
   function shabtiMesh(parent,name,geometry,material,pos,scale=null){
     const mesh=new THREE.Mesh(geometry,material);mesh.name=name;mesh.position.set(pos[0],pos[1],pos[2]);
@@ -934,10 +935,10 @@ export function buildTrainingRoom({
         const away=group.position.clone().sub(latestPlayerPosition).setY(0);
         if(away.lengthSq()<.01) away.set(1,0,0); away.normalize();
         const walls=[
-          {dir:new THREE.Vector3(1,0,0),dist:room.maxX-1.0-group.position.x,target:new THREE.Vector3(room.maxX-1.0,floorY,group.position.z)},
-          {dir:new THREE.Vector3(-1,0,0),dist:group.position.x-(room.minX+1.0),target:new THREE.Vector3(room.minX+1.0,floorY,group.position.z)},
-          {dir:new THREE.Vector3(0,0,1),dist:room.maxZ-1.0-group.position.z,target:new THREE.Vector3(group.position.x,floorY,room.maxZ-1.0)},
-          {dir:new THREE.Vector3(0,0,-1),dist:group.position.z-(room.minZ+1.0),target:new THREE.Vector3(group.position.x,floorY,room.minZ+1.0)}
+          {dir:new THREE.Vector3(1,0,0),dist:combatBounds.maxX-group.position.x,target:new THREE.Vector3(combatBounds.maxX,floorY,group.position.z)},
+          {dir:new THREE.Vector3(-1,0,0),dist:group.position.x-combatBounds.minX,target:new THREE.Vector3(combatBounds.minX,floorY,group.position.z)},
+          {dir:new THREE.Vector3(0,0,1),dist:combatBounds.maxZ-group.position.z,target:new THREE.Vector3(group.position.x,floorY,combatBounds.maxZ)},
+          {dir:new THREE.Vector3(0,0,-1),dist:group.position.z-combatBounds.minZ,target:new THREE.Vector3(group.position.x,floorY,combatBounds.minZ)}
         ].filter(w=>w.dist>0.5).sort((a,b)=>b.dir.dot(away)-a.dir.dot(away));
         const wall=walls[0]||{target:group.position.clone().addScaledVector(away,4.5),dist:4.5,dir:away};
         state.stumbleTarget=wall.target; state.stumbleDirection.copy(wall.target).sub(group.position).setY(0).normalize();
@@ -951,11 +952,11 @@ export function buildTrainingRoom({
   const maxPlayerHealth=5;
   let playerHealth=maxPlayerHealth,playerInvulnerability=0;
   function addShabtiCollider(state) {
-    const p = state.group.position;
+    const p = state.group.position, width=.46*state.fullScale, depth=.42*state.fullScale;
     const collider = {
-      minX: p.x - 0.54, maxX: p.x + 0.54,
-      minY: floorY, maxY: floorY + 2.15,
-      minZ: p.z - 0.48, maxZ: p.z + 0.48
+      minX: p.x - width, maxX: p.x + width,
+      minY: floorY, maxY: floorY + 2.25*state.fullScale,
+      minZ: p.z - depth, maxZ: p.z + depth
     };
     colliders.push(collider);
     state.collider = collider;
@@ -974,10 +975,10 @@ export function buildTrainingRoom({
       state.windup=0;state.strike=0;state.strikeResolved=false;state.attackCooldown=.7+state.index*.22;state.moveSpeed=1.18+(state.index%2)*.15;
       state.hitAt=0;state.defeatTime=0;state.active=true;state.defeated=false;state.marked=false;
       state.group.visible=true;state.group.position.copy(state.origin);state.group.rotation.set(0,0,0);state.group.scale.setScalar(state.miniScale);
-      state.swordArm.rotation.set(0,0,0);state.shieldArm.rotation.set(0,0,0);state.leftLeg.rotation.set(0,0,0);state.rightLeg.rotation.set(0,0,0);
+      state.swordArm.rotation.set(0,0,-.78);state.shieldArm.rotation.set(0,0,.78);state.leftLeg.visible=false;state.rightLeg.visible=false;
+      state.leftLeg.rotation.set(0,0,0);state.rightLeg.rotation.set(0,0,0);
       state.group.traverse(obj=>{if(obj.userData?.miniatureOnly)obj.visible=true;});
       state.aura.visible=true;state.aura.position.copy(state.origin);state.aura.scale.setScalar(1);state.beamMat.opacity=.16;
-      addShabtiCollider(state);
     }
   }
   function completeShabti(state,reason){
@@ -1188,8 +1189,12 @@ export function buildTrainingRoom({
         const dx=playerPosition.x-enemyPosition.x, dz=playerPosition.z-enemyPosition.z;
         const distance=Math.hypot(dx,dz), faceYaw=Math.atan2(dx,dz);
         state.group.rotation.y=faceYaw;
-        state.swordArm.rotation.set(0,0,0); state.shieldArm.rotation.set(0,0,0);
-        state.leftLeg.rotation.set(0,0,0); state.rightLeg.rotation.set(0,0,0); state.group.rotation.x=0;
+        const warriorPose=THREE.MathUtils.smoothstep(state.spawnProgress,.22,.9);
+        state.swordArm.rotation.set(0,0,THREE.MathUtils.lerp(-.78,-.18,warriorPose));
+        state.shieldArm.rotation.set(0,0,THREE.MathUtils.lerp(.78,.18,warriorPose));
+        state.leftLeg.visible=warriorPose>.76;state.rightLeg.visible=warriorPose>.76;
+        state.leftLeg.rotation.set(0,0,0);state.rightLeg.rotation.set(0,0,0);state.group.rotation.x=0;
+        if(state.spawnProgress>.88&&!state.collider)addShabtiCollider(state);
         if(state.hitAt>0){
           state.hitAt=Math.max(0,state.hitAt-dt);
           const recoil=Math.sin((state.hitAt/.48)*Math.PI);
@@ -1218,7 +1223,7 @@ export function buildTrainingRoom({
               const nextX=enemyPosition.x+(dx/distance)*step,nextZ=enemyPosition.z+(dz/distance)*step;
               let blocked=false;
               for(const other of shabtiWarriors){if(other===state||!other.active)continue;if(Math.hypot(nextX-other.group.position.x,nextZ-other.group.position.z)<1.0){blocked=true;break;}}
-              if(!blocked){enemyPosition.x=THREE.MathUtils.clamp(nextX,room.minX+1.05,room.maxX-1.05);enemyPosition.z=THREE.MathUtils.clamp(nextZ,room.minZ+1.05,room.maxZ-1.05);}
+              if(!blocked){enemyPosition.x=THREE.MathUtils.clamp(nextX,combatBounds.minX,combatBounds.maxX);enemyPosition.z=THREE.MathUtils.clamp(nextZ,combatBounds.minZ,combatBounds.maxZ);}
             }
             const stride=Math.sin(time*9+state.index)*.34;state.leftLeg.rotation.z=stride;state.rightLeg.rotation.z=-stride;
             state.swordArm.rotation.x=-.12+Math.sin(time*9+state.index)*.11;state.shieldArm.rotation.x=.12;
@@ -1251,9 +1256,10 @@ export function buildTrainingRoom({
           if(state.attackCooldown<=0)state.aiState='approach';
         }
         if(state.collider){
-          state.collider.minX=enemyPosition.x-.48*state.fullScale;state.collider.maxX=enemyPosition.x+.48*state.fullScale;
-          state.collider.minY=floorY;state.collider.maxY=floorY+2.35*state.fullScale;
-          state.collider.minZ=enemyPosition.z-.46*state.fullScale;state.collider.maxZ=enemyPosition.z+.46*state.fullScale;
+          const halfX=.46*state.fullScale,halfZ=.42*state.fullScale;
+          state.collider.minX=enemyPosition.x-halfX;state.collider.maxX=enemyPosition.x+halfX;
+          state.collider.minY=floorY;state.collider.maxY=floorY+2.25*state.fullScale;
+          state.collider.minZ=enemyPosition.z-halfZ;state.collider.maxZ=enemyPosition.z+halfZ;
         }
       } else {state.group.rotation.x*=.82;state.group.rotation.z*=.82;}
       if(state.defeatTime>0){
@@ -1261,8 +1267,8 @@ export function buildTrainingRoom({
         state.group.scale.setScalar(THREE.MathUtils.lerp(state.fullScale,state.miniScale,reverse));
         if(state.defeatTime<=0){
           state.group.visible=true;state.group.position.copy(state.origin);state.group.rotation.set(0,0,0);state.group.scale.setScalar(state.miniScale);
-          state.spawnProgress=1;state.aura.visible=false;state.swordArm.rotation.set(0,0,0);state.shieldArm.rotation.set(0,0,0);
-          state.leftLeg.rotation.set(0,0,0);state.rightLeg.rotation.set(0,0,0);
+          state.spawnProgress=1;state.aura.visible=false;state.swordArm.rotation.set(0,0,-.78);state.shieldArm.rotation.set(0,0,.78);
+          state.leftLeg.visible=false;state.rightLeg.visible=false;state.leftLeg.rotation.set(0,0,0);state.rightLeg.rotation.set(0,0,0);
           state.group.traverse(obj=>{if(obj.userData?.miniatureOnly)obj.visible=true;});
         }
       }

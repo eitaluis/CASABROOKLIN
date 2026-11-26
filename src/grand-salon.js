@@ -1003,6 +1003,82 @@ function addTerraceGlassWall(scene,brass,colliders) {
   scene.add(topStone);
 }
 
+function addFireplaceSurround(scene,stone,brass,wood) {
+  const z=-8.93;
+  const darkBronze=new THREE.MeshStandardMaterial({color:0x59432b,metalness:.62,roughness:.38});
+
+  for(const side of [-1,1]){
+    const column=new THREE.Mesh(new THREE.LatheGeometry([
+      new THREE.Vector2(.18,0),new THREE.Vector2(.25,.08),
+      new THREE.Vector2(.28,.22),new THREE.Vector2(.22,.42),
+      new THREE.Vector2(.21,2.3),new THREE.Vector2(.25,2.52),
+      new THREE.Vector2(.34,2.68),new THREE.Vector2(.31,2.82),
+      new THREE.Vector2(.22,2.94)
+    ],40),stone);
+    column.name='coluna esculpida da moldura da lareira';
+    column.position.set(side*2.31,13.34,z);
+    column.castShadow=true;column.receiveShadow=true;scene.add(column);
+
+    for(const y of [13.55,13.78,15.78,16.02]){
+      const ring=new THREE.Mesh(new THREE.TorusGeometry(y<14?.27:.23,.027,8,40),brass);
+      ring.rotation.x=Math.PI/2;
+      ring.position.set(side*2.31,y,z-.06);
+      scene.add(ring);
+    }
+
+    const capital=new THREE.Mesh(new THREE.LatheGeometry([
+      new THREE.Vector2(.2,0),new THREE.Vector2(.25,.08),
+      new THREE.Vector2(.34,.18),new THREE.Vector2(.46,.3),
+      new THREE.Vector2(.43,.4),new THREE.Vector2(.25,.48)
+    ],40),stone);
+    capital.name='capitel lotus da lareira';
+    capital.position.set(side*2.31,16.1,z);
+    capital.castShadow=true;scene.add(capital);
+
+    const inset=new THREE.Mesh(new RoundedBoxGeometry(.58,.72,.06,8,.08),wood);
+    inset.name='placa entalhada junto à lareira';
+    inset.position.set(side*2.94,16.13,z-.075);
+    inset.castShadow=true;scene.add(inset);
+    const emblem=new THREE.Mesh(new THREE.PlaneGeometry(.42,.55),gameIconMaterial('eye-of-horus'));
+    emblem.position.set(side*2.94,16.13,z-.115);
+    scene.add(emblem);
+  }
+
+  const archPoints=[
+    [-2.28,16.45,z],[-2.1,16.72,z],[-1.72,16.91,z],
+    [-1.15,17.04,z],[-.58,17.11,z],[0,17.13,z],
+    [.58,17.11,z],[1.15,17.04,z],[1.72,16.91,z],
+    [2.1,16.72,z],[2.28,16.45,z]
+  ];
+  const arch=tube(archPoints,.18,stone,96,16);
+  arch.name='arco de calcário esculpido da lareira';
+  scene.add(arch);
+  const archInlay=tube(archPoints.map(p=>[p[0],p[1]-.12,p[2]+.08]),.018,brass,96,8);
+  archInlay.name='filete de bronze no arco da lareira';
+  scene.add(archInlay);
+
+  const mantle=new THREE.Mesh(new RoundedBoxGeometry(6.15,.42,1.18,10,.13),stone);
+  mantle.name='manto moldurado de calcário da lareira';
+  mantle.position.set(0,17.16,-8.85);
+  mantle.castShadow=true;mantle.receiveShadow=true;scene.add(mantle);
+
+  const mantleInlay=new THREE.Mesh(new RoundedBoxGeometry(5.72,.035,.08,8,.015),brass);
+  mantleInlay.name='filete de bronze do manto da lareira';
+  mantleInlay.position.set(0,17.3,-8.22);
+  scene.add(mantleInlay);
+
+  for(const side of [-1,1]){
+    const corbel=new THREE.Mesh(new THREE.LatheGeometry([
+      new THREE.Vector2(.12,0),new THREE.Vector2(.19,.08),
+      new THREE.Vector2(.27,.18),new THREE.Vector2(.35,.28),
+      new THREE.Vector2(.32,.38),new THREE.Vector2(.18,.48)
+    ],32),darkBronze);
+    corbel.name='mísula de bronze escuro da lareira';
+    corbel.position.set(side*2.72,16.95,-8.47);
+    corbel.castShadow=true;scene.add(corbel);
+  }
+}
+
 function addThoth(scene,marble,pale,brass,reliefTex,wood) {
   const group=new THREE.Group();group.name='estátua monumental de Thoth em basalto';group.position.set(0,13.175,-.5);
   const plinth=new THREE.Mesh(new RoundedBoxGeometry(3,.48,3,6,.13),pale);plinth.position.y=.24;plinth.castShadow=true;plinth.receiveShadow=true;group.add(plinth);
@@ -1429,7 +1505,7 @@ export function buildGrandSalon({
       'balaústre','viga sacada','harpa decorativa','lança cerimonial',
       'tambor decorativo','pele do tambor','estátua de cerâmica',
       'cabeça de estátua','face da estátua','pedestal de pedra',
-      'coroa ritual','TV de plasma','tela da TV'
+      'coroa ritual','TV de plasma','tela da TV','moldura da lareira','manto de pedra'
     ].includes(o.name)) o.visible=false;
 
     if(o.name==='parede interna do salão' && o.position.z>0) o.visible=false;
@@ -1485,16 +1561,17 @@ export function buildGrandSalon({
 
   addWallReliefs(scene,brass,darkWood,stone,relief);
   ceilingOrnament(scene,brass,darkWood);
+  addFireplaceSurround(scene,stone,brass,darkWood);
 
   // Sourced iconography enriches the existing physical props without duplicating them.
   addTerraceGlassWall(scene,brass,colliders);
   addGreatHallDoors(scene,stone,darkWood,brass,colliders,interactables);
-  addIconPlaque(scene,'harp',[-11.65,15.82,-9.84],0,darkWood,brass,.42);
-  addIconPlaque(scene,'harp',[11.65,15.82,-9.84],0,darkWood,brass,.42);
+  addIconPlaque(scene,'harp',[-11.65,16.02,-9.84],0,darkWood,brass,.42);
+  addIconPlaque(scene,'harp',[11.65,16.02,-9.84],0,darkWood,brass,.42);
   addIconPlaque(scene,'drum',[-13.92,15.25,1.2],Math.PI/2,darkWood,brass,.4);
   addIconPlaque(scene,'drum',[13.92,15.25,1.2],-Math.PI/2,darkWood,brass,.4);
   for(const side of [-1,1]){
-    addIconPlaque(scene,'spears',[side*11.8,18.2,8.52],Math.PI,darkWood,brass,.42);
+    addIconPlaque(scene,'spears',[side*13.38,18.2,8.52],Math.PI,darkWood,brass,.42);
     createWallFluteRack(scene,side,darkWood,brass,ironMaterial(),colliders,interactables);
   }
 

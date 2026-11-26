@@ -117,7 +117,7 @@ for(const z of [-12,0,12,24,36,48]){
 }
 
 // Mansão oculta no telhado: cinco pavimentos, blocos de calcário e caixilhos de aço.
-const mansionBase=box('base elevada da mansão',[0,12.55,-.5],[32,.5,23],stone,false);
+const mansionBase=box('base elevada da mansão',[0,12.55,-.5],[36,.5,23],stone,false);
 const houseY=21.45,houseH=17.6;
 box('fachada frontal da mansão esquerda',[-9,houseY,11.0],[14,houseH,.85],stone,true);
 box('fachada frontal da mansão direita',[9,houseY,11.0],[14,houseH,.85],stone,true);

@@ -1,14 +1,22 @@
 # Modelos 3D
 
-## Personagem de exploração
+## Personagem jogável — Carter Kane estilizado
 
-O protótipo carrega em runtime o arquivo `human_mix_propio.glb` do projeto **three-procedural-locomotion**:
+O personagem atual é uma malha 3D original, construída localmente em `src/character.js` com superfícies elípticas contínuas, volumes orgânicos e um rig hierárquico próprio. Não usa o antigo GLB remoto nem o boneco de contingência anterior.
 
-- Arquivo: [human_mix_propio.glb](https://github.com/PabloMesquida/three-procedural-locomotion/blob/v0.9.0/modelos/human_mix_propio.glb)
-- Origem da malha: Human Base Meshes, Blender Studio (CC0, conforme a documentação do projeto de locomoção).
-- Rig: esqueleto de nomenclatura compatível com Mixamo, preparado pelo autor do projeto de locomoção.
-- Uso neste projeto: personagem jogável em terceira pessoa, com roupa e acessórios adicionados proceduralmente aos ossos.
+Direção visual:
+- adolescente negro, proporções juvenis e silhueta natural;
+- rosto com mandíbula, bochechas, olhos, nariz, boca e orelhas modelados;
+- cabelo crespo com mechas arredondadas;
+- camisa azul com gola, vista frontal, botões e costuras;
+- calça cáqui com costura e bolso lateral;
+- tênis escuros e bolsa transversal de couro.
 
-O GLB é servido pelo CDN do jsDelivr para evitar duplicação do binário no repositório. O código possui um boneco articulado de contingência caso o arquivo remoto não carregue.
+A geometria é original do projeto. As referências de produção e montagem são:
+- [Grab3D Character Mixer](https://grab3d.com/tools/character-mixer/) — ferramenta aberta de criação de personagens modulares, estilos Cozy/Low Poly, corpo slim e exportação GLB rigged; criações CC0 1.0. É uma fonte de referência e uma opção de asset modular futuro, não um binário carregado pelo jogo.
+- [Grab3D Teenager](https://grab3d.com/models/characters/teen-character/) — personagem adolescente CC0 com versões GLB estática e rigged; possui ciclos de walk/run. Referência para proporção e pipeline de personagem de jogo, não usado diretamente no runtime.
+- [giaBaoJS/procedural-3d-characters](https://github.com/giaBaoJS/procedural-3d-characters) — referência MIT para personagens com geometria, rig e keyframes gerados em código.
 
-Antes de redistribuir o GLB em um pacote offline, confira novamente a licença e os avisos da versão utilizada.
+## Otimização
+
+O personagem é gerado com malhas locais e materiais compartilhados. Isso evita download de GLB externo, reduz dependência de CDN e mantém o mesmo modelo em desktop e mobile.

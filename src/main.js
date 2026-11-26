@@ -55,7 +55,7 @@ const world = buildWorld({
   THREE, scene, colliders, animated, box, cyl, line, texCanvas,
   addWindow, glyphPanel, addStatue, addColumn, makeGraffiti, addRoomLabel,
   canvasSign, rugTex, metal, gold, stone, brickMat, darkBrick, woodMat,
-  cedarMat, darkGlass, plaster, leather
+  cedarMat, darkGlass, plaster
 });
 const { zones, groundSurfaces, water, fireLight } = world;
 

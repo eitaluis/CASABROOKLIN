@@ -23,7 +23,7 @@ O *As Crônicas dos Kane: Guia de Sobrevivência* descreve uma pequena caixa de 
 
 O guia explica que um mago treinado pode guardar essa caixa no Duat e acessá-la quando necessário. Também descreve o cajado como ferramenta para controlar elementos, invocar espíritos e conjurar chamas, além de servir em combate; o khopesh é uma espada curva egípcia usada para desarmar o oponente; e shabtis são pequenas figuras que podem despertar ao chamado do mestre.
 
-Referência: Rick Riordan, *As Crônicas dos Kane: Guia de Sobrevivência*, seção “Artefatos de poder”, páginas impressas 68–69 e 94–95 (numeração conforme a edição consultada).
+Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, seção “Hieroglyphs, Symbols & Commands”, páginas impressas 68–70 (feitiços, regras de escrita e símbolos) e seção “Artifacts of Power”, página impressa 131 (caixa de magia e Duat), conforme a edição consultada.
 
 ## 3. Catálogo inicial de objetos de Carter
 
@@ -89,6 +89,8 @@ Para guardar, a sequência acontece ao contrário. **Já está implementado:** p
 - `src/main.js`: conecta entrada, personagem, inventário, magia, alvos e mensagens.
 
 Os itens e as capacidades dos alvos devem ser definidos por dados. Assim, um feitiço poderá agir em qualquer objeto compatível no mundo, e a sala de treinamento apenas terá alvos que demonstram essas capacidades.
+
+A pesquisa e o catálogo inicial dos feitiços agora estão em `docs/MAGIC-SPELLS-STUDY.md`. O documento separa a lista dos oito favoritos do guia, comandos adicionais do material oficial e efeitos como levitação que aparecem nos romances sem Divine Word identificada.
 
 ## 7. Preparação para a etapa de magia
 

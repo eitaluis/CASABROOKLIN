@@ -17,11 +17,12 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Estados
 
-- [x] Decisão visual registrada
-- [ ] Malha/rig final integrado
-- [ ] Animações retargetadas
-- [ ] Asset da bolsa integrado
-- [ ] Teste visual desktop/mobile
+- [x] Direção visual e posição da bolsa registradas
+- [x] Base humana contínua e rig Ara restaurados no runtime
+- [x] Bolsa transversal local integrada no quadril direito; GLB original não incorporado
+- [ ] Teste visual do rosto, roupa, alça e bolsa em navegador real
+- [ ] Teste de locomoção, clipping e sincronização desktop/mobile
+- [ ] Animações atléticas adicionais retargetadas
 
 ## Setor 01 — câmera e controles
 

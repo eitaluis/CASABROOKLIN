@@ -1,7 +1,7 @@
 # Carter — inventário, objetos do Duat e preparação para magia
 
 Data: 26/11/2026
-Status: **arquitetura definida; primeira ampliação do inventário em implementação**
+Status: **primeira implementação integrada: cajado, khopesh, shabti de cera e portal visual; animação corporal e outros instrumentos pendentes**
 
 ## 1. Princípio de desenvolvimento
 

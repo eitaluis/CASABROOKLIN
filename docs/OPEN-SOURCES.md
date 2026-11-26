@@ -15,6 +15,7 @@ Todo novo objeto ou espaço deve seguir [ASSET-FIRST-ROOM-BUILDING.md](ASSET-FIR
 - src/main.js direciona o olhar para o objeto examinado por E/INTERAGIR.
 - src/third-person.js suaviza aceleração, curvas, inclinação e câmera; o mesmo controlador e os mesmos assets são usados no desktop e mobile.
 - Os estudos Quaternius e o protótipo procedural anterior foram rejeitados; não fazem parte do runtime.
+- A primeira calibração da empunhadura do cajado usa geometria original e o socket do rig Ara já integrado; nenhum modelo ou clipe de terceiro foi copiado nesta etapa. O ponto de pega é ajustável no preview independente. A licença MIT do pacote Ara e os termos dos dados/clipes CMU continuam conforme a proveniência acima.
 
 ## Grande Salão — modelos e efeitos
 

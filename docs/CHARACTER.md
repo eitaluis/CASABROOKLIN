@@ -21,9 +21,9 @@ Status: **revisão da bolsa, remoção da mochila-base e ajuste de encaixe do co
 
 ## Inventário e objetos do Duat
 
-`src/inventory.js` mantém o cajado e o khopesh existentes e acrescenta o shabti de cera como primeiro artefato portátil. Os objetos começam guardados no Duat e são retirados por uma abertura visual presa ao socket da mão direita; o retorno ao Duat usa a transição inversa. O catálogo usa IDs estáveis e separa `weapon` de `artifact`, para que futuros itens não precisem ser tratados como armas.
+`src/inventory.js` mantém o cajado e o khopesh e acrescenta shabti de cera, caixa de magia, papiro, cálamo, recipiente de tinta e amuleto de proteção. Os objetos começam guardados no Duat e são retirados por uma abertura visual presa ao socket da mão; o retorno usa a transição inversa. O catálogo usa IDs estáveis e separa armas, ferramentas, artefatos e recipiente, sem habilitar o comando de ataque para itens que não sejam armas.
 
-A primeira camada visual do portal está implementada. A animação corporal específica de Carter atravessando a membrana, assim como a caixa de magia, papiros, cálamo, tinta e amuletos individuais, permanece pendente de implementação e validação. Consulte `docs/CHARACTER-INVENTORY-DUAT.md`.
+A primeira camada visual do portal e os modelos procedurais iniciais do kit estão implementados. A animação corporal específica de Carter atravessando a membrana, abertura da caixa, refinamento visual dos objetos e inspeção real no navegador permanecem pendentes. Consulte `docs/CHARACTER-INVENTORY-DUAT.md`.
 
 ## Acessórios autorais integrados
 

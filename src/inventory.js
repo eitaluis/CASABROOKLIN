@@ -49,12 +49,28 @@ export function createInventory({
     parent.add(band);
   }
 
+  const itemCapabilities = {
+    staff: { actions: ['channel_magic', 'melee_impact'], reactions: ['focus_for_spell'] },
+    khopesh: { actions: ['melee_slash', 'melee_impact'], reactions: ['weapon_enchantment'] },
+    wax_shabti: { actions: ['summon_servant'], reactions: ['levitate', 'animate', 'break', 'repair', 'bind'] },
+    magic_box: { actions: ['store_tools', 'open_container'], reactions: ['open', 'close', 'unlock', 'levitate'] },
+    papyrus: { actions: ['write', 'draw_hieroglyph'], reactions: ['inscribe', 'burn', 'tear', 'levitate'] },
+    reed_pen: { actions: ['write', 'draw_hieroglyph'], reactions: ['enchant', 'levitate'] },
+    ink: { actions: ['write', 'draw_hieroglyph'], reactions: ['spill', 'freeze', 'levitate'] },
+    protective_amulet: { actions: ['wear', 'ward'], reactions: ['activate_ward', 'enchant', 'levitate'] },
+    wax_lump: { actions: ['mold', 'create_shabti'], reactions: ['heat', 'melt', 'levitate'] },
+    scribe_palette: { actions: ['mix_pigment', 'hold_ink'], reactions: ['break', 'levitate'] },
+    brown_twine: { actions: ['tie', 'bind'], reactions: ['cut', 'burn', 'levitate'] },
+    ebony_cat: { actions: ['place_artifact'], reactions: ['animate', 'levitate', 'break', 'repair'] }
+  };
+
   function registerItem(id, group, kind, description) {
     group.name = 'DuatItem_' + id;
     group.visible = false;
     group.userData.itemId = id;
     group.userData.kind = kind;
     group.userData.description = description;
+    group.userData.capabilities = itemCapabilities[id] || { actions: [], reactions: [] };
     group.userData.restPosition = group.position.clone();
     group.userData.baseScale = group.scale.clone();
     items.set(id, group);
@@ -829,6 +845,22 @@ export function createInventory({
       return activeItem === 'staff' || activeItem === 'khopesh' ? activeItem : null;
     },
     get activeItem() { return activeItem; },
+    getItemInfo(id) {
+      const group = items.get(id);
+      if (!group) return null;
+      return {
+        id,
+        kind: group.userData.kind,
+        description: group.userData.description,
+        capabilities: {
+          actions: [...group.userData.capabilities.actions],
+          reactions: [...group.userData.capabilities.reactions]
+        }
+      };
+    },
+    get activeItemInfo() {
+      return activeItem ? this.getItemInfo(activeItem) : null;
+    },
     get isTransitioning() { return Boolean(transition); },
     get transitionMode() { return transition?.mode || null; },
     get transitionItem() { return transition?.name || null; },

@@ -229,8 +229,8 @@ export function createMagicSystem({
     glyphMaterial.opacity = 1;
     controller.setLocked(true);
     character.lookAt?.(target.position, { amount: 0.9, smoothing: 0.28 });
-    character.setCastingHandPose?.(true);
     character.playAction?.('point');
+    character.setCastingHandPose?.(true);
     updateGlyphAnchor();
 
     return { success: true, message: 'HA-DI! A inscrição dourada se acende diante da mão de Carter.' };

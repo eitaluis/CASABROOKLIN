@@ -121,6 +121,18 @@ root.empty_display_type = "PLAIN_AXES"
 root.empty_display_size = 0.12
 collection.objects.link(root)
 
+bag_anchor = bpy.data.objects.new("Carter_Bag_Hips_Anchor", None)
+bag_anchor.empty_display_type = "CIRCLE"
+bag_anchor.empty_display_size = 0.075
+bag_anchor.parent = root
+collection.objects.link(bag_anchor)
+
+necklace_anchor = bpy.data.objects.new("Carter_Necklace_Spine2_Anchor", None)
+necklace_anchor.empty_display_type = "CIRCLE"
+necklace_anchor.empty_display_size = 0.055
+necklace_anchor.parent = root
+collection.objects.link(necklace_anchor)
+
 leather = make_material("Carter | Cognac leather", "#80502F", 0.84, 0.02)
 leather_dark = make_material("Carter | Dark leather", "#593820", 0.88, 0.01)
 leather_light = make_material("Carter | Leather highlights", "#98643C", 0.82, 0.02)
@@ -128,9 +140,9 @@ stitch = make_material("Carter | Saddle stitching", "#C9A477", 0.72, 0.0)
 brass = make_material("Carter | Aged brass", "#B68A42", 0.32, 0.72)
 brass_light = make_material("Carter | Polished brass", "#D7B56E", 0.28, 0.78)
 
-def parent_keep_world(obj):
+def parent_keep_world(obj, parent=None):
     world = obj.matrix_world.copy()
-    obj.parent = root
+    obj.parent = parent if parent is not None else root
     obj.matrix_world = world
     return obj
 
@@ -147,7 +159,7 @@ body = rounded_box(
     leather,
     0.022 * UNIT
 )
-parent_keep_world(body)
+parent_keep_world(body, bag_anchor)
 
 flap = rounded_box(
     "Carter_Satchel_Flap",
@@ -156,7 +168,7 @@ flap = rounded_box(
     leather_dark,
     0.016 * UNIT
 )
-parent_keep_world(flap)
+parent_keep_world(flap, bag_anchor)
 
 pocket = rounded_box(
     "Carter_Satchel_Front_Pocket",
@@ -165,7 +177,7 @@ pocket = rounded_box(
     leather_light,
     0.009 * UNIT
 )
-parent_keep_world(pocket)
+parent_keep_world(pocket, bag_anchor)
 
 gusset = rounded_box(
     "Carter_Satchel_Right_Gusset",
@@ -174,7 +186,7 @@ gusset = rounded_box(
     leather_dark,
     0.006 * UNIT
 )
-parent_keep_world(gusset)
+parent_keep_world(gusset, bag_anchor)
 
 seam = make_curve(
     "Carter_Pocket_Stitch",
@@ -187,7 +199,7 @@ seam = make_curve(
     0.0012 * UNIT,
     2
 )
-parent_keep_world(seam)
+parent_keep_world(seam, bag_anchor)
 
 bpy.ops.mesh.primitive_torus_add(
     major_radius=0.013 * UNIT,
@@ -199,7 +211,7 @@ bpy.ops.mesh.primitive_torus_add(
 clasp = bpy.context.object
 clasp.name = "Carter_Satchel_Brass_Clasp"
 assign_material(clasp, brass_light)
-parent_keep_world(clasp)
+parent_keep_world(clasp, bag_anchor)
 
 clasp_bar = rounded_box(
     "Carter_Satchel_Brass_Clasp_Bar",
@@ -208,7 +220,7 @@ clasp_bar = rounded_box(
     brass_light,
     0.001 * UNIT
 )
-parent_keep_world(clasp_bar)
+parent_keep_world(clasp_bar, bag_anchor)
 
 # Diagonal strap: the illustration's left shoulder to the character's right hip.
 strap_points = [
@@ -219,7 +231,7 @@ strap_points = [
     (-0.235 * UNIT, 0.405 * HEIGHT, 0.145 * UNIT)
 ]
 strap = make_ribbon("Carter_Crossbody_Strap", strap_points, 0.047 * UNIT, leather_dark)
-parent_keep_world(strap)
+parent_keep_world(strap, bag_anchor)
 
 # Fine edge seams along the strap.
 for sign, suffix in [(-1, "L"), (1, "R")]:
@@ -234,7 +246,7 @@ for sign, suffix in [(-1, "L"), (1, "R")]:
             side.normalize()
         edge_points.append(tuple(point + side * (0.015 * UNIT * sign) + Vector((0, 0, 0.002 * UNIT))))
     edge = make_curve("Carter_Strap_Stitch_" + suffix, edge_points, stitch, 0.0011 * UNIT, 2)
-    parent_keep_world(edge)
+    parent_keep_world(edge, bag_anchor)
 
 adjuster = rounded_box(
     "Carter_Strap_Brass_Adjuster",
@@ -243,7 +255,7 @@ adjuster = rounded_box(
     brass,
     0.003 * UNIT
 )
-parent_keep_world(adjuster)
+parent_keep_world(adjuster, bag_anchor)
 
 # Gold necklace and round medallion on the front of the chest.
 necklace_points = [
@@ -256,7 +268,7 @@ necklace_points = [
     (0.105 * UNIT, 0.86 * HEIGHT, 0.125 * UNIT)
 ]
 chain = make_curve("Carter_Medallion_Chain", necklace_points, brass_light, 0.0032 * UNIT, 4)
-parent_keep_world(chain)
+parent_keep_world(chain, necklace_anchor)
 
 pendant_location = (0.0, 0.695 * HEIGHT, 0.182 * UNIT)
 bpy.ops.mesh.primitive_cylinder_add(
@@ -269,7 +281,7 @@ bpy.ops.mesh.primitive_cylinder_add(
 medallion = bpy.context.object
 medallion.name = "Carter_Gold_Medallion"
 assign_material(medallion, brass)
-parent_keep_world(medallion)
+parent_keep_world(medallion, necklace_anchor)
 
 bpy.ops.mesh.primitive_torus_add(
     major_radius=0.030 * UNIT,
@@ -281,7 +293,7 @@ bpy.ops.mesh.primitive_torus_add(
 outer_rim = bpy.context.object
 outer_rim.name = "Carter_Medallion_Outer_Rim"
 assign_material(outer_rim, brass_light)
-parent_keep_world(outer_rim)
+parent_keep_world(outer_rim, necklace_anchor)
 
 bpy.ops.mesh.primitive_torus_add(
     major_radius=0.020 * UNIT,
@@ -293,7 +305,7 @@ bpy.ops.mesh.primitive_torus_add(
 inner_rim = bpy.context.object
 inner_rim.name = "Carter_Medallion_Inner_Rim"
 assign_material(inner_rim, brass_light)
-parent_keep_world(inner_rim)
+parent_keep_world(inner_rim, necklace_anchor)
 
 # Simplified Egyptian relief; this is a first-pass art motif to be checked against the illustration.
 bpy.ops.mesh.primitive_torus_add(
@@ -306,7 +318,7 @@ bpy.ops.mesh.primitive_torus_add(
 ankh_loop = bpy.context.object
 ankh_loop.name = "Carter_Medallion_Relief_Loop"
 assign_material(ankh_loop, brass_light)
-parent_keep_world(ankh_loop)
+parent_keep_world(ankh_loop, necklace_anchor)
 
 stem = rounded_box(
     "Carter_Medallion_Relief_Stem",
@@ -315,7 +327,7 @@ stem = rounded_box(
     brass_light,
     0.001 * UNIT
 )
-parent_keep_world(stem)
+parent_keep_world(stem, necklace_anchor)
 
 bar = rounded_box(
     "Carter_Medallion_Relief_Bar",
@@ -324,11 +336,11 @@ bar = rounded_box(
     brass_light,
     0.001 * UNIT
 )
-parent_keep_world(bar)
+parent_keep_world(bar, necklace_anchor)
 
 # Put all objects into the dedicated collection and leave the accessory root selected.
 for obj in list(bpy.context.scene.objects):
-    if obj == root or obj.parent == root:
+    if obj in (root, bag_anchor, necklace_anchor) or obj.parent in (root, bag_anchor, necklace_anchor):
         for current_collection in list(obj.users_collection):
             current_collection.objects.unlink(obj)
         collection.objects.link(obj)

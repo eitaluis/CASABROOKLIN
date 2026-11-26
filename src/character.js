@@ -10,6 +10,16 @@ const palette = {
   brass: new THREE.MeshStandardMaterial({ color: 0xb58d50, metalness: 0.62, roughness: 0.32 })
 };
 
+function addCapsule(parent, material, radius, length, position, scale = [1, 1, 1]) {
+  const mesh = new THREE.Mesh(new THREE.CapsuleGeometry(radius, length, 5, 10), material);
+  mesh.position.set(...position);
+  mesh.scale.set(...scale);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+
 function makeFallbackFigure(scene) {
   const root = new THREE.Group();
   root.name = 'BrooklynHouse_PlayerFallback';

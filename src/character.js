@@ -230,7 +230,7 @@ export async function createCharacter({
 
     // A cabeça fica no eixo neutro do rig durante o feitiço: não acompanha
     // a altura do Shabti e não inclina para baixo.
-    if (castingBodyPose && neutralHeadWorldPose.size) {
+    if (castingBodyWeight > 0.001 && neutralHeadWorldPose.size) {
       // Compensa também a inclinação herdada do tronco: a cabeça conserva a
       // orientação mundial neutra, mesmo quando o peito assume a postura de ataque.
       root.updateMatrixWorld(true);

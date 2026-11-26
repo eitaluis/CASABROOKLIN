@@ -136,7 +136,17 @@ function handlePlayerHit(hit) {
   const previousHealth = playerVitals.health;
   playerVitals.health = Math.max(0, playerVitals.health - damage);
   character.setInjured?.(playerVitals.health <= 50);
-  character.playReaction?.('front');
+  const toAttacker = hit.attacker && hit.playerPosition
+    ? hit.attacker.clone().sub(hit.playerPosition).setY(0).normalize()
+    : new THREE.Vector3(0, 0, 1);
+  const facing = controller.getForward().setY(0).normalize();
+  const right = new THREE.Vector3().crossVectors(facing, new THREE.Vector3(0, 1, 0)).normalize();
+  const frontDot = toAttacker.dot(facing);
+  const sideDot = toAttacker.dot(right);
+  const hitDirection = Math.abs(frontDot) >= Math.abs(sideDot)
+    ? (frontDot >= 0 ? 'front' : 'back')
+    : (sideDot >= 0 ? 'right' : 'left');
+  character.playReaction?.(hitDirection);
   controller.triggerHit?.();
   flashPlayerDamage();
   if (previousHealth > 50 && playerVitals.health <= 50) {

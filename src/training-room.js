@@ -434,10 +434,11 @@ export function buildTrainingRoom({
       addBox('capitel de lótus lateral', [sideX, floorY + 3.38, z], [0.48, 0.24, 0.8], bronze);
     }
   }
-  for (const z of [room.minZ + 0.28, room.maxZ - 0.28]) {
+  // Relevos, cornijas e rodapés montados na face interior dos muros de fundo (nunca no plano da parede).
+  for (const z of [room.minZ + 0.55, room.maxZ - 0.55]) {
     addBox('friso de bronze na parede de fundo', [centerX, floorY + 3.1, z], [roomWidth - 0.5, 0.18, 0.12], bronze);
-    addBox('cornija moldurada no topo da parede', [centerX, floorY + 3.38, z], [roomWidth - 0.42, 0.24, 0.24], limestoneShade);
-    addBox('rodapé monumental de calcário', [centerX, floorY + 0.32, z], [roomWidth - 0.5, 0.56, 0.28], limestoneShade);
+    addBox('cornija moldurada no topo da parede', [centerX, floorY + 3.38, z], [roomWidth - 0.42, 0.24, 0.18], limestoneShade);
+    addBox('rodapé monumental de calcário', [centerX, floorY + 0.32, z], [roomWidth - 0.5, 0.56, 0.18], limestoneShade);
   }
   for (const x of [westWallX + 0.25, eastWallX - 0.25]) {
     addBox('cornija lateral de calcário', [x, floorY + 3.4, centerZ], [0.32, 0.24, roomLength - 0.5], limestoneShade);
@@ -703,7 +704,7 @@ export function buildTrainingRoom({
     new THREE.MeshBasicMaterial({ map: scoreboardTexture, transparent: false })
   );
   scoreboard.name = 'placar da sala de treinamento';
-  scoreboard.position.set(centerX, floorY + 3.5, room.minZ + 0.42);
+  scoreboard.position.set(centerX, floorY + 3.5, room.minZ + 0.52);
   scoreboard.rotation.y = 0;
   scene.add(scoreboard);
   let baskets = 0, targetHits = 0;
@@ -889,8 +890,7 @@ export function buildTrainingRoom({
   shabtiMesh(shabtiTemplate,'nariz esculpido',new THREE.ConeGeometry(.035,.11,5),faienceLight,[0,1.83,.185]);
   const falseBeard=shabtiMesh(shabtiTemplate,'barba postiça trançada',new THREE.LatheGeometry([
     new THREE.Vector2(.07,0),new THREE.Vector2(.085,.07),new THREE.Vector2(.07,.17),new THREE.Vector2(.05,.3),new THREE.Vector2(.027,.43),new THREE.Vector2(.012,.48)
-  ],24),raBasaltLight,[0,1.27,.16]);
-  falseBeard.rotation.x=Math.PI;
+  ],24),faienceLight,[0,1.35,.16]);
   for(let braid=0;braid<3;braid++)addTube('trança da barba postiça',[[(-1+braid)*.025,1.32,.225],[(-1+braid)*.02,1.42,.23],[(-1+braid)*.013,1.53,.205]],.009,raGold,shabtiTemplate,14);
   // Nemes estriado com touca e abas laterais, não um capacete esférico.
   const nemesCap=shabtiMesh(shabtiTemplate,'touca do nemes',new THREE.SphereGeometry(.235,32,20,0,Math.PI*2,0,Math.PI*.64),lapis,[0,1.97,-.035],[1.13,.78,.96]);
@@ -1337,8 +1337,8 @@ export function buildTrainingRoom({
     const plaque = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 0.72), new THREE.MeshBasicMaterial({ map: texture }));
     plaque.position.set(x, y, z); plaque.rotation.y = rotationY; scene.add(plaque);
   }
-  addWallLabel('SALA DE TREINAMENTO', centerX, floorY + 3.0, room.maxZ - 0.02, Math.PI);
-  addWallLabel('MAGIC PROBLEM-SOLVING 101', centerX, floorY + 3.0, room.minZ + 0.02, 0);
+  addWallLabel('SALA DE TREINAMENTO', centerX, floorY + 3.0, room.maxZ - 0.48, Math.PI);
+  addWallLabel('MAGIC PROBLEM-SOLVING 101', centerX, floorY + 3.0, room.minZ + 0.48, 0);
 
   // Interações de inspeção do próprio ambiente.
   addInteractable({

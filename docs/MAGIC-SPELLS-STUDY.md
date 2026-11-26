@@ -86,6 +86,24 @@ Fluxo proposto:
 
 **Animações:** `use_press` é apenas a primeira ação de alcance criada para abrir o Duat. O clipe Ara estende o indicador como se tocasse um ponto à frente do tórax; não é a animação final de conjuração. Para os feitiços, vamos selecionar clipes Ara adequados e criar clips próprios/retargetados quando não houver gesto convincente. O movimento deve ser bloqueado durante a janela de conjuração no desktop e no mobile.
 
+
+### Propostas de gesto para a primeira rodada (adaptação, não cânone)
+
+| Feitiço | Gesto corporal a estudar | Direção do movimento |
+|---|---|---|
+| HI-NEHM | Mãos abertas aproximando e juntando fragmentos | Puxar para o centro e fechar as mãos no instante em que o objeto se recompõe |
+| HA-TEP | Palma aberta voltada para o alvo, descendo devagar | Acalmar, sem gesto brusco; ombros relaxados |
+| HA-DI | Braço armado e projeção súbita da mão para a frente | Impulso curto e forte, com recuperação controlada |
+| A’MAX | Erguer o braço e desenhar um arco de liberação | A mão abre no ápice, como se liberasse uma chama |
+| TAS | Desenhar um laço no ar com uma mão ou instrumento | Movimento circular que se fecha em direção ao alvo |
+| N’DAH | Antebraços se fecham diante do tronco e se abrem | Criar uma barreira à frente do corpo ou do alvo protegido |
+| HA-WI | Punho cerrado projetado para a frente | Golpe direto, coerente com a cena de Carter em *The Serpent’s Shadow* |
+| L’MUN | Mão percorre o corpo/rosto e se fecha | Movimento de ocultar, acompanhado de desaparecimento gradual |
+| Levitação | Palma voltada para cima e mão subindo | Elevar o alvo acompanhando a mão, sem associar palavra divina não identificada |
+
+Esses gestos servem como brief de animação. Antes de selecionar clips Ara, precisamos testar se o movimento cabe no rig do Carter e se o objeto/hieróglifo fica visível na câmera de terceira pessoa. Se não houver clip convincente, a alternativa é criar um clip próprio ou retargetar um movimento compatível; não forçar `use_press` em todas as magias.
+
+
 ## 7. Arquitetura reutilizável
 
 A magia será um sistema global, não uma função exclusiva da sala de treinamento:

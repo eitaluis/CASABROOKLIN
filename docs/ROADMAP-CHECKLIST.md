@@ -247,3 +247,17 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 
 - [x] Fechar o percurso perimetral caminhável do terraço, com piscina, jantar e fogueira concentrados no setor principal.
 - [ ] Validar visualmente a orientação longitudinal do tapete de 40 × 15 pés em relação ao posicionamento final dos sofás e da estátua.
+
+
+## Correção canônica do exterior — 26/11/2026
+
+- [x] Primeira leitura externa limitada ao galpão industrial antigo.
+- [x] Manter a mansão de cinco andares e a escada como geometria de percepção mágica.
+- [x] Usar materiais invisíveis com escrita de profundidade para ocultar a arquitetura interna sem deixar os cômodos vazarem para a vista externa.
+- [x] Revelar fachada, escada e luzes depois de “olhar novamente” para o telhado na doca.
+- [x] Não criar silhuetas exteriores para Grande Salão, biblioteca, treinamento ou quartos.
+- [x] Reposicionar a escada para a lateral do galpão e alinhar patamar/passarela.
+- [x] Separar a Williamsburg Bridge da projeção do telhado e mantê-la sobre o corredor do East River.
+- [x] Colocar o barco sob o vão, junto ao extremo do cais.
+- [ ] QA visual da revelação e da oclusão dos ambientes internos em desktop/mobile.
+- [ ] QA de percurso completo, escada, ponte, barco e porta em desktop/mobile.

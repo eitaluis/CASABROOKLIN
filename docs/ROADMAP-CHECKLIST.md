@@ -20,7 +20,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 - [x] Carter Ara 3D Gen aprovado preservado; redesigns experimentais descartados
 - [x] Refinar lifecycle do Carter: descarte seguro do rig, mixer e listener de salto
-- [x] Expor altura retornada pelo Ara para calibração futura de câmera/colisão
+- [x] Expor altura retornada pelo Ara e usá-la para calibrar hitbox vertical e alvo da câmera no controlador compartilhado
 - [x] Preview informa falha de carregamento do Ara em vez de ficar preso no loading
 - [x] Nova camada visual do Grande Salão implementada no módulo compartilhado
 - [x] Escadarias laterais, corrimãos e colunas de lótus criados

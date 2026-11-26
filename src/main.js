@@ -4,9 +4,9 @@ import { buildExterior } from './exterior.js?v=magical-interior-shell-20261126b'
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-final-pass-20261126a';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-final-pass-20261126c';
 import { buildTrainingRoom } from './training-room.js?v=training-room-polish-20261126d';
-import { createInventory } from './inventory.js?v=duat-inventory-20261126c';
-import { createCharacter } from './character.js?v=carter-side-satchel-20261126f';
-import { createThirdPersonController } from './third-person.js?v=magical-interior-shell-20261126b';
+import { createInventory } from './inventory.js?v=duat-reach-20261126a';
+import { createCharacter } from './character.js?v=carter-duat-reach-20261126a';
+import { createThirdPersonController } from './third-person.js?v=duat-input-lock-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
@@ -215,6 +215,7 @@ revealCameraCue=()=>controller.focusOnRoof();
 
 const inventory = createInventory({
   THREE, character,
+  setControlsLocked: controller.setLocked,
   onUse: (weapon) => {
     const result = trainingRoom.onWeaponUse({
       weapon,

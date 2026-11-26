@@ -1,5 +1,44 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { VolumetricFire } from './vendor/volumetric-fire.js?v=mit-volumetric-fire-webgl2-20261126a';
+
+function assetUrl(path) {
+  return new URL('../assets/' + path, import.meta.url).href;
+}
+
+function bindPbrMaps(material, setId, repeat=[1,1], includeColor=false) {
+  const loader = new THREE.TextureLoader();
+  const configure = (texture, colorSpace) => {
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(repeat[0], repeat[1]);
+    texture.anisotropy = 8;
+    texture.colorSpace = colorSpace;
+    texture.needsUpdate = true;
+    return texture;
+  };
+  if (includeColor) {
+    const color = configure(loader.load(assetUrl('textures/' + setId + '/color.webp')), THREE.SRGBColorSpace);
+    material.map = color;
+    material.color.set(0xffffff);
+  }
+  const normal = configure(loader.load(assetUrl('textures/' + setId + '/normal.webp')), THREE.NoColorSpace);
+  const roughness = configure(loader.load(assetUrl('textures/' + setId + '/roughness.webp')), THREE.NoColorSpace);
+  material.normalMap = normal;
+  material.normalScale.set(0.72, 0.72);
+  material.roughnessMap = roughness;
+  material.needsUpdate = true;
+}
+
+function addBoxCollider(colliders, x, y, z, width, height, depth) {
+  if (!colliders) return;
+  colliders.push({
+    minX: x - width / 2, maxX: x + width / 2,
+    minY: y - height / 2, maxY: y + height / 2,
+    minZ: z - depth / 2, maxZ: z + depth / 2
+  });
+}
 
 function seeded(seed) { let n=seed>>>0; return () => ((n=(n*1664525+1013904223)>>>0)/4294967296); }
 
@@ -60,11 +99,31 @@ function woodMaterial() {
 function marbleMaterial() {
   const r=seeded(511);
   const map=tex((g,w,h)=>{
-    g.fillStyle='#171b1b';g.fillRect(0,0,w,h);
-    for(let i=0;i<150;i++){const x=r()*w,y=r()*h;g.strokeStyle=r()>.6?'rgba(197,170,128,0.2)':'rgba(100,126,119,0.16)';g.lineWidth=1+r()*3;g.beginPath();g.moveTo(x,y);g.bezierCurveTo(x+55,y-75,x+126,y+42,x+230,y-18);g.stroke();}
-    for(let i=0;i<16000;i++){g.fillStyle=r()>.5?'rgba(255,255,255,0.05)':'rgba(0,0,0,0.09)';g.fillRect(r()*w,r()*h,1+r()*2,1+r()*2);}
+    g.fillStyle='#101717';g.fillRect(0,0,w,h);
+    for(let i=0;i<220;i++){
+      const x=r()*w,y=r()*h;
+      const pale=r()>.56;
+      g.strokeStyle=pale?'rgba(179,166,139,'+(0.10+r()*.18)+')':'rgba(74,94,90,'+(0.08+r()*.18)+')';
+      g.lineWidth=.65+r()*2.8;
+      g.beginPath();g.moveTo(x,y);
+      g.bezierCurveTo(x+42,y-88,x+105,y+56,x+192,y-20);
+      g.bezierCurveTo(x+230,y-48,x+255,y+22,x+284,y+5);
+      g.stroke();
+    }
+    for(let i=0;i<30000;i++){
+      const n=0.025+r()*.08;
+      g.fillStyle=r()>.5?'rgba(255,255,255,'+n+')':'rgba(0,0,0,'+n+')';
+      g.fillRect(r()*w,r()*h,.6+r()*1.8,.6+r()*1.8);
+    }
+    for(let i=0;i<35;i++){
+      const x=r()*w,y=r()*h;
+      g.strokeStyle='rgba(197,174,133,0.18)';g.lineWidth=.6;
+      g.beginPath();g.moveTo(x,y);g.lineTo(x+20+r()*55,y-8+r()*18);g.stroke();
+    }
   },1024,1024,1,1);
-  return new THREE.MeshStandardMaterial({map,roughness:.29,metalness:.12});
+  return new THREE.MeshPhysicalMaterial({
+    map,roughness:.24,metalness:.14,clearcoat:.32,clearcoatRoughness:.2
+  });
 }
 
 function tube(points,radius,material,segments=48,radial=8) {
@@ -220,141 +279,270 @@ function ceilingOrnament(scene,brass,wood) {
 
 function createSofa(scene,x,z,rotation,upholstery,wood,brass) {
   const group=new THREE.Group();
-  group.name='sofá estofado do Grande Salão';
+  group.name='sofá de reserva do Grande Salão';
   group.position.set(x,13.175,z);
   group.rotation.y=rotation;
+  group.scale.set(.54,.74,.74);
 
   const base=new THREE.Mesh(new RoundedBoxGeometry(4.65,.34,1.95,8,.15),wood);
-  base.position.y=.27;base.castShadow=true;base.receiveShadow=true;group.add(base);
-
+  base.position.y=.25;base.castShadow=true;base.receiveShadow=true;group.add(base);
   const seat=new THREE.Mesh(new RoundedBoxGeometry(4.44,.27,1.72,10,.12),upholstery);
-  seat.position.set(0,.59,.04);seat.castShadow=true;seat.receiveShadow=true;group.add(seat);
-
+  seat.position.set(0,.54,.04);seat.castShadow=true;seat.receiveShadow=true;group.add(seat);
   const back=new THREE.Mesh(new RoundedBoxGeometry(4.48,.98,.43,10,.15),upholstery);
-  back.position.set(0,1.16,-.68);back.castShadow=true;group.add(back);
-
+  back.position.set(0,1.08,-.68);back.castShadow=true;group.add(back);
   for(const side of [-1,1]){
     const arm=new THREE.Mesh(new RoundedBoxGeometry(.66,.82,1.82,9,.2),upholstery);
-    arm.position.set(side*2.0,.89,.02);arm.castShadow=true;group.add(arm);
-
+    arm.position.set(side*2,.77,.02);arm.castShadow=true;group.add(arm);
     const cap=new THREE.Mesh(new RoundedBoxGeometry(.7,.1,1.72,7,.045),wood);
-    cap.position.set(side*2.0,1.34,.02);group.add(cap);
-
+    cap.position.set(side*2,1.2,.02);group.add(cap);
     for(const z0 of [-.72,.72]){
       const foot=new THREE.Mesh(new THREE.CylinderGeometry(.085,.12,.24,18),brass);
-      foot.position.set(side*1.96,.16,z0);group.add(foot);
+      foot.position.set(side*1.96,.13,z0);group.add(foot);
     }
   }
-
   for(const offset of [-1.45,0,1.45]){
     const cushion=new THREE.Mesh(new RoundedBoxGeometry(1.4,.19,1.36,9,.085),upholstery);
-    cushion.position.set(offset,.82,.03);cushion.castShadow=true;group.add(cushion);
-
+    cushion.position.set(offset,.72,.03);cushion.castShadow=true;group.add(cushion);
     const rear=new THREE.Mesh(new RoundedBoxGeometry(1.4,.72,.3,9,.11),upholstery);
-    rear.position.set(offset,1.33,-.53);rear.castShadow=true;group.add(rear);
-
+    rear.position.set(offset,1.22,-.53);rear.castShadow=true;group.add(rear);
     for(const dx of [-.22,0,.22]){
       const button=new THREE.Mesh(new THREE.SphereGeometry(.032,10,8),brass);
-      button.position.set(offset+dx,1.33,-.34);group.add(button);
+      button.position.set(offset+dx,1.22,-.34);group.add(button);
     }
-    const seam=tube([[offset-.58,.91,.68],[offset,.92,.72],[offset+.58,.91,.68]],.008,brass,22,5);
-    group.add(seam);
   }
-
-  group.add(tube([[-2,.42,.98],[-1,.42,1],[0,.42,1],[1,.42,1],[2,.42,.98]],.032,brass,32,7));
   scene.add(group);
+  return group;
 }
+
+function loadSofaAssets(scene, fallbacks, colliders, interactables) {
+  const loader=new GLTFLoader();
+  loader.setMeshoptDecoder(MeshoptDecoder);
+  const source=assetUrl('models/polyhaven-sofa-03.glb');
+  const placements=[
+    {x:-2.55,z:3.45,rotation:Math.PI/2,side:'oeste'},
+    {x:2.55,z:3.45,rotation:-Math.PI/2,side:'leste'}
+  ];
+  loader.load(source,gltf=>{
+    placements.forEach((place,index)=>{
+      const model=gltf.scene.clone(true);
+      model.name='sofá Poly Haven Sofa 03 · '+place.side;
+      model.position.set(place.x,13.175,place.z);
+      model.rotation.y=place.rotation;
+      model.scale.setScalar(.84);
+      model.traverse(object=>{
+        if(object.isMesh){object.castShadow=true;object.receiveShadow=true;}
+      });
+      model.userData.assetId='polyhaven-sofa-03';
+      model.userData.license='CC0-1.0';
+      model.userData.nativeDimensions=[2.731,.925,1.118];
+      model.userData.interaction={type:'inspect',label:'Sofá de couro',description:'Sofá de couro envelhecido com madeira entalhada e almofadas separadas.'};
+      scene.add(model);
+      if(fallbacks[index]) fallbacks[index].visible=false;
+    });
+  },undefined,error=>console.warn('Não foi possível carregar Sofa 03; mantendo o modelo de reserva.',error));
+
+  placements.forEach(place=>{
+    addBoxCollider(colliders,place.x,13.72,place.z,.98,1.1,2.42);
+    interactables.push({
+      name:'Sofá de couro '+place.side,
+      kind:'inspect',
+      label:'Sofá de couro do Grande Salão',
+      description:'Modelo Poly Haven Sofa 03: couro envelhecido, estrutura de madeira entalhada e almofadas estofadas. O sofá ocupa a escala de um móvel de dois/três lugares.',
+      position:new THREE.Vector3(place.x,13.7,place.z),
+      radius:1.65
+    });
+  });
+}
+
 function createRug(scene) {
-  const t=tex((g,w,h)=>{
-    g.fillStyle='#182f35';g.fillRect(0,0,w,h);
-    const grad=g.createRadialGradient(w/2,h/2,20,w/2,h/2,w*.55);grad.addColorStop(0,'#38565a');grad.addColorStop(.48,'#263f45');grad.addColorStop(1,'#14252c');g.fillStyle=grad;g.fillRect(0,0,w,h);
-    g.strokeStyle='#c29a5d';for(const i of [18,36,58,82]){g.lineWidth=i===18?10:3;g.strokeRect(i,i,w-i*2,h-i*2);}
-    g.save();g.translate(w/2,h/2);g.strokeStyle='#d0ad73';g.lineWidth=5;
-    for(let i=0;i<16;i++){g.rotate(Math.PI/8);g.beginPath();g.moveTo(0,-80);g.quadraticCurveTo(36,-155,0,-245);g.quadraticCurveTo(-36,-155,0,-80);g.stroke();}
-    g.beginPath();g.arc(0,0,78,0,Math.PI*2);g.stroke();g.fillStyle='#d6b578';g.font='70px serif';g.textAlign='center';g.fillText('𓇳',0,22);g.restore();
-    for(let i=0;i<3500;i++){g.fillStyle=Math.random()>.5?'rgba(245,221,174,.045)':'rgba(2,12,16,.09)';g.fillRect(Math.random()*w,Math.random()*h,1+Math.random()*3,1+Math.random()*2);}
+  const rand=seeded(20261126);
+  const color=tex((g,w,h)=>{
+    const base=g.createLinearGradient(0,0,w,h);
+    base.addColorStop(0,'#0e2025');base.addColorStop(.48,'#233b3d');base.addColorStop(1,'#101e23');
+    g.fillStyle=base;g.fillRect(0,0,w,h);
+
+    const palettes=['#28474a','#375352','#52604d','#6a583f','#233c40','#40565a'];
+    const sw=50,sh=40;
+    for(let row=-1;row<Math.ceil(h/sh)+1;row++){
+      const offset=(row%2)*sw*.5;
+      for(let col=-1;col<Math.ceil(w/sw)+1;col++){
+        const x=col*sw+offset,y=row*sh;
+        const tone=palettes[Math.floor(rand()*palettes.length)];
+        const gradient=g.createLinearGradient(x,y-sh*.35,x,y+sh*.55);
+        gradient.addColorStop(0,'#6d7460');gradient.addColorStop(.26,tone);gradient.addColorStop(1,'#111f24');
+        g.fillStyle=gradient;
+        g.beginPath();
+        g.moveTo(x-sw*.46,y);
+        g.bezierCurveTo(x-sw*.43,y-sh*.44,x+sw*.43,y-sh*.44,x+sw*.46,y);
+        g.bezierCurveTo(x+sw*.42,y+sh*.39,x+sw*.18,y+sh*.5,x,y+sh*.52);
+        g.bezierCurveTo(x-sw*.2,y+sh*.5,x-sw*.42,y+sh*.39,x-sw*.46,y);
+        g.closePath();g.fill();
+        g.strokeStyle='rgba(8,17,20,.72)';g.lineWidth=2.2;g.stroke();
+        g.strokeStyle='rgba(205,184,135,.3)';g.lineWidth=1.1;
+        g.beginPath();g.moveTo(x-sw*.36,y-sh*.02);g.quadraticCurveTo(x,y-sh*.33,x+sw*.36,y-sh*.02);g.stroke();
+        g.fillStyle='rgba(225,207,165,.12)';g.beginPath();g.ellipse(x,y+sh*.07,sw*.19,sh*.12,0,0,Math.PI*2);g.fill();
+        for(let n=0;n<18;n++){
+          g.fillStyle=rand()>.5?'rgba(220,205,166,.09)':'rgba(0,0,0,.12)';
+          g.fillRect(x+(rand()-.5)*sw*.65,y+(rand()-.5)*sh*.55,1+rand()*2,1+rand()*2);
+        }
+      }
+    }
+    g.strokeStyle='#a27c4e';g.lineWidth=14;g.strokeRect(10,10,w-20,h-20);
+    g.strokeStyle='rgba(226,197,143,.48)';g.lineWidth=3;g.strokeRect(27,27,w-54,h-54);
+    for(let i=0;i<1200;i++){
+      g.fillStyle=rand()>.5?'rgba(211,194,150,.06)':'rgba(0,0,0,.08)';
+      g.fillRect(rand()*w,rand()*h,1+rand()*2,1+rand()*2);
+    }
   },1024,1024,1,1);
-  const rug=new THREE.Mesh(new THREE.CircleGeometry(1,112),new THREE.MeshStandardMaterial({map:t,roughness:.98}));
-  rug.name='tapete oval de lã do Grande Salão';rug.rotation.x=-Math.PI/2;rug.scale.set(6,1,3);rug.position.set(0,13.205,3.45);rug.receiveShadow=true;scene.add(rug);
-  for(const spec of [[2.7,.023],[4.7,.018]]){const ring=new THREE.Mesh(new THREE.TorusGeometry(spec[0],spec[1],7,100),new THREE.MeshStandardMaterial({color:0xb88b4d,metalness:.58,roughness:.55}));ring.rotation.x=Math.PI/2;ring.position.set(0,13.22,3.45);ring.scale.z=.57;scene.add(ring);}
+  const bump=tex((g,w,h)=>{
+    g.fillStyle='#727272';g.fillRect(0,0,w,h);
+    const sw=50,sh=40;
+    for(let row=-1;row<Math.ceil(h/sh)+1;row++){
+      const offset=(row%2)*sw*.5;
+      for(let col=-1;col<Math.ceil(w/sw)+1;col++){
+        const x=col*sw+offset,y=row*sh;
+        g.fillStyle='#aaaaaa';g.beginPath();g.moveTo(x-sw*.46,y);
+        g.bezierCurveTo(x-sw*.43,y-sh*.44,x+sw*.43,y-sh*.44,x+sw*.46,y);
+        g.bezierCurveTo(x+sw*.42,y+sh*.39,x+sw*.18,y+sh*.5,x,y+sh*.52);
+        g.bezierCurveTo(x-sw*.2,y+sh*.5,x-sw*.42,y+sh*.39,x-sw*.46,y);g.closePath();g.fill();
+        g.strokeStyle='#404040';g.lineWidth=2;g.stroke();
+      }
+    }
+    for(let i=0;i<16000;i++){const v=Math.floor(90+rand()*75);g.fillStyle='rgb('+v+','+v+','+v+')';g.fillRect(rand()*w,rand()*h,1+rand()*2,1+rand()*2);}
+  },1024,1024,1,1);
+  bump.colorSpace=THREE.NoColorSpace;
+  const rug=new THREE.Mesh(new THREE.CircleGeometry(1,144),new THREE.MeshStandardMaterial({map:color,bumpMap:bump,bumpScale:.065,roughness:.94}));
+  rug.name='tapete oval de couro com padrão de escamas de serpente do Grande Salão';
+  rug.rotation.x=-Math.PI/2;rug.scale.set(4.4,1,2.45);rug.position.set(0,13.205,3.45);rug.receiveShadow=true;scene.add(rug);
+  for(const spec of [[2.7,.023],[4.05,.018]]){
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(spec[0],spec[1],7,112),new THREE.MeshStandardMaterial({color:0x957046,metalness:.52,roughness:.58}));
+    ring.rotation.x=Math.PI/2;ring.position.set(0,13.22,3.45);ring.scale.z=.56;scene.add(ring);
+  }
 }
 
 function centerTable(scene,wood,brass) {
   const group=new THREE.Group();
-  group.name='mesa redonda do Grande Salão';
+  group.name='mesa baixa circular de nogueira e bronze do Grande Salão';
   group.position.set(0,13.175,3.45);
 
   const base=new THREE.Mesh(new THREE.LatheGeometry([
-    new THREE.Vector2(.22,0),new THREE.Vector2(.34,.12),new THREE.Vector2(.23,.32),
-    new THREE.Vector2(.2,.63),new THREE.Vector2(.36,.84),new THREE.Vector2(.42,.96)
-  ],36),wood);
-  base.position.y=.02;base.scale.y=.58;base.castShadow=true;group.add(base);
+    new THREE.Vector2(.18,0),new THREE.Vector2(.27,.05),new THREE.Vector2(.34,.12),
+    new THREE.Vector2(.26,.19),new THREE.Vector2(.21,.30),new THREE.Vector2(.27,.36),
+    new THREE.Vector2(.35,.4)
+  ],64),wood);
+  base.position.y=.02;base.scale.y=.78;base.castShadow=true;base.receiveShadow=true;group.add(base);
 
-  const top=new THREE.Mesh(new THREE.CylinderGeometry(1.48,1.4,.18,64,1),wood);
-  top.position.y=.68;top.castShadow=true;top.receiveShadow=true;group.add(top);
+  const lowerFoot=new THREE.Mesh(new THREE.CylinderGeometry(.49,.58,.09,64),wood);
+  lowerFoot.position.y=.08;lowerFoot.castShadow=true;group.add(lowerFoot);
+  const top=new THREE.Mesh(new THREE.CylinderGeometry(.74,.76,.12,96,2),wood);
+  top.position.y=.47;top.castShadow=true;top.receiveShadow=true;group.add(top);
 
-  const edge=new THREE.Mesh(new THREE.TorusGeometry(1.43,.05,10,72),brass);
-  edge.rotation.x=Math.PI/2;edge.position.y=.775;group.add(edge);
+  for(const [radius,tubeRadius] of [[.75,.035],[.68,.012],[.48,.012]]){
+    const rim=new THREE.Mesh(new THREE.TorusGeometry(radius,tubeRadius,10,96),brass);
+    rim.rotation.x=Math.PI/2;rim.position.y=.535;group.add(rim);
+  }
 
-  const inset=new THREE.Mesh(new THREE.CircleGeometry(1.25,64),new THREE.MeshStandardMaterial({color:0x20383b,roughness:.7,metalness:.18}));
-  inset.rotation.x=-Math.PI/2;inset.position.y=.773;group.add(inset);
+  const inset=new THREE.Mesh(new THREE.CircleGeometry(.62,96),new THREE.MeshStandardMaterial({
+    color:0x263b3b,roughness:.48,metalness:.22,normalMap:wood.normalMap,roughnessMap:wood.roughnessMap
+  }));
+  inset.rotation.x=-Math.PI/2;inset.position.y=.535;group.add(inset);
 
-  const sun=new THREE.Mesh(new THREE.TorusGeometry(.48,.032,8,48),brass);
-  sun.rotation.x=Math.PI/2;sun.position.y=.784;group.add(sun);
+  const medallion=new THREE.Mesh(new THREE.TorusGeometry(.25,.025,10,72),brass);
+  medallion.rotation.x=Math.PI/2;medallion.position.y=.542;group.add(medallion);
+  const sun=new THREE.Mesh(new THREE.SphereGeometry(.11,24,16),brass);
+  sun.scale.set(1,.15,1);sun.position.y=.545;group.add(sun);
+
+  const engraved=[];
+  for(let i=0;i<12;i++){
+    const a=i/12*Math.PI*2;
+    const p1=[Math.cos(a)*.36,.543,Math.sin(a)*.36];
+    const p2=[Math.cos(a)*.56,.543,Math.sin(a)*.56];
+    engraved.push(tube([p1,[Math.cos(a+.06)*.46,.543,Math.sin(a+.06)*.46],p2],.006,brass,12,5));
+  }
+  engraved.forEach(line=>group.add(line));
   scene.add(group);
-}
-function flameGeometry(width,height,depth,phase) {
-  const rows=22,radial=14,pos=[],col=[],idx=[];
-  const c0=new THREE.Color(0xc91f08),c1=new THREE.Color(0xff5a0b),c2=new THREE.Color(0xffbd32),c3=new THREE.Color(0xfff0a2);
-  for(let j=0;j<=rows;j++){
-    const t=j/rows,profile=Math.pow(.28+.72*Math.sin(t*Math.PI*.5),.55)*Math.pow(1-t,.78);
-    const radius=width*profile,centerX=Math.sin(t*5.4+phase)*width*.22*t,centerZ=Math.sin(t*6.8+phase*1.7)*depth*.15;
-    let color=t<.22?c0.clone().lerp(c1,t/.22):t<.66?c1.clone().lerp(c2,(t-.22)/.44):c2.clone().lerp(c3,(t-.66)/.34);
-    for(let k=0;k<=radial;k++){
-      const a=k/radial*Math.PI*2,ripple=1+.11*Math.sin(a*3+phase+t*9)+.055*Math.sin(a*5-t*12);
-      pos.push(centerX+Math.cos(a)*radius*ripple,t*height,centerZ+Math.sin(a)*radius*depth/Math.max(width,.001)*ripple);
-      const f=.82+.18*Math.sin(a+phase);col.push(color.r*f,color.g*f,color.b*f);
-      if(j<rows&&k<radial){const p=j*(radial+1)+k,n=p+radial+1;idx.push(p,n,p+1,p+1,n,n+1);}
-    }
-  }
-  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));g.setIndex(idx);g.computeVertexNormals();return g;
+  return group;
 }
 
-function addFire(scene,animated) {
+function addFire(scene,animated,camera,isTouchDevice=false) {
   const logMat=woodMaterial();
-  for(let i=0;i<4;i++){const log=new THREE.Mesh(new THREE.CylinderGeometry(.075,.095,1.15,14),logMat);log.name='lenha da lareira';log.position.set(-.75+i*.48,14.35+(i%2)*.035,-8.23);log.rotation.z=Math.PI/2+(i%2?.12:-.08);log.rotation.x=i%2?.2:-.18;log.castShadow=true;scene.add(log);}
-  const ember=new THREE.Mesh(new THREE.SphereGeometry(1,32,18),new THREE.MeshStandardMaterial({color:0x511b10,emissive:0x9d2c07,emissiveIntensity:.75,roughness:.9}));
-  ember.name='brasa da lareira';ember.scale.set(1.62,.13,.32);ember.position.set(0,14.28,-8.31);scene.add(ember);
-  const outerMat=new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.DoubleSide,transparent:true,opacity:.97,blending:THREE.AdditiveBlending,depthWrite:false});
-  const coreMat=new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.DoubleSide,transparent:true,opacity:.98,blending:THREE.AdditiveBlending,depthWrite:false});
-  const tongues=[[-1.53,1.05,.25,.25],[-1.15,1.45,.34,.12],[-.76,1.17,.27,.4],[-.34,1.62,.34,.2],[.05,1.38,.31,.07],[.43,1.55,.32,.34],[.84,1.18,.29,.18],[1.19,1.4,.34,.26],[1.52,.98,.24,.15]];
-  for(let i=0;i<tongues.length;i++){
-    const v=tongues[i],phase=i*1.73,group=new THREE.Group();group.name='língua orgânica de fogo';
-    const outer=new THREE.Mesh(flameGeometry(v[2],v[1],v[3],phase),outerMat);outer.name='chama externa laranja';outer.position.set(v[0],0,-8.28+(i%3)*.025);group.add(outer);
-    if(i%2===0||i===4){const inner=new THREE.Mesh(flameGeometry(v[2]*.42,v[1]*.67,v[3]*.62,phase+.9),coreMat);inner.name='núcleo amarelo da chama';inner.position.set(v[0]-.015,.025,-8.02+(i%2)*.03);group.add(inner);}
-    group.position.set(0,14.3,0);scene.add(group);
-    animated.push({obj:group,fire:true,phase,baseY:14.3,baseRotationZ:(i-tongues.length/2)*.012,baseScaleY:1});
+  for(let i=0;i<5;i++){
+    const log=new THREE.Mesh(new THREE.CylinderGeometry(.075,.105,1.16,20),logMat);
+    log.name='lenha de nogueira carbonizada da lareira';
+    log.position.set(-.78+i*.39,14.33+(i%2)*.075,-8.24);
+    log.rotation.z=Math.PI/2+(i%2?.15:-.12);log.rotation.x=i%2?.23:-.18;
+    log.castShadow=true;log.receiveShadow=true;scene.add(log);
   }
-  for(let i=0;i<18;i++){
-    const sparkMat=new THREE.MeshBasicMaterial({color:i%4===0?0xffdf8a:0xffa337,transparent:true,opacity:.82,blending:THREE.AdditiveBlending});
-    const s=new THREE.Mesh(new THREE.SphereGeometry(.018+(i%3)*.009,8,6),sparkMat);
-    s.name='faísca de fogo';s.position.set((Math.random()-.5)*2.7,14.55+Math.random()*.8,-8.12+Math.random()*.25);scene.add(s);
-    animated.push({obj:s,phase:i*.82,particle:true,baseX:s.position.x,baseY:s.position.y,baseZ:s.position.z});
+  const ember=new THREE.Mesh(new THREE.SphereGeometry(1,48,24),new THREE.MeshStandardMaterial({
+    color:0x35150b,emissive:0xb23808,emissiveIntensity:1.2,roughness:.9
+  }));
+  ember.name='leito de brasas incandescentes';
+  ember.scale.set(1.55,.13,.34);ember.position.set(0,14.27,-8.31);scene.add(ember);
+
+  const textureLoader=new THREE.TextureLoader();
+  const noise=textureLoader.load(assetUrl('fire/nzw.png'));
+  noise.wrapS=noise.wrapT=THREE.RepeatWrapping;
+  noise.colorSpace=THREE.NoColorSpace;
+  noise.minFilter=THREE.LinearFilter;noise.magFilter=THREE.LinearFilter;
+  const profile=textureLoader.load(assetUrl('fire/firetex.png'));
+  profile.wrapS=profile.wrapT=THREE.ClampToEdgeWrapping;
+  profile.colorSpace=THREE.NoColorSpace;
+  profile.minFilter=THREE.LinearFilter;profile.magFilter=THREE.LinearFilter;
+
+  const volume=new VolumetricFire({
+    camera,textureNoise:noise,textureProfile:profile,
+    width:3.5,height:2.25,depth:.66,
+    sliceSpacing:isTouchDevice?.105:.065,
+    segments:isTouchDevice?18:28,
+    debug:false
+  });
+  volume.name='fogo volumétrico com ruído procedural da lareira';
+  volume.position.set(0,15.35,-8.36);
+  volume.material.uniforms.magnitude.value=1.42;
+  volume.material.uniforms.lacunarity.value=2.05;
+  volume.material.uniforms.gain.value=.54;
+  volume.material.uniforms.noiseScale.value.set(1.35,2.45,1.0,.42);
+  const identity=new THREE.Quaternion();
+  volume.setControlPoints([
+    {pos:new THREE.Vector3(-.02,-1.06,0),scale:new THREE.Vector3(3.55,1,.62),rot:identity.clone()},
+    {pos:new THREE.Vector3(-.12,-.36,0),scale:new THREE.Vector3(3.25,1,.6),rot:new THREE.Quaternion().setFromEuler(new THREE.Euler(0,0,-.025))},
+    {pos:new THREE.Vector3(.10,.38,0),scale:new THREE.Vector3(2.25,1,.43),rot:new THREE.Quaternion().setFromEuler(new THREE.Euler(0,0,.055))},
+    {pos:new THREE.Vector3(-.04,1.1,0),scale:new THREE.Vector3(.12,1,.055),rot:new THREE.Quaternion().setFromEuler(new THREE.Euler(0,0,-.08))}
+  ]);
+  scene.add(volume);
+
+  for(let i=0;i<22;i++){
+    const mat=new THREE.MeshBasicMaterial({color:i%5===0?0xffe4a3:0xffa13b,transparent:true,opacity:.82,blending:THREE.AdditiveBlending});
+    const spark=new THREE.Mesh(new THREE.SphereGeometry(.016+(i%3)*.009,10,8),mat);
+    spark.name='faísca ascendente da lareira';
+    spark.position.set((Math.random()-.5)*2.65,14.55+Math.random()*.85,-8.11+Math.random()*.24);
+    scene.add(spark);
+    animated.push({obj:spark,phase:i*.77,particle:true,baseX:spark.position.x,baseY:spark.position.y,baseZ:spark.position.z});
   }
 
-  const glowMap=tex((g,w,h)=>{
-    const gradient=g.createRadialGradient(w/2,h/2,8,w/2,h/2,w*.48);
-    gradient.addColorStop(0,'rgba(255,220,128,0.42)');
-    gradient.addColorStop(.22,'rgba(255,123,35,0.24)');
-    gradient.addColorStop(.58,'rgba(238,65,12,0.08)');
-    gradient.addColorStop(1,'rgba(238,65,12,0)');
-    g.fillStyle=gradient;g.fillRect(0,0,w,h);
+  const halo=tex((g,w,h)=>{
+    const gr=g.createRadialGradient(w/2,h/2,5,w/2,h/2,w*.49);
+    gr.addColorStop(0,'rgba(255,229,155,.46)');gr.addColorStop(.25,'rgba(255,129,44,.23)');
+    gr.addColorStop(.62,'rgba(203,53,9,.07)');gr.addColorStop(1,'rgba(203,53,9,0)');
+    g.fillStyle=gr;g.fillRect(0,0,w,h);
   },256,256,1,1);
-  const glow=new THREE.Mesh(new THREE.PlaneGeometry(4.4,2.6),new THREE.MeshBasicMaterial({map:glowMap,transparent:true,opacity:.72,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
-  glow.name='halo quente da chama';glow.position.set(0,15.35,-8.57);scene.add(glow);
-  const light=new THREE.PointLight(0xff7b25,4.8,17,1.55);light.name='luz dinâmica da lareira';light.position.set(0,15.05,-7.35);scene.add(light);
-  const fill=new THREE.PointLight(0xffa54d,1.7,10,1.9);fill.position.set(0,14.55,-8);scene.add(fill);
-  return light;
+  const glow=new THREE.Mesh(new THREE.PlaneGeometry(4.5,2.7),new THREE.MeshBasicMaterial({
+    map:halo,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide
+  }));
+  glow.name='reflexo volumétrico quente da lareira';glow.position.set(0,15.3,-8.57);scene.add(glow);
+
+  const light=new THREE.PointLight(0xff7b25,4.6,17,1.55);
+  light.name='luz dinâmica do fogo da lareira';light.position.set(0,15.05,-7.35);scene.add(light);
+  const fill=new THREE.PointLight(0xffa54d,1.8,10,1.9);fill.position.set(0,14.55,-8);scene.add(fill);
+
+  return {
+    fireLight:light,
+    update(time){
+      camera.updateMatrixWorld(true);
+      scene.updateMatrixWorld(true);
+      volume.update(time);
+    }
+  };
 }
 
 function addThoth(scene,marble,pale,brass,reliefTex) {

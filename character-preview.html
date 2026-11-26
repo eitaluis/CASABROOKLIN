@@ -167,13 +167,19 @@ const inventory = createInventory({
   THREE,
   character,
   setControlsLocked: (locked) => {
+    if (locked === interactionLocked) {
+      if (locked) speed = 0;
+      return;
+    }
     interactionLocked = locked;
-    if (locked) speed = 0;
-    for (const button of previewButtons) {
-      if (locked) {
+    if (locked) {
+      speed = 0;
+      for (const button of previewButtons) {
         button.dataset.disabledBeforeLock = String(button.disabled);
         button.disabled = true;
-      } else {
+      }
+    } else {
+      for (const button of previewButtons) {
         button.disabled = button.dataset.disabledBeforeLock === 'true';
         delete button.dataset.disabledBeforeLock;
       }

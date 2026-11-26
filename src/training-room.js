@@ -132,7 +132,7 @@ export function buildTrainingRoom({
     c.fillStyle = '#bd925e'; c.fillRect(0, 0, w, h);
     b.fillStyle = '#888888'; b.fillRect(0, 0, w, h);
     const plankH = 42;
-    for (let row = 0; row < 12; row++) {
+    for (let row = 0; row < 24; row++) {
       const offset = row % 2 ? 122 : 0;
       for (let col = -1; col < 7; col++) {
         const x = col * 250 + offset;
@@ -515,7 +515,7 @@ export function buildTrainingRoom({
       for(let stripe=0;stripe<4;stripe++){const band=new THREE.Mesh(new THREE.BoxGeometry(.19,.025,.245),bronze);band.position.set(side*.34,1.72+stripe*.17,.025);group.add(band);}
     }
     const uraeus=new THREE.Mesh(new THREE.TorusGeometry(.09,.028,8,24),bronze);uraeus.position.set(0,2.55,.23);uraeus.rotation.x=Math.PI/2;group.add(uraeus);
-    // Disco solar vazado: aro interno com 47 cm de diâmetro, dentro do disco cerimonial.
+    // Disco solar vazado: abertura interna de 45 cm; a borda superior do aro fica a 3,05 m.
     const sunCenter=new THREE.Vector3(0,2.761,.2);
     const sunOuter=new THREE.Mesh(new THREE.TorusGeometry(.47,.055,12,64),bronze);sunOuter.position.copy(sunCenter);group.add(sunOuter);
     const rim=new THREE.Mesh(new THREE.TorusGeometry(.257,.032,12,64),darkBronze);rim.position.copy(sunCenter);group.add(rim);
@@ -544,10 +544,10 @@ export function buildTrainingRoom({
     scoreCtx.fillStyle = '#182d37'; scoreCtx.fillRect(0, 0, 640, 180);
     scoreCtx.strokeStyle = '#c59b58'; scoreCtx.lineWidth = 9; scoreCtx.strokeRect(8, 8, 624, 164);
     scoreCtx.fillStyle = '#ead6aa'; scoreCtx.textAlign = 'center';
-    scoreCtx.font = 'bold 25px Georgia'; scoreCtx.fillText('BROOKLYN HOUSE  ·  TRAINING', 320, 48);
+    scoreCtx.font = 'bold 25px Georgia'; scoreCtx.fillText('BROOKLYN HOUSE  ·  AULA DE TREINAMENTO', 320, 48);
     scoreCtx.font = 'bold 58px Georgia'; scoreCtx.fillText('CESTAS  ' + String(baskets).padStart(2, '0'), 195, 125);
     scoreCtx.font = 'bold 42px Georgia'; scoreCtx.fillText('ALVOS  ' + String(targetHits).padStart(2, '0'), 480, 125);
-    if (active) { scoreCtx.font = 'bold 18px Georgia'; scoreCtx.fillStyle = '#f4b765'; scoreCtx.fillText('PRÁTICA ATIVA', 320, 157); }
+    if (active) { scoreCtx.font = 'bold 18px Georgia'; scoreCtx.fillStyle = '#f4b765'; scoreCtx.fillText('PRÁTICA DE ALVOS ATIVA', 320, 157); }
     scoreboardTexture.needsUpdate = true;
   }
   const scoreboardTexture = new THREE.CanvasTexture(scoreCanvas);

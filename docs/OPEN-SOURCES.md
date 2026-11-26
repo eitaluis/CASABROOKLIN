@@ -110,3 +110,14 @@ Os mapas estão locais para que a sala não dependa de downloads de textura em t
 - O catálogo identifica duas figuras do Archaeological Museum in Kraków, digitalizadas pelo projeto Virtual Museums of Małopolska, e declara CC0.
 - A página original do modelo, a disponibilidade do arquivo, a topologia, as dimensões e a licença na fonte primária ainda precisam ser confirmadas. Não importar nem atribuir CC0 ao runtime até essa verificação.
 - Uso atual: referência de pesquisa para proporção, pose mumiforme, ferramentas e acabamento de shabtis históricos; não substitui os quatro modelos existentes.
+
+
+## Refinamento de escala do waterfront
+
+- NYC DOT — Williamsburg Bridge: https://www.nyc.gov/html/dot/html/infrastructure/williamsburg-bridge.shtml. Referência oficial para comprimento total, vão principal, clearance de navegação, altura das torres e quatro cabos principais. Os dados orientam proporção; não foram importados modelos ou desenhos técnicos.
+- NYC Department of Records and Information Services — arquivo fotográfico: https://www.archives.nyc/blog/tag/Williamsburg%2BBridge. Referência visual histórica para a estrutura de aço, as margens e o tecido industrial; nenhuma foto foi importada.
+- Poly Haven Red Brick: https://polyhaven.com/a/red_brick — CC0, Rob Tuytel. Candidato para futuro passe PBR do armazém; não está carregado no runtime.
+- Poly Haven Brick Wall 001: https://polyhaven.com/a/brick_wall_001 — CC0. Alternativa avaliada, não carregada.
+- Poly Haven Broken Brick Wall: https://polyhaven.com/a/broken_brick_wall — CC0. Referência para danos localizados, não carregada.
+- Kits de cidade low-poly e galpão contemporâneo em aço foram avaliados e rejeitados para as peças principais por incompatibilidade de linguagem visual e do edifício descrito no romance.
+- O estudo detalhado e as fichas estão em docs/BROOKLYN-HOUSE-EXTERIOR.md. A geometria da ponte, skyline e barco é original; as páginas acima são referências, não assets runtime.

@@ -25,7 +25,7 @@ CASABROOKLIN/
 - `src/main.js`: inicialização Three.js, materiais-base, iluminação, HUD, minimapa e loop de renderização.
 - `src/world.js`: geometria da doca, armazém, fachada, escada em caracol, Grande Salão, biblioteca e ala dos quartos.
 - `src/character.js`: carregamento do GLB, roupa procedural, acessórios, inicialização do rig e fallback articulado.
-- `src/third-person.js`: WASD, corrida, salto, rotação por mouse, câmera de perseguição e teleporte de áreas.
+- `src/third-person.js`: WASD, corrida, salto, rotação por mouse, câmera de perseguição, teleporte e colisão leve por volumes AABB.
 - `assets/manifest.json`: proveniência, endereço remoto e licenças dos assets.
 - `docs/OPEN-SOURCES.md`: fontes abertas e decisões de licença.
 
@@ -45,7 +45,7 @@ O mundo utiliza metros e eixo Y para cima. O personagem tem escala aproximada de
 
 ## Próximas etapas técnicas
 
-1. Colisão física simples com paredes, pilares e mobiliário.
+1. Expandir os volumes de colisão para os demais objetos e resolver a circulação vertical na escada em caracol.
 2. Interação com portas, maçanetas, fechaduras e objetos.
 3. Animação de subida/descida da escada em caracol com detecção de degraus.
 4. Sons de passos por tipo de superfície.

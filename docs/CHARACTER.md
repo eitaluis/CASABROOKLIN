@@ -1,6 +1,6 @@
 # Carter Kane — modelo, movimento e refinamento
 
-Status: **base Ara aprovada preservada; primeira camada de acessórios próprios e ações cinematográficas integrada. Inspeção visual real ainda pendente.**
+Status: **revisão da bolsa, remoção da mochila-base e ajuste de encaixe do colar implementados; inspeção visual real ainda pendente.**
 
 ## Decisões confirmadas
 
@@ -23,15 +23,15 @@ Status: **base Ara aprovada preservada; primeira camada de acessórios próprios
 
 Módulo: src/character-accessories.js.
 
-- Bolsa transversal em couro conhaque, com corpo estruturado, aba, bolso frontal, costuras e ferragens em latão.
-- Alça diagonal do ombro esquerdo ao quadril direito do Carter.
-- Bolsa posicionada no quadril direito; o grupo é anexado ao osso Hips quando disponível, com fallback no root do modelo.
-- O trecho superior da alça e a corrente/medalhão têm âncoras próprias no alto do tronco (prioridade Spine2, depois Spine1/Chest/Spine); a bolsa permanece presa à pelve. Isso evita que o pingente e a alça acompanhem o quadril em vez do tórax.
-- Medalhão dourado independente, corrente e relevo egípcio simplificado.
+- Bolsa transversal em couro conhaque, agora cerca de 15% menor, com corpo arredondado e levemente afunilado, aba flexível, bolso discreto e ferragens pequenas em latão. A silhueta foi revista para não parecer um estojo rígido.
+- A bolsa fica no quadril direito posterior, próxima à região do cóccix, com a face larga girada 90° para a lateral; vista de frente ou de costas, deve aparecer predominantemente de perfil.
+- O ponto de apoio da bolsa é o osso Hips. O trecho superior da alça segue Spine2 e contorna a lateral do tronco até a parte posterior do quadril.
+- A mochila que vinha gravada no share do Ara foi removida na geração do personagem por `carry: 'none'`. A bolsa transversal autoral é o único item de carga.
+- Corrente e medalhão mantêm o desenho aprovado, mas foram recuados 4,5 cm em direção ao tórax para evitar o efeito flutuante. O pingente continua preso ao alto do tronco (prioridade Spine2, depois Spine1/Chest/Spine).
 - Oscilação secundária discreta da bolsa e do medalhão, atualizada pelo mesmo ciclo de movimento.
 - Geometria e materiais são originais do projeto; não dependem de GLB externo nem de download em runtime.
 
-A modelagem de detalhe em Blender ainda não foi concluída. O módulo Three.js atual é a primeira implementação funcional de acessórios. O gerador Blender já cria uma fonte editável com âncoras separadas para Hips e Spine2; ela deve servir para refinar escala, posição e leitura e, depois, salvar uma cena .blend validada.
+O módulo Three.js é a implementação em runtime. O gerador Blender foi sincronizado com escala, posição posterior, rotação lateral e recuo do colar; ainda falta abrir o conjunto sobre o Carter Ara no Blender, fazer o ajuste visual fino e salvar uma cena .blend validada.
 
 ## Ações cinematográficas
 
@@ -61,9 +61,11 @@ Abra character-preview.html para conferir o mesmo módulo usado pelo jogo. O pre
 ## QA obrigatório — não marcar como concluído antes de testar
 
 - Comparar frente, perfil e costas com a referência de Karen de la Vega.
-- Confirmar visualmente que a bolsa está no quadril direito do Carter, não apenas na direita do enquadramento.
-- Conferir se a alça parte do ombro esquerdo e não atravessa pescoço, rosto ou clavícula.
-- Conferir escala, rotação e profundidade do medalhão.
+- Confirmar que a mochila Ara não aparece e que a bolsa transversal é o único item de carga.
+- Confirmar que a bolsa está menor, na lateral posterior do quadril direito, e que a face larga não aponta para a frente nem para trás.
+- Conferir se a alça cruza o peito e contorna a lateral sem atravessar pescoço, rosto, clavícula ou braço.
+- Confirmar que o corpo da bolsa lê como couro macio e arredondado, não como rádio/estojo rígido.
+- Conferir se o colar acompanha a superfície do tórax, sem flutuar nem atravessar a camisa.
 - Verificar clipping da bolsa e da alça em idle, walk, run, curvas e salto.
 - Verificar o balanço secundário sem vibração, penetração na perna ou movimento excessivo.
 - Confirmar que os cinco botões cinematográficos correspondem a clips carregados no Ara.
@@ -73,7 +75,7 @@ Abra character-preview.html para conferir o mesmo módulo usado pelo jogo. O pre
 
 ## Próximas etapas
 
-1. Abrir o preview no navegador e corrigir posição/orientação dos acessórios com base na inspeção real.
+1. Abrir o preview no navegador e inspecionar frente, costas, perfil e 3/4; calibrar a bolsa posterior/lateral e o contato do colar com o tórax.
 2. Executar assets/models/carter/blender/create_carter_accessories.py no Blender, comparar a posição com o Carter Ara e salvar a cena-fonte .blend após a inspeção.
 3. Fazer revisão de materiais e costuras à escala real, mantendo leitura clara no mobile.
 4. Ampliar as interações situacionais — observar estátuas, livros e objetos, cumprimentar e gesticular — sem interromper indevidamente a locomoção. O olhar dirigido ao objeto já está integrado ao exame por proximidade.

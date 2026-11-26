@@ -90,10 +90,16 @@ export async function createCharacter({
     return found;
   }
   const headBones = [
-    findRigBone(['Head', 'mixamorigHead']),
-    findRigBone(['Neck', 'mixamorigNeck'])
+    findRigBone(['Neck', 'mixamorigNeck']),
+    findRigBone(['Head', 'mixamorigHead'])
   ].filter(Boolean);
-  const neutralHeadPose = new Map(headBones.map(bone => [bone, bone.quaternion.clone()]));
+  root.updateMatrixWorld(true);
+  const neutralHeadWorldPose = new Map(headBones.map(bone => [
+    bone, bone.getWorldQuaternion(new THREE.Quaternion())
+  ]));
+  const rootWorldQuaternion = new THREE.Quaternion();
+  const parentWorldQuaternion = new THREE.Quaternion();
+  const desiredHeadWorldQuaternion = new THREE.Quaternion();
   const castingBones = {
     hips: findRigBone(['Hips', 'mixamorigHips']),
     leftUpLeg: findRigBone(['LeftUpLeg', 'mixamorigLeftUpLeg']),
@@ -224,8 +230,18 @@ export async function createCharacter({
 
     // A cabeça fica no eixo neutro do rig durante o feitiço: não acompanha
     // a altura do Shabti e não inclina para baixo.
-    if (castingBodyPose) {
-      for (const [bone, quaternion] of neutralHeadPose) bone.quaternion.copy(quaternion);
+    if (castingBodyPose && neutralHeadWorldPose.size) {
+      // Compensa também a inclinação herdada do tronco: a cabeça conserva a
+      // orientação mundial neutra, mesmo quando o peito assume a postura de ataque.
+      root.updateMatrixWorld(true);
+      root.getWorldQuaternion(rootWorldQuaternion);
+      for (const [bone, neutralWorldQuaternion] of neutralHeadWorldPose) {
+        if (!bone.parent) continue;
+        bone.parent.getWorldQuaternion(parentWorldQuaternion);
+        desiredHeadWorldQuaternion.copy(rootWorldQuaternion).multiply(neutralWorldQuaternion);
+        bone.quaternion.copy(parentWorldQuaternion.invert().multiply(desiredHeadWorldQuaternion));
+        root.updateMatrixWorld(true);
+      }
     }
 
     const w = castingBodyWeight;

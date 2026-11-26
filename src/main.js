@@ -5,7 +5,7 @@ import { buildInteriorDetails } from './interior-details.js?v=great-hall-final-p
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-final-pass-20261126c';
 import { buildTrainingRoom } from './training-room.js?v=training-room-polish-20261126d';
 import { createInventory } from './inventory.js?v=duat-reach-20261126b';
-import { createCharacter } from './character.js?v=carter-satchel-fit-20261126h';
+import { createCharacter } from './character.js?v=carter-satchel-fit-20261126i';
 import { createThirdPersonController } from './third-person.js?v=duat-input-lock-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';

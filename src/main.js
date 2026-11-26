@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=great-hall-final-pass-20261126a';
+import { buildWorld } from './world.js?v=great-hall-final-pass-20261126b';
 import { buildExterior } from './exterior.js?v=brooklyn-east-river-surface-20261126c';
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-final-pass-20261126a';
-import { buildGrandSalon } from './grand-salon.js?v=great-hall-final-pass-20261126b';
+import { buildGrandSalon } from './grand-salon.js?v=great-hall-final-pass-20261126c';
 import { buildTrainingRoom } from './training-room.js?v=training-room-interactive-20261126c';
 import { createInventory } from './inventory.js?v=training-weapon-hook-20261126a';
 import { createCharacter } from './character.js?v=carter-lifecycle-20261126a';

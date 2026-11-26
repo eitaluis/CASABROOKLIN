@@ -599,6 +599,13 @@
       "license": "SIL Open Font License 1.1",
       "role": "Noto Sans Egyptian Hieroglyphs loaded through Google Fonts CSS for accurate rendering of the HA-DI Unicode sequence 𓉔𓆓; font file is not vendored locally",
       "runtimeImported": true
+    },
+    {
+      "id": "kinemiq-free-game-animations-cc0",
+      "source": "https://github.com/Kinemiq/free-game-animations",
+      "license": "CC0-1.0",
+      "role": "reviewed external animation pack candidate: 35 FBX/GLB humanoid clips on a 66-bone, 30 fps skeleton, including sword slash/idle/block, crouch locomotion, jump phases and directional hit reactions; not yet imported because the Shabti enemies are procedural non-skinned meshes and Carter's current combat uses Ara-native clips; Ara content packs can retarget compatible GLB/FBX/BVH clips onto the Carter rig",
+      "runtimeImported": false
     }
   ]
 }

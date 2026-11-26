@@ -119,7 +119,7 @@ A cena já usa ACES tone mapping e sombras suaves. O próximo passo de lookdev �
 - Tapete: novo padrão de escamas de serpente com bump procedimental; mesa circular redimensionada para escala de mesa baixa e materiais de nogueira/bronze.
 - Instrumentos e armas: as harpas quadradas e lanças cônicas antigas foram removidas; foram criadas harpas arqueadas com cordas individuais, tambores com pele/amarras e lanças de ponta foliácea em bronze. As peças usam nogueira/bronze PBR e descrições próprias.
 - TV: a caixa antiga foi substituída por moldura metálica de cantos arredondados e painel escuro de vidro refletivo.
-- Interação: tecla E no desktop e botão INTERAGIR no mobile mostram descrição contextual para sofá, mesa, estátua, lareira, harpas, tambores, lanças e TV; colliders foram adicionados aos objetos sólidos.
+- Interação: tecla E no desktop e botão INTERAGIR no mobile mostram descrição contextual para sofá, mesa, estátua, lareira, harpas, tambores, lanças, khopeshes e TV; colliders foram adicionados aos objetos sólidos.
 - Exposição e luz ambiente elevadas moderadamente; SSAO reduzido para evitar escurecimento excessivo.
 - Validação visual final ainda pendente de navegador.
 

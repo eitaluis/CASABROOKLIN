@@ -1623,7 +1623,7 @@ function addThothBaseSeating(scene,stone,marble,wood,brass,colliders,interactabl
       const finial=new THREE.Mesh(new THREE.SphereGeometry(.065,16,12),brass);
       finial.position.set(side*1.05,.99,.25);bench.add(finial);
     }
-    const inlay=new THREE.Mesh(new THREE.RoundedBoxGeometry(1.85,.025,.045,4,.01),edge);
+    const inlay=new THREE.Mesh(new RoundedBoxGeometry(1.85,.025,.045,4,.01),edge);
     inlay.position.set(0,.715,.42);bench.add(inlay);
     bench.updateMatrixWorld(true);
     const bounds=new THREE.Box3().setFromObject(bench);
@@ -2161,13 +2161,10 @@ export function buildGrandSalon({
     const sx=c.maxX-c.minX,sy=c.maxY-c.minY,sz=c.maxZ-c.minZ;
     const mansionSide=Math.abs(Math.abs(cx)-15.6)<.08&&Math.abs(cy-21.45)<.08&&
       Math.abs(sx-.85)<.12&&Math.abs(sy-17.6)<.12&&sz>5&&cz>-10&&cz<10;
-    const frontRight=Math.abs(cx-9)<.08&&Math.abs(cy-21.45)<.08&&Math.abs(cz-11)<.08&&
-      Math.abs(sx-14)<.12&&Math.abs(sy-17.6)<.12&&Math.abs(sz-.85)<.12;
     const oldWingLintel=Math.abs(cx-15.6)<.08&&Math.abs(cy-20.65)<.08&&
       Math.abs(cz+.5)<.08&&Math.abs(sx-.85)<.12&&Math.abs(sy-.55)<.12&&Math.abs(sz-6)<.12;
-    if(mansionSide||frontRight||oldWingLintel) colliders.splice(i,1);
+    if(mansionSide||oldWingLintel) colliders.splice(i,1);
   }
-  addTerraceExitFacade(scene,stone,colliders);
 
   for(const x of [-8.8,8.8]) {
     for(const z of [-6.7,6.3]) {

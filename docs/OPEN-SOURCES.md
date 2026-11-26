@@ -89,3 +89,24 @@ Os mapas estão locais para que a sala não dependa de downloads de textura em t
 ## Estudo visual/técnico — água do East River
 
 - [mqnc/cheapwater](https://github.com/mqnc/cheapwater) — MIT. Referência de estudo para superfícies de água Three.js com normais animadas e baixo custo. **Não foi incorporado código, textura ou shader deste repositório**; a superfície da Brooklyn House usa um mapa de altura procedural original documentado em `src/exterior.js`.
+
+
+## Biblioteca subterrânea — pesquisa de referências (26/11/2026)
+
+### Referência oficial do universo
+- Rick Riordan — página oficial da série: https://rickriordan.com/series/kane-chronicles/.
+- A sinopse oficial de *The Throne of Fire* descreve Brooklyn House como centro de treinamento dos jovens magos. A página não fornece uma planta ou imagem oficial específica da biblioteca subterrânea; portanto, não deve ser usada como referência visual direta para a câmara.
+- Disney Books — catálogo oficial de *The Kane Chronicles*: https://books.disney.com/kane-chronicals/. Confirma os títulos e materiais oficiais da série, mas não apresenta concept art da biblioteca.
+- Diretriz: a arquitetura circular, cúpula de Nut, piso de Geb, distribuição dos nichos e organização dos shabtis continuam identificadas como reconstrução de level design, salvo confirmação textual mais específica. Fan art não é fonte canônica.
+
+### Papiro aberto — candidato de estudo, não integrado
+- Página do modelo: https://tevy.dev/models/open-parchment-scroll.
+- GLB com 7.772 triângulos (LOD0), 986 KB, dimensões declaradas de 0,2 × 0,02 × 0,23 m e três níveis de detalhe.
+- Licença declarada na página: CC0 1.0.
+- A descrição informa que a folha contém glifos inventados e classifica o modelo em tags de fantasia/RPG/medieval. Por isso, não foi integrado como artefato egípcio. Pode ser avaliado futuramente apenas como referência de malha, com material e grafismo substituídos, após inspeção do GLB.
+
+### Shabtis — referência de forma, não integrada
+- Catálogo: https://www.artheonmuseum.org/artwork/ushabti-figures-cf0631.
+- O catálogo identifica duas figuras do Archaeological Museum in Kraków, digitalizadas pelo projeto Virtual Museums of Małopolska, e declara CC0.
+- A página original do modelo, a disponibilidade do arquivo, a topologia, as dimensões e a licença na fonte primária ainda precisam ser confirmadas. Não importar nem atribuir CC0 ao runtime até essa verificação.
+- Uso atual: referência de pesquisa para proporção, pose mumiforme, ferramentas e acabamento de shabtis históricos; não substitui os quatro modelos existentes.

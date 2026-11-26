@@ -861,6 +861,72 @@ function addGreatHallDoors(scene, stone, wood, brass, colliders, interactables) 
   return group;
 }
 
+function darkWoodFrom(base,color) {
+  return new THREE.MeshStandardMaterial({
+    color,
+    map:base.map || null,
+    normalMap:base.normalMap || null,
+    normalScale:new THREE.Vector2(.78,.78),
+    roughnessMap:base.roughnessMap || null,
+    roughness:.78
+  });
+}
+
+function ironMaterial() {
+  return new THREE.MeshStandardMaterial({
+    color:0x292b2b,
+    metalness:.86,
+    roughness:.36
+  });
+}
+
+function createWallFluteRack(scene,side,wood,brass,iron,colliders,interactables) {
+  const group=new THREE.Group();
+  group.name='estojo de flautas de madeira do Grande Salão';
+  group.position.set(side*13.48,13.9,5.65);
+  group.rotation.y=side<0?Math.PI/2:-Math.PI/2;
+
+  const backing=new THREE.Mesh(new RoundedBoxGeometry(1.48,.82,.16,7,.055),wood);
+  backing.position.set(0,.62,0);
+  backing.castShadow=true;backing.receiveShadow=true;group.add(backing);
+
+  for(const y of [.27,1.02]){
+    const rail=new THREE.Mesh(new RoundedBoxGeometry(1.36,.075,.22,6,.025),brass);
+    rail.position.set(0,y,.055);group.add(rail);
+  }
+
+  const lengths=[.94,.82,.7,.58];
+  for(let i=0;i<lengths.length;i++){
+    const length=lengths[i],x=-.48+i*.32;
+    const flute=new THREE.Mesh(new THREE.CylinderGeometry(.035,.043,length,24,1),i%2?wood:darkWoodFrom(wood,0x6b482d));
+    flute.name='flauta de madeira do Grande Salão';
+    flute.position.set(x,.65,.12);
+    flute.castShadow=true;group.add(flute);
+
+    for(let h=0;h<4;h++){
+      const y=.65-length*.28+h*.135;
+      const hole=new THREE.Mesh(new THREE.CircleGeometry(.017,12),iron);
+      hole.position.set(x+.043,y,.155);
+      group.add(hole);
+    }
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(.045,.012,8,18),brass);
+    ring.position.set(x,.65-length*.45,.12);group.add(ring);
+  }
+
+  scene.add(group);
+  addIconPlaque(scene,'flute',[side*13.92,15.32,5.65],side<0?Math.PI/2:-Math.PI/2,wood,brass,.38);
+  addBoxCollider(colliders,side*13.2,14.53,5.65,.85,1.1,.65);
+  interactables.push({
+    name:'Estojo de flautas '+(side<0?'oeste':'leste'),
+    kind:'inspect',
+    label:'Flautas de madeira',
+    description:'Quatro flautas de madeira com orifícios de afinação e anéis de bronze. Uma interpretação de instrumentos antigos para completar a coleção musical do salão.',
+    position:new THREE.Vector3(side*12.35,14.55,5.65),
+    radius:1.7
+  });
+  return group;
+}
+
 function addThoth(scene,marble,pale,brass,reliefTex,wood) {
   const group=new THREE.Group();group.name='estátua monumental de Thoth em basalto';group.position.set(0,13.175,-.5);
   const plinth=new THREE.Mesh(new RoundedBoxGeometry(3,.48,3,6,.13),pale);plinth.position.y=.24;plinth.castShadow=true;plinth.receiveShadow=true;group.add(plinth);

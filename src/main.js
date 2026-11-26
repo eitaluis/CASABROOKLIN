@@ -123,20 +123,23 @@ damageOverlay.style.cssText = [
 ].join(';');
 document.body.appendChild(damageOverlay);
 let damageFlashTimer = null;
+let damageFadeTimer = null;
 function flashPlayerDamage() {
   clearTimeout(damageFlashTimer);
+  clearTimeout(damageFadeTimer);
   damageOverlay.style.opacity = '0.92';
   damageFlashTimer = setTimeout(() => { damageOverlay.style.opacity = '0.28'; }, 100);
-  damageFlashTimer = setTimeout(() => { damageOverlay.style.opacity = '0'; }, 520);
+  damageFadeTimer = setTimeout(() => { damageOverlay.style.opacity = '0'; }, 520);
 }
 function handlePlayerHit(hit) {
   const damage = Math.round((playerVitals.maxHealth / (hit.maxHealth || 5)) * (hit.damage || 1));
+  const previousHealth = playerVitals.health;
   playerVitals.health = Math.max(0, playerVitals.health - damage);
   character.setInjured?.(playerVitals.health <= 50);
   character.playReaction?.('front');
   controller.triggerHit?.();
   flashPlayerDamage();
-  if (playerVitals.health <= 50 && playerVitals.health + damage > 50) {
+  if (previousHealth > 50 && playerVitals.health <= 50) {
     toast('Carter está ferido. Os movimentos ficam mais pesados.');
   }
 }
@@ -162,8 +165,6 @@ trainingHud.style.cssText = [
 const trainingHudTitle = document.createElement('span');
 trainingHudTitle.textContent = 'PROVA DE TREINAMENTO';
 trainingHudTitle.style.color = '#cda96b';
-const trainingHudHealth = document.createElement('strong');
-trainingHudHealth.style.cssText = 'font:600 15px Georgia,serif;letter-spacing:.12em;color:#f0d7a0';
 const trainingHudInfo = document.createElement('span');
 trainingHudInfo.style.color = '#c5c7bd';
 trainingHud.append(trainingHudTitle, trainingHudInfo);
@@ -325,6 +326,15 @@ const inventory = createInventory({
   THREE, character,
   setControlsLocked: controller.setLocked,
   onUse: (weapon) => {
+    const practice = trainingRoom.getStatus();
+    if (weapon === 'staff' && practice.targetPracticeActive && !practice.challengeActive) {
+      const spellCost = 12;
+      if (playerVitals.energy < spellCost) {
+        toast('Energia insuficiente para lançar o orbe de treino.');
+        return;
+      }
+      playerVitals.energy = Math.max(0, playerVitals.energy - spellCost);
+    }
     const result = trainingRoom.onWeaponUse({
       weapon,
       position: controller.getPosition(),
@@ -482,14 +492,14 @@ function animate() {
     haDiButton.hidden = !showHaDi;
     haDiButton.disabled = !showHaDi || !magicSystem.canCastHaDi();
     haDiButton.title = haDiButton.disabled
-      ? 'Fique de frente para um Shabti desperto, entre 3,5 e 12,5 metros.'
-      : 'Conjurar HA-DI no Shabti à sua frente';
+      ? (playerVitals.energy < 30 ? 'Energia insuficiente: HA-DI custa 30 pontos.' : 'Fique de frente para um Shabti desperto, entre 3,5 e 12,5 metros.')
+      : 'Conjurar HA-DI · custo 30 de energia';
   }
   const showTrainingHud = controller.zone === 'training'
     && (trainingStatus.challengeActive || trainingStatus.targetPracticeActive);
   trainingHud.hidden = !showTrainingHud;
   if (showTrainingHud) {
-    trainingHudHealth.textContent = '';
+
     trainingHudInfo.textContent = trainingStatus.challengeActive
       ? 'SHABTI · ' + trainingStatus.shabtiRemaining + '/' + trainingStatus.totalShabti + ' · G / HA-DI'
       : 'ALVOS · ' + trainingStatus.targetHits + ' ACERTOS';

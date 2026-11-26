@@ -16,12 +16,15 @@ export function buildTrainingRoom({
   const woodDark = new THREE.MeshStandardMaterial({ color: 0x432b1c, roughness: 0.72 });
   const bronze = new THREE.MeshStandardMaterial({ color: 0x9a713b, metalness: 0.78, roughness: 0.28 });
   const darkBronze = new THREE.MeshStandardMaterial({ color: 0x493622, metalness: 0.72, roughness: 0.38 });
-  const limestone = new THREE.MeshStandardMaterial({ color: 0xc6b692, roughness: 0.86 });
-  const limestoneShade = new THREE.MeshStandardMaterial({ color: 0x8f8065, roughness: 0.92 });
-  const lapis = new THREE.MeshStandardMaterial({ color: 0x244d67, metalness: 0.34, roughness: 0.3 });
-  const turquoise = new THREE.MeshStandardMaterial({ color: 0x397d7c, metalness: 0.28, roughness: 0.34 });
-  const clay = new THREE.MeshStandardMaterial({ color: 0x9b6245, roughness: 0.92 });
-  const clayLight = new THREE.MeshStandardMaterial({ color: 0xc1845d, roughness: 0.86 });
+  const limestone = new THREE.MeshStandardMaterial({ color: 0xf0e3c6, roughness: 0.9 });
+  const limestoneShade = new THREE.MeshStandardMaterial({ color: 0xb49a70, roughness: 0.94 });
+  const reliefStone = new THREE.MeshStandardMaterial({ color: 0x9a7953, roughness: 0.88 });
+  const lapis = new THREE.MeshStandardMaterial({ color: 0x173f60, metalness: 0.18, roughness: 0.34 });
+  const turquoise = new THREE.MeshStandardMaterial({ color: 0x347c7d, metalness: 0.08, roughness: 0.3, clearcoat: 0.28 });
+  const faience = new THREE.MeshPhysicalMaterial({ color: 0x3d8582, metalness: 0.06, roughness: 0.26, clearcoat: 0.38, clearcoatRoughness: 0.2 });
+  const faienceLight = new THREE.MeshPhysicalMaterial({ color: 0xb9a16f, metalness: 0.04, roughness: 0.3, clearcoat: 0.28 });
+  const clay = new THREE.MeshPhysicalMaterial({ color: 0x9d6549, roughness: 0.34, clearcoat: 0.42, clearcoatRoughness: 0.24 });
+  const clayLight = new THREE.MeshPhysicalMaterial({ color: 0xd1a47a, roughness: 0.4, clearcoat: 0.28 });
   const paintedLine = new THREE.MeshStandardMaterial({ color: 0xe6d8b6, roughness: 0.62 });
   const warmEmissive = new THREE.MeshStandardMaterial({
     color: 0xffc16a, emissive: 0xff8a29, emissiveIntensity: 1.6,
@@ -126,17 +129,17 @@ export function buildTrainingRoom({
     colorCanvas.height = bumpCanvas.height = h;
     const c = colorCanvas.getContext('2d');
     const b = bumpCanvas.getContext('2d');
-    c.fillStyle = '#62452d'; c.fillRect(0, 0, w, h);
+    c.fillStyle = '#bd925e'; c.fillRect(0, 0, w, h);
     b.fillStyle = '#888888'; b.fillRect(0, 0, w, h);
-    const plankH = 84;
+    const plankH = 42;
     for (let row = 0; row < 12; row++) {
       const offset = row % 2 ? 122 : 0;
       for (let col = -1; col < 7; col++) {
         const x = col * 250 + offset;
         const variation = random();
-        const rr = Math.round(91 + variation * 35);
-        const gg = Math.round(59 + variation * 25);
-        const bb = Math.round(35 + variation * 18);
+        const rr = Math.round(164 + variation * 48);
+        const gg = Math.round(112 + variation * 43);
+        const bb = Math.round(62 + variation * 34);
         c.fillStyle = 'rgb(' + rr + ',' + gg + ',' + bb + ')';
         c.fillRect(x + 2, row * plankH + 2, 246, plankH - 4);
         c.strokeStyle = 'rgba(29,18,12,.72)'; c.lineWidth = 2;
@@ -169,16 +172,26 @@ export function buildTrainingRoom({
     const bump = new THREE.CanvasTexture(bumpCanvas);
     map.colorSpace = THREE.SRGBColorSpace;
     map.wrapS = map.wrapT = bump.wrapS = bump.wrapT = THREE.RepeatWrapping;
-    map.repeat.set(1.05, 1.25);
+    map.repeat.set(1.7, 2.6);
     bump.repeat.copy(map.repeat);
     map.anisotropy = bump.anisotropy = 8;
     return { map, bump };
   }
   const floorMaps = makeWoodMaps();
-  floor.material = new THREE.MeshStandardMaterial({
-    map: floorMaps.map, bumpMap: floorMaps.bump, bumpScale: 0.055,
-    roughness: 0.4, metalness: 0.025
+  floor.material = new THREE.MeshPhysicalMaterial({
+    map: floorMaps.map, bumpMap: floorMaps.bump, bumpScale: 0.032,
+    roughness: 0.38, metalness: 0.015, clearcoat: 0.36, clearcoatRoughness: 0.28
   });
+  // Moldura perimetral escura e filetes metálicos embutidos.
+  const floorBorderMat = new THREE.MeshStandardMaterial({ color: 0x49301f, roughness: 0.38 });
+  for (const [x,z,w,d] of [
+    [centerX, room.minZ + 0.35, roomWidth - 0.7, 0.24],
+    [centerX, room.maxZ - 0.35, roomWidth - 0.7, 0.24],
+    [room.minX + 0.35, centerZ, 0.24, roomLength - 0.7],
+    [room.maxX - 0.35, centerZ, 0.24, roomLength - 0.7]
+  ]) addBox('moldura perimetral de nogueira do piso', [x, floorY + 0.025, z], [w, 0.045, d], floorBorderMat);
+  const floorInlay = new THREE.MeshStandardMaterial({ color: 0xb78a4e, metalness: 0.42, roughness: 0.42 });
+  for (const x of [room.minX + 0.52, room.maxX - 0.52]) addBox('filete de bronze embutido no piso', [x, floorY + 0.051, centerZ], [0.035, 0.018, roomLength - 1.2], floorInlay, false, false);
 
   // Linhas de quadra embutidas na madeira, com dimensões aproximadas de uma quadra real.
   const courtHalfWidth = 7.5; // Quadra regulamentar: 15 m de largura (FIBA 2026).
@@ -215,7 +228,41 @@ export function buildTrainingRoom({
   }
 
   // Paredes, pilares e portal de entrada na ala.
-  const wallMat = new THREE.MeshStandardMaterial({ color: 0xb9a986, roughness: 0.9 });
+  // Paredes de calcário creme: mapa próprio de alvenaria talhada, pátina e pigmentos.
+  function makeLimestoneWallMaps() {
+    let seed = 92831;
+    const random = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+    const w = 1536, h = 768;
+    const colorCanvas = document.createElement('canvas'), bumpCanvas = document.createElement('canvas');
+    colorCanvas.width = bumpCanvas.width = w; colorCanvas.height = bumpCanvas.height = h;
+    const c = colorCanvas.getContext('2d'), b = bumpCanvas.getContext('2d');
+    const wash = c.createLinearGradient(0, 0, 0, h);
+    wash.addColorStop(0, '#cbb792'); wash.addColorStop(0.46, '#e0cfaa'); wash.addColorStop(1, '#c4ad82');
+    c.fillStyle = wash; c.fillRect(0, 0, w, h); b.fillStyle = '#888888'; b.fillRect(0, 0, w, h);
+    const blockH = 96, blockW = 256;
+    for (let row = 0; row < Math.ceil(h / blockH); row++) {
+      const offset = row % 2 ? -128 : 0;
+      for (let col = -1; col < 8; col++) {
+        const x = col * blockW + offset, y = row * blockH;
+        const palette = [[211,193,157],[201,181,143],[221,205,174],[192,171,133],[216,199,163]][Math.floor(random()*5)];
+        c.fillStyle = 'rgb(' + palette.join(',') + ')'; c.fillRect(x+2,y+2,blockW-4,blockH-4);
+        c.strokeStyle = 'rgba(103,80,52,.32)'; c.lineWidth = 3; c.strokeRect(x+1,y+1,blockW-2,blockH-2);
+        c.strokeStyle = 'rgba(255,244,215,.23)'; c.lineWidth = 1; c.beginPath(); c.moveTo(x+5,y+5); c.lineTo(x+blockW-8,y+5); c.stroke();
+        b.fillStyle = '#777777'; b.fillRect(x+2,y+2,blockW-4,blockH-4); b.strokeStyle = 'rgba(42,42,42,.55)'; b.lineWidth = 4; b.strokeRect(x+1,y+1,blockW-2,blockH-2);
+        for (let n=0;n<70;n++) {
+          const px=x+8+random()*(blockW-16), py=y+8+random()*(blockH-16), r=.4+random()*2.1;
+          c.fillStyle=random()>.5?'rgba(105,78,48,.10)':'rgba(255,247,224,.18)'; c.beginPath(); c.arc(px,py,r,0,Math.PI*2); c.fill();
+          b.fillStyle=random()>.5?'rgba(45,45,45,.18)':'rgba(210,210,210,.18)'; b.fillRect(px,py,1.4,1.4);
+        }
+      }
+    }
+    for (const y of [24,h-28]) { c.fillStyle='rgba(36,83,94,.65)'; c.fillRect(0,y,w,5); c.fillStyle='rgba(170,121,55,.76)'; c.fillRect(0,y+6,w,4); b.fillStyle='#777777'; b.fillRect(0,y,w,10); }
+    const map=new THREE.CanvasTexture(colorCanvas), bump=new THREE.CanvasTexture(bumpCanvas);
+    map.colorSpace=THREE.SRGBColorSpace; map.wrapS=map.wrapT=bump.wrapS=bump.wrapT=THREE.RepeatWrapping;
+    map.anisotropy=bump.anisotropy=8; return {map,bump};
+  }
+  const wallMaps=makeLimestoneWallMaps();
+  const wallMat=new THREE.MeshStandardMaterial({map:wallMaps.map,bumpMap:wallMaps.bump,bumpScale:.075,color:0xfff4df,roughness:.91,metalness:0});
   const westWallX = room.minX + 0.25;
   const eastWallX = room.maxX - 0.18;
   const wallBottom = floorY;
@@ -344,24 +391,29 @@ export function buildTrainingRoom({
   }
   for (const z of [room.minZ + 0.28, room.maxZ - 0.28]) {
     addBox('friso de bronze na parede de fundo', [centerX, floorY + 3.1, z], [roomWidth - 0.5, 0.18, 0.12], bronze);
+    addBox('cornija moldurada no topo da parede', [centerX, floorY + 3.38, z], [roomWidth - 0.42, 0.24, 0.24], limestoneShade);
+    addBox('rodapé monumental de calcário', [centerX, floorY + 0.32, z], [roomWidth - 0.5, 0.56, 0.28], limestoneShade);
+  }
+  for (const x of [westWallX + 0.25, eastWallX - 0.25]) {
+    addBox('cornija lateral de calcário', [x, floorY + 3.4, centerZ], [0.32, 0.24, roomLength - 0.5], limestoneShade);
+    addBox('rodapé lateral de calcário', [x, floorY + 0.32, centerZ], [0.3, 0.56, roomLength - 0.5], limestoneShade);
   }
 
   // Arandelas e iluminação quente controlada; sem centenas de luzes dinâmicas.
   function addSconce(x, z, rotationY = Math.PI / 2) {
-    const group = new THREE.Group();
-    group.position.set(x, floorY + 2.45, z);
-    group.rotation.y = rotationY;
-    const plate = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.72, 0.48), darkBronze);
-    plate.position.z = -0.1; group.add(plate);
-    const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.22, 0.16, 24), bronze);
-    cup.position.set(0, -0.08, 0.22); group.add(cup);
-    const flame = new THREE.Mesh(new THREE.SphereGeometry(0.11, 18, 14), warmEmissive);
-    flame.scale.set(0.72, 1.55, 0.72); flame.position.set(0, 0.18, 0.22); group.add(flame);
+    const group = new THREE.Group(); group.position.set(x,floorY+2.42,z); group.rotation.y=rotationY;
+    const plate=new THREE.Mesh(new THREE.BoxGeometry(.28,.86,.12),darkBronze); plate.position.set(0,-.02,-.12); group.add(plate);
+    const plateEdge=new THREE.Mesh(new THREE.BoxGeometry(.34,.08,.15),bronze); plateEdge.position.set(0,.42,-.1); group.add(plateEdge);
+    const lotus=new THREE.Group(); lotus.position.set(0,.12,-.025);
+    for(let petal=-2;petal<=2;petal++){const p=new THREE.Mesh(new THREE.SphereGeometry(.075,12,10),petal%2?lapis:bronze);p.scale.set(.55,1.8,.55);p.position.set(petal*.07,Math.abs(petal)*.025,0);p.rotation.z=petal*.16;lotus.add(p);} group.add(lotus);
+    addTube('braço curvo de bronze da arandela',[[0,-.08,-.08],[0,-.12,.12],[0,-.02,.28],[0,.16,.38]],.045,bronze,group,18);
+    const cup=new THREE.Mesh(new THREE.CylinderGeometry(.15,.22,.17,20),bronze); cup.position.set(0,-.02,.38); group.add(cup);
+    const oil=new THREE.Mesh(new THREE.CylinderGeometry(.105,.13,.045,20),darkBronze); oil.position.set(0,.075,.38); group.add(oil);
+    const wick=new THREE.Mesh(new THREE.CylinderGeometry(.018,.026,.09,8),woodDark); wick.position.set(0,.13,.38); group.add(wick);
+    const flame=new THREE.Mesh(new THREE.SphereGeometry(.09,18,14),warmEmissive); flame.scale.set(.68,1.7,.68); flame.position.set(0,.29,.38); group.add(flame);
     scene.add(group);
-    const light = new THREE.PointLight(0xffbe78, 0.82, 8.5, 1.8);
-    light.position.set(x, floorY + 2.62, z);
-    scene.add(light);
-    animated.push({ obj: flame, fire: true, phase: (x + z) * 0.4, baseY: flame.position.y, baseScaleY: flame.scale.y, baseRotationZ: 0 });
+    const light=new THREE.PointLight(0xffbe78,.95,9.5,1.8); light.position.set(x,floorY+2.75,z+(x<centerX?.38:-.38)); scene.add(light);
+    animated.push({obj:flame,fire:true,phase:(x+z)*.4,baseY:flame.position.y,baseScaleY:flame.scale.y,baseRotationZ:0});
   }
   for (const x of [westWallX + 0.75, eastWallX - 0.75]) {
     for (const z of [-11, -5.5, 5, 11]) addSconce(x, z, x < centerX ? 0 : Math.PI);
@@ -374,33 +426,27 @@ export function buildTrainingRoom({
   scene.add(coolFill);
 
   // Bustos de divindades nas laterais: a seleção e o desenho são interpretação artística.
-  function addWallDeity(x, z, name, facing) {
-    const group = new THREE.Group();
-    group.position.set(x, floorY + 1.45, z);
-    group.rotation.y = facing;
-    const plinth = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.22, 0.52), limestoneShade);
-    plinth.position.y = -1.18; group.add(plinth);
-    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.48, 0.95, 32, 1), limestone);
-    torso.position.y = -0.58; group.add(torso);
-    const collar = new THREE.Mesh(new THREE.TorusGeometry(0.36, 0.1, 12, 36), bronze);
-    collar.position.y = -0.2; collar.rotation.x = Math.PI / 2; group.add(collar);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.36, 32, 24), limestone);
-    head.position.y = 0.22; head.scale.set(0.88, 1.1, 0.85); group.add(head);
-    const headdress = new THREE.Mesh(new THREE.SphereGeometry(0.43, 32, 18), lapis);
-    headdress.position.set(0, 0.28, -0.06); headdress.scale.set(1.2, 1.1, 0.86); group.add(headdress);
-    for (const eyeX of [-0.13, 0.13]) {
-      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.045, 12, 10), darkBronze);
-      eye.position.set(eyeX, 0.25, 0.29); group.add(eye);
-    }
-    const namePlate = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 0.34), bronze);
-    namePlate.position.set(0, -1.15, 0.28); group.add(namePlate);
-    group.traverse(obj => { if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; } });
-    scene.add(group);
-    addInteractable({
-      name: 'Busto de ' + name, label: name + ' — efígie da sala',
-      description: 'Busto decorativo de ' + name + ', criado como interpretação da galeria de divindades da sala.',
-      position: group.position, radius: 2.1
-    });
+  function addWallDeity(x,z,name,facing){
+    const group=new THREE.Group(); group.position.set(x,floorY+1.36,z); group.rotation.y=facing;
+    const backing=new THREE.Mesh(new THREE.BoxGeometry(1.22,2.72,.18),reliefStone); backing.position.set(0,0,-.18); group.add(backing);
+    for(const side of [-1,1]){const border=new THREE.Mesh(new THREE.BoxGeometry(.075,2.76,.14),bronze);border.position.set(side*.61,0,-.055);group.add(border);const cap=new THREE.Mesh(new THREE.SphereGeometry(.12,14,10),limestoneShade);cap.scale.set(1.5,.55,.7);cap.position.set(side*.61,1.34,-.02);group.add(cap);}
+    const foot=new THREE.Mesh(new THREE.BoxGeometry(.92,.18,.46),limestoneShade);foot.position.set(0,-1.28,.02);group.add(foot);
+    const kilt=new THREE.Mesh(new THREE.CylinderGeometry(.22,.38,.66,4,1),faienceLight);kilt.position.set(0,-.82,.04);kilt.rotation.y=Math.PI/4;group.add(kilt);
+    const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.27,.56,8,18),limestone);torso.position.set(0,-.02,.02);torso.scale.set(1.18,1,.8);group.add(torso);
+    const shoulders=new THREE.Mesh(new THREE.SphereGeometry(.34,20,16),limestone);shoulders.position.set(0,.24,.02);shoulders.scale.set(1.32,.56,.82);group.add(shoulders);
+    const collar=new THREE.Mesh(new THREE.TorusGeometry(.32,.075,10,32),bronze);collar.position.set(0,.28,.19);collar.rotation.x=Math.PI/2;group.add(collar);
+    for(const side of [-1,1]){const arm=new THREE.Mesh(new THREE.CapsuleGeometry(.09,.54,6,12),limestone);arm.position.set(side*.39,-.12,.08);arm.rotation.z=side*.12;group.add(arm);const hand=new THREE.Mesh(new THREE.SphereGeometry(.10,12,10),faienceLight);hand.position.set(side*.43,-.48,.13);group.add(hand);const leg=new THREE.Mesh(new THREE.CapsuleGeometry(.105,.48,6,12),reliefStone);leg.position.set(side*.15,-1.08,.03);group.add(leg);}
+    const headMat=name==='Anúbis'?darkBronze:limestoneShade;
+    const head=new THREE.Mesh(new THREE.SphereGeometry(.25,24,18),headMat);head.position.set(0,.67,.06);head.scale.set(.88,1.18,.78);group.add(head);
+    if(name==='Anúbis'){const muzzle=new THREE.Mesh(new THREE.ConeGeometry(.11,.42,4),darkBronze);muzzle.rotation.x=Math.PI/2;muzzle.position.set(0,.56,.31);group.add(muzzle);for(const side of [-1,1]){const ear=new THREE.Mesh(new THREE.ConeGeometry(.09,.43,4),darkBronze);ear.position.set(side*.16,1.02,.02);ear.rotation.z=side*-.18;group.add(ear);}}
+    else if(name==='Hórus'){const beak=new THREE.Mesh(new THREE.ConeGeometry(.10,.34,4),bronze);beak.rotation.x=Math.PI/2;beak.position.set(0,.57,.34);group.add(beak);for(const side of [-1,1]){const brow=new THREE.Mesh(new THREE.TorusGeometry(.065,.018,6,18),darkBronze);brow.position.set(side*.16,.72,.25);group.add(brow);}}
+    else if(name==='Sekhmet'||name==='Bastet'){const muzzle=new THREE.Mesh(new THREE.SphereGeometry(.14,16,12),limestoneShade);muzzle.position.set(0,.52,.24);muzzle.scale.set(1,.68,.8);group.add(muzzle);for(const side of [-1,1]){const ear=new THREE.Mesh(new THREE.ConeGeometry(.105,.32,4),limestoneShade);ear.position.set(side*.16,.96,.02);ear.rotation.z=side*-.12;group.add(ear);}if(name==='Sekhmet'){const mane=new THREE.Mesh(new THREE.SphereGeometry(.31,18,14),bronze);mane.position.set(0,.65,-.02);mane.scale.set(1.15,1.2,.8);group.add(mane);}}
+    else{const crown=new THREE.Mesh(new THREE.CylinderGeometry(.12,.21,.42,8),lapis);crown.position.set(0,1.01,0);group.add(crown);const disk=new THREE.Mesh(new THREE.TorusGeometry(.16,.03,8,24),bronze);disk.position.set(0,1.28,0);disk.rotation.x=Math.PI/2;group.add(disk);}
+    const wig=new THREE.Mesh(new THREE.SphereGeometry(.29,20,14),lapis);wig.position.set(0,.71,-.09);wig.scale.set(1.22,1.16,.82);group.add(wig);
+    for(const side of [-1,1]){const flap=new THREE.Mesh(new THREE.BoxGeometry(.17,.58,.18),lapis);flap.position.set(side*.27,.28,.02);flap.rotation.z=side*.09;group.add(flap);const eye=new THREE.Mesh(new THREE.SphereGeometry(.035,12,10),darkBronze);eye.position.set(side*.12,.7,.275);group.add(eye);}
+    const namePlate=new THREE.Mesh(new THREE.BoxGeometry(.74,.16,.08),bronze);namePlate.position.set(0,-1.18,.18);group.add(namePlate);
+    group.traverse(obj=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;}});scene.add(group);
+    addInteractable({name:'Relevo de '+name,label:name+' — relevo de calcário',description:'Figura em alto-relevo de '+name+', esculpida em calcário e pigmentada com azul, ocre e bronze. A seleção das divindades é uma composição artística da reconstrução.',prompt:'E · examinar o relevo de '+name,position:group.position,radius:2.0});
   }
   addWallDeity(westWallX + 0.72, -9.4, 'Anúbis', Math.PI / 2);
   addWallDeity(westWallX + 0.72, -1.0, 'Sekhmet', Math.PI / 2);

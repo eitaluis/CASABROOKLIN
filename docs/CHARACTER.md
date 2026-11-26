@@ -1,31 +1,28 @@
-# Personagem explorador em terceira pessoa
+# Carter Kane — modelo e movimento
 
-## Identidade
-O protótipo usa um avatar genérico de exploração, não uma representação definitiva de Carter ou Sadie. A identidade e o figurino podem ser substituídos depois sem alterar a câmera ou a lógica de movimento.
+Status: **primeira versão local integrada no runtime e preview independente publicada.** O modelo substitui o carregamento Ara remoto; não depende de CDN de personagem.
 
-## Modelo
-- GLB humanoide de malha base Blender Studio Human Base Meshes (CC0, conforme os avisos da fonte).
-- Rig humano com nomes Mixamo compatíveis, preparado pela fonte de locomoção.
-- Escala alvo aproximada: 1,78 m.
-- Roupa, mochila, sapatos, cabelo e amuleto adicionados proceduralmente a partir dos ossos.
+## Direção visual aprovada
+- C — Game 3D gráfico, totalmente 3D.
+- Rosto humano natural e proporções juvenis; sem linguagem anime.
+- Corpo lean/atlético, pele negra e cabelo crespo curto.
+- Camiseta azul, calça cargo cáqui, tênis azul e bolsa transversal no quadril direito.
 
-## Movimento
-Prioridade para locomoção procedural:
-- controle de velocidade contínuo;
-- aceleração e desaceleração;
-- curva e antecipação corporal;
-- passada e balanço alternados;
-- contato e rolagem dos pés;
-- colocação em escadas e terreno irregular.
+## Implementação
+- Geometria procedural local em `src/character.js`, com materiais gráficos e cabelo instanciado.
+- Rig articulado humanoide com nomes padronizados, incluindo `WeaponR`.
+- O inventário continua anexando cajado e khopesh ao socket da mão direita.
+- Movimento procedural de idle, walk, sprint, giro corporal, salto e aterrissagem.
+- A corrida usa inclinação positiva do tronco (personagem voltado para -Z), braços ativos e passadas maiores; o controlador de movimento continua compartilhado entre desktop e mobile.
+- A bolsa tem corpo de couro conhaque, aba, fivela, argolas e alça transversal; balanço secundário de pequena amplitude.
 
-A base utilizada é documentada em [OPEN-SOURCES.md](./OPEN-SOURCES.md).
+## Limite conhecido
+A bolsa aprovada foi referenciada a partir do modelo CC0 Innerscene. O GLB binário original não pôde ser obtido pelo ambiente de edição; a primeira integração usa uma reconstrução procedural local com a mesma linguagem de couro, aba, fecho e dimensões aproximadas. O corpo é carregado no quadril direito e a alça cruza o peito. Não afirmar que é o GLB original.
 
-## Câmera
-- câmera de perseguição em terceira pessoa;
-- rotação por mouse com Pointer Lock;
-- zoom por roda do mouse;
-- arrasto por toque em dispositivos móveis;
-- câmera interpolada para reduzir tremores.
+Os objetos visuais são meshes separados parentados aos bones, não um único SkinnedMesh com skin weights. Essa solução é leve e apropriada para o primeiro protótipo, mas movimentos extremos podem revelar articulações; a próxima etapa técnica é avaliar skinning contínuo caso o preview mostre cortes visíveis.
 
-## Fallback
-Se o GLB remoto não carregar, um personagem articulado local é gerado com geometria básica. Se o GLB carregar e a biblioteca externa de locomoção não estiver disponível, o rig recebe animação procedimental local simplificada. O HUD informa qual modo está ativo.
+## Validação
+- Verificar sintaxe, imports, bones, socket WeaponR e referências nos módulos.
+- Testar `character-preview.html` em Chrome desktop e celular paisagem.
+- Testar no jogo: andar, correr, mudar direção, saltar, teletransportar e equipar ambas as armas.
+- Ajustar proporções, encaixes e clipping com base no teste visual real.

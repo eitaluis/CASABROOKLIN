@@ -46,9 +46,9 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [ ] Adaptar o corpo da bolsa CC0 e refazer a alça para cruzar o peito; manter bolsa no quadril direito, sem mochila.
 - [ ] Retarget e refinar idle, walk, jog, aceleração, frenagem, curvas, sprint, saltos e aterrissagens.
 - [ ] Testar como referência os clips Mesh2Motion: Sprint, Run_Anime, NinjaJump_Start/Idle/Land, Land_Three_Point e Wall_Run.
-- [ ] Ajustar sprint com lean, braços ativos e passadas amplas; manter contato dos pés e transições contínuas.
-- [ ] Dar à bolsa balanço secundário discreto; evitar clipping em idle, walk, run e jump.
-- [ ] Validar rig, clips e encaixe WeaponR no novo modelo.
+- [x] Implementar lean frontal, braços ativos, passadas amplas e transições de intensidade contínuas; [ ] validar visualmente contato dos pés.
+- [x] Implementar balanço secundário discreto da bolsa; [ ] validar clipping em idle, walk, run e jump.
+- [x] Criar bone WeaponR na mão direita e manter compatibilidade com inventário; [ ] validar visualmente posição de cajado e khopesh.
 
 ## Setor 03 — inventário e combate
 
@@ -104,8 +104,8 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Próximas ações
 
-1. Criar um Carter-teste com base humana CC0 em detalhe baixo, materiais gráficos e proporções juvenis; comparar com o atual sem substituir o runtime.
-2. Usar Mesh2Motion para validar o conjunto de locomoção, especialmente Sprint, Run_Anime, NinjaJump e aterrissagem em três apoios.
-3. Inspecionar e adaptar o GLB da bolsa Innerscene; a malha da bolsa foi aprovada, mas a alça original fica deitada atrás dela.
+1. Abrir character-preview.html e ajustar proporções, rosto e leitura da bolsa; o primeiro Carter local já está no runtime.
+2. Testar o jogo real no desktop e mobile: walk, sprint, giros, saltos, teleporte e armas. Depois comparar clips Mesh2Motion para eventual refinamento.
+3. A integração inicial usa uma recriação procedural da bolsa Innerscene; avaliar se o GLB original pode ser baixado/importado posteriormente.
 4. Apresentar um preview 3D rigado e animado — não apenas uma prancha — para aprovação final.
-5. Só então integrar o mesmo GLB, rig, bolsa e animações nas versões desktop e mobile.
+5. Após teste visual, refinar articulações/skin weights se necessário; o modelo e a animação atuais já são compartilhados entre desktop e mobile.

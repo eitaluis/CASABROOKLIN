@@ -6,18 +6,29 @@
       "id": "three-js",
       "source": "https://github.com/mrdoob/three.js",
       "version": "0.165.0",
-      "role": "renderização WebGL, geometria, materiais, iluminação e pós-processamento",
-      "license": "MIT"
-    },
-    {
-      "id": "ara3d-js",
-      "source": "https://github.com/ara3d/ara3d",
-      "version": "0.18.1",
-      "role": "runtime atual: geração/carregamento do Carter, rig humanoide, locomoção e animações; permanece ativo até a aprovação do novo modelo",
+      "role": "renderização WebGL, geometria, materiais, iluminação e animação",
       "license": "MIT"
     }
   ],
   "localGeneratedAssets": [
+    {
+      "id": "carter-kane-game3d",
+      "path": "src/character.js",
+      "role": "personagem local procedural: rosto humano natural, cabelo crespo, camiseta azul, calça cargo, rig articulado, WeaponR e locomoção",
+      "license": "project-original-code"
+    },
+    {
+      "id": "carter-crossbody-satchel",
+      "path": "src/character.js",
+      "role": "recriação procedural do corpo da bolsa e alça transversal; couro conhaque, aba, ferragens, posição no quadril direito; inspirada no asset CC0 Innerscene",
+      "license": "project-original-code"
+    },
+    {
+      "id": "carter-locomotion",
+      "path": "src/character.js",
+      "role": "idle, caminhada, sprint, balanço de braços/pernas, lean frontal, salto e aterrissagem",
+      "license": "project-original-code"
+    },
     {
       "id": "great-hall-cinematic-decor",
       "path": "src/interior-details.js",
@@ -33,7 +44,7 @@
     {
       "id": "egyptian-staff-and-khopesh",
       "path": "src/inventory.js",
-      "role": "procedural Egyptian-inspired magic staff and khopesh props attached to the character WeaponR socket",
+      "role": "procedural Egyptian-inspired magic staff and khopesh props attached to Carter WeaponR socket",
       "license": "project-original-code"
     },
     {
@@ -45,108 +56,17 @@
   ],
   "openSourceReferences": [
     {
-      "id": "grab3d-character-mixer",
-      "source": "https://grab3d.com/tools/character-mixer/",
-      "license": "CC0-1.0",
-      "role": "reference-for-modular-stylized-humanoid-assets-and-animation-rig",
-      "runtimeImported": false
-    },
-    {
-      "id": "grab3d-teenager",
-      "source": "https://grab3d.com/models/characters/teen-character/",
-      "license": "CC0-1.0",
-      "role": "reference-for-teen-proportions-and-rigged-walk-run-asset-pipeline",
-      "runtimeImported": false
-    },
-    {
-      "id": "three-procedural-locomotion",
-      "source": "https://github.com/PabloMesquida/three-procedural-locomotion",
-      "license": "MIT",
-      "role": "reference-for-human-gait-foot-contact-IK-acceleration-turns-and-dynamic-locomotion",
-      "runtimeImported": false
-    },
-    {
-      "id": "procedural-3d-characters",
-      "source": "https://github.com/giaBaoJS/procedural-3d-characters",
-      "license": "MIT",
-      "role": "reference-for-procedural-skinned-character-and-keyframe-architecture",
-      "runtimeImported": false
-    },
-    {
-      "id": "polyhaven-sofa-03",
-      "source": "https://polyhaven.com/a/sofa_03",
-      "license": "CC0-1.0",
-      "role": "selected-candidate-for-replacing-procedural-hall-sofas-with-photorealistic-model",
-      "runtimeImported": false
-    },
-    {
-      "id": "polyhaven-arm-chair-01",
-      "source": "https://polyhaven.com/a/ArmChair_01",
-      "license": "CC0-1.0",
-      "role": "selected-candidate-for-future-hall-seating-and-lounge-details",
-      "runtimeImported": false
-    },
-    {
-      "id": "mpfb-character-generator",
-      "source": "https://github.com/makehumancommunity/mpfb2",
-      "license": "GPL-3.0-code-CC0-1.0-system-assets",
-      "role": "evaluated customizable humanoid generator if a more natural face is needed for approved graphic 3D style",
-      "runtimeImported": false
-    },
-    {
-      "id": "kblood-charactercreator",
-      "source": "https://github.com/kblood/CharacterCreator",
-      "license": "GPL-3.0-or-later-code-CC0-1.0-generated-assets-when-sources-CC0",
-      "role": "evaluated morphable character creator and GLB exporter",
-      "runtimeImported": false
-    },
-    {
-      "id": "quaternius-universal-base-characters",
-      "source": "https://quaternius.com/packs/universalbasecharacters.html",
-      "license": "CC0-1.0",
-      "role": "evaluated rig and mesh reference; free Standard pack only exposes Superhero bodies, so not selected as Carter base",
-      "runtimeImported": false
-    },
-    {
-      "id": "ducz-charactercreator",
-      "source": "https://github.com/LuanDucate/Ducz.CharacterCreator",
-      "license": "repository-license-not-confirmed; credited-Quaternius-assets-CC0",
-      "role": "browser-based character builder evaluated as visual reference only",
-      "runtimeImported": false
-    },
-    {
-      "id": "ara3d-character-generator",
-      "source": "https://ara3dgen.com/docs/library/",
-      "license": "MIT-library-CC0-character-bases",
-      "role": "current runtime character generator and WeaponR attachment socket; evaluate Low detail and flat stylized materials as isolated test",
-      "runtimeImported": true
-    },
-    {
-      "id": "turia-3d-gen",
-      "source": "https://github.com/TuriaArt/3d-gen-TU",
-      "license": "MIT-code-CC0-makehuman-character-data",
-      "role": "evaluated fork of Ara 3D Gen with Low detail meshes, facial/body morphs, game rig and WeaponR; candidate for graphic stylized test, not integrated",
-      "runtimeImported": false
-    },
-    {
-      "id": "blender-studio-snow",
-      "source": "https://studio.blender.org/characters/snow/v4/",
-      "license": "CC-BY-4.0",
-      "role": "secondary visual reference for stylized 3D human face and rig; requires credit and Blender export",
-      "runtimeImported": false
-    },
-    {
       "id": "innerscene-crossbody-bag",
       "source": "https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2",
       "license": "CC0-1.0",
-      "role": "approved crossbody satchel source model; place bag on Carter right hip and rebuild/rig strap across chest before integration",
+      "role": "approved visual/measurement reference for cognac crossbody bag; original GLB download unavailable during this integration; locally recreated in src/character.js",
       "runtimeImported": false
     },
     {
       "id": "mesh2motion-human-animations",
       "source": "https://github.com/Mesh2Motion/mesh2motion-app",
       "license": "MIT-code-CC0-1.0-art-and-animations",
-      "role": "primary animation evaluation source: Sprint, Run_Anime, NinjaJump, Land_Three_Point, Wall_Run and humanoid rig retarget tools",
+      "role": "future animation reference: Sprint, Run_Anime, NinjaJump, Land_Three_Point, Wall_Run and humanoid rig tools; not loaded in current runtime",
       "runtimeImported": false
     },
     {
@@ -160,21 +80,14 @@
       "id": "quaternius-universal-animation-library",
       "source": "https://quaternius.itch.io/universal-animation-library",
       "license": "CC0-1.0",
-      "role": "alternative animation candidate: 120-plus humanoid clips, eight-direction locomotion, jog, sprint and root-motion/in-place variants",
+      "role": "future baked clip candidate for eight-direction locomotion, jog and sprint",
       "runtimeImported": false
     },
     {
-      "id": "quaternius-universal-animation-library-2",
-      "source": "https://quaternius.itch.io/universal-animation-library-2",
-      "license": "CC0-1.0",
-      "role": "complementary animation candidate for parkour, jumps and athletic actions",
-      "runtimeImported": false
-    },
-    {
-      "id": "kinemiq-free-game-animations",
-      "source": "https://github.com/Kinemiq/free-game-animations",
-      "license": "CC0-1.0",
-      "role": "alternative 35 humanoid GLB/FBX clips including idle, walk, run, sprint, jump, landing and sword actions",
+      "id": "three-procedural-locomotion",
+      "source": "https://github.com/PabloMesquida/three-procedural-locomotion",
+      "license": "MIT",
+      "role": "reference for gait, foot contact, IK, acceleration and turning",
       "runtimeImported": false
     }
   ]

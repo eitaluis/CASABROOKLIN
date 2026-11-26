@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111719">
+<title>Carter Kane — Preview 3D | Brooklyn House</title>
+<style>
+:root{color-scheme:dark;--gold:#d4b273;--panel:rgba(13,20,22,.9);--line:rgba(212,178,115,.35)}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#161c20;color:#f0eee7;font-family:Inter,system-ui,sans-serif}
+#stage{position:fixed;inset:0;width:100%;height:100%;display:block}
+header{position:fixed;left:22px;top:18px;z-index:2;pointer-events:none}
+.eyebrow{font-size:9px;letter-spacing:.24em;color:var(--gold);text-transform:uppercase}
+h1{font:500 24px Georgia,serif;letter-spacing:.08em;margin:5px 0}
+p{font-size:11px;color:#bbc3c1;margin:0}
+#controls{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:3;display:flex;gap:7px;flex-wrap:wrap;justify-content:center;width:min(760px,calc(100% - 24px));padding:12px;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(15px)}
+button{border:1px solid var(--line);background:#263034;color:#f0eee7;padding:11px 14px;font-size:10px;letter-spacing:.08em;cursor:pointer}
+button.active,button:hover{background:#9b7542;color:#111}
+#note{position:fixed;right:20px;top:20px;z-index:2;color:#d6d0c1;font-size:10px;text-align:right;line-height:1.6}
+#loading{position:fixed;inset:0;display:grid;place-items:center;background:#111719;color:var(--gold);font:12px Georgia,serif;letter-spacing:.18em;z-index:5}
+#loading.done{display:none}
+@media(max-width:600px){header{top:10px;left:12px}h1{font-size:19px}#note{right:12px;top:12px;font-size:8px}#controls{bottom:8px;padding:7px;gap:5px}button{padding:9px 10px;font-size:9px}}
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div id="loading">CARREGANDO CARTER · 3D LOCAL</div>
+<header><div class="eyebrow">Brooklyn House · Preview independente</div><h1>CARTER KANE</h1><p>Game 3D gráfico · bolsa transversal no quadril direito</p></header>
+<div id="note">Arraste para orbitar · scroll para aproximar<br>O mesmo modelo usado no jogo</div>
+<div id="controls">
+  <button data-mode="idle" class="active">PARADO</button>
+  <button data-mode="walk">CAMINHAR</button>
+  <button data-mode="sprint">SPRINT</button>
+  <button data-mode="jump">SALTAR</button>
+  <button data-view="front">FRENTE</button>
+  <button data-view="side">PERFIL</button>
+  <button data-view="back">COSTAS</button>
+  <button id="game">ABRIR O JOGO ↗</button>
+</div>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { createCharacter } from './src/character.js?v=carter-game3d-20261126a';
+
+const canvas = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x737d82);
+scene.fog = new THREE.Fog(0x737d82, 7, 18);
+const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 80);
+camera.position.set(0, 1.62, -4.3);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0.93, 0);
+controls.enableDamping = true;
+controls.minDistance = 2.1;
+controls.maxDistance = 7.5;
+controls.maxPolarAngle = Math.PI * 0.86;
+controls.update();
+
+scene.add(new THREE.HemisphereLight(0xe5eef4, 0x49372d, 2.05));
+const key = new THREE.DirectionalLight(0xffe0b4, 2.4);
+key.position.set(-3.5, 6, -4);
+key.castShadow = true;
+key.shadow.mapSize.set(1024, 1024);
+key.shadow.camera.left = -3;
+key.shadow.camera.right = 3;
+key.shadow.camera.top = 4;
+key.shadow.camera.bottom = -2;
+scene.add(key);
+const fill = new THREE.DirectionalLight(0x9cb9d6, 1.15);
+fill.position.set(4, 3, 3);
+scene.add(fill);
+const rim = new THREE.DirectionalLight(0xe6c28a, 1.3);
+rim.position.set(-1, 3, 4);
+scene.add(rim);
+
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(80, 80),
+  new THREE.MeshStandardMaterial({ color: 0x4b5558, roughness: 0.94 })
+);
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = -0.025;
+floor.receiveShadow = true;
+scene.add(floor);
+const grid = new THREE.GridHelper(20, 40, 0x9b896c, 0x596265);
+grid.position.y = -0.018;
+grid.material.transparent = true;
+grid.material.opacity = 0.28;
+scene.add(grid);
+
+const character = await createCharacter({ scene });
+character.model.position.set(0, 0, 0);
+let speed = 0;
+let previous = performance.now();
+let disposed = false;
+
+function setMode(mode) {
+  document.querySelectorAll('[data-mode]').forEach(button => button.classList.toggle('active', button.dataset.mode === mode));
+  if (mode === 'idle') speed = 0;
+  if (mode === 'walk') speed = 1.5;
+  if (mode === 'sprint') speed = 4.2;
+  if (mode === 'jump') {
+    speed = 2.6;
+    character.jump();
+  }
+}
+
+document.querySelectorAll('[data-mode]').forEach(button => button.addEventListener('click', () => setMode(button.dataset.mode)));
+document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => {
+  const view = button.dataset.view;
+  const positions = {
+    front: [0, 1.62, -4.3],
+    side: [4.3, 1.62, 0],
+    back: [0, 1.62, 4.3]
+  };
+  camera.position.set(...positions[view]);
+  controls.target.set(0, 0.93, 0);
+  controls.update();
+}));
+document.getElementById('game').addEventListener('click', () => {
+  location.href = './';
+});
+
+function animate(now) {
+  requestAnimationFrame(animate);
+  const dt = Math.min((now - previous) / 1000, 0.04);
+  previous = now;
+  character.updateFallback(dt, speed);
+  controls.update();
+  renderer.render(scene, camera);
+}
+requestAnimationFrame(animate);
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+document.getElementById('loading').classList.add('done');
+window.addEventListener('beforeunload', () => {
+  if (!disposed) {
+    character.dispose();
+    renderer.dispose();
+    disposed = true;
+  }
+});
+</script>
+</body>
+</html>

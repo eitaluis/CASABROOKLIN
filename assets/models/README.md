@@ -1,22 +1,29 @@
-# Modelos 3D
+# Carter Kane — modelo procedural local
 
-## Personagem jogável — Carter Kane estilizado
+O personagem jogável foi implementado em `src/character.js` como um modelo 3D original, criado localmente com geometrias do Three.js e um rig articulado de bones.
 
-O personagem atual é uma malha 3D original, construída localmente em `src/character.js` com superfícies elípticas contínuas, volumes orgânicos e um rig hierárquico próprio. Não usa o antigo GLB remoto nem o boneco de contingência anterior.
+## Direção visual aprovada
+- **C — Game 3D gráfico:** totalmente 3D, formas limpas, volumes legíveis e materiais sem pele fotográfica.
+- Rosto humano natural; sem anime, olhos exagerados ou proporções chibi.
+- Adolescente negro, cabelo crespo curto, corpo lean/atlético.
+- Camiseta azul, calça cargo cáqui e tênis azul-marinho.
+- Mesma malha/rig no desktop e no mobile.
 
-Direção visual:
-- adolescente negro, proporções juvenis e silhueta natural;
-- rosto com mandíbula, bochechas, olhos, nariz, boca e orelhas modelados;
-- cabelo crespo com mechas arredondadas;
-- camisa azul com gola, vista frontal, botões e costuras;
-- calça cáqui com costura e bolso lateral;
-- tênis escuros e bolsa transversal de couro.
+## Bolsa transversal
+- Corpo em couro conhaque e aba frontal, com ferragens em latão.
+- Posicionamento no quadril direito; alça diagonal do ombro esquerdo ao quadril direito.
+- O desenho segue a referência do asset CC0 [Innerscene Crossbody Bag](https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2).
+- **Limitação de integração:** o arquivo GLB original do Innerscene não pôde ser obtido pelo ambiente de edição (o endpoint redireciona para um host de arquivo GLB não acessível pela ferramenta). Para não bloquear a integração, o corpo e a alça foram recriados como geometria Three.js local, seguindo a descrição e a escala da peça. Não é o binário original do Innerscene.
 
-A geometria é original do projeto. As referências de produção e montagem são:
-- [Grab3D Character Mixer](https://grab3d.com/tools/character-mixer/) — ferramenta aberta de criação de personagens modulares, estilos Cozy/Low Poly, corpo slim e exportação GLB rigged; criações CC0 1.0. É uma fonte de referência e uma opção de asset modular futuro, não um binário carregado pelo jogo.
-- [Grab3D Teenager](https://grab3d.com/models/characters/teen-character/) — personagem adolescente CC0 com versões GLB estática e rigged; possui ciclos de walk/run. Referência para proporção e pipeline de personagem de jogo, não usado diretamente no runtime.
-- [giaBaoJS/procedural-3d-characters](https://github.com/giaBaoJS/procedural-3d-characters) — referência MIT para personagens com geometria, rig e keyframes gerados em código.
+## Rig e acessórios
+- Hierarquia humanoide com ossos Hips, Spine, Spine1, Neck, Head, Left/RightArm, Left/RightForeArm, Left/RightHand, Left/RightUpLeg, Left/RightLeg, Left/RightFoot e WeaponR.
+- O socket `WeaponR` está na mão direita e mantém compatibilidade com o inventário atual.
+- Os segmentos visuais são objetos parentados aos bones, com articulação procedural no runtime. Não são uma única malha deformada por skin weights.
 
-## Otimização
+## Animação local
+- Idle respirado, caminhada, corrida/sprint, balanço de braços e pernas, inclinação frontal, flexão dos joelhos e pequeno balanço da bolsa.
+- Salto com impulso, pose aérea, gravidade e aterrissagem.
+- Animações geradas localmente para manter um mesmo comportamento no desktop e no mobile; clips externos ficam como referência futura.
 
-O personagem é gerado com malhas locais e materiais compartilhados. Isso evita download de GLB externo, reduz dependência de CDN e mantém o mesmo modelo em desktop e mobile.
+## Preview
+Abra `/character-preview.html` para ver o modelo em 3D, orbitar a câmera e alternar entre parado, caminhada, sprint, salto, frente, perfil e costas.

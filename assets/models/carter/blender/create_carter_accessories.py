@@ -133,6 +133,12 @@ necklace_anchor.empty_display_size = 0.055
 necklace_anchor.parent = root
 collection.objects.link(necklace_anchor)
 
+strap_anchor = bpy.data.objects.new("Carter_Strap_Spine2_Anchor", None)
+strap_anchor.empty_display_type = "CIRCLE"
+strap_anchor.empty_display_size = 0.065
+strap_anchor.parent = root
+collection.objects.link(strap_anchor)
+
 leather = make_material("Carter | Cognac leather", "#80502F", 0.84, 0.02)
 leather_dark = make_material("Carter | Dark leather", "#593820", 0.88, 0.01)
 leather_light = make_material("Carter | Leather highlights", "#98643C", 0.82, 0.02)
@@ -231,7 +237,7 @@ strap_points = [
     (-0.235 * UNIT, 0.405 * HEIGHT, 0.145 * UNIT)
 ]
 strap = make_ribbon("Carter_Crossbody_Strap", strap_points, 0.047 * UNIT, leather_dark)
-parent_keep_world(strap, bag_anchor)
+parent_keep_world(strap, strap_anchor)
 
 # Fine edge seams along the strap.
 for sign, suffix in [(-1, "L"), (1, "R")]:
@@ -246,7 +252,7 @@ for sign, suffix in [(-1, "L"), (1, "R")]:
             side.normalize()
         edge_points.append(tuple(point + side * (0.015 * UNIT * sign) + Vector((0, 0, 0.002 * UNIT))))
     edge = make_curve("Carter_Strap_Stitch_" + suffix, edge_points, stitch, 0.0011 * UNIT, 2)
-    parent_keep_world(edge, bag_anchor)
+    parent_keep_world(edge, strap_anchor)
 
 adjuster = rounded_box(
     "Carter_Strap_Brass_Adjuster",
@@ -255,7 +261,7 @@ adjuster = rounded_box(
     brass,
     0.003 * UNIT
 )
-parent_keep_world(adjuster, bag_anchor)
+parent_keep_world(adjuster, strap_anchor)
 
 # Gold necklace and round medallion on the front of the chest.
 necklace_points = [
@@ -340,7 +346,7 @@ parent_keep_world(bar, necklace_anchor)
 
 # Put all objects into the dedicated collection and leave the accessory root selected.
 for obj in list(bpy.context.scene.objects):
-    if obj in (root, bag_anchor, necklace_anchor) or obj.parent in (root, bag_anchor, necklace_anchor):
+    if obj in (root, bag_anchor, strap_anchor, necklace_anchor) or obj.parent in (root, bag_anchor, strap_anchor, necklace_anchor):
         for current_collection in list(obj.users_collection):
             current_collection.objects.unlink(obj)
         collection.objects.link(obj)

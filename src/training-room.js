@@ -64,6 +64,15 @@ export function buildTrainingRoom({
     if (obj.name === 'lateral oeste da mansão') obj.visible = false;
     if (obj.name === 'parede lateral do salão' && obj.position.x < 0) obj.visible = false;
   });
+  // Retira a colisão da parede original antes de recriar os segmentos em torno do portal.
+  for (let i = colliders.length - 1; i >= 0; i--) {
+    const item = colliders[i];
+    if (Math.abs(item.minX + 16.025) < 0.06 && Math.abs(item.maxX + 15.175) < 0.06
+      && Math.abs(item.minY - 12.65) < 0.06 && Math.abs(item.maxY - 30.25) < 0.06
+      && Math.abs(item.minZ + 12) < 0.06 && Math.abs(item.maxZ - 11) < 0.06) {
+      colliders.splice(i, 1);
+    }
+  }
   function rebuildSideWall(name, x, thickness, zMin, zMax, yMin, yMax, holeCenter, holeWidth, openingBottom, openingTop, material) {
     const half = holeWidth / 2;
     const openingStart = holeCenter - half;
@@ -642,6 +651,7 @@ export function buildTrainingRoom({
   const seal = new THREE.Mesh(new THREE.TorusGeometry(1.12, 0.035, 8, 64), warmEmissive);
   seal.rotation.x = Math.PI / 2; seal.position.y = 0.04; shabti.add(seal);
   scene.add(shabti);
+  collidable(centerX, floorY + 1.0, centerZ - 2.3, 1.15, 2.0, 1.0);
   let shabtiActive = false, shabtiHealth = 4, shabtiHitAt = 0, shabtiDefeatAt = 0;
   shabti.visible = true;
   const problemBoard = new THREE.Group();

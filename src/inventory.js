@@ -1,6 +1,12 @@
 // Inventário diegético do Carter: os objetos ficam no Duat até serem retirados.
 // O fluxo de portal e os IDs dos itens são genéricos para reutilização por outros magos.
-export function createInventory({ THREE, character, onUse = () => {} }) {
+export function createInventory({
+  THREE,
+  character,
+  onUse = () => {},
+  handBoneCandidates = ['weaponr', 'righthand', 'mixamorigrighthand', 'handr', 'righthandindex1'],
+  fallbackSocketPosition = [0.4, 0.94, 0.04]
+}) {
   const brass = new THREE.MeshStandardMaterial({ color: 0xb98b4d, metalness: 0.78, roughness: 0.28 });
   const darkBrass = new THREE.MeshStandardMaterial({ color: 0x654322, metalness: 0.68, roughness: 0.38 });
   const wood = new THREE.MeshStandardMaterial({ color: 0x3a251c, roughness: 0.74 });
@@ -14,21 +20,25 @@ export function createInventory({ THREE, character, onUse = () => {} }) {
   const gold = new THREE.MeshStandardMaterial({ color: 0xc69a4c, metalness: 0.72, roughness: 0.32 });
 
   let weaponBone = null;
-  const preferredBones = new Set(['weaponr', 'righthand', 'mixamorigrighthand', 'handr', 'righthandindex1']);
+  const bonePriority = new Map(handBoneCandidates.map((name, index) => [String(name).toLowerCase().replace(/[^a-z0-9]/g, ''), index]));
+  let selectedPriority = Infinity;
   character.model.traverse((node) => {
     if (!node.isBone) return;
     const name = String(node.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-    if (!weaponBone && preferredBones.has(name)) weaponBone = node;
-    if (name === 'weaponr') weaponBone = node;
+    const priority = bonePriority.get(name);
+    if (priority !== undefined && priority < selectedPriority) {
+      weaponBone = node;
+      selectedPriority = priority;
+    }
   });
 
   const socket = new THREE.Group();
-  socket.name = 'CarterDuatRightHandSocket';
+  socket.name = 'DuatRightHandSocket';
   if (weaponBone) {
     weaponBone.add(socket);
   } else {
     character.model.add(socket);
-    socket.position.set(0.4, 0.94, 0.04);
+    socket.position.set(...fallbackSocketPosition);
   }
 
   function metalBand(parent, y, radius = 0.075) {
@@ -212,7 +222,7 @@ export function createInventory({ THREE, character, onUse = () => {} }) {
 
   // Portal procedural do Duat, preso ao mesmo socket da mão que recebe os objetos.
   const portal = new THREE.Group();
-  portal.name = 'CarterDuatHandPortal';
+  portal.name = 'DuatHandPortal';
   portal.position.set(0, 0.17, 0.19);
   const portalGold = new THREE.MeshStandardMaterial({
     color: 0xd5ad62, emissive: 0x8b5a1d, emissiveIntensity: 1.15,
@@ -293,6 +303,8 @@ export function createInventory({ THREE, character, onUse = () => {} }) {
   };
 
   function beginRetrieve(name) {
+    attackRemaining = 0;
+    socket.rotation.copy(restRotation);
     const group = items.get(name);
     if (!group) return;
     group.visible = true;
@@ -309,6 +321,8 @@ export function createInventory({ THREE, character, onUse = () => {} }) {
 
   function beginStore() {
     if (!activeItem || transition) return;
+    attackRemaining = 0;
+    socket.rotation.copy(restRotation);
     transition = { name: activeItem, mode: 'store', elapsed: 0, duration: 0.62 };
     portal.visible = true;
     portal.scale.setScalar(0.92);

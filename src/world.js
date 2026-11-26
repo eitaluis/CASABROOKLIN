@@ -202,7 +202,7 @@ for(let level=0;level<3;level++){const y=16.6+level*3.75;for(let side of [-1,1])
  for(let z=-8.5;z<8.4;z+=1.25)cyl('balaústre',[side*10.5,y+.38,z],.055,.055,.78,stone,8);
 }}
 for(let y of [16.6,20.35,24.1])for(let z of [-9.1,8.1])box('viga sacada',[0,y,z],[29,.36,.35],gold,false);
-for(let x=-13;x<=13;x+=2.6){glyphPanel(x,20.2,9.55,0,.42)}
+// Iconografia do portal e das armas é construída no passe de assets em grand-salon.js.
 // Lareira monumental e TV de plasma acima do manto.
 box('parede da lareira',[0,17.8,-9.58],[9.5,8,.8],new THREE.MeshStandardMaterial({color:0x655b4b,map:concrete,roughness:1}),false);
 box('moldura da lareira',[0,15.25,-9.02],[5.5,3.5,.95],stone,false);
@@ -236,9 +236,7 @@ function sofa(x,z,rot=0){
 sofa(-4,1.5,0);sofa(4,1.5,0);
 const rug=new THREE.Mesh(new THREE.PlaneGeometry(10,6),new THREE.MeshStandardMaterial({map:rugTex,roughness:1,side:THREE.DoubleSide}));rug.name='tapete legado do Grande Salão';rug.rotation.x=-Math.PI/2;rug.position.set(0,13.2,-1.3);scene.add(rug);
 box('mesa de centro legado',[0,13.65,-1.4],[3.2,.38,1.8],woodMat,false);cyl('pé mesa legado',[0,13.4,-1.4],.18,.3,.55,gold,12);
-// Instrumentos musicais e armas antigas como decoração.
-function instrument(x,y,z,type){if(type==='harp'){const frame=box('harpa decorativa legada',[x,y,z],[.18,2.4,.42],cedarMat);frame.rotation.z=-.22;for(let i=0;i<9;i++)line([[x-.15+i*.035,y-1,z+.25],[x-.15+i*.035,y+1,z+.25]],gold,.012)}else if(type==='spear'){cyl('lança cerimonial legada',[x,y,z],.045,.045,2.9,woodMat,8);const p=new THREE.Mesh(new THREE.ConeGeometry(.13,.48,8),gold);p.position.set(x,y+1.62,z);scene.add(p)}else{cyl('tambor decorativo legado',[x,y,z],.42,.42,.65,woodMat,16);cyl('pele do tambor legado',[x,y+.34,z],.42,.42,.06,plaster,16)}}
-for(let x of [-12,12]){instrument(x,19.5,-9.35,'harp');instrument(x,21.0,9.1,'spear');instrument(x,17.2,-9.35,'drum')}
+// Instrumentos musicais e armas antigas são substituídos por modelos detalhados em grand-salon.js.
 // As pequenas estátuas geométricas foram removidas; a decoração escultórica é criada em grand-salon.js.
 // Biblioteca circular subterrânea, escavada na rocha.
 const libCenterY=-12.5,libFloor= -17.4,libRadius=12.5;

@@ -135,7 +135,7 @@ A nova etapa está implementada em `src/grand-salon.js`, chamada depois da const
 - **Escadarias:** dois conjuntos laterais em zigue-zague, cada um com três lances alternados e 14 degraus por lance, alcançando as três galerias. Incluem filetes de bronze, corrimãos, balaústres torneados e patamares.
 - **Thoth:** escultura original em mármore negro com pernas e tronco humanos, kilt shendyt pregueado, faixa diagonal, colar largo, cabeça e bico de íbis, papiro aberto com emblema Per Ankh e estilete. A escultura histórica CC0 do Minneapolis Institute of Art foi utilizada apenas como referência visual; o modelo não foi importado.
 - **Lareira:** o fogo atual usa o volume shader Housz/ThreeVolumetricFire (MIT), com ruído/profilagem, view alignment, lenha, cama de brasas, faíscas e luz dinâmica. A densidade das fatias foi aumentada para reduzir a leitura facetada. A moldura foi substituída por arco de calcário esculpido, pilastras, capitéis, detalhes de bronze e manto arredondado.
-- **Mobiliário:** dois GLBs Poly Haven Sofa 03 CC0 (escala 0,78) em cada lado da lareira, mesa circular baixa, e tapete de pele serpentina com dimensões canônicas aproximadas de 12,2 × 4,6 m.
+- **Mobiliário:** dois GLBs Poly Haven Sofa 03 CC0 (escala 0,72) em cada lado da lareira, mesa circular baixa, e tapete de pele serpentina com dimensões canônicas aproximadas de 12,2 × 4,6 m.
 - **Teto e paredes:** medalhão de cedro, roseta, relevos solares alados, placas SVG CC BY 3.0 com harp/drum/flute/spears, porta dupla com Olho de Hórus, correntes e seis cadeados; parede panorâmica com vidro transmissivo e moldura de bronze.
 
 ### Critérios de validação pendentes
@@ -163,7 +163,7 @@ A partir de agora, cada sala é construída segundo [docs/ASSET-FIRST-ROOM-BUILD
 ### QA pendente
 
 - Verificar no browser a aparência do volume de fogo, incluindo cortes/slicing com a câmera em ângulos diferentes.
-- Confirmar que os dois GLBs Sofa 03 carregam e mantêm texturas no GitHub Pages sem erro de MeshoptDecoder/WebP; verificar a nova escala 0,78 com a altura do Carter.
+- Confirmar que os dois GLBs Sofa 03 carregam e mantêm texturas no GitHub Pages sem erro de MeshoptDecoder/WebP; verificar a nova escala 0,72 com a altura do Carter.
 - Comparar o assento do sofá com a altura do Carter, e validar o collider para não bloquear passagem útil.
 - Verificar a estatua com iluminação em movimento e o efeito de normal/roughness; o reflexo visual deve continuar presente.
 - Conferir a leitura do tapete como pele de serpente em vista de jogo, não apenas visto de cima.
@@ -174,3 +174,8 @@ A partir de agora, cada sala é construída segundo [docs/ASSET-FIRST-ROOM-BUILD
 ## Informação arquitetónica adicional do texto-fonte
 
 O Grande Salão tem três níveis de galerias circundantes com fileiras de portas que dão para a área principal. A implementação acrescentou três portas por lado em cada nível como interpretação de layout; a quantidade exata, desenho das portas e localização das escadas não são especificados no trecho do livro. As escadas em zigue-zague existem para permitir a navegação em terceira pessoa pelos balcões, não como alegação de que o texto descreva aquele desenho particular.
+
+
+### Televisão — decisão asset-first
+
+Foram avaliadas as páginas oficiais [Poly Haven Television 01](https://polyhaven.com/a/Television_01) e [Television 02](https://polyhaven.com/a/television_02), ambas CC0. Os dois modelos são televisores CRT antigos. Como o livro especifica uma televisão de plasma sobre o manto, os dois foram rejeitados por incompatibilidade histórica/visual. Mantivemos uma geometria original de tela plana, com vidro físico refletivo e estado emissivo que alterna por interação.

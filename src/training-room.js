@@ -576,12 +576,27 @@ export function buildTrainingRoom({
       }
       ballHeld = false; ballAge = 0;
       const aim = latestForward.clone().setY(0).normalize();
+      const shabtiCandidates = shabtiWarriors.filter(state => state.active && state.spawnProgress >= 0.92)
+        .map(state => {
+          const head = state.group.position.clone().add(new THREE.Vector3(0, 1.92 * state.fullScale, 0));
+          const direction = head.clone().sub(ball.position).setY(0);
+          const distance = direction.length(); direction.normalize();
+          return { state, head, direction, distance, alignment: direction.dot(aim) };
+        })
+        .filter(item => item.distance < 10.5 && item.alignment > 0.76)
+        .sort((a,b)=>a.distance-b.distance);
       const candidates = hoops.map(hoop => {
         const direction = new THREE.Vector3(hoop.position.x - ball.position.x, 0, hoop.position.z - ball.position.z);
-        const distance = direction.length();
-        direction.normalize();
+        const distance = direction.length(); direction.normalize();
         return { hoop, direction, distance, alignment: direction.dot(aim) };
       }).filter(item => item.alignment > 0.58).sort((a, b) => a.distance - b.distance);
+      if (shabtiCandidates.length) {
+        const target=shabtiCandidates[0];
+        const speed=9.5, flightTime=Math.max(.3,target.distance/speed);
+        ballVelocity.copy(target.direction).multiplyScalar(speed);
+        ballVelocity.y=(target.head.y-ball.position.y+.5*9.81*flightTime*flightTime)/flightTime;
+        return 'Arremesso no shabti! Mire na cabeça do guerreiro — como na aula de Carter.';
+      }
       if (candidates.length) {
         const target = candidates[0];
         const flightTime = Math.max(0.35, target.distance / 11.5);
@@ -755,15 +770,23 @@ export function buildTrainingRoom({
     addInteractable({
       name:'Guerreiro shabti '+(index+1),label:'Estatueta shabti '+String(index+1).padStart(2,'0'),
       description:'Pequena figura de faiança vitrificada, com espada e escudo. Aproxime-se do quadro Whatever Works e inicie a aula para despertá-la.',
-      prompt:'E · examinar estatueta · inicie a aula no quadro para despertá-la',
+      prompt:()=>state.active?'E / INTERAGIR · aplicar SA-PER (errar) · F / USAR · atacar':'E · examinar estatueta · inicie a aula no quadro para despertá-la',
       position:group.position,radius:1.55,
       onInteract:()=>{
         if(!state.active) return state.defeated?'O guerreiro voltou à forma de estatueta. A prova pode ser reiniciada no quadro.':'Estatueta shabti de faiança. Para despertá-la, vá até o quadro de aula e pressione E / INTERAGIR.';
-        state.marked=true; state.aiState='stumble'; state.stumbleTimer=3.2;
-        state.stumbleDirection.copy(group.position).sub(latestPlayerPosition).setY(0);
-        if(state.stumbleDirection.lengthSq()<.01) state.stumbleDirection.set(1,0,0);
-        state.stumbleDirection.normalize();
-        return 'SA-PER — “errar”. Você inscreveu o hieróglifo no barro. O shabti vai errar os golpes e cambalear até a parede.';
+        state.marked=true; state.aiState='stumble';
+        const away=group.position.clone().sub(latestPlayerPosition).setY(0);
+        if(away.lengthSq()<.01) away.set(1,0,0); away.normalize();
+        const walls=[
+          {dir:new THREE.Vector3(1,0,0),dist:room.maxX-1.0-group.position.x,target:new THREE.Vector3(room.maxX-1.0,floorY,group.position.z)},
+          {dir:new THREE.Vector3(-1,0,0),dist:group.position.x-(room.minX+1.0),target:new THREE.Vector3(room.minX+1.0,floorY,group.position.z)},
+          {dir:new THREE.Vector3(0,0,1),dist:room.maxZ-1.0-group.position.z,target:new THREE.Vector3(group.position.x,floorY,room.maxZ-1.0)},
+          {dir:new THREE.Vector3(0,0,-1),dist:group.position.z-(room.minZ+1.0),target:new THREE.Vector3(group.position.x,floorY,room.minZ+1.0)}
+        ].filter(w=>w.dist>0.5).sort((a,b)=>b.dir.dot(away)-a.dir.dot(away));
+        const wall=walls[0]||{target:group.position.clone().addScaledVector(away,4.5),dist:4.5,dir:away};
+        state.stumbleTarget=wall.target; state.stumbleDirection.copy(wall.target).sub(group.position).setY(0).normalize();
+        state.stumbleSpeed=2.8; state.stumbleTimer=wall.dist/state.stumbleSpeed+0.5;
+        return 'SA-PER — “errar”. Você marcou o shabti com o hieróglifo. Ele vai cambalear e bater contra a parede.';
       }
     });
     return state;
@@ -943,6 +966,15 @@ export function buildTrainingRoom({
       ball.position.x = THREE.MathUtils.clamp(ball.position.x, room.minX + 0.7, room.maxX - 0.7);
       ball.position.z = THREE.MathUtils.clamp(ball.position.z, room.minZ + 0.7, room.maxZ - 0.7);
       ballVelocity.multiplyScalar(Math.max(0, 1 - dt * 0.13));
+      // O arremesso de basquete também pode derrubar um shabti, como no exercício do livro.
+      for(const state of shabtiWarriors){
+        if(!state.active||state.spawnProgress<.92)continue;
+        const head=state.group.position.clone().add(new THREE.Vector3(0,1.92*state.fullScale,0));
+        if(ball.position.distanceTo(head)<.31){
+          message=completeShabti(state,'A bola acertou a cabeça do shabti. Ele perdeu o equilíbrio e se quebrou em faiança.');
+          ballVelocity.multiplyScalar(-.18);ballVelocity.y=Math.max(1.4,Math.abs(ballVelocity.y)*.35);break;
+        }
+      }
       // Aro em plano horizontal: contabiliza a passagem descendente pelo nível do aro,
       // com o centro da bola dentro da abertura livre do disco solar.
       for (const hoop of hoops) {
@@ -985,131 +1017,97 @@ export function buildTrainingRoom({
     }
     for (const state of shabtiWarriors) {
       if (state.active) {
-        if (state.spawnScale < 1) {
-          state.spawnScale = Math.min(1, state.spawnScale + dt * 2.4);
-          state.group.scale.setScalar(state.spawnScale);
-          if (state.spawnScale > 0.82) {
-            state.group.traverse(obj => {
-              if (obj.userData?.miniatureOnly) obj.visible = false;
-            });
-          }
+        // Invocação visível: a miniatura cresce dentro de uma coluna de luz.
+        if (state.spawnProgress < 1) {
+          state.spawnProgress = Math.min(1, state.spawnProgress + dt * 0.72);
+          const t=state.spawnProgress, eased=t*t*(3-2*t);
+          state.group.scale.setScalar(THREE.MathUtils.lerp(state.miniScale,state.fullScale,eased));
+          state.aura.position.copy(state.group.position);
+          state.aura.visible=t<1; state.aura.rotation.y=time*0.7+state.index;
+          state.aura.scale.setScalar(0.82+Math.sin(time*5+state.index)*0.08);
+          state.beamMat.opacity=0.20*(1-t);
+          if(t>=1){state.group.traverse(obj=>{if(obj.userData?.miniatureOnly)obj.visible=false;});state.aura.visible=false;}
         }
-
-        const enemyPosition = state.group.position;
-        const dx = playerPosition.x - enemyPosition.x;
-        const dz = playerPosition.z - enemyPosition.z;
-        const distance = Math.hypot(dx, dz);
-        const faceYaw = Math.atan2(dx, dz);
-        state.group.rotation.y = faceYaw;
-
-        if (state.hitAt > 0) {
-          state.hitAt = Math.max(0, state.hitAt - dt);
-          state.group.rotation.z = Math.sin(time * 38 + state.index) * state.hitAt * 0.7;
-          if (state.hitAt <= 0) {
-            state.group.rotation.z = 0;
-            state.aiState = 'approach';
-            state.attackCooldown = Math.max(state.attackCooldown, 0.3);
-          }
-        } else {
-          if (state.aiState === 'approach') {
-            if (distance > 2.15) {
-              const step = Math.min(distance - 1.85, state.moveSpeed * dt);
-              if (distance > 0.001) {
-                const nextX = enemyPosition.x + (dx / distance) * step;
-                const nextZ = enemyPosition.z + (dz / distance) * step;
-                let blocked = false;
-                for (const other of shabtiWarriors) {
-                  if (other === state || !other.active) continue;
-                  if (Math.hypot(nextX - other.group.position.x, nextZ - other.group.position.z) < 1.15) {
-                    blocked = true; break;
-                  }
-                }
-                if (!blocked) {
-                  enemyPosition.x = THREE.MathUtils.clamp(nextX, room.minX + 1.1, room.maxX - 1.1);
-                  enemyPosition.z = THREE.MathUtils.clamp(nextZ, room.minZ + 1.1, room.maxZ - 1.1);
-                }
-              }
-            } else if (state.attackCooldown <= 0) {
-              state.aiState = 'windup';
-              state.windup = 0.62;
-              state.strikeResolved = false;
-            } else {
-              state.attackCooldown = Math.max(0, state.attackCooldown - dt);
-            }
-          } else if (state.aiState === 'windup') {
-            state.windup = Math.max(0, state.windup - dt);
-            state.group.rotation.z = -0.24 + Math.sin(time * 20) * 0.035;
-            if (state.windup <= 0) {
-              state.aiState = 'strike';
-              state.strike = 0.34;
-              state.strikeResolved = false;
-            }
-          } else if (state.aiState === 'strike') {
-            state.strike = Math.max(0, state.strike - dt);
-            state.group.rotation.z = 0.38 * Math.sin((1 - state.strike / 0.34) * Math.PI);
-            if (!state.strikeResolved && state.strike < 0.22) {
-              state.strikeResolved = true;
-              if (distance < 2.75 && playerInvulnerability <= 0) {
-                playerHealth = Math.max(0, playerHealth - 1);
-                playerInvulnerability = 1.35;
-                message = 'O guerreiro shabti acertou Carter. Vitalidade: '
-                  + playerHealth + '/' + maxPlayerHealth + '.';
-                if (playerHealth <= 0) {
-                  shabtiActive = false;
-                  shabtiRemaining = 0;
-                  for (const warrior of shabtiWarriors) {
-                    if (warrior.active) {
-                      warrior.active = false;
-                      warrior.defeated = true;
-                      warrior.defeatTime = 2.4;
-                      removeShabtiCollider(warrior);
-                    }
-                  }
-                  playerHealth = maxPlayerHealth;
-                  message = 'A prova foi interrompida. Os shabtis recolheram-se; aproxime-se do quadro para tentar novamente.';
-                }
-              }
-            }
-            if (state.strike <= 0) {
-              state.aiState = 'recover';
-              state.attackCooldown = 1.05;
-              state.group.rotation.z = 0;
-            }
-          } else if (state.aiState === 'recover') {
-            state.attackCooldown = Math.max(0, state.attackCooldown - dt);
-            if (state.attackCooldown <= 0) state.aiState = 'approach';
+        const enemyPosition=state.group.position;
+        const dx=playerPosition.x-enemyPosition.x, dz=playerPosition.z-enemyPosition.z;
+        const distance=Math.hypot(dx,dz), faceYaw=Math.atan2(dx,dz);
+        state.group.rotation.y=faceYaw;
+        state.swordArm.rotation.set(0,0,0); state.shieldArm.rotation.set(0,0,0);
+        state.leftLeg.rotation.set(0,0,0); state.rightLeg.rotation.set(0,0,0); state.group.rotation.x=0;
+        if(state.hitAt>0){
+          state.hitAt=Math.max(0,state.hitAt-dt);
+          const recoil=Math.sin((state.hitAt/.48)*Math.PI);
+          state.group.rotation.z=recoil*.16; state.swordArm.rotation.x=-.75*recoil;
+          if(state.hitAt<=0){state.group.rotation.z=0;state.aiState='approach';state.attackCooldown=Math.max(state.attackCooldown,.4);}
+        } else if(state.aiState==='stumble'){
+          state.stumbleTimer=Math.max(0,state.stumbleTimer-dt);
+          const toTarget=state.stumbleTarget.clone().sub(enemyPosition).setY(0);
+          const remaining=toTarget.length();
+          if(remaining>.18){
+            toTarget.normalize(); const step=Math.min(remaining,state.stumbleSpeed*dt); enemyPosition.addScaledVector(toTarget,step);
+            state.group.rotation.y=Math.atan2(toTarget.x,toTarget.z); state.group.rotation.z=Math.sin(time*22+state.index)*.12;
+            const stride=Math.sin(time*15+state.index)*.68;
+            state.leftLeg.rotation.z=stride; state.rightLeg.rotation.z=-stride;
+            state.swordArm.rotation.x=-.45+Math.sin(time*18)*.26; state.shieldArm.rotation.x=.3+Math.cos(time*17)*.18;
           } else {
-            state.aiState = 'approach';
+            state.group.rotation.x=-.24;state.group.rotation.z=Math.sin(time*24)*.1;
+            state.swordArm.rotation.x=-1.1;state.shieldArm.rotation.x=.45;
+            message=completeShabti(state,'O shabti errou o golpe, bateu de cabeça na parede e se desfez em fragmentos de faiança.');
           }
-          state.group.rotation.z += Math.sin(time * 2.2 + state.index) * 0.012;
-          state.group.position.y = floorY + Math.sin(time * 3.2 + state.index) * 0.025;
+          if(state.stumbleTimer<=0&&state.active)message=completeShabti(state,'O shabti perdeu o equilíbrio e se despedaçou ao atingir a parede.');
+        } else if(state.aiState==='approach'){
+          if(distance>2.25&&state.spawnProgress>=1){
+            const step=Math.min(distance-1.95,state.moveSpeed*dt);
+            if(distance>.001){
+              const nextX=enemyPosition.x+(dx/distance)*step,nextZ=enemyPosition.z+(dz/distance)*step;
+              let blocked=false;
+              for(const other of shabtiWarriors){if(other===state||!other.active)continue;if(Math.hypot(nextX-other.group.position.x,nextZ-other.group.position.z)<1.0){blocked=true;break;}}
+              if(!blocked){enemyPosition.x=THREE.MathUtils.clamp(nextX,room.minX+1.05,room.maxX-1.05);enemyPosition.z=THREE.MathUtils.clamp(nextZ,room.minZ+1.05,room.maxZ-1.05);}
+            }
+            const stride=Math.sin(time*9+state.index)*.34;state.leftLeg.rotation.z=stride;state.rightLeg.rotation.z=-stride;
+            state.swordArm.rotation.x=-.12+Math.sin(time*9+state.index)*.11;state.shieldArm.rotation.x=.12;
+            state.group.position.y=floorY+Math.abs(Math.sin(time*9+state.index))*.035;
+          } else if(distance<=2.25&&state.attackCooldown<=0&&state.spawnProgress>=1){state.aiState='windup';state.windup=.72;state.strikeResolved=false;}
+          else state.attackCooldown=Math.max(0,state.attackCooldown-dt);
+        } else if(state.aiState==='windup'){
+          state.windup=Math.max(0,state.windup-dt);state.group.rotation.x=-.08;
+          state.swordArm.rotation.x=-1.02-Math.sin(time*18)*.07;state.shieldArm.rotation.x=.58;state.group.rotation.z=-.08;
+          if(state.windup<=0){state.aiState='strike';state.strike=.42;state.strikeResolved=false;}
+        } else if(state.aiState==='strike'){
+          state.strike=Math.max(0,state.strike-dt);const phase=1-state.strike/.42;
+          state.swordArm.rotation.x=-1.05+1.8*Math.sin(Math.min(1,phase)*Math.PI/2);state.shieldArm.rotation.x=.62;
+          state.group.rotation.x=-.12+.08*Math.sin(phase*Math.PI);
+          if(!state.strikeResolved&&state.strike<.25){
+            state.strikeResolved=true;
+            if(distance<2.8&&playerInvulnerability<=0){
+              playerHealth=Math.max(0,playerHealth-1);playerInvulnerability=1.35;
+              message='O guerreiro shabti acertou Carter. Vitalidade: '+playerHealth+'/'+maxPlayerHealth+'.';
+              if(playerHealth<=0){
+                shabtiActive=false;shabtiRemaining=0;
+                for(const warrior of shabtiWarriors){if(warrior.active){warrior.active=false;warrior.defeated=true;warrior.defeatTime=2.4;removeShabtiCollider(warrior);}}
+                playerHealth=maxPlayerHealth;message='A prova foi interrompida. Os shabtis encolheram; aproxime-se do quadro para tentar novamente.';
+              }
+            }
+          }
+          if(state.strike<=0){state.aiState='recover';state.attackCooldown=1.15;state.group.rotation.x=0;state.group.rotation.z=0;}
+        } else if(state.aiState==='recover'){
+          state.attackCooldown=Math.max(0,state.attackCooldown-dt);state.swordArm.rotation.x=-.18;state.shieldArm.rotation.x=.2;
+          if(state.attackCooldown<=0)state.aiState='approach';
         }
-
-        if (state.collider) {
-          state.collider.minX = enemyPosition.x - 0.54;
-          state.collider.maxX = enemyPosition.x + 0.54;
-          state.collider.minZ = enemyPosition.z - 0.48;
-          state.collider.maxZ = enemyPosition.z + 0.48;
+        if(state.collider){
+          state.collider.minX=enemyPosition.x-.48*state.fullScale;state.collider.maxX=enemyPosition.x+.48*state.fullScale;
+          state.collider.minY=floorY;state.collider.maxY=floorY+2.35*state.fullScale;
+          state.collider.minZ=enemyPosition.z-.46*state.fullScale;state.collider.maxZ=enemyPosition.z+.46*state.fullScale;
         }
-      } else {
-        state.group.rotation.z *= 0.86;
-        state.group.position.y = floorY;
-      }
-
-      if (state.defeatTime > 0) {
-        state.defeatTime = Math.max(0, state.defeatTime - dt);
-        if (state.defeatTime === 0) {
-          state.group.visible = true;
-          state.group.position.copy(state.origin);
-          state.group.rotation.set(0, 0, 0);
-          state.group.scale.setScalar(0.24);
-          state.spawnScale = 0.24;
-          state.group.traverse(obj => {
-            if (obj.userData?.miniatureOnly) obj.visible = true;
-          });
-        } else if (state.defeatTime < 2.4) {
-          state.group.scale.setScalar(Math.max(0.02, state.defeatTime / 2.4));
-          state.group.visible = true;
+      } else {state.group.rotation.x*=.82;state.group.rotation.z*=.82;}
+      if(state.defeatTime>0){
+        state.defeatTime=Math.max(0,state.defeatTime-dt);const collapse=1-state.defeatTime/2.4,reverse=collapse*collapse*(3-2*collapse);
+        state.group.scale.setScalar(THREE.MathUtils.lerp(state.fullScale,state.miniScale,reverse));
+        if(state.defeatTime<=0){
+          state.group.visible=true;state.group.position.copy(state.origin);state.group.rotation.set(0,0,0);state.group.scale.setScalar(state.miniScale);
+          state.spawnProgress=1;state.aura.visible=false;state.swordArm.rotation.set(0,0,0);state.shieldArm.rotation.set(0,0,0);
+          state.leftLeg.rotation.set(0,0,0);state.rightLeg.rotation.set(0,0,0);
+          state.group.traverse(obj=>{if(obj.userData?.miniatureOnly)obj.visible=true;});
         }
       }
     }

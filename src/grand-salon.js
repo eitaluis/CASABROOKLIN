@@ -1342,11 +1342,19 @@ function addTerrace(scene,stone,wood,brass,colliders,interactables,groundSurface
   const table=new THREE.Mesh(new RoundedBoxGeometry(2.25,.16,1.18,8,.08),wood);
   table.name='mesa de jantar do terraço';table.position.set(5.1,13.96,17.25);
   table.castShadow=true;table.receiveShadow=true;scene.add(table);
+  for(const x of [4.18,6.02])for(const z of [16.82,17.68]) {
+    const leg=new THREE.Mesh(new RoundedBoxGeometry(.13,.78,.13,6,.025),wood);
+    leg.position.set(x,13.53,z);leg.castShadow=true;scene.add(leg);
+  }
   for(const x of [4.45,5.75]) {
     for(const z of [16.45,18.05]) {
       const chair=new THREE.Group();chair.position.set(x,13.175,z);scene.add(chair);
       const seat=new THREE.Mesh(new RoundedBoxGeometry(.62,.14,.62,6,.05),wood);
       seat.position.y=.48;seat.castShadow=true;chair.add(seat);
+      for(const dx of [-.22,.22])for(const dz of [-.22,.22]) {
+        const leg=new THREE.Mesh(new RoundedBoxGeometry(.075,.47,.075,5,.018),wood);
+        leg.position.set(dx,.235,dz);leg.castShadow=true;chair.add(leg);
+      }
       const back=new THREE.Mesh(new RoundedBoxGeometry(.62,.85,.12,6,.05),wood);
       back.position.set(0,.92,-.23);back.castShadow=true;chair.add(back);
     }
@@ -1367,7 +1375,21 @@ function addTerrace(scene,stone,wood,brass,colliders,interactables,groundSurface
     const bench=new THREE.Mesh(new RoundedBoxGeometry(2.6,.26,.65,8,.06),wood);
     bench.name='banco de nogueira junto à fogueira';bench.position.set(x,13.7,z);
     bench.castShadow=true;scene.add(bench);
+    for(const dx of [-1.0,1.0])for(const dz of [-.2,.2]) {
+      const leg=new THREE.Mesh(new RoundedBoxGeometry(.12,.62,.12,6,.025),wood);
+      leg.position.set(x+dx,13.35,z+dz);leg.castShadow=true;scene.add(leg);
+    }
   }
+  for(const side of [-1,1]) {
+    const x=side*19.45;
+    for(let z=13.0;z<=30.5;z+=3.5) {
+      const post=new THREE.Mesh(new RoundedBoxGeometry(.16,1.12,.16,8,.04),brass);
+      post.position.set(x,13.72,z);post.castShadow=true;scene.add(post);
+    }
+    scene.add(tube([[x,14.28,12.0],[x,14.28,31.0]],.045,wood,48,8));
+    scene.add(tube([[x,13.28,12.0],[x,13.28,31.0]],.025,brass,48,8));
+  }
+  scene.add(tube([[2.2,14.28,31.0],[19.45,14.28,31.0]],.045,wood,40,8));
   interactables.push({
     name:'Piscina do terraço',kind:'inspect',label:'Piscina do terraço',
     description:'Piscina retangular em pedra escura, encaixada no piso externo do terraço.',
@@ -1916,9 +1938,12 @@ export function buildGrandSalon({
     if(o.name==='parede interna do salão' && o.position.z>0) o.visible=false;
     if(o.name==='parede lateral do salão' || o.name==='sacada de calcário' ||
        o.name==='lateral oeste da mansão' || o.name==='lateral leste da mansão' ||
+       o.name==='lintel da passagem para ala' ||
        o.name==='fachada frontal da mansão direita' ||
        o.name==='moldura da lareira' || o.name==='manto de pedra' ||
        o.name==='boca escura da lareira') o.visible=false;
+    if(o.type==='Group' && Math.abs(o.position.x-5.85)<.12 &&
+       Math.abs(o.position.z-11.49)<.12 && o.position.y<16.3) o.visible=false;
     if(o.type==='Group' && Math.abs(Math.abs(o.position.x)-16.08)<.22 &&
        Math.abs(o.position.z)<9 && o.position.y>13) o.visible=false;
     if((o.name==='steel window frame' || o.name==='mullion') &&
@@ -1942,7 +1967,9 @@ export function buildGrandSalon({
       Math.abs(sx-.85)<.12&&Math.abs(sy-17.6)<.12&&sz>5&&cz>-10&&cz<10;
     const frontRight=Math.abs(cx-9)<.08&&Math.abs(cy-21.45)<.08&&Math.abs(cz-11)<.08&&
       Math.abs(sx-14)<.12&&Math.abs(sy-17.6)<.12&&Math.abs(sz-.85)<.12;
-    if(mansionSide||frontRight) colliders.splice(i,1);
+    const oldWingLintel=Math.abs(cx-15.6)<.08&&Math.abs(cy-20.65)<.08&&
+      Math.abs(cz+.5)<.08&&Math.abs(sx-.85)<.12&&Math.abs(sy-.55)<.12&&Math.abs(sz-6)<.12;
+    if(mansionSide||frontRight||oldWingLintel) colliders.splice(i,1);
   }
   addTerraceExitFacade(scene,stone,colliders);
 

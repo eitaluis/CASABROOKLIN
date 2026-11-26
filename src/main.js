@@ -4,7 +4,7 @@ import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-
 import { buildGrandSalon } from './grand-salon.js?v=grand-salon-sculpted-20261126c';
 import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
 import { createCharacter } from './character.js?v=carter-ara-approved-restore-20261126d';
-import { createThirdPersonController } from './third-person.js?v=carter-lean-forward-20261126a';
+import { createThirdPersonController } from './third-person.js?v=grand-salon-stair-walk-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';

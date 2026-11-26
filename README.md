@@ -35,6 +35,10 @@ A bolsa transversal conhaque fica no quadril direito, com alça diagonal sobre o
 Use [Abrir preview 3D do Carter](./character-preview.html) para inspecionar o mesmo módulo usado no jogo. A posição final da bolsa e as transições ainda precisam de teste visual em navegador real; veja [docs/CHARACTER.md](docs/CHARACTER.md).
 
 
+## Carter — estudo isolado de personagem
+
+O novo estudo não altera o personagem atualmente usado no jogo. Abra o [Character Lab — Carter](./carter-study.html) para avaliar a primeira base Quaternius, testar clips de locomoção e ajustar a posição da bolsa transversal separadamente. Consulte [docs/CARTER-DESIGN-STUDY.md](docs/CARTER-DESIGN-STUDY.md) para decisões, proveniência e critérios de aprovação.
+
 ## Estrutura do repositório
 
 Veja [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) para a divisão dos módulos, [docs/OPEN-SOURCES.md](docs/OPEN-SOURCES.md) para fontes e licenças, [docs/CHARACTER-OPTIONS.md](docs/CHARACTER-OPTIONS.md) para alternativas de personagem e [docs/ROADMAP-CHECKLIST.md](docs/ROADMAP-CHECKLIST.md) para o checklist por setores.

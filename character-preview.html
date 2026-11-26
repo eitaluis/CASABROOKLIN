@@ -27,6 +27,13 @@ button.active,button:hover{background:#9b7542;color:#111}
 #duat-preview #preview-store{margin-top:7px;text-align:center;background:rgba(155,117,66,.28)}
 #duat-preview button:disabled,#controls button:disabled{opacity:.4;cursor:wait}
 
+#staff-grip-tuning{margin-top:9px;padding-top:9px;border-top:1px solid var(--line)}
+#staff-grip-tuning label{display:flex;justify-content:space-between;gap:8px;color:#d8c49e;font-size:8px;letter-spacing:.08em}
+#staff-grip-tuning output{color:#f0eee7;font-variant-numeric:tabular-nums}
+#staff-grip-offset{width:100%;margin:8px 0;accent-color:#c49a5c}
+#staff-grip-tuning small{display:block;color:#aeb7b4;font-size:8px;line-height:1.45}
+#staff-grip-reset{width:100%;margin-top:7px;padding:6px;font-size:8px}
+
 #loading{position:fixed;inset:0;display:grid;place-items:center;background:#111719;color:var(--gold);font:12px Georgia,serif;letter-spacing:.18em;z-index:5}
 #loading.done{display:none}#loading.error{display:grid;color:#f0c28a;letter-spacing:.08em;text-align:center;padding:24px;line-height:1.7}
 @media(max-width:600px){header{top:10px;left:12px}h1{font-size:19px}#note{right:12px;top:12px;font-size:8px}#duat-preview{right:8px;top:63px;width:190px;max-height:calc(100vh - 190px);padding:8px}#controls{bottom:8px;padding:7px;gap:5px}button{padding:9px 10px;font-size:9px}}
@@ -56,6 +63,12 @@ button.active,button:hover{background:#9b7542;color:#111}
     <button data-preview-equip="ebony_cat">GATO DE ÉBANO</button>
   </div>
   <button id="preview-store" type="button">GUARDAR NO DUAT</button>
+  <div id="staff-grip-tuning">
+    <label for="staff-grip-offset"><span>ALTURA DA EMPUNHADURA</span><output id="staff-grip-value">0,72 m</output></label>
+    <input id="staff-grip-offset" type="range" min="0.35" max="1.20" step="0.01" value="0.72">
+    <small>Ajuste o ponto em que a mão encontra o cajado. A origem acompanha o osso da mão direita.</small>
+    <button id="staff-grip-reset" type="button">RESTAURAR 0,72 M</button>
+  </div>
 </aside>
 <div id="controls">
   <button data-mode="idle" class="active">PARADO</button>
@@ -82,7 +95,7 @@ button.active,button:hover{background:#9b7542;color:#111}
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createCharacter } from './src/character.js?v=carter-satchel-fit-20261126i';
-import { createInventory } from './src/inventory.js?v=inventory-capabilities-20261126b';
+import { createInventory } from './src/inventory.js?v=staff-grip-pivot-20261126a';
 
 const canvas = document.getElementById('stage');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -195,6 +208,17 @@ document.querySelectorAll('[data-preview-equip]').forEach(button => {
   button.addEventListener('click', () => inventory.equip(button.dataset.previewEquip));
 });
 document.getElementById('preview-store').addEventListener('click', () => inventory.unequip());
+
+const staffGripInput = document.getElementById('staff-grip-offset');
+const staffGripValue = document.getElementById('staff-grip-value');
+function updateStaffGrip(value) {
+  const applied = inventory.setStaffGripOffset(Number(value));
+  staffGripInput.value = String(applied);
+  staffGripValue.textContent = applied.toFixed(2).replace('.', ',') + ' m';
+}
+staffGripInput.addEventListener('input', () => updateStaffGrip(staffGripInput.value));
+document.getElementById('staff-grip-reset').addEventListener('click', () => updateStaffGrip(0.72));
+updateStaffGrip(0.72);
 
 const previewItemNames = {
   staff: 'CAJADO MÁGICO',

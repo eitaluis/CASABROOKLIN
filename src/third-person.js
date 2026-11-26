@@ -186,7 +186,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     if (direction.lengthSq() > 0.0001) direction.normalize();
 
     const running = keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint;
-    const speedTarget = input.moving ? (running ? 7.8 : 3.9) * input.magnitude : 0;
+    const speedTarget = input.moving ? (running ? 4.2 : 1.5) * input.magnitude : 0;
     const currentPosition = getPosition();
     limitToZone(currentPosition, direction, Math.max(speedTarget, 2.25) * dt * 1.35);
 

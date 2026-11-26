@@ -19,23 +19,26 @@ Não substituir o modelo Ara por um avatar procedural, placeholder ou personagem
 
 Módulo: src/character-accessories.js.
 
-- Bolsa em couro conhaque com corpo estruturado, aba, bolso, costura e ferragens em latão.
-- Alça diagonal do ombro esquerdo ao quadril direito.
-- A bolsa acompanha o movimento do quadril e recebe oscilação secundária proporcional à velocidade.
-- Medalhão dourado com corrente e relevo egípcio simplificado.
+- Bolsa de couro conhaque cerca de 15% menor, com corpo arredondado/afunilado, aba flexível, bolso discreto, costuras e ferragens pequenas em latão.
+- A face larga gira 90° para a lateral; a bolsa fica apoiada na região posterior do quadril direito, próxima ao cóccix.
+- Alça cruza o peito, contorna o flanco e segue até a parte posterior do quadril.
+- A bolsa acompanha a pelve e recebe oscilação secundária proporcional à velocidade.
+- A mochila gravada no share do Ara foi desativada por `carry: 'none'`; só permanece a bolsa transversal autoral.
+- Medalhão dourado com corrente e relevo egípcio simplificado; corrente e pingente recuados para assentar no tórax.
 - Os objetos são geometrias e materiais originais do projeto, criados no runtime; não dependem de um GLB externo.
 
 ## Rig e compatibilidade
 
 - A bolsa localiza o osso Hips; o trecho superior da alça e a corrente/medalhão localizam Spine2/Spine1/Chest/Spine. Se o osso adequado não existir, usam o root do modelo.
 - O gerador Blender cria âncoras distintas para bolsa (Hips), alça (Spine2) e colar/medalhão (Spine2), facilitando a edição e a futura exportação.
-- O corpo, a bolsa e o medalhão compartilham o mesmo root e a mesma origem.
+- A bolsa acompanha Hips; alça e corrente/medalhão acompanham o alto do tronco. O corpo, os acessórios e o rig permanecem numa única hierarquia do Ara.
 - O socket WeaponR do inventário deve permanecer intacto.
 - A integração usa a malha e o rig do Ara; não é um segundo esqueleto.
 
 ## Blender — próxima etapa
 
 O gerador editável assets/models/carter/blender/create_carter_accessories.py já cria as peças-base no Blender. Ainda não há um arquivo .blend salvo neste commit. Execute o script com o Carter Ara disponível como referência de proporção e rig para refinar:
+- silhueta arredondada da bolsa lateral/posterior e encaixe no cóccix/quadril;
 - costuras e espessura da alça;
 - couro e ferragens da bolsa;
 - medalhão/corrente;

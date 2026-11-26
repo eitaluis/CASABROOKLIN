@@ -6,6 +6,7 @@ import { buildInteriorDetails } from './interior-details.js?v=great-hall-atrium-
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-atrium-20261126d';
 import { buildTrainingRoom } from './training-room.js?v=training-room-sculptural-pass-20261126b';
 import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
+import { createMagicSystem } from './magic-system.js?v=ha-di-prototype-20261126a';
 import { createCharacter } from './character.js?v=carter-satchel-fit-20261126i';
 import { createThirdPersonController } from './third-person.js?v=duat-input-lock-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -217,6 +218,19 @@ const controller = createThirdPersonController({
 });
 revealCameraCue=()=>controller.focusOnRoof();
 
+const magicSystem = createMagicSystem({
+  scene, camera, character, controller, trainingRoom
+});
+const haDiButton = document.getElementById('haDiButton');
+function castHaDi() {
+  const result = magicSystem.castHaDi();
+  if (result?.message) toast(result.message);
+}
+haDiButton?.addEventListener('click', event => {
+  event.preventDefault();
+  castHaDi();
+});
+
 const inventory = createInventory({
   THREE, character,
   setControlsLocked: controller.setLocked,
@@ -259,6 +273,9 @@ function interactWithNearby() {
 window.addEventListener('keydown', event => {
   if (event.code === 'KeyE' && !event.repeat && document.getElementById('startscreen').classList.contains('hidden')) {
     interactWithNearby();
+  }
+  if (event.code === 'KeyG' && !event.repeat && document.getElementById('startscreen').classList.contains('hidden')) {
+    if (controller.zone === 'training') castHaDi();
   }
 });
 document.getElementById('interactButton')?.addEventListener('click', interactWithNearby);
@@ -345,6 +362,7 @@ function animate() {
   }
   if (fireLight) fireLight.intensity = 4.25 + Math.sin(time * 8.7) * 0.72;
   grandSalon.update?.(time);
+  magicSystem.update(dt);
   const trainingMessage = trainingRoom.update(time, dt, controller.getPosition(), controller.getForward());
   if (trainingMessage) toast(trainingMessage);
   const trainingStatus = trainingRoom.getStatus();
@@ -367,6 +385,14 @@ function animate() {
   }else{
     interactionPrompt.hidden=true;
   }
+  if (haDiButton) {
+    const showHaDi = controller.zone === 'training' && trainingStatus.challengeActive;
+    haDiButton.hidden = !showHaDi;
+    haDiButton.disabled = !showHaDi || !magicSystem.canCastHaDi();
+    haDiButton.title = haDiButton.disabled
+      ? 'Fique de frente para um Shabti desperto, entre 3,5 e 12,5 metros.'
+      : 'Conjurar HA-DI no Shabti à sua frente';
+  }
   const showTrainingHud = controller.zone === 'training'
     && (trainingStatus.challengeActive || trainingStatus.targetPracticeActive);
   trainingHud.hidden = !showTrainingHud;
@@ -374,7 +400,7 @@ function animate() {
     trainingHudHealth.textContent = '♥ '.repeat(trainingStatus.playerHealth).trim()
       + ' ' + '♡ '.repeat(trainingStatus.maxPlayerHealth - trainingStatus.playerHealth).trim();
     trainingHudInfo.textContent = trainingStatus.challengeActive
-      ? 'SHABTI · ' + trainingStatus.shabtiRemaining + '/' + trainingStatus.totalShabti
+      ? 'SHABTI · ' + trainingStatus.shabtiRemaining + '/' + trainingStatus.totalShabti + ' · G / HA-DI'
       : 'ALVOS · ' + trainingStatus.targetHits + ' ACERTOS';
   }
   inventory.update(dt);

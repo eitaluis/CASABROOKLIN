@@ -139,14 +139,17 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [x] Criar efígies de Rá com discos solares vazados usados como cestas, aro a 3,05 m do piso.
 - [x] Criar bola interativa, arremesso simplificado, detecção de cesta e placar.
 - [x] Criar prática de mira com alvos e orbes mágicos acionados pelo cajado.
-- [x] Criar desafio “Whatever Works” com guerreiro shabti e interação por cajado/khopesh.
+- [x] Criar quatro estatuetas shabti em pontos diferentes da quadra; ao iniciar “Whatever Works”, crescem para guerreiros de barro com espada e escudo.
+- [x] Dar a cada guerreiro estado independente, dois pontos de resistência, reação a golpes e retorno à forma de estatueta após derrota.
+- [x] Permitir derrotar os quatro usando cajado ou khopesh.
+- [ ] Desenvolver IA de aproximação, defesa e ataque dos guerreiros.
 - [x] Criar inspeção de bustos/afrescos e portas duplas que abrem/fecham.
 - [x] Conectar a sala à galeria do Grande Salão por passarela e transição física de zona.
 - [x] Adicionar acesso rápido pelo menu e tecla 5.
 - [x] Usar o mesmo mundo, personagem, inventário, colisões e interações em desktop/mobile.
 - [ ] Testar a travessia real da galeria ao portal e o retorno ao Grande Salão.
 - [ ] Conferir escala, composição, materiais, cestas, abóbada, iluminação e câmera em navegador.
-- [ ] Testar bola, cesta, placar, alvos, cajado, khopesh, shabti e portas.
+- [ ] Testar bola, cesta, placar, alvos, cajado, khopesh, transformação dos quatro shabtis, combate e portas.
 - [ ] Testar celular em paisagem e medir desempenho.
 - [ ] Ajustar o que for identificado na revisão visual antes de aprovar a sala.
 

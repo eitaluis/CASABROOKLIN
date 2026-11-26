@@ -536,11 +536,25 @@ export function buildTrainingRoom({
         return 'Bola recolhida. Pressione E/INTERAGIR novamente para arremessar na direção da câmera.';
       }
       ballHeld = false; ballAge = 0;
-      ballVelocity.copy(latestForward).setY(0).normalize();
-      if (ballVelocity.lengthSq() < 0.1) ballVelocity.set(0, 0, -1);
-      ballVelocity.multiplyScalar(11.5);
-      ballVelocity.y = 6.25;
-      return 'Arremesso! Tente acertar o disco solar de Rá.';
+      const aim = latestForward.clone().setY(0).normalize();
+      const candidates = hoops.map(hoop => {
+        const direction = new THREE.Vector3(hoop.position.x - ball.position.x, 0, hoop.position.z - ball.position.z);
+        const distance = direction.length();
+        direction.normalize();
+        return { hoop, direction, distance, alignment: direction.dot(aim) };
+      }).filter(item => item.alignment > 0.58).sort((a, b) => a.distance - b.distance);
+      if (candidates.length) {
+        const target = candidates[0];
+        const flightTime = Math.max(0.35, target.distance / 11.5);
+        ballVelocity.copy(target.direction).multiplyScalar(11.5);
+        ballVelocity.y = (target.hoop.position.y - ball.position.y + 0.5 * 9.81 * flightTime * flightTime) / flightTime;
+      } else {
+        ballVelocity.copy(aim);
+        if (ballVelocity.lengthSq() < 0.1) ballVelocity.set(0, 0, -1);
+        ballVelocity.multiplyScalar(11.5);
+        ballVelocity.y = 6.25;
+      }
+      return 'Arremesso! Mira na cesta solar para receber assistência de arco.';
     }
   });
 

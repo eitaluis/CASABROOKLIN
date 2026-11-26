@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js';
-import { createCharacter } from './character.js?v=ara-jump-sequence-20261126b';
-import { createThirdPersonController } from './third-person.js?v=ara-forward-axis-20261126b';
+import { createCharacter } from './character.js?v=ara-game-jump-set-20261126c';
+import { createThirdPersonController } from './third-person.js?v=ara-camera-pitch-20261126c';
 
 
 

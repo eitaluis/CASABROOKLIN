@@ -133,11 +133,11 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
 
   // Água em escala de rio real: a outra margem não fica a poucas dezenas de metros.
   const waterline = new THREE.Mesh(
-    new THREE.BoxGeometry(560, 0.12, 0.7),
+    new THREE.BoxGeometry(0.8, 0.12, 140),
     new THREE.MeshStandardMaterial({ color: 0x81989a, roughness: 0.3, metalness: 0.2, transparent: true, opacity: 0.17 })
   );
   waterline.name = 'reflexo difuso da margem distante';
-  waterline.position.set(310, -0.39, 60);
+  waterline.position.set(582, -0.39, 58);
   scene.add(waterline);
 
   // Ondulação larga e discreta, concentrada perto do cais para preservar desempenho.

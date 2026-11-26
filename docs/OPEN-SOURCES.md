@@ -194,3 +194,15 @@ A documentação separa elementos narrativos confirmados, referências históric
 - HA-DI atinge somente Shabtis despertos na Sala de Treinamento, conforme a decisão de gameplay do usuário.
 - A inscrição é a sequência Unicode 𓉔𓆓. Noto Sans Egyptian Hieroglyphs é solicitado como primeira fonte no Canvas, mas ainda não foi empacotado localmente; verificar cobertura em cada navegador antes de considerar o glifo aprovado.
 - A fragmentação usa as malhas do Shabti existente e lascas geométricas originais. Não foi importado modelo histórico de ushabti nem asset de fragmentação de terceiros.
+
+
+### Segunda iteração visual do HA-DI (26/11/2026)
+
+- **Kenney Particle Pack** — https://kenney.nl/assets/particle-pack — CC0 1.0. Sprites originais magic_01, smoke_03, circle_03, spark_07 e slash_02 foram armazenados em `assets/vfx/` (PNG codificado em Base64) e decodificados no navegador. Uso: halo/energia, fumaça, círculo mágico, faíscas e corte luminoso. O arquivo `assets/vfx/README.md` documenta os nomes locais e a conversão.
+- **Kenney Smoke Particles** — https://kenney.nl/assets/smoke-particles — CC0 1.0. Referência visual complementar para a camada de fumaça/poeira da explosão; o sprite runtime de fumaça é o `smoke_03` do Particle Pack.
+- **three.quarks** — https://github.com/Alchemist0823/three.quarks — MIT. Estudo de lifetime e emissão de partículas, trilhas e fumaça. Não incluído como dependência runtime; os efeitos atuais usam sprites Three.js leves e código original.
+- **ThreeJS VFX** — https://github.com/majidmanzarpour/threejs-vfx — MIT. Estudo de efeitos procedurais em camadas, shaders e expansões de impacto. Nenhum código do repositório foi copiado.
+- **three-procedural-locomotion** — https://github.com/PabloMesquida/three-procedural-locomotion — MIT. Referência para pose procedural, flexão de pernas, quadril e tronco; não importado para runtime.
+- **Ara 3D Gen** — https://github.com/olatunde85/3d-gen — referência ao esqueleto e ao clipe Point já utilizados no personagem. A pose de ataque é composta por offsets locais originais sobre o clip.
+
+As fontes externas são registradas separadamente do código de integração. Só os cinco sprites Kenney CC0 são assets de terceiros carregados no runtime; os materiais, geometrias complementares, animação do efeito, parâmetros de fade e composição corporal são código original CASABROOKLIN.

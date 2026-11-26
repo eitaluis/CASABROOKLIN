@@ -658,6 +658,7 @@ export function createInventory({
     get activeItem() { return activeItem; },
     get isTransitioning() { return Boolean(transition); },
     get transitionMode() { return transition?.mode || null; },
+    get transitionItem() { return transition?.name || null; },
     get hasWeaponSocket() { return Boolean(weaponBone); },
     get itemIds() { return [...items.keys()]; }
   };

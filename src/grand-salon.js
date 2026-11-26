@@ -1138,14 +1138,14 @@ function addThoth(scene,marble,pale,brass,reliefTex,wood) {
     color:0x344955,roughness:.88,metalness:.04
   });
   const sash=tube([
-    [-.53,4.16,.29],[-.42,3.78,.48],[-.18,3.4,.56],
-    [.12,3.08,.55],[.48,2.72,.42]
+    [-.53,4.16,.69],[-.42,3.78,.68],[-.18,3.4,.63],
+    [.12,3.08,.55],[.48,2.72,.44]
   ],.085,sashMaterial,42,12);
   sash.name='faixa cerimonial diagonal de Thoth';
   group.add(sash);
   const sashEdge=tube([
-    [-.53,4.16,.36],[-.42,3.78,.55],[-.18,3.4,.63],
-    [.12,3.08,.62],[.48,2.72,.49]
+    [-.53,4.16,.76],[-.42,3.78,.75],[-.18,3.4,.70],
+    [.12,3.08,.62],[.48,2.72,.51]
   ],.012,goldEdgeMaterial(),42,6);
   sashEdge.name='filete dourado da faixa de Thoth';
   group.add(sashEdge);
@@ -1156,7 +1156,7 @@ function addThoth(scene,marble,pale,brass,reliefTex,wood) {
   const gold=new THREE.MeshStandardMaterial({color:0xb78c4c,metalness:.72,roughness:.29});
   const goldL=new THREE.MeshStandardMaterial({color:0xd4b16f,metalness:.68,roughness:.25});
   const waist=new THREE.Mesh(new THREE.TorusGeometry(.55,.075,10,56),gold);waist.rotation.x=Math.PI/2;waist.position.set(0,2.78,.02);group.add(waist);
-  for(const y of [4.18,4.3,4.42]){const c=new THREE.Mesh(new THREE.TorusGeometry(.43+(y-4.18)*.55,.055,10,64),gold);c.rotation.x=Math.PI/2;c.position.set(0,y,.02);c.scale.set(1.22,1,.72);group.add(c);}
+  for(const y of [4.16,4.29,4.42]){const c=new THREE.Mesh(new THREE.TorusGeometry(.67+(y-4.16)*.18,.055,10,72),gold);c.rotation.x=Math.PI/2;c.position.set(0,y,.14);c.scale.set(1.18,1,.98);group.add(c);}
   const neck=new THREE.Mesh(new THREE.CylinderGeometry(.22,.29,.9,32),marble);neck.position.set(0,4.48,0);neck.castShadow=true;group.add(neck);
   const head=new THREE.Mesh(new THREE.SphereGeometry(.43,32,24),marble);head.name='cabeça de íbis de Thoth';head.position.set(0,5.05,.03);head.scale.set(.76,1.16,.87);head.castShadow=true;group.add(head);
   const beak=new THREE.Mesh(new THREE.LatheGeometry([new THREE.Vector2(.17,0),new THREE.Vector2(.155,.16),new THREE.Vector2(.12,.39),new THREE.Vector2(.075,.68),new THREE.Vector2(.035,.91),new THREE.Vector2(.008,1)],28),marble);beak.name='bico de íbis de Thoth';beak.rotation.x=Math.PI/2;beak.position.set(0,5.15,.29);beak.castShadow=true;group.add(beak);

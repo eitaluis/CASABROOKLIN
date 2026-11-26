@@ -40,6 +40,50 @@
       "path": "src/character.js",
       "role": "runtime-generated clothing shells, backpack, shoes and accessories",
       "license": "project-original-code"
+    },
+    {
+      "id": "cinematic-waterfront-exterior",
+      "path": "src/world.js",
+      "role": "original procedural geometry for loading canopy, roof trusses, industrial props, dock moorings, spiral-stair inner rail and quay protection",
+      "license": "project-original-code",
+      "notes": "Low-poly scene details inspired by CC0 reference packs; no third-party model binaries or external texture downloads are loaded at runtime."
+    }
+  ],
+  "sceneReferences": [
+    {
+      "id": "kenney-city-kit-industrial",
+      "source": "https://kenney.nl/assets/city-kit-industrial",
+      "license": "CC0-1.0",
+      "role": "visual-and-scale-reference-for-industrial-architecture",
+      "runtimeImported": false
+    },
+    {
+      "id": "kenney-factory-kit",
+      "source": "https://kenney.nl/assets/factory-kit",
+      "license": "CC0-1.0",
+      "role": "visual-reference-for-industrial-props-and-machinery",
+      "runtimeImported": false
+    },
+    {
+      "id": "poly-haven-pbr-textures",
+      "source": "https://polyhaven.com/textures",
+      "license": "CC0-1.0",
+      "role": "material-reference-for-weathered-brick-concrete-wood-and-metal",
+      "runtimeImported": false
+    },
+    {
+      "id": "poly-haven-docklands-01",
+      "source": "https://polyhaven.com/a/docklands_01",
+      "license": "CC0-1.0",
+      "role": "lighting-and-waterfront-atmosphere-reference",
+      "runtimeImported": false
+    },
+    {
+      "id": "poly-haven-factory-yard",
+      "source": "https://polyhaven.com/a/factory_yard",
+      "license": "CC0-1.0",
+      "role": "industrial-lighting-reference",
+      "runtimeImported": false
     }
   ]
 }

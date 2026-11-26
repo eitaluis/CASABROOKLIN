@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { buildWorld } from './world.js';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
 import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
-import { createCharacter } from './character.js?v=carter-game3d-20261126a';
+import { createCharacter } from './character.js?v=carter-ara-restore-20261126b';
 import { createThirdPersonController } from './third-person.js?v=carter-lean-forward-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';

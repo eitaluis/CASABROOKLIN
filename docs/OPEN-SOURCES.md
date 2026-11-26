@@ -47,8 +47,8 @@ Os mapas estão locais para que a sala não dependa de downloads de textura em t
 
 ### Geometria original do ambiente
 - Tapete de escamas de serpente, mesa baixa, colunas de lótus, capitéis, escadarias, corrimãos e painéis de relevo são construções próprias para encaixar na arquitetura do Grande Salão.
-- O seu uso de materiais PBR abertos não significa que a geometria seja de Poly Haven/ambientCG.
-- Os elementos que ainda não têm um asset dedicado (instrumentos, armas expostas, peças secundárias) permanecem listados como lacunas na matriz asset-first.
+- Instrumentos e armas de parede — harpas arqueadas, tambores de pele, lanças e khopeshes — são geometrias originais sob medida porque não foi encontrado um pack high-detail com licença verificada e estilo compatível. Recebem nogueira PBR CC0 e bronze próprio; não são creditadas como modelos Poly Haven.
+- O seu uso de materiais PBR abertos não significa que a geometria seja de Poly Haven/ambientCG. Outras peças secundárias continuam listadas como lacunas na matriz asset-first.
 
 ## Ferramentas e motor
 

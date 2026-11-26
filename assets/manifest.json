@@ -33,6 +33,12 @@
   ],
   "localGeneratedAssets": [
     {
+      "id": "brooklyn-house-east-river-surface",
+      "path": "src/exterior.js",
+      "role": "periodic procedural grayscale height map applied as animated bumpMap to the existing East River water mesh; two-axis UV drift with lower mobile anisotropy and bump intensity",
+      "license": "project-original-code; MIT implementation study only: https://github.com/mqnc/cheapwater (no third-party code or texture copied)"
+    },
+    {
       "id": "great-hall-cinematic-decor",
       "path": "src/interior-details.js",
       "role": "procedural bronze chandelier, wall sconces, carved plaques, Egyptian banners and furniture detailing",

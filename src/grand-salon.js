@@ -319,40 +319,78 @@ function loadSofaAssets(scene, fallbacks, colliders, interactables) {
   loader.setMeshoptDecoder(MeshoptDecoder);
   const source=assetUrl('models/polyhaven-sofa-03.glb');
   const placements=[
-    {x:-4.35,z:-4.6,rotation:-Math.PI/2,side:'oeste'},
-    {x:4.35,z:-4.6,rotation:Math.PI/2,side:'leste'}
+    {x:-4.35,z:-4.6,rotation:Math.PI/2,side:'oeste'},
+    {x:4.35,z:-4.6,rotation:-Math.PI/2,side:'leste'}
   ];
+
   loader.load(source,gltf=>{
+    const sourceRoot=gltf.scene;
+    sourceRoot.updateMatrixWorld(true);
+    const sourceBox=new THREE.Box3().setFromObject(sourceRoot);
+    const sourceSize=sourceBox.getSize(new THREE.Vector3());
+    if(sourceBox.isEmpty() || sourceSize.x<0.1 || sourceSize.y<0.1 || sourceSize.z<0.1){
+      throw new Error('O GLB Sofa 03 não contém uma malha visível ou dimensões válidas.');
+    }
+
     placements.forEach((place,index)=>{
-      const model=gltf.scene.clone(true);
+      const model=sourceRoot.clone(true);
       model.name='sofá Poly Haven Sofa 03 · '+place.side;
-      model.position.set(place.x,13.175,place.z);
-      model.rotation.y=place.rotation;
       model.scale.setScalar(.78);
+      model.rotation.y=place.rotation;
+      model.updateMatrixWorld(true);
+
+      let box=new THREE.Box3().setFromObject(model);
+      if(box.isEmpty()) throw new Error('O sofá '+place.side+' veio sem geometria renderizável.');
+      const center=box.getCenter(new THREE.Vector3());
+
+      // Corrige o pivot original do GLB e assenta a malha no piso real do salão.
+      model.position.x += place.x-center.x;
+      model.position.z += place.z-center.z;
+      model.updateMatrixWorld(true);
+      box=new THREE.Box3().setFromObject(model);
+      model.position.y += 13.175-box.min.y;
+      model.updateMatrixWorld(true);
+
       model.traverse(object=>{
-        if(object.isMesh){object.castShadow=true;object.receiveShadow=true;}
+        if(object.isMesh){
+          object.visible=true;
+          object.castShadow=true;
+          object.receiveShadow=true;
+          object.frustumCulled=false;
+        }
       });
       model.userData.assetId='polyhaven-sofa-03';
       model.userData.license='CC0-1.0';
       model.userData.nativeDimensions=[2.731,.925,1.118];
-      model.userData.interaction={type:'inspect',label:'Sofá de couro',description:'Sofá de couro envelhecido com madeira entalhada e almofadas separadas.'};
+      model.userData.interaction={
+        type:'inspect',
+        label:'Sofá de couro',
+        description:'Sofá Poly Haven Sofa 03 em escala humana, com materiais PBR originais.'
+      };
       scene.add(model);
+
+      // Só remove o fallback depois de validar e adicionar a instância GLB.
       if(fallbacks[index]) fallbacks[index].visible=false;
+      console.info('Sofá Poly Haven carregado:',place.side,box.getSize(new THREE.Vector3()).toArray());
     });
-  },undefined,error=>console.warn('Não foi possível carregar Sofa 03; mantendo o modelo de reserva.',error));
+  },undefined,error=>{
+    console.warn('Poly Haven Sofa 03 falhou; mantendo sofá de reserva visível.',error);
+    fallbacks.forEach(group=>{if(group)group.visible=true;});
+  });
 
   placements.forEach(place=>{
-    addBoxCollider(colliders,place.x,13.72,place.z,.98,1.1,2.42);
+    addBoxCollider(colliders,place.x,13.72,place.z,1.12,1.05,2.32);
     interactables.push({
       name:'Sofá de couro '+place.side,
       kind:'inspect',
       label:'Sofá de couro do Grande Salão',
-      description:'Modelo Poly Haven Sofa 03: couro envelhecido, estrutura de madeira entalhada e almofadas estofadas. O sofá ocupa a escala de um móvel de dois/três lugares.',
+      description:'Sofá de couro Poly Haven Sofa 03, com escala de assento de uso humano e materiais PBR.',
       position:new THREE.Vector3(place.x,13.7,place.z),
       radius:1.65
     });
   });
 }
+
 
 function createRug(scene) {
   const rand=seeded(20261126);
@@ -1609,8 +1647,8 @@ export function buildGrandSalon({
   // Fallback sofa proportions match the physical Poly Haven model. It disappears only
   // after the local GLB has loaded successfully.
   const sofaFallbacks=[
-    createSofa(scene,-4.35,-4.6,-Math.PI/2,upholstery,darkWood,brass),
-    createSofa(scene,4.35,-4.6,Math.PI/2,upholstery,darkWood,brass)
+    createSofa(scene,-4.35,-4.6,Math.PI/2,upholstery,darkWood,brass),
+    createSofa(scene,4.35,-4.6,-Math.PI/2,upholstery,darkWood,brass)
   ];
   loadSofaAssets(scene,sofaFallbacks,colliders,interactables);
 

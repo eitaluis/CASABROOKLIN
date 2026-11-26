@@ -1,6 +1,6 @@
 # CASABROOKLIN — checklist de produção por setores
 
-Atualizado: 26/11/2026 — reestruturação do Grande Salão em átrio central; refinamento do Carter e exterior East River
+Atualizado: 26/11/2026 — átrio central do Grande Salão reestruturado; refinamento do Carter e exterior East River
 
 Este documento é a fonte de verdade do andamento. A cada nova solicitação, classificar os setores afetados, trabalhar neles isoladamente, atualizar este checklist e manter desktop/mobile sincronizados.
 
@@ -65,6 +65,10 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [ ] Testar orientação/escala na mão direita em idle, walk e run com o novo rig.
 - [ ] Criar animações dedicadas de cajado, ataque de khopesh, defesa e troca.
 - [ ] Adicionar relíquias, papiros e itens de história em slots de inventário.
+
+- [x] Átrio central: escadarias principais simétricas, lances superiores em faixas X separadas e passarela elevada entre as alas
+- [x] Assentos curvos no pedestal circular de Thoth e passagens inferiores abertas
+- [x] Paredes de alvenaria segmentada e remoção das vigas transversais do vão central
 
 ## Setor 04 — Grande Salão
 

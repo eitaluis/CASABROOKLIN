@@ -22,8 +22,9 @@ CASABROOKLIN/
 
 ## Responsabilidades
 
-- `src/main.js`: inicialização Three.js, materiais-base, iluminação, HUD, minimapa e loop de renderização.
+- `src/main.js`: inicialização Three.js, materiais-base, iluminação, HUD, minimapa, pós-processamento adaptativo e loop de renderização.
 - `src/world.js`: geometria da doca, armazém, fachada, escada em caracol, Grande Salão, biblioteca e ala dos quartos.
+- `src/interior-details.js`: decoração procedural compartilhada dos interiores, incluindo lustre, arandelas, estandartes, cúpula de Nut, piso de Geb, nichos de papiros e shabtis.
 - `src/character.js`: carregamento do GLB, roupa procedural, acessórios, inicialização do rig e fallback articulado.
 - `src/third-person.js`: WASD, corrida, salto, rotação por mouse, câmera de perseguição, teleporte e colisão leve por volumes AABB.
 - `assets/manifest.json`: proveniência, endereço remoto e licenças dos assets.

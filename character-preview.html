@@ -81,7 +81,7 @@ button.active,button:hover{background:#9b7542;color:#111}
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createCharacter } from './src/character.js?v=carter-satchel-fit-20261126i';
+import { createCharacter } from './src/character.js?v=carter-hit-injury-20261126a';
 import { createInventory } from './src/inventory.js?v=inventory-capabilities-20261126b';
 
 const canvas = document.getElementById('stage');
@@ -158,6 +158,7 @@ try {
   throw error;
 }
 let speed = 0;
+let previewJumpVelocity = 0;
 let previous = performance.now();
 let disposed = false;
 let interactionLocked = false;
@@ -216,11 +217,11 @@ function setMode(mode) {
   character.stopAction?.();
   document.querySelectorAll('[data-mode]').forEach(button => button.classList.toggle('active', button.dataset.mode === mode));
   if (mode === 'idle') speed = 0;
-  if (mode === 'walk') speed = 1.5;
+  if (mode === 'walk') speed = 1.7;
   if (mode === 'sprint') speed = 4.2;
   if (mode === 'jump') {
-    speed = 2.6;
-    character.jump();
+    speed = 0;
+    if (character.jump()) previewJumpVelocity = 4.55;
   }
 }
 
@@ -269,6 +270,14 @@ function animate(now) {
   const dt = Math.min((now - previous) / 1000, 0.04);
   previous = now;
   character.updateFallback(dt, speed);
+  if (previewJumpVelocity !== 0 || character.model.position.y > 0) {
+    previewJumpVelocity -= 10.8 * dt;
+    character.model.position.y += previewJumpVelocity * dt;
+    if (character.model.position.y <= 0) {
+      character.model.position.y = 0;
+      previewJumpVelocity = 0;
+    }
+  }
   inventory.update(dt);
   if (previewStatus) {
     if (inventory.isTransitioning) {

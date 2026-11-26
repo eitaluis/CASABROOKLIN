@@ -1032,10 +1032,16 @@ export function buildTrainingRoom({
       direction.normalize();
       const velocity = direction.multiplyScalar(1.8 + Math.random() * 3.8);
       velocity.y += 1.5 + Math.random() * 2.8;
+      const pieceMaterials = Array.isArray(piece.material) ? piece.material : [piece.material];
       shabtiDebris.push({
         mesh: piece, velocity,
         spin: new THREE.Vector3((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 12, (Math.random() - 0.5) * 10),
-        radius, life: 0, ownsGeometry: false
+        radius, life: 0, ownsGeometry: false,
+        baseScale: piece.scale.clone(),
+        fadeStart: 10 + Math.random() * 0.7,
+        fadeDuration: 1.5 + Math.random() * 0.7,
+        opacityStates: pieceMaterials.map(material => ({ material, opacity: material.opacity ?? 1 })),
+        fading: false
       });
     });
 
@@ -1055,10 +1061,16 @@ export function buildTrainingRoom({
       shard.castShadow = true; shard.receiveShadow = true; scene.add(shard);
       const velocity = new THREE.Vector3(Math.random() - 0.5, 1.8 + Math.random() * 3.2, Math.random() - 0.5)
         .normalize().multiplyScalar(2.4 + Math.random() * 3.8);
+      const shardMaterials = Array.isArray(shard.material) ? shard.material : [shard.material];
       shabtiDebris.push({
         mesh: shard, velocity,
         spin: new THREE.Vector3((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 12, (Math.random() - 0.5) * 12),
-        radius: size, life: 0, ownsGeometry: true
+        radius: size, life: 0, ownsGeometry: true,
+        baseScale: shard.scale.clone(),
+        fadeStart: 10 + Math.random() * 0.7,
+        fadeDuration: 1.5 + Math.random() * 0.7,
+        opacityStates: shardMaterials.map(material => ({ material, opacity: material.opacity ?? 1 })),
+        fading: false
       });
     }
   }
@@ -1067,14 +1079,33 @@ export function buildTrainingRoom({
     for (let i = shabtiDebris.length - 1; i >= 0; i--) {
       const piece = shabtiDebris[i];
       piece.life += dt;
-      if (piece.life >= 10) {
-        scene.remove(piece.mesh);
-        if (piece.ownsGeometry) piece.mesh.geometry.dispose();
-        if (Array.isArray(piece.mesh.material)) piece.mesh.material.forEach(material => material.dispose());
-        else if (piece.ownsGeometry) piece.mesh.material.dispose();
-        shabtiDebris.splice(i, 1);
+
+      // As peças descansam por pelo menos dez segundos. Depois, cada uma inicia
+      // um fade próprio (com atraso e duração levemente variados), em vez de sumirem juntas.
+      if (piece.life >= piece.fadeStart) {
+        if (!piece.fading) {
+          piece.fading = true;
+          piece.velocity.set(0, 0, 0);
+          piece.spin.set(0, 0, 0);
+          for (const state of piece.opacityStates) {
+            state.material.transparent = true;
+            state.material.depthWrite = false;
+            state.material.needsUpdate = true;
+          }
+        }
+        const fade = THREE.MathUtils.clamp((piece.life - piece.fadeStart) / piece.fadeDuration, 0, 1);
+        for (const state of piece.opacityStates) state.material.opacity = state.opacity * (1 - fade);
+        piece.mesh.scale.copy(piece.baseScale).multiplyScalar(1 - fade * 0.18);
+        if (fade >= 1) {
+          scene.remove(piece.mesh);
+          if (piece.ownsGeometry) piece.mesh.geometry.dispose();
+          if (Array.isArray(piece.mesh.material)) piece.mesh.material.forEach(material => material.dispose());
+          else piece.mesh.material.dispose();
+          shabtiDebris.splice(i, 1);
+        }
         continue;
       }
+
       piece.velocity.y -= 9.81 * dt;
       piece.mesh.position.addScaledVector(piece.velocity, dt);
       piece.mesh.rotation.x += piece.spin.x * dt;

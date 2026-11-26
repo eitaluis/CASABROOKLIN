@@ -8,7 +8,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   let zoneName = 'dock';
   let cameraYaw = 0;
   let cameraPitch = 0.20;
-  let cameraDistance = 2.65;
+  let cameraDistance = 3.2;
   let pointerLocked = false;
   let firstCameraFrame = true;
   let fallbackSpeed = 0;
@@ -68,7 +68,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   document.addEventListener('mousemove', (event) => {
     if (!pointerLocked) return;
     cameraYaw -= event.movementX * 0.0027;
-    cameraPitch = THREE.MathUtils.clamp(cameraPitch - event.movementY * 0.0018, -Math.PI / 2 + 0.01, Math.PI / 2 - 0.01);
+    cameraPitch = THREE.MathUtils.clamp(cameraPitch + event.movementY * 0.0018, -Math.PI / 2 + 0.01, Math.PI / 2 - 0.01);
   });
 
   // Em telas sensíveis ao toque, arrastar sobre a cena orbita a câmera sem Pointer Lock.
@@ -82,7 +82,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     const dx = event.clientX - touchLook.x;
     const dy = event.clientY - touchLook.y;
     cameraYaw -= dx * 0.006;
-    cameraPitch = THREE.MathUtils.clamp(cameraPitch - dy * 0.004, -Math.PI / 2 + 0.01, Math.PI / 2 - 0.01);
+    cameraPitch = THREE.MathUtils.clamp(cameraPitch + dy * 0.004, -Math.PI / 2 + 0.01, Math.PI / 2 - 0.01);
     touchLook.x = event.clientX;
     touchLook.y = event.clientY;
   });
@@ -247,6 +247,11 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
         const targetHeading = Math.atan2(-direction.x, -direction.z);
         character.model.rotation.y = THREE.MathUtils.damp(character.model.rotation.y, targetHeading, 13.5, dt);
       }
+      // Inclinação frontal sutil no sprint e compensação lateral ao mudar de direção.
+      const leanTarget = running && fallbackSpeed > 2.4 ? -0.17 : input.moving ? -0.035 : 0;
+      const bankTarget = input.moving ? THREE.MathUtils.clamp(-input.strafe * 0.045, -0.055, 0.055) : 0;
+      character.model.rotation.x = THREE.MathUtils.damp(character.model.rotation.x, leanTarget, running ? 7.5 : 10.5, dt);
+      character.model.rotation.z = THREE.MathUtils.damp(character.model.rotation.z, bankTarget, 8.5, dt);
       character.updateFallback(dt, fallbackSpeed);
     }
 
@@ -258,12 +263,16 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       lookTarget.y + Math.sin(cameraPitch) * cameraDistance + 0.15,
       lookTarget.z + Math.cos(cameraYaw) * horizontalDistance
     );
+    const floorY = zones[zoneName].base ?? 0;
+    desiredCamera.y = Math.max(desiredCamera.y, floorY + 0.28);
     if (firstCameraFrame) {
       camera.position.copy(desiredCamera);
       firstCameraFrame = false;
     } else {
       camera.position.lerp(desiredCamera, 1 - Math.exp(-10.5 * dt));
     }
+    // O clamp final elimina qualquer passagem do corpo da câmera pelo piso durante o smoothing.
+    camera.position.y = Math.max(camera.position.y, floorY + 0.28);
     camera.lookAt(lookTarget);
     return { position: p, speed: character.human ? character.human.speed : fallbackSpeed, zone: zoneName };
   }

@@ -8,7 +8,7 @@ Todo novo objeto ou espaço deve seguir [ASSET-FIRST-ROOM-BUILDING.md](ASSET-FIR
 
 **Ara 3D Gen** — https://github.com/olatunde85/3d-gen — pacote JavaScript MIT; os dados de personagem usam MakeHuman CC0 e os clips de captura de movimento vêm da base CMU, livres para uso comercial conforme a licença/documentação do projeto.
 - O corpo, rosto, cabelo, rig e clips principais preservam o Carter aprovado no share salvo do Ara.
-- src/character.js carrega idle, walk, run e a sequência de salto, além de consultar ANIMATIONS para selecionar ações cinematográficas disponíveis (look_around, talk_gestures, wave, point e bow).
+- src/character.js carrega idle, walk, run e a sequência de salto, além de consultar ANIMATIONS para selecionar ações cinematográficas disponíveis (look_around, talk_gestures, wave, point e bow). O clipe Ara Point serve como base do gesto HA-DI; a extensão do dedo médio é uma adaptação procedural original do projeto.
 - src/character.js sobrescreve o item carregado do share Ara com `carry: 'none'`, removendo a mochila original.
 - src/character-accessories.js acrescenta geometria original do projeto: bolsa de couro conhaque menor, arredondada e virada para a lateral/posterior do quadril direito; alça cruza o peito e contorna o flanco. A bolsa segue Hips; alça e colar seguem o alto do tronco. O medalhão foi recuado para assentar sobre a camisa. Não utiliza GLB de terceiro.
 - assets/models/carter/blender/create_carter_accessories.py é a fonte editável de lookdev no Blender; ainda não é um .blend nem um asset carregado em runtime.
@@ -175,3 +175,21 @@ Essas páginas foram usadas como referência de pesquisa. Nenhuma digitalizaçã
 
 A documentação separa elementos narrativos confirmados, referências históricas de material/iconografia e interpretações de level design. A revisão no código não equivale a aprovação visual: é obrigatório conferir escala, iluminação, mapas UV, sombras, colisões e FPS em navegador real no desktop e em celular paisagem.
 
+
+
+## Magia HA-DI — pesquisa e proveniência (26/11/2026)
+
+### Fonte canônica
+- Rick Riordan, The Red Pyramid, p. 87 na edição consultada: https://www.jkmedina.com/uploads/1/3/2/3/13236122/rick_riordan_-_kane_chronicles_1_-_the_red_pyramid.pdf — Sadie aponta com dois dedos e o polegar; os hieróglifos dourados aparecem sobre o cadeado e a porta explode. A execução por Carter no jogo é uma adaptação de gameplay.
+- Frances Foster, “Shabti Robots and Hieroglyphic Spells: Rick Riordan’s Egyptians”: https://api.repository.cam.ac.uk/server/api/core/bitstreams/b07e467d-c970-425f-a484-64a37605f589/content — identifica a grafia ḥḏ como 𓉔𓆓 e discute a ligação entre palavra, inscrição e ação.
+- Gardiner sign list: https://www.egyptianhieroglyphs.net/gardiners-sign-list/ — referência de sinais para validação epigráfica.
+
+### Referências técnicas avaliadas
+- **ThreeJS VFX** — https://github.com/majidmanzarpour/threejs-vfx — MIT. Estudo de técnicas de partículas, shaders e efeitos procedurais de magia. Nenhum código, textura ou asset foi copiado para o runtime.
+- **Ara 3D Gen** — https://github.com/olatunde85/3d-gen — MIT para o código do pacote; dados e clips seguem as licenças próprias documentadas pelo projeto. O runtime já utilizado pela CASABROOKLIN fornece o clipe Point como base corporal; a adaptação de dois dedos é código original em src/character.js.
+- **Three.js** — https://github.com/mrdoob/three.js — MIT, versão 0.165.0 já fixada no projeto. Hieróglifo, pulso dourado, anéis, impacto, partículas e fragmentos de faiança são construídos proceduralmente no projeto; não há dependência runtime adicional.
+
+### Limites da primeira implementação
+- HA-DI atinge somente Shabtis despertos na Sala de Treinamento, conforme a decisão de gameplay do usuário.
+- A inscrição é a sequência Unicode 𓉔𓆓. Noto Sans Egyptian Hieroglyphs é solicitado como primeira fonte no Canvas, mas ainda não foi empacotado localmente; verificar cobertura em cada navegador antes de considerar o glifo aprovado.
+- A fragmentação usa as malhas do Shabti existente e lascas geométricas originais. Não foi importado modelo histórico de ushabti nem asset de fragmentação de terceiros.

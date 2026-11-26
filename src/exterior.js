@@ -313,7 +313,7 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
   // Barco egípcio de papiro: referência textual, sem motor nem piloto visível.
   const boat = new THREE.Group();
   boat.name = 'barco de papiro da chegada de Carter e Sadie';
-  boat.position.set(35.7, 0.12, 18.5);
+  boat.position.set(32.8, 0.12, 18.5);
   boat.rotation.y = 0.05;
   scene.add(boat);
   const reedTextureCanvas = document.createElement('canvas');
@@ -438,7 +438,7 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
 
   interactables.push({
     label: 'Barco de papiro',
-    position: new THREE.Vector3(35.7, 1.2, 18.5),
+    position: new THREE.Vector3(32.8, 1.2, 18.5),
     radius: 4.8,
     description: 'Um barco egípcio trançado de fibras vegetais, com pequenas tochas na proa e uma cabana de esteiras. Não há piloto visível.',
     onInteract: () => 'O barco parece ter acabado de trazer alguém pelo East River.'
@@ -450,9 +450,10 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
   let doorTarget = 0;
   const closedDoorY = door ? door.position.y : 15.9;
   if (door) {
-    door.material = new THREE.MeshStandardMaterial({
-      color: 0x241d18, roughness: 0.84, metalness: 0.02
-    });
+    door.material = door.material.clone();
+    door.material.color.setHex(0x51402f);
+    door.material.roughness = 0.88;
+    door.material.metalness = 0.02;
   }
   interactables.push({
     label: 'Portal da Brooklyn House',

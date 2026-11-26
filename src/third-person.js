@@ -97,22 +97,32 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   const joystick = document.getElementById('joystick');
   const joystickKnob = document.getElementById('joystickKnob');
   let joystickPointer = null;
-  const joystickRadius = 34;
   function setJoystick(event) {
-    if (!joystick) return;
+    if (!joystick || !joystickKnob) return;
     const rect = joystick.getBoundingClientRect();
+    const ring = joystick.querySelector('.joystick-ring');
+    const ringRect = ring?.getBoundingClientRect() || rect;
+    const knobRect = joystickKnob.getBoundingClientRect();
+    const radius = Math.max(8, Math.min(ringRect.width, ringRect.height) / 2
+      - Math.max(knobRect.width, knobRect.height) / 2 - 3);
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
     let dx = event.clientX - cx;
     let dy = event.clientY - cy;
     const length = Math.hypot(dx, dy);
-    if (length > joystickRadius) {
-      dx = dx / length * joystickRadius;
-      dy = dy / length * joystickRadius;
+    if (length > radius) {
+      dx = dx / length * radius;
+      dy = dy / length * radius;
     }
-    touch.moveX = dx / joystickRadius;
-    touch.moveY = dy / joystickRadius;
-    if (joystickKnob) joystickKnob.style.transform = `translate(${dx}px,${dy}px)`;
+    const rawX = dx / radius;
+    const rawY = dy / radius;
+    const magnitude = Math.hypot(rawX, rawY);
+    const deadZone = 0.12;
+    const scaled = magnitude <= deadZone ? 0 : (magnitude - deadZone) / (1 - deadZone);
+    const factor = magnitude > 0 ? scaled / magnitude : 0;
+    touch.moveX = rawX * factor;
+    touch.moveY = rawY * factor;
+    joystickKnob.style.transform = `translate(${dx}px,${dy}px)`;
   }
   function resetJoystick() {
     joystickPointer = null;
@@ -156,7 +166,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       - (keys.has('KeyA') || keys.has('ArrowLeft') ? 1 : 0) + touch.moveX;
     const magnitude = Math.hypot(forward, strafe);
     if (magnitude > 1) { forward /= magnitude; strafe /= magnitude; }
-    return { forward, strafe, moving: magnitude > 0.001 };
+    return { forward, strafe, magnitude: Math.min(1, magnitude), moving: magnitude > 0.12 };
   }
 
   function limitToZone(pos, direction, stepLength) {
@@ -176,7 +186,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     if (direction.lengthSq() > 0.0001) direction.normalize();
 
     const running = keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint;
-    const speedTarget = input.moving ? (running ? 5.8 : 2.25) : 0;
+    const speedTarget = input.moving ? (running ? 5.8 : 2.25) * input.magnitude : 0;
     const currentPosition = getPosition();
     limitToZone(currentPosition, direction, Math.max(speedTarget, 2.25) * dt * 1.35);
 

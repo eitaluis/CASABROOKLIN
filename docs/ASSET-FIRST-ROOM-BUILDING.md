@@ -6,7 +6,7 @@ Status: **padrão obrigatório para todo novo espaço, ambiente, interior ou ár
 
 Todo espaço começa pela compreensão do lugar descrito no livro e por uma pesquisa de assets de código aberto. Não começar enchendo o ambiente com caixas, cilindros ou materiais de cor lisa. Geometria procedural continua permitida para arquitetura exclusiva, encaixes, relevos e peças que não tenham asset adequado, mas precisa usar referências de materiais e acabamento de qualidade e passar por revisão de proporção.
 
-**Cada objeto ou conjunto relevante precisa de uma ficha de produção**, cobrindo cinco frentes:
+**Cada peça visível do ambiente precisa de uma ficha de produção**, sem exceção para os detalhes pequenos. Isso inclui arquitetura, mobiliário, esculturas, ferragens, adornos, instrumentos, armas, luzes, partículas, superfícies, texturas, portas, janelas, vegetação e qualquer elemento interativo. Um conjunto pode agrupar peças repetidas (por exemplo, os balaústres de uma galeria), mas a ficha deve identificar todos os componentes e onde são usados. Cada ficha cobre cinco frentes:
 
 1. **Objeto/forma:** GLB/glTF/FBX/Blend ou geometria original sob medida; silhueta, proporções, pivô, escala e fidelidade à referência textual.
 2. **Material/visual:** albedo/base color, normal, roughness, metallic, AO e UVs sempre que disponíveis. Anotar resolução e escala física de repetição.
@@ -31,6 +31,7 @@ Todo espaço começa pela compreensão do lugar descrito no livro e por uma pesq
 - [ ] Não selecionar um asset só por ser gratuito: rejeitar linguagem low-poly/blocada que entre em conflito com a direção visual do projeto.
 - [ ] Quando não houver asset adequado, registar a lacuna e criar uma peça original de qualidade superior, baseada em referências visuais e materiais abertos.
 - [ ] Preparar uma ficha por objeto antes de integrar. Para objetos hero, criar preview isolado e comparar alternativas.
+- [ ] Se um asset adequado não existir, registrar a pesquisa, as alternativas rejeitadas e a razão para criar geometria própria. A criação própria também precisa de referência de forma e material; nunca virar um bloco/cilindro placeholder apresentado como versão final.
 
 ### Fase 03 — composição e adaptação
 - [ ] Fazer greybox apenas para testar escala e circulação; não a tratar como acabamento.
@@ -55,7 +56,7 @@ O programa textual do Grande Salão em *A Pirâmide Vermelha* inclui pé-direito
 | Elemento | Asset/estudo escolhido | Material e visual | Interação prevista | Estado |
 |---|---|---|---|---|
 | Fogo | [Housz/ThreeVolumetricFire](https://github.com/Housz/ThreeVolumetricFire), MIT; classe local adaptada a GLSL3/WebGL2 e texturas de perfil/ruído | Volume 3D view-aligned; amostragem aumentada (0,042 desktop / 0,085 mobile), lenha, cama de brasas, faíscas e luz dinâmica | Inspeção por proximidade; luz afeta a leitura do espaço | Shader integrado e densidade aumentada; suavidade visual ainda precisa de QA em vários ângulos |
-| Sofás (2) | [Poly Haven Sofa 03](https://polyhaven.com/a/sofa_03), Fran Calvente, CC0; GLB local; 2,731 × 0,925 × 1,118 m, 8.004 triângulos | Dois materiais e mapas PBR incorporados; escala 0,78 (largura aproximada 2,13 m); colocados em lados opostos da lareira | Colliders e inspeção por proximidade; sentar/levantar é interação futura | GLB integrado; QA de escala/orientação pendente |
+| Sofás (2) | [Poly Haven Sofa 03](https://polyhaven.com/a/sofa_03), Fran Calvente, CC0; GLB local; 2,731 × 0,925 × 1,118 m, 8.004 triângulos | Dois materiais e mapas PBR incorporados; escala 0,72 (largura aproximada 1,97 m); posicionamento corrigido pela caixa real da malha; fallback procedural proporcional permanece visível em caso de erro | Colliders e inspeção por proximidade; sentar/levantar é interação futura | GLB integrado com fallback validado; QA visual de escala/orientação pendente |
 | Thoth | Escultura original sob medida; referência visual CC0 ao [Thoth do Minneapolis Institute of Art](https://sketchfab.com/3d-models/thoth-c-644-bce-30-ce-394a94722862460e8cefab54b4bed7bf) | Mármore negro com albedo próprio e mapas normal/roughness; corpo humano separado, pernas, kilt shendyt com pregas, faixa diagonal, colar largo, cabeça/bico de íbis, papiro aberto Per Ankh e estilete; altura composta de cerca de 9,1 m | Collider e inspeção contextual; escultura permanece bloqueada como elemento monumental | Geometria original atualizada para corresponder à descrição textual; escaneado não importado porque não contém o mesmo arranjo de atributos |
 | Mesa baixa | Geometria original inspirada em [Round Coffee Table 01](https://polyhaven.com/a/coffee_table_round_01) e [Round Wooden Table 01](https://polyhaven.com/a/round_wooden_table_01) | Walnut PBR CC0, tampo de cerca de 1,5 m, bronze e medalhão solar | Collider e inspeção | Geometria redimensionada; validação visual pendente |
 | Tapete | Superfície procedural original, conforme a descrição de pele de serpente | Escamas sobrepostas jade/terra/carvão, albedo + bump e borda de couro/bronze | Caminhável; não deve bloquear Carter | Implementado; conferir escala e leitura |

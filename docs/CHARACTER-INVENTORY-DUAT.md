@@ -36,6 +36,14 @@ Referência: Rick Riordan, *As Crônicas dos Kane: Guia de Sobrevivência*, seç
 | `protective_amulet` | Amuleto de proteção | Artefato transportável; efeito será configurado depois | Amuleto protetor é canônico; uso do wedjat como desenho é interpretação visual; primeira geometria integrada |
 | `magic_box` | Caixa de magia | Recipiente físico que reúne os instrumentos; também pode ser guardado no Duat | Canônico; primeira geometria procedural integrada; abertura/compartimentos pendentes |
 
+## 3.1 Referências visuais e decisão de assets
+
+- **Shabti:** a ficha “Ushabti figures”, do projeto Virtual Museums of Małopolska, aparece como modelo 3D CC0 via Sketchfab/Artheon. Foi estudada como referência de silhueta e pose mumiforme, mas não importada: o modelo histórico é uma peça arqueológica de material diferente, enquanto o item de Carter precisa comunicar cera moldada. Fonte: https://www.artheonmuseum.org/artwork/ushabti-figures-cf0631
+- **Papiro:** o fragmento do Livro dos Mortos de Henuttawy, catalogado pelo British Museum, serve como referência de proporção e pigmento: https://www.britishmuseum.org/collection/object/Y_EA10018-1
+- **Instrumentos de escriba:** a paleta de madeira EA12786, também catalogada pelo British Museum, ajuda a orientar a leitura de tinta, pigmentos e cálamos: https://www.britishmuseum.org/collection/object/Y_EA12786
+
+Os links do British Museum são referências de estudo, não arquivos importados. Nenhum GLB externo foi incorporado nesta primeira rodada: caixa, papiro, cálamo, tinta, amuleto e shabti foram montados como geometria procedural em Three.js. A forma atual é uma primeira versão técnica; escala, acabamento e leitura precisam de QA visual antes de aprovação.
+
 Os oito itens acima já têm IDs estáveis e modelos 3D iniciais no catálogo de `src/inventory.js`. A primeira rodada é procedural e ainda precisa de inspeção no navegador para aprovar escala, orientação, leitura de material e encaixe na mão. O papiro usa marcas gráficas abstratas, não hieróglifos nem palavras mágicas definitivas; a caixa ainda não abre e o amuleto não possui efeito mágico.
 
 ## 4. Estados do inventário

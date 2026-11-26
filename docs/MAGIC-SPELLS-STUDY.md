@@ -61,6 +61,26 @@ O `Kane Chronicles Egyptian Celebration Kit`, publicado por Disney Hyperion, lis
 
 O kit chama esses itens de “Egyptian commands”; não os apresenta como lista exaustiva. Eles ficam catalogados separadamente dos oito favoritos do guia.
 
+### Outros comandos no glossário de The Serpent’s Shadow
+
+O glossário do terceiro romance, páginas impressas 488–489 na edição consultada, registra também:
+
+| Palavra / expressão | Significado no glossário | Possível uso a investigar |
+|---|---|---|
+| **DROWAH** | “Boundary” / limite | Marcar limite ou criar uma fronteira mágica |
+| **FAH** | “Release” / libertar | Soltar uma contenção ou liberar algo |
+| **HAPI, U-HA EY PWAH** | “Hapi, arise and attack” | Invocar/ordenar ataque associado a Hapi |
+| **ISFET** | “Chaos” / caos | Conceito ou comando ligado ao caos; não atribuir um efeito sem localizar a cena |
+| **MA’AT** | “Restore order” / restaurar a ordem | Magia avançada de restauração da ordem contra o caos |
+| **MAW** | “Water” / água | Comando relacionado à água |
+| **MED-WAH** | “Speak” / falar | Comando de fala |
+| **SA-HEI** | “Bring down” / derrubar | Trazer algo abaixo ou derrubar |
+| **SE-KEBEB** | “Make cold” / esfriar | Produzir frio ou reduzir temperatura |
+
+O glossário também repete HA-DI, HA-TEP, HA-WI, HI-NEHM, N’DAH e TAS com seus significados. Não é uma lista exaustiva: é o conjunto de comandos reunido no glossário do livro. Quando a cena não mostra o que o comando faz, não devemos completar a lacuna com um efeito inventado.
+
+**MA’AT como exemplo avançado:** em *The Serpent’s Shadow*, Sadie pronuncia Ma’at para restaurar a ordem diante da magia do caos de Apophis. A análise de Frances Foster observa que ela precisa focar no hieróglifo e internalizar/realizar a ação, não apenas pronunciar uma palavra. Isso é uma boa referência para feitiços avançados que exigem gesto e concentração, mas a animação específica será adaptação.
+
 ## 5. Levitação — efeito canônico, palavra não identificada
 
 A levitação é um efeito explicitamente mencionado em `The Throne of Fire`. Sadie sugere lançar um feitiço de levitação sobre uma estátua grande para movê-la. No trecho consultado, porém, não é pronunciada a Divine Word correspondente.
@@ -85,6 +105,15 @@ Fluxo proposto:
 7. **Recuperação:** Carter retorna à locomoção sem salto brusco de pose.
 
 **Animações:** `use_press` é apenas a primeira ação de alcance criada para abrir o Duat. O clipe Ara estende o indicador como se tocasse um ponto à frente do tórax; não é a animação final de conjuração. Para os feitiços, vamos selecionar clipes Ara adequados e criar clips próprios/retargetados quando não houver gesto convincente. O movimento deve ser bloqueado durante a janela de conjuração no desktop e no mobile.
+
+### Recarga e energia mágica
+
+Em *The Serpent’s Shadow*, Carter explica que uma Divine Word não pode ser repetida logo depois de pronunciada: a espera pode durar vários minutos e, em alguns casos, horas. O mesmo trecho diz que palavras divinas consomem energia e que usar muitas em sequência pode esgotar o mago rapidamente; dominar um único hieróglifo pode levar anos.
+
+**Regra de fidelidade:** o sistema precisa prever cooldown por Divine Word e um recurso de energia mágica. Os valores exatos de duração, custo e recuperação serão balanceamento de gameplay, não números canônicos. O cooldown deve ser por comando, não um bloqueio global que impeça usar toda a magia depois de lançar um único feitiço.
+
+O exemplo de Carter também dá um efeito visual canônico para N’DAH: luz azul cintila ao redor da pessoa protegida. Isso sustenta a proposta de escudo, mantendo o formato/quantidade de dano absorvido como regra de jogo.
+
 
 
 ### Propostas de gesto para a primeira rodada (adaptação, não cânone)
@@ -171,5 +200,5 @@ A ordem de produção permanece:
 - Rick Riordan, `The Throne of Fire: The Kane Chronicles, Book 2`, trecho sobre mover uma estátua por levitação: https://www.bookreporter.com/reviews/the-throne-of-fire-the-kane-chronicles-book-2/excerpt
 - Disney Hyperion, `The Kane Chronicles Egyptian Celebration Kit`, “Carter Says!”, p. 13: https://rickriordan.com/wp-content/uploads/2016/04/Kane-Chronicles-Celebration-Kit.pdf
 - Frances Foster, “Shabti Robots and Hieroglyphic Spells: Rick Riordan’s Egyptians”, análise de HI-NEHM/HA-DI e da relação entre palavra, hieróglifo e ação: https://api.repository.cam.ac.uk/server/api/core/bitstreams/b07e467d-c970-425f-a484-64a37605f589/content
-- Rick Riordan, `The Serpent’s Shadow`, cena de HA-WI contra Bloodstained Blade (p. 337 na edição consultada): https://fliphtml5.com/znbfq/ihwj/03_-_The_Serpent%26%2339%3Bs_Shadow/
+- Rick Riordan, `The Serpent’s Shadow`, cenas de HA-WI/N’DAH e cooldown de Divine Words (pp. 337–338), e glossário de comandos (pp. 488–489) na edição consultada: https://fliphtml5.com/znbfq/ihwj/03_-_The_Serpent%26%2339%3Bs_Shadow/
 - Ara 3D Gen, catálogo de animações/interações (referência técnica, não fonte de cânone): https://github.com/olatunde85/3d-gen/blob/main/docs/animations.md

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { createCharacter as createAraCharacter } from 'ara3d';
 
 // Link compartilhado do Carter aprovado no Ara 3D Gen.
+// A malha e a identidade visual permanecem sob controle do modelo aprovado.
 const CARTER_SHARE_URL = 'https://ara3dgen.com/app/#c=XVDLboQwDPyVyr2iClbs87ZdqZce-wHImwaIgBg5jlZoxb_XoVTt9pDIM9aMx76Dx8HCCS7IYvnpHb2FDLBRLn_ZbMtyV24O232x_BkMMZh-6ZUZ3KxrWlnByDQSiyMfErNVk5qdQQ-nQuvgUpVnYDCaXxQ6pwVMFH1TrYJqQB2RgZ2sWsGV6eYVtuhYYWh1Sl6sxIV6SuxzsS82-ZuyFKV2Ggo8LasIjQqidzXxUIXWsSh7JREakl10UglTDJaDNhrkwXr5kKlP0-__lEqMKHqplDpQ7z5VY35C6I3OxwvMuteD7aNKW843f3Wv5fG8O8CchC0tWwdvsfuOZJB5SodA0436YP4C';
 
 export async function createCharacter({ scene, onModeChange = () => {} }) {
@@ -22,16 +23,24 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
   let locomotion = hero.locomotion(mixer);
   let jumping = false;
   let movementSpeed = 0;
-  // Um pivô separado controla a orientação sem disputar a rotação do rig/animações Ara.
+  let disposed = false;
+  let jumpSequence = null;
+  let finishJump = null;
+
+  // O pivô separa a orientação de navegação da rotação interna do rig Ara.
   const root = new THREE.Group();
   root.name = 'CarterMovementRoot';
-  scene.add(root);
   root.add(hero.scene);
-  // O modelo Ara tem o eixo frontal invertido em relação ao eixo de movimento do jogo.
+  scene.add(root);
   hero.scene.rotation.y = Math.PI;
 
+  function clearJumpListener() {
+    if (finishJump) mixer.removeEventListener('finished', finishJump);
+    finishJump = null;
+  }
+
   function jump() {
-    if (jumping) return;
+    if (disposed || jumping) return;
     const startClip = hero.clip('jump_start');
     const airClip = hero.clip('jump_air');
     const landClip = hero.clip('jump_land');
@@ -39,13 +48,15 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
       console.warn('O conjunto de animações jump_start/jump_air/jump_land não está completo.');
       return;
     }
+
     jumping = true;
     locomotion.stop();
-    const sequence = hero.playSequence(mixer, 'jump_start, jump_air 0.45s, jump_land', { repeat: false });
-    const finishJump = (event) => {
-      if (event.action.getClip() !== landClip) return;
-      mixer.removeEventListener('finished', finishJump);
-      sequence.stop();
+    jumpSequence = hero.playSequence(mixer, 'jump_start, jump_air 0.45s, jump_land', { repeat: false });
+    finishJump = (event) => {
+      if (event.action.getClip() !== landClip || disposed) return;
+      clearJumpListener();
+      jumpSequence?.stop();
+      jumpSequence = null;
       jumping = false;
       locomotion = hero.locomotion(mixer);
       locomotion.speed = movementSpeed;
@@ -61,19 +72,29 @@ export async function createCharacter({ scene, onModeChange = () => {} }) {
     mixer,
     locomotion,
     jump,
+    height: hero.height || 1.75,
     locomotionName: 'Carter Kane · Ara 3D',
     updateFallback(dt, speed) {
+      if (disposed) return;
       movementSpeed = speed;
       if (!jumping) locomotion.speed = speed;
       mixer.update(dt);
       hero.update(dt);
     },
     resetFallback() {
+      if (disposed) return;
       locomotion.speed = 0;
       root.rotation.set(0, 0, 0);
     },
     dispose() {
+      if (disposed) return;
+      disposed = true;
+      clearJumpListener();
+      jumpSequence?.stop();
+      jumpSequence = null;
+      mixer.stopAllAction();
       hero.dispose();
+      root.removeFromParent();
     }
   };
 

@@ -21,22 +21,31 @@ export function createMagicSystem({
   glyphCanvas.width = 768;
   glyphCanvas.height = 512;
   const glyphContext = glyphCanvas.getContext('2d');
-  glyphContext.clearRect(0, 0, 768, 512);
-  glyphContext.textAlign = 'center';
-  glyphContext.textBaseline = 'middle';
-  glyphContext.shadowColor = '#ffbd42';
-  glyphContext.shadowBlur = 34;
-  glyphContext.fillStyle = '#fff0bd';
-  glyphContext.font = '190px "Noto Sans Egyptian Hieroglyphs", "Segoe UI Historic", serif';
-  glyphContext.fillText('𓉔𓆓', 384, 222);
-  glyphContext.shadowBlur = 13;
-  glyphContext.fillStyle = '#ffd36a';
-  glyphContext.font = '600 42px Georgia, serif';
-  glyphContext.letterSpacing = '12px';
-  glyphContext.fillText('HA-DI', 384, 420);
+  function drawGlyphTexture() {
+    glyphContext.clearRect(0, 0, 768, 512);
+    glyphContext.textAlign = 'center';
+    glyphContext.textBaseline = 'middle';
+    glyphContext.shadowColor = '#ffbd42';
+    glyphContext.shadowBlur = 34;
+    glyphContext.fillStyle = '#fff0bd';
+    glyphContext.font = '190px "Noto Sans Egyptian Hieroglyphs", "Segoe UI Historic", serif';
+    glyphContext.fillText('𓉔𓆓', 384, 222);
+    glyphContext.shadowBlur = 13;
+    glyphContext.fillStyle = '#ffd36a';
+    glyphContext.font = '600 42px Georgia, serif';
+    glyphContext.letterSpacing = '12px';
+    glyphContext.fillText('HA-DI', 384, 420);
+    glyphTexture.needsUpdate = true;
+  }
   const glyphTexture = new THREE.CanvasTexture(glyphCanvas);
   glyphTexture.colorSpace = THREE.SRGBColorSpace;
   glyphTexture.anisotropy = 4;
+  drawGlyphTexture();
+  if (document.fonts?.load) {
+    document.fonts.load('190px "Noto Sans Egyptian Hieroglyphs"')
+      .then(drawGlyphTexture)
+      .catch(() => {});
+  }
 
   const glyphMaterial = new THREE.MeshBasicMaterial({
     map: glyphTexture,

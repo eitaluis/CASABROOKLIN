@@ -51,3 +51,11 @@ A bolsa transversal no quadril direito e o medalhão têm pivôs próprios no m�
 - VITALIDADE inicia em 100 e perde 20 pontos por acerto dos Shabtis (cinco segmentos internos na prova). A 50 ou menos, Carter entra no estado cansado/agachado e não pode correr.
 - ENERGIA inicia em 100 e regenera 8 pontos por segundo. HA-DI custa 30; o orbe de prática com cajado custa 12.
 - A vitalidade é compartilhada entre ambientes e não é reiniciada ao sair da sala de treinamento. A energia recarrega continuamente até 100.
+
+## Fonte externa estudada para combate
+
+- **KinemIQ Free Game Animations (CC0 1.0):** pacote aberto com 35 clips em FBX/GLB num esqueleto humanoide de 66 ossos a 30 fps; inclui sword slash/idle/block, crouch, fases de salto e reações de impacto. A biblioteca é uma boa fonte futura para movimentos armados do Carter. O pack ainda não foi importado no runtime.
+- **Compatibilidade:** Ara aceita animações FBX/GLB/glTF/BVH como content packs e retargeta os clips ao seu próprio rig. O fluxo documentado é `npx ara3d pack <pasta>`; cada clip passa a ser listado sob o ID do pack. Antes de adotar um movimento, testar a mão na arma, direção do root motion, pés no chão e transição de retorno ao idle.
+- **Shabtis:** os quatro guerreiros atuais são grupos procedurais articulados, sem esqueleto humano skinado. O movimento de aproximação, preparação, golpe e recuperação foi animado nos pivôs próprios de ombro/cotovelo/escudo/pernas. Não aplicar diretamente um clip humanoide a esse modelo sem primeiro criar/retargetar um rig compatível.
+
+Fontes: https://github.com/Kinemiq/free-game-animations · https://ara3dgen.com/docs/packs/ · https://ara3dgen.com/docs/animations/

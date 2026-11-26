@@ -22,6 +22,8 @@ The script creates editable mesh and curve objects with materials, bevels and gr
 - Bag centre: approximately (-0.245, 0.656, -0.135) metres for a 1.75 m character.
 - Bag broad panel: rotated -90° around Y so it faces the character's anatomical right side; the bag sits on the posterior/right pelvis rather than the front of the abdomen.
 - Bag dimensions: approximately 0.305 × 0.245 × 0.092 m before bevels, about 15% smaller than the first pass.
+- The body uses the same tapered eight-point outline and soft bevel as the Three.js runtime; its thickness is extruded from the bag pivot so both sources share the same rest pose.
+- The side-facing flap and rounded pocket overlap the bag surface; two small brass snaps sit on the pocket, and a separate brass ring aligns to the strap endpoint at the upper-rear corner.
 - Strap: crosses the chest, wraps the right flank and attaches to the upper-rear corner of the satchel; the small brass anchor ring is aligned to the strap endpoint.
 - Medallion: centred on the front of the upper chest.
 

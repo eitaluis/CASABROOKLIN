@@ -25,8 +25,8 @@ button.active,button:hover{background:#9b7542;color:#111}
 </head>
 <body>
 <canvas id="stage"></canvas>
-<div id="loading">CARREGANDO CARTER · 3D LOCAL</div>
-<header><div class="eyebrow">Brooklyn House · Preview independente</div><h1>CARTER KANE</h1><p>Game 3D gráfico · bolsa transversal no quadril direito</p></header>
+<div id="loading">CARREGANDO CARTER · MALHA HUMANA RIGADA</div>
+<header><div class="eyebrow">Brooklyn House · Preview independente</div><h1>CARTER KANE</h1><p>Carter restaurado · bolsa transversal no quadril direito</p></header>
 <div id="note">Arraste para orbitar · scroll para aproximar<br>O mesmo modelo usado no jogo</div>
 <div id="controls">
   <button data-mode="idle" class="active">PARADO</button>
@@ -39,12 +39,12 @@ button.active,button:hover{background:#9b7542;color:#111}
   <button id="game">ABRIR O JOGO ↗</button>
 </div>
 <script type="importmap">
-{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"}}
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/","ara3d":"https://cdn.jsdelivr.net/npm/ara3d@0.18.1/dist/index.js"}}
 </script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createCharacter } from './src/character.js?v=carter-game3d-20261126a';
+import { createCharacter } from './src/character.js?v=carter-ara-restore-20261126b';
 
 const canvas = document.getElementById('stage');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });

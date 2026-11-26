@@ -18,7 +18,7 @@ Status: **inventário Duat com doze objetos e ação de alcance integrados; revi
 - `createCharacter()` aceita `characterSource` e `characterName`; a mesma camada de locomoção e ações Ara pode ser reaproveitada em outro mago sem carregar os acessórios exclusivos de Carter (`attachCarterAccessories: false`).
 - O controlador de terceira pessoa continua em src/third-person.js; teclado, mouse, joystick e toque conduzem a mesma instância.
 - A escala é obtida do próprio rig, com fallback de 1,75 m.
-- As animações centrais continuam sendo idle, walk, run, jump_start, jump_air e jump_land.
+- As animações centrais incluem idle/walk/run, jump_start/jump_air/jump_land, walk_slouch e crouch; as reações direcionais hit_front/back/left/right são carregadas no mesmo rig Ara.
 
 ## Inventário e objetos do Duat
 
@@ -32,9 +32,9 @@ Módulo: src/character-accessories.js.
 
 - Bolsa transversal em couro conhaque, agora cerca de 15% menor, com corpo arredondado e levemente afunilado, aba flexível, bolso discreto e ferragens pequenas em latão. A silhueta foi revista para não parecer um estojo rígido.
 - A bolsa fica no quadril direito posterior, próxima à região do cóccix, com a face larga girada 90° para a lateral; vista de frente ou de costas, deve aparecer predominantemente de perfil.
-- O ponto de apoio da bolsa é o osso Hips. O trecho superior da alça segue Spine2 e contorna a lateral do tronco até a parte posterior do quadril.
+- Bolsa e alça usam o mesmo pivô Hips para preservar o encontro entre as duas peças durante a animação. A corrente e o medalhão usam o alto do tronco (prioridade Spine2, depois Spine1/Chest/Spine).
 - A mochila que vinha gravada no share do Ara foi removida na geração do personagem por `carry: 'none'`. A bolsa transversal autoral é o único item de carga.
-- Corrente e medalhão mantêm o desenho aprovado, mas foram recuados 4,5 cm em direção ao tórax para evitar o efeito flutuante. O pingente continua preso ao alto do tronco (prioridade Spine2, depois Spine1/Chest/Spine).
+- A posição da corrente e do medalhão foi ajustada para fora da camisa (deslocamento local positivo no eixo frontal) para reduzir clipping; o encaixe final ainda depende de inspeção visual em idle, caminhada, corrida e salto.
 - Oscilação secundária discreta da bolsa e do medalhão, atualizada pelo mesmo ciclo de movimento.
 - Geometria e materiais são originais do projeto; não dependem de GLB externo nem de download em runtime.
 
@@ -59,7 +59,8 @@ As ações expressivas são expostas por playAction() e stopAction(). Se algum I
 - A aceleração e a desaceleração foram suavizadas.
 - A rotação horizontal do corpo, a inclinação frontal e a inclinação lateral em curvas foram reduzidas para uma leitura menos atlética/exagerada.
 - A câmera de terceira pessoa acompanha com easing mais lento.
-- O salto usa a sequência de preparação, pose aérea e aterrissagem.
+- O salto combina jump_start/jump_air/jump_land com um arco físico vertical no controlador (impulso inicial + gravidade), em vez de manter o root no piso durante o clip.
+- A partir de 50% de vitalidade, Carter troca para crouch idle e walk_slouch; o controlador bloqueia sprint enquanto o estado ferido estiver ativo.
 - Os valores são compartilhados entre desktop e mobile; somente os controles de entrada diferem.
 
 ## Preview

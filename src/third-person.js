@@ -186,7 +186,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     if (direction.lengthSq() > 0.0001) direction.normalize();
 
     const running = keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint;
-    const speedTarget = input.moving ? (running ? 7.2 : 3.6) * input.magnitude : 0;
+    const speedTarget = input.moving ? (running ? 7.8 : 3.9) * input.magnitude : 0;
     const currentPosition = getPosition();
     limitToZone(currentPosition, direction, Math.max(speedTarget, 2.25) * dt * 1.35);
 
@@ -203,7 +203,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       character.human.update(dt);
     } else {
       const targetVelocity = direction.clone().multiplyScalar(speedTarget);
-      smoothVelocity.lerp(targetVelocity, 1 - Math.exp(-14 * dt));
+      const response = input.moving ? 12.5 : 17.5;\n      smoothVelocity.lerp(targetVelocity, 1 - Math.exp(-response * dt));
       const current = character.model.position;
       const next = current.clone().addScaledVector(smoothVelocity, dt);
       const bounds = zones[zoneName].bounds;
@@ -211,7 +211,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       if (next.z >= bounds[2] && next.z <= bounds[3]) current.z = next.z;
       fallbackSpeed = smoothVelocity.length();
       if (direction.lengthSq() > 0.0001) {
-        character.model.rotation.y = Math.atan2(-direction.x, -direction.z);
+        const targetHeading = Math.atan2(-direction.x, -direction.z);\n        character.model.rotation.y = THREE.MathUtils.damp(character.model.rotation.y, targetHeading, 13.5, dt);
       }
       character.updateFallback(dt, fallbackSpeed);
     }

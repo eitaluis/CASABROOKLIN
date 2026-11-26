@@ -1,6 +1,6 @@
 # Carter Kane — modelo, movimento e refinamento
 
-Status: **inventário Duat com doze objetos e ação de alcance integrados; revisão visual real e refinamento da pose de atravessar a membrana ainda pendentes.**
+Status: **locomoção ferida, arco físico do salto, recursos vitais/energia e reação a dano integrados; revisão visual real de personagem e acessórios ainda pendente.**
 
 ## Decisões confirmadas
 
@@ -76,8 +76,13 @@ Abra character-preview.html para conferir o mesmo módulo usado pelo jogo. O pre
 - Confirmar que o corpo da bolsa lê como couro macio e arredondado, não como rádio/estojo rígido.
 - Conferir se o colar acompanha a superfície do tórax, sem flutuar nem atravessar a camisa.
 - Verificar clipping da bolsa e da alça em idle, walk, run, curvas e salto.
+- Confirmar que a caminhada realmente alterna pernas e braços, sem o efeito de andar parado.
+- Confirmar elevação física do root durante o salto e contato dos pés na aterrissagem.
 - Verificar o balanço secundário sem vibração, penetração na perna ou movimento excessivo.
 - Confirmar que os cinco botões cinematográficos correspondem a clips carregados no Ara.
+- Conferir as reações de impacto direcionais e o retorno suave à locomoção.
+- Testar as barras VITALIDADE/ENERGIA, custo de HA-DI/orbe, regeneração e limiar de 50% para o estado ferido.
+- Conferir o tremor de câmera e a vinheta vermelha periférica quando um golpe conecta.
 - Conferir escala do personagem contra portas, móveis, corrimãos e objetos da Brooklyn House.
 - Testar em Chrome desktop e celular em paisagem; conferir FPS, memória e descarte do personagem.
 - Confirmar que o inventário e o socket WeaponR continuam funcionando.
@@ -97,7 +102,7 @@ O preview deve importar o mesmo src/character.js do jogo. Toda alteração de pe
 
 O estado global do jogador vive em `src/main.js` e não é reiniciado ao sair da sala de treinamento:
 
-- VITALIDADE começa em 100; cada acerto de espada do Shabti remove 20 pontos. O evento aplica a reação `hit_front`, microtremor da câmera e vinheta vermelha periférica.
+- VITALIDADE começa em 100; cada acerto de espada do Shabti remove 20 pontos. O evento escolhe `hit_front`, `hit_back`, `hit_left` ou `hit_right` conforme a direção do atacante, além de microtremor da câmera e vinheta vermelha periférica.
 - A 50 pontos ou menos, Carter passa a usar `crouch` parado e `walk_slouch` em movimento, com velocidade reduzida e sprint bloqueado.
 - ENERGIA começa em 100 e recupera 8 pontos por segundo. HA-DI consome 30 pontos; o orbe de treino do cajado consome 12.
 - A HUD permanece visível fora da sala de treinamento e adapta-se ao layout desktop/mobile.

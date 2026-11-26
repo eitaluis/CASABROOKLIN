@@ -33,23 +33,30 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Setor 02 — personagem e movimento
 
-- [x] Aprovar direção visual **C — Game 3D gráfico**: totalmente 3D, playful e com acabamento de videogame; sem anime no rosto e sem realismo excessivo.
-- [x] Aprovar rosto humano natural, cabelo crespo curto, corpo jovem e lean/atlético.
-- [x] Definir figurino: camisa azul, calça cargo cáqui e tênis escuros.
-- [x] Definir bolsa transversal conhaque no quadril direito, com alça sobre o peito.
-- [x] Reverter a substituição procedural depois da reprovação visual do boneco de primitivas; recuperar a base humana Ara 3D Gen que o usuário considerou mais interessante.
-- [x] Retomar malha humana contínua com skin weights e game rig Ara; manter socket `WeaponR` para o inventário.
-- [x] Configurar camisa azul, cargo pants cáqui, sneakers escuros e carry none (sem mochila automática).
-- [x] Criar corpo, aba, fole lateral, fecho, ferragens e alça plana da bolsa como geometria local inspirada na referência CC0 Innerscene. **O GLB original da referência não está incorporado.**
-- [x] Manter clips Ara de idle, walk, run e jump_start/jump_air/jump_land.
-- [x] Manter lean frontal e banking no controlador compartilhado entre desktop/mobile.
-- [x] Atualizar `character-preview.html` para carregar o mesmo personagem e a mesma bolsa usados no jogo.
-- [ ] Conferir visualmente o modelo restaurado em navegador real, comparando-o com o Carter anterior.
-- [ ] Ajustar posição, tamanho e ângulo da bolsa e conferir se a alça fica sobre a camisa.
-- [ ] Observar clipping e balanço da bolsa durante sprint, curvas e salto.
-- [ ] Testar animação, orientação e escala de cajado/khopesh em `WeaponR`.
-- [ ] Testar o mesmo personagem no desktop e no celular em modo paisagem.
-- [ ] Só então marcar identidade visual como aprovada em execução.
+### Brief visual atual aprovado para estudo
+- [x] Visual **C — Playful 3D de aventura**: personagem humano estilizado, carismático, inteiramente 3D; sem anime e sem realismo fotográfico.
+- [x] Movimento **B — Atlético ninja**: inclinação frontal no sprint, braços ativos/recuados, passadas amplas, mudanças de direção com transferência de peso e saltos com aterrissagem forte.
+- [x] Roupa **A**: camisa azul casual, calça cáqui reta e tênis discretos.
+- [x] Cabelo **A**: crespo curto, cachos definidos e laterais baixas.
+- [x] Bolsa transversal conhaque permanece no quadril direito, com alça diagonal sobre o peito.
+
+### Estudo e protótipo isolado — não integra o runtime
+- [x] Gerar uma prancha conceitual de frente, perfil, costas e poses atléticas para orientar a identidade visual.
+- [x] Pesquisar bases open-source personalizáveis e verificar a origem/licença dos modelos.
+- [x] Escolher provisoriamente Quaternius Ultimate Modular Men / `Casual_2` como primeiro candidato técnico, carregado do repositório Ducz Character Creator; os modelos de origem são CC0 1.0.
+- [x] Criar `carter-study.html`, preview independente com órbita, vistas, animações, recoloração e controles para ajustar bolsa/alça.
+- [x] Registrar o estudo em `docs/CARTER-DESIGN-STUDY.md`.
+- [x] Manter o GLB como dependência externa fixa por commit SHA. Não copiar o código do construtor Ducz; apenas visualizar o asset Quaternius CC0.
+- [x] Confirmar que `index.html`, `src/main.js` e `src/character.js` do jogo não foram alterados nesta etapa.
+- [ ] Conferir o modelo em navegador real e decidir se sua linguagem low-poly alcança o Playful 3D C ou se é angular demais.
+- [ ] Conferir rosto, expressão e cabelo curto crespo. Substituir a peça de cabeça/cabelo se não corresponder ao brief.
+- [ ] Conferir se a recoloração do Casual_2 produz o corte de camisa e calça adequado; se não, trocar as peças modulares.
+- [ ] Ajustar bolsa e alça usando as vistas frontal, 3/4 e perfil; confirmar que o volume fica do lado externo do quadril direito.
+- [ ] Testar sprint ninja, corrida lateral e rolamento; selecionar/retargetar depois clips adequados de salto e aterrissagem.
+- [ ] Aprovar explicitamente a malha, o figurino, o cabelo, a bolsa e a locomoção antes de criar um GLB final.
+- [ ] Após a aprovação, decidir se o asset deve ser armazenado localmente e só então planejar a integração compartilhada desktop/mobile.
+
+**Regra desta etapa:** não substituir o Carter no jogo, não alterar o mundo, não alterar o inventário e não marcar o personagem como aprovado até receber feedback do preview isolado.
 
 ## Setor 03 — inventário e combate
 

@@ -104,7 +104,7 @@
       "id": "quaternius-universal-base-characters",
       "source": "https://quaternius.com/packs/universalbasecharacters.html",
       "license": "CC0-1.0",
-      "role": "first technical candidate for teen humanoid mesh, game-ready topology and retargetable rig; facial style still needs validation",
+      "role": "evaluated rig and mesh reference; free Standard pack only exposes Superhero bodies, so not selected as Carter base",
       "runtimeImported": false
     },
     {
@@ -118,21 +118,49 @@
       "id": "ara3d-character-generator",
       "source": "https://ara3dgen.com/docs/library/",
       "license": "MIT-library-CC0-character-bases",
-      "role": "current runtime character generator and WeaponR attachment socket; evaluate possible less-realistic export",
+      "role": "current runtime character generator and WeaponR attachment socket; evaluate Low detail and flat stylized materials as isolated test",
       "runtimeImported": true
+    },
+    {
+      "id": "turia-3d-gen",
+      "source": "https://github.com/TuriaArt/3d-gen-TU",
+      "license": "MIT-code-CC0-makehuman-character-data",
+      "role": "evaluated fork of Ara 3D Gen with Low detail meshes, facial/body morphs, game rig and WeaponR; candidate for graphic stylized test, not integrated",
+      "runtimeImported": false
+    },
+    {
+      "id": "blender-studio-snow",
+      "source": "https://studio.blender.org/characters/snow/v4/",
+      "license": "CC-BY-4.0",
+      "role": "secondary visual reference for stylized 3D human face and rig; requires credit and Blender export",
+      "runtimeImported": false
     },
     {
       "id": "innerscene-crossbody-bag",
       "source": "https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2",
       "license": "CC0-1.0",
-      "role": "approved crossbody satchel source model; place bag on Carter right hip and reshape/rig strap across chest before integration",
+      "role": "approved crossbody satchel source model; place bag on Carter right hip and rebuild/rig strap across chest before integration",
+      "runtimeImported": false
+    },
+    {
+      "id": "mesh2motion-human-animations",
+      "source": "https://github.com/Mesh2Motion/mesh2motion-app",
+      "license": "MIT-code-CC0-1.0-art-and-animations",
+      "role": "primary animation evaluation source: Sprint, Run_Anime, NinjaJump, Land_Three_Point, Wall_Run and humanoid rig retarget tools",
+      "runtimeImported": false
+    },
+    {
+      "id": "mesh2motion-human-source-assets",
+      "source": "https://github.com/Mesh2Motion/mesh2motion-assets",
+      "license": "CC0-1.0",
+      "role": "source Blender files for Mesh2Motion human rig and clips",
       "runtimeImported": false
     },
     {
       "id": "quaternius-universal-animation-library",
       "source": "https://quaternius.itch.io/universal-animation-library",
       "license": "CC0-1.0",
-      "role": "main animation candidate: 120-plus humanoid clips, eight-direction locomotion, jog, sprint and root-motion/in-place variants",
+      "role": "alternative animation candidate: 120-plus humanoid clips, eight-direction locomotion, jog, sprint and root-motion/in-place variants",
       "runtimeImported": false
     },
     {

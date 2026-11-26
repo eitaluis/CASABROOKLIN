@@ -52,8 +52,8 @@
     },
     {
       "id": "egyptian-staff-and-khopesh",
-      "path": "src/inventory.js",
-      "role": "procedural Egyptian-inspired magic staff and khopesh props attached to Carter WeaponR socket",
+      "path": "src/inventory.js + character-preview.html",
+      "role": "procedural dark-wood 2 m staff and khopesh attached to Carter WeaponR socket; staff mesh pivot calibrated at 0.72 m from its base with a live preview slider (0.35–1.20 m) for visual hand-fit adjustment",
       "license": "project-original-code"
     },
     {

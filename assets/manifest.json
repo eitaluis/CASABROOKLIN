@@ -13,7 +13,7 @@
       "id": "ara3d-js",
       "source": "https://github.com/ara3d/ara3d",
       "version": "0.18.1",
-      "role": "geração/carregamento de personagem humanoide, rig, locomoção e animações",
+      "role": "runtime atual: geração/carregamento do Carter, rig humanoide, locomoção e animações; permanece ativo até a aprovação do novo modelo",
       "license": "MIT"
     }
   ],
@@ -33,25 +33,7 @@
     {
       "id": "egyptian-staff-and-khopesh",
       "path": "src/inventory.js",
-      "role": "procedural Egyptian-inspired staff and khopesh props attached to the character WeaponR socket",
-      "license": "project-original-code"
-    },
-    {
-      "id": "great-hall-layered-fire",
-      "path": "src/world.js",
-      "role": "procedural layered fireplace flames and flicker animation",
-      "license": "project-original-code"
-    },
-    {
-      "id": "carter-ara-share-character",
-      "path": "src/character.js",
-      "role": "character assembled from Ara 3D Gen shared character data; model binary is loaded from the Ara asset CDN",
-      "license": "Ara library MIT; character base data and motion sources documented by Ara"
-    },
-    {
-      "id": "egyptian-staff-and-khopesh",
-      "path": "src/inventory.js",
-      "role": "procedural Egyptian-inspired magic staff and khopesh props attached to WeaponR",
+      "role": "procedural Egyptian-inspired magic staff and khopesh props attached to the character WeaponR socket",
       "license": "project-original-code"
     },
     {
@@ -80,7 +62,7 @@
       "id": "three-procedural-locomotion",
       "source": "https://github.com/PabloMesquida/three-procedural-locomotion",
       "license": "MIT",
-      "role": "reference-for-human-gait-and-dynamic-locomotion",
+      "role": "reference-for-human-gait-foot-contact-IK-acceleration-turns-and-dynamic-locomotion",
       "runtimeImported": false
     },
     {
@@ -94,77 +76,77 @@
       "id": "polyhaven-sofa-03",
       "source": "https://polyhaven.com/a/sofa_03",
       "license": "CC0-1.0",
-      "role": "selected candidate for replacing procedural hall sofas with photorealistic model",
+      "role": "selected-candidate-for-replacing-procedural-hall-sofas-with-photorealistic-model",
       "runtimeImported": false
     },
     {
       "id": "polyhaven-arm-chair-01",
       "source": "https://polyhaven.com/a/ArmChair_01",
       "license": "CC0-1.0",
-      "role": "selected candidate for future hall seating and lounge details",
+      "role": "selected-candidate-for-future-hall-seating-and-lounge-details",
       "runtimeImported": false
     },
     {
       "id": "mpfb-character-generator",
       "source": "https://github.com/makehumancommunity/mpfb2",
       "license": "GPL-3.0-code-CC0-1.0-system-assets",
-      "role": "evaluated customizable humanoid character creator pipeline",
+      "role": "evaluated customizable humanoid generator if a more natural face is needed for approved graphic 3D style",
       "runtimeImported": false
     },
     {
       "id": "kblood-charactercreator",
       "source": "https://github.com/kblood/CharacterCreator",
       "license": "GPL-3.0-or-later-code-CC0-1.0-generated-assets-when-sources-CC0",
-      "role": "evaluated realistic morphable character creator and GLB exporter",
+      "role": "evaluated morphable character creator and GLB exporter",
       "runtimeImported": false
     },
     {
       "id": "quaternius-universal-base-characters",
       "source": "https://quaternius.com/packs/universalbasecharacters.html",
       "license": "CC0-1.0",
-      "role": "evaluated modular teen and regular humanoid character alternatives",
+      "role": "first technical candidate for teen humanoid mesh, game-ready topology and retargetable rig; facial style still needs validation",
       "runtimeImported": false
     },
     {
       "id": "ducz-charactercreator",
       "source": "https://github.com/LuanDucate/Ducz.CharacterCreator",
       "license": "repository-license-not-confirmed; credited-Quaternius-assets-CC0",
-      "role": "browser-based character builder evaluated as reference only",
+      "role": "browser-based character builder evaluated as visual reference only",
       "runtimeImported": false
     },
     {
       "id": "ara3d-character-generator",
       "source": "https://ara3dgen.com/docs/library/",
       "license": "MIT-library-CC0-character-bases",
-      "role": "runtime character generator and WeaponR attachment socket",
+      "role": "current runtime character generator and WeaponR attachment socket; evaluate possible less-realistic export",
       "runtimeImported": true
     },
     {
-      "id": "mpfb-character-generator",
-      "source": "https://github.com/makehumancommunity/mpfb2",
-      "license": "GPL-3.0-code-CC0-1.0-system-assets",
-      "role": "evaluated customizable humanoid character creator pipeline",
-      "runtimeImported": false
-    },
-    {
-      "id": "kblood-charactercreator",
-      "source": "https://github.com/kblood/CharacterCreator",
-      "license": "GPL-3.0-or-later-code-CC0-1.0-generated-assets-when-sources-CC0",
-      "role": "evaluated realistic morphable character creator and GLB exporter",
-      "runtimeImported": false
-    },
-    {
-      "id": "quaternius-universal-base-characters",
-      "source": "https://quaternius.com/packs/universalbasecharacters.html",
+      "id": "innerscene-crossbody-bag",
+      "source": "https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2",
       "license": "CC0-1.0",
-      "role": "evaluated modular teen and regular humanoid character alternatives",
+      "role": "approved crossbody satchel source model; place bag on Carter right hip and reshape/rig strap across chest before integration",
       "runtimeImported": false
     },
     {
-      "id": "ducz-charactercreator",
-      "source": "https://github.com/LuanDucate/Ducz.CharacterCreator",
-      "license": "repository-license-not-confirmed; credited-Quaternius-assets-CC0",
-      "role": "browser-based character builder evaluated as reference only",
+      "id": "quaternius-universal-animation-library",
+      "source": "https://quaternius.itch.io/universal-animation-library",
+      "license": "CC0-1.0",
+      "role": "main animation candidate: 120-plus humanoid clips, eight-direction locomotion, jog, sprint and root-motion/in-place variants",
+      "runtimeImported": false
+    },
+    {
+      "id": "quaternius-universal-animation-library-2",
+      "source": "https://quaternius.itch.io/universal-animation-library-2",
+      "license": "CC0-1.0",
+      "role": "complementary animation candidate for parkour, jumps and athletic actions",
+      "runtimeImported": false
+    },
+    {
+      "id": "kinemiq-free-game-animations",
+      "source": "https://github.com/Kinemiq/free-game-animations",
+      "license": "CC0-1.0",
+      "role": "alternative 35 humanoid GLB/FBX clips including idle, walk, run, sprint, jump, landing and sword actions",
       "runtimeImported": false
     }
   ]

@@ -313,7 +313,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       else updated.y=walkingSurface.height;
     } else {
       const targetVelocity = direction.clone().multiplyScalar(speedTarget);
-      const response = input.moving ? 12.5 : 17.5;
+      const response = input.moving ? 8.8 : 10.8;
       smoothVelocity.lerp(targetVelocity, 1 - Math.exp(-response * dt));
       const current = character.model.position;
       const nextX = current.x + smoothVelocity.x * dt;
@@ -346,13 +346,13 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       if (direction.lengthSq() > 0.0001) {
         // O modelo Ara começa com rotação PI; manter esse offset evita que ele vire para a câmera ao andar.
         const targetHeading = Math.atan2(-direction.x, -direction.z);
-        character.model.rotation.y = THREE.MathUtils.damp(character.model.rotation.y, targetHeading, 13.5, dt);
+        character.model.rotation.y = THREE.MathUtils.damp(character.model.rotation.y, targetHeading, 9.5, dt);
       }
       // Inclinação frontal sutil no sprint e compensação lateral ao mudar de direção.
-      const leanTarget = running && fallbackSpeed > 2.4 ? -0.17 : input.moving ? -0.035 : 0;
-      const bankTarget = input.moving ? THREE.MathUtils.clamp(-input.strafe * 0.045, -0.055, 0.055) : 0;
-      character.model.rotation.x = THREE.MathUtils.damp(character.model.rotation.x, leanTarget, running ? 7.5 : 10.5, dt);
-      character.model.rotation.z = THREE.MathUtils.damp(character.model.rotation.z, bankTarget, 8.5, dt);
+      const leanTarget = running && fallbackSpeed > 2.4 ? -0.12 : input.moving ? -0.022 : 0;
+      const bankTarget = input.moving ? THREE.MathUtils.clamp(-input.strafe * 0.035, -0.04, 0.04) : 0;
+      character.model.rotation.x = THREE.MathUtils.damp(character.model.rotation.x, leanTarget, running ? 6.5 : 8, dt);
+      character.model.rotation.z = THREE.MathUtils.damp(character.model.rotation.z, bankTarget, 7, dt);
       character.updateFallback(dt, fallbackSpeed);
     }
 
@@ -386,7 +386,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       camera.position.copy(desiredCamera);
       firstCameraFrame = false;
     } else {
-      camera.position.lerp(desiredCamera, 1 - Math.exp(-10.5 * dt));
+      camera.position.lerp(desiredCamera, 1 - Math.exp(-8.5 * dt));
     }
     // O clamp final elimina qualquer passagem do corpo da câmera pelo piso durante o smoothing.
     camera.position.y = Math.max(camera.position.y, floorY + 0.28);

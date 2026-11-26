@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js';
-import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126a';
+import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126b';
 import { createCharacter } from './character.js?v=ara-game-jump-set-20261126c';
 import { createThirdPersonController } from './third-person.js?v=ara-collisions-camera-265-20261126f';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -201,7 +201,6 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
   composer.setPixelRatio(isTouchDevice ? 0.72 : Math.min(window.devicePixelRatio || 1, 1.12));
   composer.setSize(window.innerWidth, window.innerHeight);
-  if (ssaoPass) ssaoPass.setSize(window.innerWidth, window.innerHeight);
 });
 
 try {

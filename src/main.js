@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=brooklyn-exterior-spiralwalk-20261126a';
+import { buildWorld } from './world.js?v=great-hall-final-pass-20261126a';
 import { buildExterior } from './exterior.js?v=brooklyn-east-river-surface-20261126c';
-import { buildInteriorDetails } from './interior-details.js?v=library-interactions-deterministic-20261126a';
-import { buildGrandSalon } from './grand-salon.js?v=grand-salon-circulation-20261126a';
+import { buildInteriorDetails } from './interior-details.js?v=great-hall-final-pass-20261126a';
+import { buildGrandSalon } from './grand-salon.js?v=great-hall-final-pass-20261126a';
 import { buildTrainingRoom } from './training-room.js?v=training-room-interactive-20261126b';
 import { createInventory } from './inventory.js?v=training-weapon-hook-20261126a';
 import { createCharacter } from './character.js?v=carter-lifecycle-20261126a';
-import { createThirdPersonController } from './third-person.js?v=grand-salon-circulation-20261126b';
+import { createThirdPersonController } from './third-person.js?v=great-hall-final-pass-20261126a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';

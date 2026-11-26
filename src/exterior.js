@@ -1,7 +1,7 @@
 /* Exterior cinematográfico da Brooklyn House.
    A escala do rio, da Williamsburg Bridge e do skyline é deliberada:
    a mansão permanece em Brooklyn; Manhattan é apenas a margem distante. */
-export function buildExterior({ THREE, scene, world, interactables, isTouchDevice = false }) {
+export function buildExterior({ THREE, scene, world, interactables, isTouchDevice = false, onReveal = () => {} }) {
   const water = world.water;
 
   // Mapa procedural de altura, periódico e leve: cria micro-ondas no East River
@@ -160,6 +160,8 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
   ripples.instanceMatrix.needsUpdate = true;
   scene.add(ripples);
 
+  // O tabuleiro cruza a faixa do rio; fica afastado da projeção do telhado.
+  const bridgeBuildStart=scene.children.length;
   // Williamsburg Bridge: estrutura suspensa, quatro cabos e grandes treliças de aço.
   // Referência dimensional: vão principal de 1.600 ft, torres de 310 ft,
   // clearance central de 135 ft; a geometria é uma reconstrução de jogo.
@@ -249,8 +251,15 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
   for (const z of [14.7, 41.3]) {
     addBox('guarda-corpo longitudinal da ponte', [306, 42.1, z], [565, 0.22, 0.22], steel, false);
   }
-  // A ponte deve ser percebida acima do barco, nunca como uma pequena peça decorativa.
-  bridgeGroup.position.set(0, 0, 0);
+  // Os helpers criaram as peças na cena global. Reunimos todas para deslocar
+  // tabuleiro, torres, cabos e pendurais como uma única estrutura coerente.
+  for(const child of scene.children.slice(bridgeBuildStart)){
+    if(child===bridgeGroup)continue;
+    scene.remove(child);
+    bridgeGroup.add(child);
+  }
+  // O vão permanece acima do East River e fora da projeção do galpão/mansão.
+  bridgeGroup.position.set(0,0,30);
 
   // Margem de Manhattan: cais distante, armazéns baixos e skyline em camadas.
   addBox('muralha de cais de Manhattan', [584, 0.5, 58], [2.4, 2.4, 245], wornConcrete, false);
@@ -350,7 +359,7 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
   // Barco egípcio de papiro: referência textual, sem motor nem piloto visível.
   const boat = new THREE.Group();
   boat.name = 'barco de papiro da chegada de Carter e Sadie';
-  boat.position.set(32.8, 0.12, 18.5);
+  boat.position.set(32.8, 0.12, 52); // embarcação parada sob o vão, junto ao extremo do cais
   boat.rotation.y = 0.05;
   scene.add(boat);
   const reedTextureCanvas = document.createElement('canvas');
@@ -481,17 +490,65 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
     onInteract: () => 'O barco parece ter acabado de trazer alguém pelo East River.'
   });
 
-  // Portal de entrada: a porta de madeira sobe sem maçaneta ou fechadura.
+  // A mansão e a escada têm materiais invisíveis com escrita de profundidade.
+  // E/INTERAGIR no cais dá a Carter o foco necessário para percebê-las.
+  const mansion=world.mansionRevealGroup;
+  const revelation={active:false,revealed:false,elapsed:0,duration:2.15,materials:[],lights:[]};
+  function beginMansionRevelation(){
+    if(!mansion||revelation.revealed)return false;
+    revelation.revealed=true;
+    revelation.active=true;
+    revelation.elapsed=0;
+    revelation.materials.length=0;
+    revelation.lights.length=0;
+    mansion.traverse(node=>{
+      if(node.isMesh&&node.userData.mansionRevealOriginalMaterial){
+        const original=node.userData.mansionRevealOriginalMaterial;
+        const fadeMaterial=source=>{
+          const material=source.clone();
+          revelation.materials.push({
+            material,
+            opacity:Number.isFinite(source.opacity)?source.opacity:1,
+            transparent:source.transparent,
+            depthWrite:source.depthWrite
+          });
+          material.transparent=true;
+          material.opacity=0;
+          material.depthWrite=false;
+          material.needsUpdate=true;
+          return material;
+        };
+        node.material=Array.isArray(original)?original.map(fadeMaterial):fadeMaterial(original);
+      }
+      if(node.isMesh&&node.userData.mansionRevealOriginalCastShadow!==undefined){
+        revelation.materials.push({
+          object:node,castShadow:node.userData.mansionRevealOriginalCastShadow,shadowOnly:true
+        });
+      }
+      if(node.isLight&&node.userData.mansionRevealOriginalIntensity!==undefined){
+        revelation.lights.push({light:node,intensity:node.userData.mansionRevealOriginalIntensity});
+      }
+    });
+    onReveal?.();
+    return true;
+  }
+  interactables.push({
+    label:'Olhar novamente para o telhado',
+    position:new THREE.Vector3(0,0,31),
+    radius:6.4,
+    description:'O galpão parece comum, mas há algo estranho no recorte do telhado. Olhe novamente.',
+    onInteract:()=>{
+      if(revelation.revealed)return 'Você mantém o foco na Brooklyn House. A escada metálica acompanha a lateral do galpão.';
+      beginMansionRevelation();
+      return 'Amos aponta para o telhado. Ao concentrar o olhar, a mansão de cinco andares se torna perceptível sobre o galpão.';
+    }
+  });
+
+    // Portal de entrada: a porta de madeira sobe sem maçaneta ou fechadura.
   const door = scene.getObjectByName('porta de madeira sem maçaneta');
   let doorProgress = 0;
   let doorTarget = 0;
   const closedDoorY = door ? door.position.y : 15.9;
-  if (door) {
-    door.material = door.material.clone();
-    door.material.color.setHex(0x51402f);
-    door.material.roughness = 0.88;
-    door.material.metalness = 0.02;
-  }
   interactables.push({
     label: 'Portal da Brooklyn House',
     position: new THREE.Vector3(0, 16.0, 13.6),
@@ -510,6 +567,27 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
       if (door) {
         doorProgress += (doorTarget - doorProgress) * Math.min(1, dt * 2.0);
         door.position.y = closedDoorY + doorProgress * 5.9;
+      }
+      if(revelation.active){
+        revelation.elapsed=Math.min(revelation.duration,revelation.elapsed+dt);
+        const t=revelation.elapsed/revelation.duration;
+        const eased=t*t*(3-2*t);
+        for(const target of revelation.materials){
+          if(target.shadowOnly){
+            if(t>=1)target.object.castShadow=target.castShadow;
+          }else{
+            target.material.opacity=target.opacity*eased;
+            target.material.needsUpdate=true;
+            if(t>=1){
+              target.material.opacity=target.opacity;
+              target.material.transparent=target.transparent;
+              target.material.depthWrite=target.depthWrite;
+              target.material.needsUpdate=true;
+            }
+          }
+        }
+        for(const target of revelation.lights)target.light.intensity=target.intensity*eased;
+        if(t>=1)revelation.active=false;
       }
       if (water) {
         water.material.opacity = 0.93 + Math.sin(time * 0.9) * 0.018;

@@ -237,6 +237,13 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     limitToZone(currentPosition, direction, Math.max(speedTarget, 2.25) * dt * 1.35);
 
     if (character.human) {
+      // Os elementos importantes do Grande Salão também bloqueiam o rig Ara,
+      // não apenas o controlador procedural de fallback.
+      if (direction.lengthSq() > 0.0001) {
+        const nextX = currentPosition.x + direction.x * speedTarget * dt;
+        const nextZ = currentPosition.z + direction.z * speedTarget * dt;
+        if (blockedAt(nextX, nextZ, currentPosition.y)) direction.set(0, 0, 0);
+      }
       character.human.targetSpeed = direction.lengthSq() > 0.0001 ? speedTarget : 0;
       if (direction.lengthSq() > 0.0001) {
         const currentForward = character.human.locomotion.body.state.forward.clone().setY(0).normalize();

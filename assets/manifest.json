@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -185,7 +185,7 @@
     {
       "id": "carter-crossbody-satchel-and-medallion",
       "path": "src/character-accessories.js",
-      "role": "geometria e materiais originais Three.js para bolsa transversal de couro conhaque cerca de 15% menor, corpo arredondado/afunilado, face larga girada 90° para a lateral e posicionada na pelve posterior direita (âncora Hips); alça cruza o peito e contorna o flanco até o quadril posterior (âncora Spine2); ferragens pequenas e medalhão dourado/corrente recuados 4,5 cm para o tórax (âncora Spine2); movimento secundário; compartilhado desktop/mobile",
+      "role": "geometria e materiais originais Three.js para bolsa de couro conhaque cerca de 15% menor, silhueta trapezoidal arredondada e levemente macia, face larga voltada para a lateral; pivô Hips no quadril direito posterior; aba e bolso sobre a face lateral com costuras e dois fechos pequenos; alça cruza o peito e contorna o flanco até um aro posterior; medalhão e corrente mantêm o desenho aprovado, recuados 4,5 cm para assentar no tórax; compartilhado desktop/mobile",
       "license": "project-original-code"
     },
     {
@@ -455,7 +455,7 @@
       "id": "carter-blender-accessories-source",
       "source": "assets/models/carter/blender/create_carter_accessories.py",
       "license": "project-original-code",
-      "role": "script-fonte editável Blender com bolsa menor e rotacionada para o lado na pelve posterior direita, alça em volta do flanco e colar recuado; âncoras Hips/Spine2; ferramenta de lookdev, não carregada no runtime",
+      "role": "gerador Blender editável alinhado ao runtime: corpo trapezoidal extrudado com bordas macias, bolsa menor e virada para o lado na pelve posterior direita, aba/bolso/fechos sobre a face lateral e aro posterior alinhado à alça; colar recuado; âncoras Hips/Spine2; fonte de lookdev, ainda não carregada em runtime e sem .blend salvo",
       "runtimeImported": false
     }
   ]

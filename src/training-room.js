@@ -1188,7 +1188,7 @@ export function buildTrainingRoom({
     state.active = false;
     state.defeated = true;
     state.defeatTime = 0;
-    state.magicRespawnTimer = 10;
+    state.magicRespawnTimer = 13.1; // aguarda o fade completo das lascas antes do retorno
     state.aiState = 'magic-destroyed';
     state.aura.visible = false;
     state.group.visible = false;

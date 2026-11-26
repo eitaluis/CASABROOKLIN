@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
-import { buildGrandSalon } from './grand-salon.js?v=grand-salon-sculpted-20261126a';
+import { buildGrandSalon } from './grand-salon.js?v=grand-salon-sculpted-20261126b';
 import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
 import { createCharacter } from './character.js?v=carter-ara-approved-restore-20261126d';
 import { createThirdPersonController } from './third-person.js?v=carter-lean-forward-20261126a';
@@ -186,8 +186,12 @@ function animate() {
   for (const item of animated) {
     if (item.spin) item.obj.rotation.z = time * 0.18;
     if (item.particle) {
-      item.obj.position.y += Math.sin(time * 1.7 + item.phase) * 0.0009;
-      item.obj.material.opacity = 0.35 + 0.3 * (0.5 + 0.5 * Math.sin(time * 2 + item.phase));
+      const rise = (time * 0.78 + item.phase) % 1;
+      item.obj.position.y = (item.baseY ?? item.obj.position.y) + rise * 0.9;
+      item.obj.position.x = (item.baseX ?? item.obj.position.x) + Math.sin(time * 2.3 + item.phase) * 0.075;
+      item.obj.position.z = (item.baseZ ?? item.obj.position.z) + Math.cos(time * 1.9 + item.phase) * 0.045;
+      item.obj.material.opacity = 0.78 * (1 - rise);
+      item.obj.scale.setScalar(0.55 + (1 - rise) * 0.7);
     }
     if (item.fire) {
       const flicker = 0.5 + 0.5 * Math.sin(time * 8.5 + item.phase);

@@ -13,8 +13,8 @@ export function buildWorld(ctx){
 // --- Mundo exterior: doca e armazém industrial ---
 const ground=texCanvas((g,w,h)=>{g.fillStyle='#555650';g.fillRect(0,0,w,h);for(let i=0;i<1700;i++){g.fillStyle=['#74736a','#383d3b','#8b8577','#2d3433'][i%4];g.globalAlpha=Math.random()*.3;g.beginPath();g.arc(Math.random()*w,Math.random()*h,Math.random()*3,0,Math.PI*2);g.fill()}g.globalAlpha=1;for(let i=0;i<30;i++){g.strokeStyle='#252b2a';g.globalAlpha=.25;g.beginPath();g.moveTo(Math.random()*w,Math.random()*h);g.lineTo(Math.random()*w,Math.random()*h);g.stroke()}},512,512,4,4);
 const asphalt=new THREE.MeshStandardMaterial({map:ground,color:0xc2c0b3,roughness:1});
-const yardFloor=box('pátio industrial',[0,-.28,18],[100,.55,94],asphalt,false);groundSurfaces.push(yardFloor);
-const waterMat=new THREE.MeshStandardMaterial({color:0x36545b,metalness:.28,roughness:.22,transparent:true,opacity:.94});
+const yardFloor=box('pátio industrial',[-7,-.28,18],[74,.55,94],asphalt,false);groundSurfaces.push(yardFloor);
+const waterMat=new THREE.MeshStandardMaterial({color:0x2f7180,metalness:.2,roughness:.26,transparent:true,opacity:.96});
 const water=box('East River',[70,-.65,16],[80,.28,190],waterMat,false,false);
 for(let i=0;i<34;i++){const z=-70+i*5.5;const wav=line([[30,-.45,z],[49,-.48,z+.5],[68,-.46,z-.3],[90,-.5,z+.25],[112,-.46,z]],new THREE.MeshBasicMaterial({color:0x9bb4b1,transparent:true,opacity:.15}),.018);animated.push({obj:wav,phase:i*.4})}
 const dock=new THREE.Mesh(new THREE.BoxGeometry(25,.8,57),woodMat);dock.position.set(18,.1,17);dock.receiveShadow=true;dock.castShadow=true;scene.add(dock);groundSurfaces.push(dock);
@@ -39,7 +39,7 @@ for(let x of [-18,18]){box('tubo de drenagem',[x,6,15.95],[.2,11,.2],metal);cyl(
 // Equipamento abandonado e pilhas de sucata.
 for(let i=0;i<15;i++){const x=-28+Math.random()*17,z=8+Math.random()*20,y=.55+Math.random()*1.4;const m=box('sucata metálica',[x,y,z],[1.5+Math.random()*2,.35+Math.random()*1.1,.7+Math.random()*1.8],i%2?metal:darkBrick);m.rotation.y=Math.random()*1.8;m.rotation.z=(Math.random()-.5)*.4}
 const crane=box('estrutura de guindaste',[28,5,0],[.7,10,.7],metal);box('braço do guindaste',[28,10,0],[10,.5,.5],metal);line([[32,10,0],[32,5,0],[33,4,0]],metal,.06);
-box('caixa de ferramentas',[24,1.05,22],[2.2,1.9,1.5],new THREE.MeshStandardMaterial({color:0x475c5a,metalness:.45,roughness:.65}));box('escavadeira abandonada',[31,1.5,10],[4,2.3,2.3],new THREE.MeshStandardMaterial({color:0x94713c,roughness:.8}));cyl('roda',[29,1.0,11.4],.8,.8,.6,metal,20);cyl('roda',[33,1.0,11.4],.8,.8,.6,metal,20);
+box('caixa de ferramentas',[24,1.05,22],[2.2,1.9,1.5],new THREE.MeshStandardMaterial({color:0x475c5a,metalness:.45,roughness:.65}));box('escavadeira abandonada',[27.5,1.5,10],[4,2.3,2.3],new THREE.MeshStandardMaterial({color:0x94713c,roughness:.8}));cyl('roda',[25.5,1.0,11.4],.8,.8,.6,metal,20);cyl('roda',[29.5,1.0,11.4],.8,.8,.6,metal,20);
 
 /* Camada cinematográfica do exterior: detalhes originais e leves, inspirados
    em kits industriais CC0 e em materiais PBR da Poly Haven. */
@@ -91,8 +91,8 @@ for(const x of [-18,-9,0,9,18]){
 // Pallets, tambores, caixas e entulho em agrupamentos legíveis.
 pallet(-26,11,.12);pallet(-23,15,-.18);pallet(-27,20,.32);
 barrel(-25,.05,24);barrel(-22,.05,25);barrel(-19,.05,24,fadedPaint);
-barrel(34,.05,24);barrel(36,.05,22,new THREE.MeshStandardMaterial({color:0x76513a,metalness:.35,roughness:.8}));
-for(const [x,z,s] of [[-31,7,1.7],[-29,10,1.25],[-24,7,1.5],[35,8,1.4],[38,12,1.8]]){
+barrel(26.8,.05,24);barrel(28.3,.05,22,new THREE.MeshStandardMaterial({color:0x76513a,metalness:.35,roughness:.8}));
+for(const [x,z,s] of [[-31,7,1.7],[-29,10,1.25],[-24,7,1.5],[27.0,8,1.4],[28.4,12,1.8]]){
  box('caixote industrial de madeira',[x,.55,z],[s,1.1,s*.85],woodMat,false);
  for(let y=.12;y<1.05;y+=.28)box('travessa do caixote',[x,y,z+s*.43],[s,.055,.07],cedarMat,false,false);
 }
@@ -153,31 +153,42 @@ for(let side of [-1,1]){box('pilar do portal',[side*2.58,16.1,11.7],[.55,6.3,.75
 // Escada metálica helicoidal pela lateral leste do galpão, sem atravessar sua parede.
 const stairCenter=new THREE.Vector2(25,13),stairRadius=2.05,stairCount=78,stairRise=12.8;
 const stairStartAngle=Math.PI;
+const stairSteel=new THREE.MeshStandardMaterial({color:0x829399,metalness:.68,roughness:.43,transparent:false,opacity:1,depthWrite:true});
 const stairTotalAngle=Math.PI*5.5;
 const stairAngleStep=stairTotalAngle/(stairCount-1);
 const exteriorSteps=[];
 for(let i=0;i<stairCount;i++){
  const a=stairStartAngle+i*stairAngleStep,y=.08+i*(stairRise/(stairCount-1));
  const x=stairCenter.x+Math.cos(a)*stairRadius,z=stairCenter.y+Math.sin(a)*stairRadius;
- const step=box('degrau de aço da escada em caracol',[x,y,z],[1.5,.18,.72],metal,false);
+ const step=box('degrau de aço da escada em caracol',[x,y,z],[1.72,.22,.86],stairSteel,false);
  step.rotation.y=a+Math.PI/2;exteriorSteps.push([a,y,x,z]);groundSurfaces.push(step);
 }
 const railPoints=exteriorSteps.map(([a,y])=>[stairCenter.x+Math.cos(a)*(stairRadius+1.0),y+.78,stairCenter.y+Math.sin(a)*(stairRadius+1.0)]);
-line(railPoints,metal,.075);
+line(railPoints,stairSteel,.12);
 cyl('mastro central da escada espiral',[stairCenter.x,6.5,stairCenter.y],.16,.16,13.2,outdoorSteel,12);
 const innerRail=exteriorSteps.map(([a,y])=>[stairCenter.x+Math.cos(a)*(stairRadius-.82),y+.72,stairCenter.y+Math.sin(a)*(stairRadius-.82)]);
-line(innerRail,outdoorSteel,.052);
+line(innerRail,stairSteel,.095);
 for(let i=0;i<stairCount;i+=6){
  const [a,y]=exteriorSteps[i];
  beamBetween('suporte interno do corrimão',[stairCenter.x+Math.cos(a)*(stairRadius-.82),y,stairCenter.y+Math.sin(a)*(stairRadius-.82)],[stairCenter.x+Math.cos(a)*(stairRadius-.82),y+.72,stairCenter.y+Math.sin(a)*(stairRadius-.82)],.028,outdoorSteel);
 }
 for(let i=0;i<stairCount;i+=4){
  const [a,y]=exteriorSteps[i];
- cyl('montante do corrimão',[stairCenter.x+Math.cos(a)*(stairRadius+1),y+.39,stairCenter.y+Math.sin(a)*(stairRadius+1)],.045,.045,.78,metal,8);
+ cyl('montante do corrimão',[stairCenter.x+Math.cos(a)*(stairRadius+1),y+.47,stairCenter.y+Math.sin(a)*(stairRadius+1)],.065,.065,.94,stairSteel,10);
 }
-box('patamar da entrada',[25,13.05,13.0],[5.4,.2,5.4],metal,false);
-box('passarela entre a escada e a entrada',[12.5,13.05,12.1],[25,.2,2.6],stone,false);
-line([[25,13.18,13],[12.5,13.18,12.1],[0,13.18,12.1]],gold,.035);
+const stairBaseLanding=box('patamar inferior reforçado da escada',[25,.06,13.0],[5.4,.2,5.4],stairSteel,false);groundSurfaces.push(stairBaseLanding);
+const stairTopLanding=box('patamar superior reforçado da escada',[25,13.0,13.0],[5.4,.2,5.4],stairSteel,false);groundSurfaces.push(stairTopLanding);
+const portalWalkway=box('passarela metálica entre escada e portal',[12.5,13.05,12.1],[25,.22,2.8],stairSteel,false);groundSurfaces.push(portalWalkway);
+for(const side of [-1,1]){
+ const z=12.1+side*1.34;
+ line([[0,13.92,z],[5,13.92,z],[10,13.92,z],[15,13.92,z],[20,13.92,z],[25,13.92,z]],stairSteel,.105);
+ for(let x=1;x<25;x+=2.4){
+  box('montante da guarda da passarela',[x,13.55,z],[.10,.95,.10],stairSteel,false);
+ }
+}
+for(let x=0.6;x<25;x+=.85){
+ box('ripa antiderrapante da passarela',[x,13.19,12.1],[.055,.035,2.55],outdoorSteel,false,false);
+}
 // Sinais discretos da camuflagem mágica.
 const magicMat=new THREE.MeshBasicMaterial({color:0xdab96f,transparent:true,opacity:.42,wireframe:true});
 const halo=new THREE.Mesh(new THREE.TorusGeometry(2.9,.025,8,96),magicMat);halo.position.set(0,16.1,12.35);scene.add(halo);animated.push({obj:halo,spin:true});

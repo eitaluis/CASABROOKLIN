@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=magical-interior-shell-20261126b';
-import { buildExterior } from './exterior.js?v=magical-interior-shell-20261126b';
+import { buildWorld } from './world.js?v=waterfront-architecture-20261126a';
+import { buildExterior } from './exterior.js?v=waterfront-architecture-20261126a';
+import { buildWaterfrontEnvironment } from './waterfront-environment.js?v=waterfront-architecture-20261126a';
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-atrium-20261126a';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-atrium-20261126d';
 import { buildTrainingRoom } from './training-room.js?v=training-room-sculptural-pass-20261126b';
@@ -98,6 +99,9 @@ let mansionPerceived=false;
 const exterior = buildExterior({
   THREE, scene, world, interactables, isTouchDevice,
   onReveal:()=>{mansionPerceived=true;revealCameraCue();}
+});
+const waterfrontEnvironment = buildWaterfrontEnvironment({
+  THREE, scene, isTouchDevice, brickTexture: brick
 });
 
 // Interior passes are shared by desktop and mobile.

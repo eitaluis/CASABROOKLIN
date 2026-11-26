@@ -280,3 +280,19 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [x] Manter a Williamsburg Bridge sobre o East River e o barco sob o vão, sem colocar o tabuleiro sobre o telhado.
 - [ ] Inspecionar a silhueta exterior em 360° no navegador, desktop e mobile.
 - [ ] Confirmar que todas as salas e interações internas continuam visíveis e funcionais após a entrada.
+
+## Waterfront exterior — Brooklyn / East River / Manhattan
+
+- [x] Corrigir o pátio para não avançar sobre a superfície do East River.
+- [x] Estender a água e construir terra firme separada nas duas margens.
+- [x] Criar muros de cais, abertura no acesso da doca, píeres secundários e guindastes de carga.
+- [x] Substituir o skyline genérico cinza por fábricas de tijolo, depósitos, ruas, tanques d'água, chaminés e fachadas variadas.
+- [x] Integrar Chrysler Building e Empire State Building como modelos GLB CC0 distantes de Manhattan.
+- [x] Construir rampas de aproximação nas duas extremidades da Williamsburg Bridge, com vias laterais e trilhos centrais contínuos.
+- [x] Organizar pistas rodoviárias laterais e dois trilhos centrais no mesmo tabuleiro, conforme a seção oficial da Williamsburg Bridge.
+- [x] Refazer o barco de papiro com casco de feixes vegetais, cabana de esteiras, tochas e pequena figura timoneira.
+- [x] Atracar o barco ao lado do cais e alinhar o ponto de interação à posição visual.
+- [x] Reforçar degraus, corrimãos, patamares e passarela até o portal da Brooklyn House.
+- [ ] QA visual em 360° desktop e mobile, incluindo leitura do skyline e da conexão ponte/margens.
+- [ ] Testar FPS e distância de renderização em celular.
+- [ ] Confirmar carregamento dos GLBs em hospedagem GitHub Pages e fallback do skyline caso falhem.

@@ -149,13 +149,13 @@
     {
       "id": "brooklyn-east-river-williamsburg-bridge",
       "path": "src/exterior.js",
-      "role": "shared 3D exterior: expanded East River, custom Williamsburg suspension bridge with towers, cable lines, vertical suspenders and lattice structure; proportion guided by public NYC DOT dimensions",
+      "role": "shared single-deck Williamsburg Bridge reconstruction: roadway lanes occupy the outer sides, two subway tracks run along the center between them, with approach ramps on both shores; suspension cables, towers and stiffening trusses follow official NYC DOT proportions",
       "license": "project-original-code; official dimensions used as factual reference"
     },
     {
       "id": "brooklyn-papyrus-arrival-boat",
-      "path": "src/exterior.js",
-      "role": "original procedural papyrus-reed boat with woven hull, arched mat shelter, rudder/paddle and two bow torches; no visible pilot; proximity inspection",
+      "path": "src/papyrus-boat.js",
+      "role": "original procedural papyrus-reed boat docked beside the Brooklyn pier after passing under the bridge; rounded bundled-reed hull, woven-mat central shelter, two bow torches and a small stern steersman wearing an Amos-like coat/hat with face concealed; no sail or motor",
       "license": "project-original-code"
     },
     {
@@ -167,7 +167,7 @@
     {
       "id": "brooklyn-house-exterior-stair-movement",
       "path": "src/world.js + src/third-person.js + src/main.js",
-      "role": "height interpolation along winding exterior metal stair, top landing, passage walkway and Great Hall floor connection; shared controller",
+      "role": "shared exterior spiral metal stair with thicker opaque treads/rails, reinforced lower and upper landings, guarded metal catwalk to the central portal and Great Hall connection; shared controller desktop/mobile",
       "license": "project-original-code"
     },
     {
@@ -199,6 +199,18 @@
       "path": "src/character.js",
       "role": "sobrescreve o carried prop gravado no share Ara com carry: none; remove a mochila integrada ao personagem-base, mantendo a bolsa transversal autoral separada",
       "license": "project-original-code; API Ara 3D Gen MIT"
+    },
+    {
+      "id": "brooklyn-east-river-urban-waterfront",
+      "path": "src/waterfront-environment.js",
+      "role": "continuous game environment for Brooklyn and Manhattan shores: land planes, brick industrial factories, warehouses, streets, windows, fire escapes, rooftop tanks/chimneys, cargo piers, seawalls, harbor cranes, road approach ramps to the Williamsburg Bridge and atmospheric skyline; two external CC0 landmark GLBs load asynchronously",
+      "license": "project-original-code; CC0 landmark GLBs documented in openSourceReferences"
+    },
+    {
+      "id": "brooklyn-papyrus-boat-cabin-and-steersman",
+      "path": "src/papyrus-boat.js",
+      "role": "original woven-fiber hull made of rounded tapering papyrus bundles and lashings, continuous arched reed-mat cabin, small cloaked/hatted stern steersman, two bow torches, mooring ropes and boarding plank",
+      "license": "project-original-code"
     }
   ],
   "openSourceReferences": [
@@ -456,6 +468,43 @@
       "source": "assets/models/carter/blender/create_carter_accessories.py",
       "license": "project-original-code",
       "role": "gerador Blender editável alinhado ao runtime: corpo trapezoidal extrudado com bordas macias, bolsa menor e virada para o lado na pelve posterior direita, aba/bolso/fechos sobre a face lateral e aro posterior alinhado à alça; colar recuado; âncoras Hips/Spine2; fonte de lookdev, ainda não carregada em runtime e sem .blend salvo",
+      "runtimeImported": false
+    },
+    {
+      "id": "alexwohlbruck-landmarks-chrysler-building",
+      "source": "https://github.com/alexwohlbruck/landmarks",
+      "license": "CC0-1.0",
+      "author": "Alex Wohlbruck",
+      "role": "runtime GLB assets/models/manhattan-chrysler-building.glb, copied from models/chrysler-building.glb; approximately 4,897 triangles and 253,888 bytes; distant Manhattan skyline marker only",
+      "runtimeImported": true
+    },
+    {
+      "id": "alexwohlbruck-landmarks-empire-state-building",
+      "source": "https://github.com/alexwohlbruck/landmarks",
+      "license": "CC0-1.0",
+      "author": "Alex Wohlbruck",
+      "role": "runtime GLB assets/models/manhattan-empire-state-building.glb, copied from models/empire-state-building.glb; approximately 4,989 triangles and 193,809 bytes; distant Manhattan skyline marker only",
+      "runtimeImported": true
+    },
+    {
+      "id": "alexwohlbruck-landmarks-williamsburg-bridge-reviewed-not-used",
+      "source": "https://github.com/alexwohlbruck/landmarks/blob/main/models/nyc-williamsburg-bridge.glb",
+      "license": "CC0-1.0",
+      "role": "reviewed candidate only; not imported because the low-poly map landmark does not provide the controllable deck, double-level transit structure, long river approaches and scene scale required by this game",
+      "runtimeImported": false
+    },
+    {
+      "id": "nyc-lpc-williamsburg-waterfront-history",
+      "source": "https://www.nyc.gov/site/lpc/about/nyc-landmarks.page",
+      "license": "official historical/contextual reference",
+      "role": "historical context for Williamsburg's industrial waterfront, including docks, shipyards, mills, foundries, refineries and factories; no model or image imported",
+      "runtimeImported": false
+    },
+    {
+      "id": "nyc-dcp-greenpoint-williamsburg-waterfront",
+      "source": "https://www.nyc.gov/site/planning/plans/greenpoint-williamsburg/greenpoint-williamsburg.page",
+      "license": "official urban-planning/context reference",
+      "role": "context for Brooklyn waterfront industrial uses and neighborhood-to-factory transitions; no model or image imported",
       "runtimeImported": false
     }
   ]

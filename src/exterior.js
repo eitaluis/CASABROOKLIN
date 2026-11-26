@@ -1,3 +1,5 @@
+import { buildPapyrusArrivalBoat } from './papyrus-boat.js?v=papyrus-arrival-20261126a';
+
 /* Exterior cinematográfico da Brooklyn House.
    A escala do rio, da Williamsburg Bridge e do skyline é deliberada:
    a mansão permanece em Brooklyn; Manhattan é apenas a margem distante. */
@@ -40,7 +42,7 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
 
   if (water) {
     water.geometry.dispose();
-    water.geometry = new THREE.BoxGeometry(560, 0.34, 260);
+    water.geometry = new THREE.BoxGeometry(560, 0.34, 420);
     water.position.set(310, -0.66, 60);
     water.material.color.setHex(0x36545d);
     water.material.metalness = 0.22;
@@ -172,6 +174,32 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
   const deckY = 41.2;
   const deckZ = 28;
   addBox('tabuleiro contínuo da Williamsburg Bridge', [306, deckY - 0.65, deckZ], [570, 1.3, 25], darkSteel, false);
+  const bridgePavement = new THREE.MeshStandardMaterial({ color: 0x303a3e, roughness: 0.95 });
+  const railBed = new THREE.MeshStandardMaterial({ color: 0x454b4b, roughness: 0.96 });
+  const sleepersMat = new THREE.MeshStandardMaterial({ color: 0x51483c, roughness: 0.98 });
+  // O tabuleiro é compartilhado: quatro pistas rodoviárias ficam nas faixas laterais,
+  // enquanto os dois trilhos do metrô ocupam a faixa central, entre elas.
+  for (const z of [22.0, 34.0]) {
+    addBox('pavimento das vias rodoviárias da Williamsburg Bridge', [306, deckY + 0.055, z], [562, 0.08, 7.2], bridgePavement, false);
+    for (let x = 42; x < 570; x += 24) {
+      addBox('faixa tracejada da via rodoviária', [x, deckY + 0.11, z], [9, 0.035, 0.16], wornConcrete, false);
+    }
+  }
+  addBox('berço central das duas vias do metrô', [306, deckY + 0.09, deckZ], [562, 0.16, 5.8], railBed, false);
+  addBox('passarela externa norte da ponte', [306, deckY + 0.10, 16.7], [562, 0.16, 1.9], darkSteel, false);
+  addBox('passarela externa sul da ponte', [306, deckY + 0.10, 39.3], [562, 0.16, 1.9], darkSteel, false);
+  for (const z of [25.25, 30.75]) {
+    addBox('separador entre metrô e rodovia', [306, deckY + 0.28, z], [562, 0.40, 0.18], wornConcrete, false);
+  }
+  for (let x = 30; x < 584; x += 3.2) {
+    addBox('dormente das duas vias centrais do metrô', [x, deckY + 0.205, deckZ], [0.9, 0.12, 5.35], sleepersMat, false);
+  }
+  // Dois pares de trilhos, posicionados no mesmo nível estrutural das pistas.
+  for (const z of [26.2, 27.6, 28.4, 29.8]) {
+    addTube('trilho do metrô no tabuleiro compartilhado', [
+      [24, deckY + 0.34, z], [588, deckY + 0.34, z]
+    ], darkSteel, 0.075, 280);
+  }
   addBox('faixa de pavimento norte', [306, deckY + 0.03, 20.0], [565, 0.08, 0.16], steel, false);
   addBox('faixa de pavimento sul', [306, deckY + 0.03, 36.0], [565, 0.08, 0.16], steel, false);
   for (const z of [16.5, 39.5]) {
@@ -244,10 +272,7 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
   }
   addInstancedBeams(suspenderSegments, steel, 'pendurais verticais da Williamsburg Bridge');
 
-  // Passarela e trilhos elevados no centro da estrutura.
-  for (const z of [26.2, 29.8]) {
-    addBox('trilho central de trânsito sobre a ponte', [306, 41.55, z], [560, 0.12, 0.12], darkSteel, false);
-  }
+  // A via ferroviária fica no tabuleiro inferior; o superior permanece rodoviário.
   for (const z of [14.7, 41.3]) {
     addBox('guarda-corpo longitudinal da ponte', [306, 42.1, z], [565, 0.22, 0.22], steel, false);
   }
@@ -356,139 +381,8 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
     addBox('massa urbana atmosférica ao fundo', [x, height / 2, z], [width, height, 13], distantMat, false);
   }
 
-  // Barco egípcio de papiro: referência textual, sem motor nem piloto visível.
-  const boat = new THREE.Group();
-  boat.name = 'barco de papiro da chegada de Carter e Sadie';
-  boat.position.set(32.8, 0.12, 52); // embarcação parada sob o vão, junto ao extremo do cais
-  boat.rotation.y = 0.05;
-  scene.add(boat);
-  const reedTextureCanvas = document.createElement('canvas');
-  reedTextureCanvas.width = 512;
-  reedTextureCanvas.height = 512;
-  const rg = reedTextureCanvas.getContext('2d');
-  rg.fillStyle = '#8f7048';
-  rg.fillRect(0, 0, 512, 512);
-  for (let y = 0; y < 512; y += 18) {
-    rg.strokeStyle = y % 36 === 0 ? '#d0ad73' : '#5f4a32';
-    rg.lineWidth = 3;
-    rg.beginPath(); rg.moveTo(0, y); rg.bezierCurveTo(120, y - 5, 290, y + 6, 512, y); rg.stroke();
-  }
-  for (let x = 0; x < 512; x += 24) {
-    rg.strokeStyle = 'rgba(220,190,135,.38)';
-    rg.lineWidth = 2;
-    rg.beginPath(); rg.moveTo(x, 0); rg.lineTo(x + 7, 512); rg.stroke();
-  }
-  const reedTexture = new THREE.CanvasTexture(reedTextureCanvas);
-  reedTexture.colorSpace = THREE.SRGBColorSpace;
-  reedTexture.wrapS = reedTexture.wrapT = THREE.RepeatWrapping;
-  reedTexture.repeat.set(2.5, 1.4);
-  reedTexture.anisotropy = isTouchDevice ? 2 : 8;
-  const reedMaterial = new THREE.MeshStandardMaterial({
-    map: reedTexture, color: 0xd2b17c, roughness: 0.94, metalness: 0.01
-  });
-  const darkReed = new THREE.MeshStandardMaterial({
-    color: 0x5d4933, roughness: 0.97
-  });
-  const hullShape = new THREE.Shape();
-  hullShape.moveTo(0, -6.1);
-  hullShape.bezierCurveTo(1.55, -5.3, 1.65, 4.5, 0, 6.1);
-  hullShape.bezierCurveTo(-1.65, 4.5, -1.55, -5.3, 0, -6.1);
-  const hull = new THREE.Mesh(
-    new THREE.ExtrudeGeometry(hullShape, {
-      depth: 0.7, bevelEnabled: true, bevelSegments: 3,
-      steps: 1, bevelSize: 0.14, bevelThickness: 0.14, curveSegments: 24
-    }),
-    reedMaterial
-  );
-  hull.name = 'casco trançado do barco de papiro';
-  hull.rotation.x = Math.PI / 2;
-  hull.position.y = 1.12;
-  hull.castShadow = true;
-  hull.receiveShadow = true;
-  boat.add(hull);
-
-  function boatTube(name, points, material, radius) {
-    const curve = new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p)));
-    const mesh = new THREE.Mesh(new THREE.TubeGeometry(curve, 60, radius, 7, false), material);
-    mesh.name = name; mesh.castShadow = true; mesh.receiveShadow = true; boat.add(mesh);
-    return mesh;
-  }
-  const rimPoints = [
-    [0, 1.03, 6.1], [1.2, 1.04, 4.8], [1.5, 1.04, 1.5],
-    [1.45, 1.04, -2.6], [1.12, 1.04, -5.0], [0, 1.04, -6.1],
-    [-1.12, 1.04, -5.0], [-1.45, 1.04, -2.6],
-    [-1.5, 1.04, 1.5], [-1.2, 1.04, 4.8], [0, 1.03, 6.1]
-  ];
-  boatTube('bordo de cordas de papiro', rimPoints, darkReed, 0.12);
-  for (let side of [-1, 1]) {
-    for (let band = 0; band < 5; band++) {
-      const z0 = -4.8 + band * 2.1;
-      boatTube('faixa longitudinal de fibras trançadas', [
-        [side * 1.1, 0.64, z0 - 0.8],
-        [side * 1.42, 0.76, z0],
-        [side * 1.22, 0.89, z0 + 0.9]
-      ], reedMaterial, 0.045);
-    }
-  }
-  for (const z of [-3.8, -1.7, 0.5, 2.5, 4.2]) {
-    boatTube('amarração transversal de fibras', [
-      [-1.1, 0.82, z], [-0.55, 1.0, z + 0.08],
-      [0, 1.02, z], [0.55, 1.0, z - 0.08], [1.1, 0.82, z]
-    ], darkReed, 0.045);
-  }
-
-  const seatMaterial = new THREE.MeshStandardMaterial({ color: 0x493a2b, roughness: 0.9 });
-  const seat = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.16, 0.7), seatMaterial);
-  seat.name = 'banco de madeira do barco'; seat.position.set(0, 1.1, -1.2); boat.add(seat);
-  for (const z of [-2.1, 1.6]) {
-    for (const x of [-1.12, 1.12]) {
-      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.07, 2.35, 8), darkReed);
-      pole.name = 'haste de sustentação da cobertura de esteiras';
-      pole.position.set(x, 2.0, z);
-      boat.add(pole);
-    }
-  }
-  // Cobertura arqueada de esteiras, mantida leve mas sem aspecto de caixa.
-  for (const z of [-2.3, -0.3, 1.7]) {
-    boatTube('arco de sustentação da cabana de esteiras', [
-      [-1.15, 2.45, z], [-0.92, 3.12, z],
-      [0, 3.48, z], [0.92, 3.12, z], [1.15, 2.45, z]
-    ], darkReed, 0.075);
-  }
-  for (let row = 0; row < 7; row++) {
-    const z = -2.55 + row * 0.62;
-    boatTube('esteira transversal da cobertura', [
-      [-1.08, 2.48, z], [-0.62, 3.02, z],
-      [0, 3.24, z], [0.62, 3.02, z], [1.08, 2.48, z]
-    ], reedMaterial, 0.032);
-  }
-  // Remo de direção e leme de madeira, visíveis na popa.
-  const rudder = new THREE.Mesh(new THREE.BoxGeometry(0.12, 2.2, 0.12), darkReed);
-  rudder.name = 'leme de madeira do barco'; rudder.position.set(0, 1.5, -5.9);
-  rudder.rotation.x = -0.24; boat.add(rudder);
-  const paddle = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.25, 0.55), reedMaterial);
-  paddle.name = 'remo de direção'; paddle.position.set(0.42, 1.1, -5.3);
-  paddle.rotation.x = 0.26; boat.add(paddle);
-
-  const torchMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffca73, emissive: 0xff9d36, emissiveIntensity: 2.1, roughness: 0.35
-  });
-  for (const x of [-0.78, 0.78]) {
-    const torch = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.08, 0.55, 8), darkReed);
-    torch.name = 'suporte da tocha do barco'; torch.position.set(x, 1.65, 5.55); boat.add(torch);
-    const flame = new THREE.Mesh(new THREE.SphereGeometry(0.15, 10, 8), torchMaterial);
-    flame.name = 'chama da proa'; flame.position.set(x, 2.0, 5.55); boat.add(flame);
-    const light = new THREE.PointLight(0xffa74c, 0.65, 8);
-    light.position.set(x, 2.0, 5.55); boat.add(light);
-  }
-
-  interactables.push({
-    label: 'Barco de papiro',
-    position: new THREE.Vector3(32.8, 1.2, 18.5),
-    radius: 4.8,
-    description: 'Um barco egípcio trançado de fibras vegetais, com pequenas tochas na proa e uma cabana de esteiras. Não há piloto visível.',
-    onInteract: () => 'O barco parece ter acabado de trazer alguém pelo East River.'
-  });
+  // Barco atracado na pequena doca após a passagem sob a ponte.
+  buildPapyrusArrivalBoat({ THREE, scene, interactables });
 
   // A mansão e a escada têm materiais invisíveis com escrita de profundidade.
   // E/INTERAGIR no cais dá a Carter o foco necessário para percebê-las.

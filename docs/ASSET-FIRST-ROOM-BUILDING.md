@@ -89,9 +89,9 @@ Cada asset externo e cada conjunto de texturas precisa de registo individual em 
 
 | Elemento | Asset/estudo escolhido | Material e visual | Interação prevista | Estado |
 |---|---|---|---|---|
-| East River — superfície | Shader/normal-map procedural original, com estudo técnico de [mqnc/cheapwater](https://github.com/mqnc/cheapwater) (MIT) e implementação própria simplificada; não há código externo incorporado | CanvasTexture periódica em escala de cinza aplicada como bumpMap ao plano de água existente; deslocamento UV lento em dois eixos; intensidade reduzida no mobile; mantém o material e a geometria de água já existentes | Superfície visual sem collider; barco permanece como objeto inspecionável | Implementado; validar reflexo, escala das ondas e custo visual em desktop/mobile |
-| Williamsburg Bridge | Geometria estrutural original no módulo exterior; proporções de referência histórica registradas em comentários do código | Aço escuro, treliças instanciadas, cabos e pendurais; skyline em camadas atmosféricas | Marco visual distante, sem colisão navegável nesta fase | Implementado; validação de silhueta e escala pendente |
-| Barco de papiro | Geometria original sob medida, baseada na descrição narrativa da chegada | Fibras vegetais, amarrações, cobertura de esteiras, banco, leme e luzes quentes | Inspeção contextual por proximidade | Implementado; QA visual e escala pendentes |
+| East River — superfície | Shader/normal-map procedural original, com estudo técnico de mqnc/cheapwater (MIT), sem código externo incorporado | CanvasTexture periódica como bumpMap; superfície contínua de 560 unidades entre as margens, coloração azul-ardósia, ondas e neblina reduzida | Superfície visual sem collider; barco atracado junto ao píer do Brooklyn | Implementado; validar reflexo, escala das ondas e custo visual em desktop/mobile |
+| Williamsburg Bridge | Geometria estrutural original no módulo exterior; proporções de referência histórica NYC DOT | Tabuleiro compartilhado com vias rodoviárias laterais e trilhos centrais do metrô, aço escuro, treliças instanciadas, cabos, pendurais e rampas nas duas margens | Marco visual sem colisão navegável nesta fase | Implementado; validação de silhueta, acesso e escala pendente |
+| Barco de papiro | Módulo original src/papyrus-boat.js, construído de feixes curvos de fibras vegetais e amarrações | Cabana central com superfície contínua de esteiras, duas tochas na proa e timoneiro pequeno de casaco/chapéu na popa; sem vela ou motor | Atracado ao lado do píer; inspeção contextual no mesmo ponto visual | Implementado; QA visual e escala pendentes |
 | Cais e doca | Geometria original no módulo world.js, com tábuas, estacas, cabeços, defensas e argolas | Madeira envelhecida, concreto gasto, aço oxidado e borracha | Caminhabilidade e colisões conforme as superfícies já registradas no mundo | Implementado; QA de circulação e clipping pendente |
 
 **Nota de produção:** a água usa um mapa de altura procedural periódico, sem dependência de arquivo externo. A referência MIT foi estudada, mas nenhum código, textura ou shader de terceiros foi copiado. O mesmo material e a mesma geometria são usados em desktop e mobile; apenas repetição, anisotropia e intensidade do bump são ajustadas por perfil de dispositivo.
@@ -126,12 +126,12 @@ A matriz exterior anterior continua válida. Este complemento registra a expans�
 
 | Elemento | Complemento asset-first | Material / comportamento | Estado |
 |---|---|---|---|
-| East River e distância entre margens | Superfície ampliada para dar separação visual real entre Brooklyn e Manhattan; margem oposta posicionada ao longe | Água azul-ardósia, linha de reflexo restrita à margem distante, ripples instanciados perto da doca e neblina | Geometria expandida; verificar escala, horizonte e custo em mobile |
-| Williamsburg Bridge | Torres altas, quatro linhas de cabos principais, pendurais, treliças laterais e tabuleiro longo; dimensões oficiais NYC DOT orientam proporção | Aço escuro e instâncias compartilhadas para reduzir draw calls | Geometria original; validar leitura da ponte em várias orientações da câmera |
-| Manhattan | Cais, armazéns baixos e skyline em camadas, com prédios escalonados e janelas instanciadas | Tons azul-acinzentados com neblina por distância; não é área jogável | Geometria interpretativa; validar clipping e FPS mobile |
-| Barco egípcio | Casco de fibras, cobertura de esteiras, banco, leme/remo e tochas na proa; sem piloto visível | Textura de fibra vegetal procedural e emissive quente | Implementado e inspecionável; QA visual de escala pendente |
+| East River e distância entre margens | Água com 560 unidades entre margens, terreno separado dos dois lados, paredões de cais e píeres secundários | Água azul/verde, horizonte com skyline e névoa leve, sem a antiga sobreposição do pátio sobre o rio | Implementado; validar escala, horizonte e custo em mobile |
+| Williamsburg Bridge | Ponte suspensa com um tabuleiro compartilhado: pistas rodoviárias nas laterais e dois trilhos do metrô no centro; torres, cabos, treliças e rampas em ambas as margens, proporções orientadas pelo NYC DOT | Aço escuro e instâncias compartilhadas para reduzir draw calls | Geometria original; validar leitura, percurso e escala em desktop/mobile |
+| Brooklyn e Manhattan | Terreno contínuo, docas, cais, depósitos, fábricas de tijolo, ruas, chaminés, tanques d'água, escadas de incêndio e skyline em camadas; dois marcos CC0 no horizonte | Paleta de tijolo, pedra, aço e vidro azul; neblina mais leve para preservar a leitura da outra margem | Geometria original próxima; Chrysler e Empire State importados como referências de escala ao longe |
+| Barco egípcio | Casco de feixes arredondados de papiro, cabana de esteiras, duas tochas na proa e timoneiro pequeno com casaco/chapéu na popa | Fibras vegetais, cordas e trama de esteira; sem vela ou motor | Atracado junto à doca após passar sob a ponte; QA visual e escala pendentes |
 | Portal | Vão livre com ombreiras e lintel, folha de madeira larga sem puxador ou fechadura | A folha sobe verticalmente quando Carter interage | Interação implementada; testar atravessamento físico |
-| Percurso exterior | Escada helicoidal calculada pela posição angular e altura atual, patamar e passarela conectados ao piso do Grande Salão | Controlador de movimento compartilhado | Implementado no código; teste real de subida/descida ainda pendente |
+| Percurso exterior | Escada metálica lateral em espiral, patamar superior reforçado e passarela com guarda-corpos até o portal central | Degraus e corrimãos em aço opaco, controlador de movimento compartilhado | Implementado no código; validar subida, aterrissagem e travessia até a porta em desktop/mobile |
 
 **Fidelidade textual:** a escada que contorna a lateral do armazém é canônica; a forma helicoidal exata é uma interpretação do projeto. Manhattan é a margem oposta, não o local da Brooklyn House.
 
@@ -146,3 +146,30 @@ A matriz exterior anterior continua válida. Este complemento registra a expans�
 - [ ] Verificar que as salas permanecem completas e interativas depois de entrar, inclusive portas, colisores, pisos, luzes e modelos GLB assíncronos.
 
 A regra é estrutural, não cosmética: as salas podem ocupar coordenadas além da caixa física do armazém porque são espaços mágicos internos, mas sua renderização fica desligada enquanto o personagem está fora.
+
+## Waterfront externo — busca asset-first e integração — 26/11/2026
+
+A construção do entorno segue a mesma ordem usada para os interiores: pesquisar primeiro no GitHub, verificar licença e compatibilidade, integrar somente o que corresponda à cena e registrar também as opções recusadas. A busca foi feita por componente (ponte, barcos de papiro, galpões/fábricas, docas, guindastes e skyline de Nova York), em vez de escolher um pacote urbano genérico e adaptar a narrativa a ele.
+
+| Elemento | Resultado da pesquisa GitHub | Decisão no CASABROOKLIN |
+|---|---|---|
+| Williamsburg Bridge | Foi localizado um GLB na coleção alexwohlbruck/landmarks; o repositório o classifica como CC0, mas o modelo está em estilo low-poly e com estado de revisão não validado | Não importar como ponte principal. Manter a geometria específica do projeto e refiná-la com pistas laterais, trilhos centrais no mesmo tabuleiro, cabos, treliças, rampas e medidas oficiais NYC DOT |
+| Barco do East River | Os resultados eram barcos genéricos, de madeira ou com vela; nenhum modelo verificado reunia feixes de papiro, cabana de esteiras, tochas na proa e o timoneiro de casaco/chapéu | Rejeitar o genérico. Construir src/papyrus-boat.js com feixes curvos, cordas, trama de esteira, timoneiro e atracação ao píer |
+| Fábricas, galpões e armazéns | Não foi encontrado um conjunto gratuito no GitHub com aparência e escala adequadas ao antigo waterfront industrial do Brooklyn descrito no romance | Modelagem original em src/waterfront-environment.js, com tijolo, vãos industriais, tanques d'água, chaminés, escadas de incêndio e depósitos |
+| Docas, muros, píeres e guindastes | Os pacotes genéricos encontrados não representavam a pequena doca junto ao galpão e a cadeia de píeres industriais necessária | Geometria original integrada à margem, com abertura no muro do cais para a doca principal e píeres secundários |
+| Skyline de Manhattan | Foram encontrados modelos GLB CC0-1.0 de Chrysler Building e Empire State Building na coleção Landmarks | Importados como marcos distantes, em assets/models/manhattan-chrysler-building.glb e assets/models/manhattan-empire-state-building.glb; a cidade próxima continua sendo geometria original para manter a composição sob controle |
+
+**Fontes de contexto:** NYC Landmarks Preservation Commission — https://s-media.nyc.gov/agencies/lpc/lp/0163.pdf e NYC Department of City Planning — https://www.nyc.gov/assets/planning/download/pdf/plans/greenpoint-williamsburg/greenpointwill.pdf; proporções e seção da Williamsburg Bridge — NYC DOT https://www.nyc.gov/html/dot/html/infrastructure/williamsburg-bridge.shtml ajudam a orientar a leitura industrial da margem. O capítulo 5 de The Red Pyramid continua sendo a referência canônica para a chegada: passagem sob a ponte, pequena doca no Brooklyn, pátio de sucata/equipamentos, galpão grafitado, mansão perceptível no telhado e escada metálica lateral.
+
+**Regra de qualidade:** não usar asset apenas porque é gratuito. Escala, orientação, silhueta, materiais, licença e coerência narrativa precisam ser verificados. A falta de um modelo pronto não autoriza preencher a cena com caixas cinzas; nesse caso, construir uma peça própria e registrar essa escolha.
+
+- [x] Pesquisar assets GitHub para cada família de elementos do waterfront.
+- [x] Importar apenas os dois marcos de skyline com licença CC0 verificada.
+- [x] Registrar candidatos avaliados e recusados, bem como assets originais construídos.
+- [x] Criar terreno e margens contínuas para Brooklyn, East River e Manhattan.
+- [x] Conectar a Williamsburg Bridge ao tecido urbano com rampas de aproximação.
+- [x] Reposicionar o barco junto à doca, após a travessia sob a ponte.
+- [ ] Validar os GLBs e a composição em navegador desktop e mobile.
+
+
+**Percurso de entrada confirmado no código:** o personagem chega ao pátio ao nível do solo, contorna a lateral leste do galpão até a escada metálica, sobe os lances em espiral até o patamar superior e atravessa a passarela com guarda-corpos até o portal central. A espiral é interpretação geométrica; a escada metálica externa é a informação do livro. O material da escada deve ser opaco depois que a revelação mágica termina.

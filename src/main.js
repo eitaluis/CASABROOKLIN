@@ -362,9 +362,10 @@ function animate() {
   }
   if (fireLight) fireLight.intensity = 4.25 + Math.sin(time * 8.7) * 0.72;
   grandSalon.update?.(time);
-  magicSystem.update(dt);
   const trainingMessage = trainingRoom.update(time, dt, controller.getPosition(), controller.getForward());
   if (trainingMessage) toast(trainingMessage);
+  // Atualiza a magia depois da simulação da sala: os 10 s dos fragmentos começam no impacto real.
+  magicSystem.update(dt);
   const trainingStatus = trainingRoom.getStatus();
   let nearbyTrainingItem=null, nearbyTrainingDistance=Infinity;
   if(controller.zone==='training'){

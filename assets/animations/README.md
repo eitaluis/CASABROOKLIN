@@ -9,9 +9,9 @@ As animações são controladas pelo módulo compartilhado src/character.js e pe
 - **Idle:** respiração, pequenos movimentos de cabeça e transferência de peso.
 - **Walk:** passada natural, flexão dos joelhos e braços em oposição.
 - **Run:** passada mais ampla, com inclinação frontal moderada.
-- **Jump:** jump_start, jump_air e jump_land em sequência, com transição suave.
+- **Jump:** jump_start, jump_air e jump_land com arco físico vertical (impulso + gravidade) no controlador, compartilhado entre desktop e mobile.
 
-A velocidade de locomoção é enviada ao blending do Ara a cada frame. Caminhada usa alvo de 1,5 m/s; corrida usa 4,2 m/s. A aceleração, desaceleração, rotação do corpo e câmera receberam uma resposta mais suave para a direção cinematográfica.
+A velocidade de locomoção é enviada ao blending do Ara a cada frame. Caminhada usa alvo de 1,7 m/s; corrida usa 4,2 m/s. A aceleração, desaceleração, rotação do corpo e câmera receberam uma resposta mais suave para a direção cinematográfica. Abaixo de 50% de vitalidade, o sprint é bloqueado e Carter usa crouch idle + walk_slouch em velocidade reduzida.
 
 ### Ações cinematográficas
 
@@ -44,3 +44,10 @@ A bolsa transversal no quadril direito e o medalhão têm pivôs próprios no m�
 - Conferir o medalhão e a alça sem clipping no pescoço, ombro e tronco.
 - Testar Chrome desktop e celular em modo paisagem.
 - Marcar como aprovado somente depois de inspeção no navegador real.
+## Combate e recursos do jogador
+
+- Os quatro Shabtis usam aproximação com passada, preparação de golpe, balanço de espada com articulação de cotovelo, movimento do escudo e recuperação. A animação procedural usa as peças/pivôs já existentes no modelo; não importa um esqueleto externo incompatível.
+- Quando um golpe conecta, o callback global reduz a vitalidade, toca hit_front, aplica tremor curto de câmera e uma vinheta vermelha periférica.
+- VITALIDADE inicia em 100 e perde 20 pontos por acerto dos Shabtis (cinco segmentos internos na prova). A 50 ou menos, Carter entra no estado cansado/agachado e não pode correr.
+- ENERGIA inicia em 100 e regenera 8 pontos por segundo. HA-DI custa 30; o orbe de prática com cajado custa 12.
+- A vitalidade é compartilhada entre ambientes e não é reiniciada ao sair da sala de treinamento. A energia recarrega continuamente até 100.

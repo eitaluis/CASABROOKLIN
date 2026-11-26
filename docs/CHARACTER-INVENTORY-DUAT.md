@@ -7,6 +7,8 @@ Status: **oito objetos, portal no espaço do tórax, clipe use_press e bloqueio 
 
 O sistema será reutilizável por qualquer personagem mago. Nesta etapa, apenas Carter Kane recebe a primeira implementação. A lógica não deve depender do nome Carter: cada personagem futuro poderá fornecer seu próprio rig, sockets, catálogo de objetos, animações e afinidades mágicas.
 
+A fábrica `createCharacter()` já aceita `characterSource` e `characterName`; `attachCarterAccessories: false` permite usar o mesmo conjunto de animações sem aplicar a bolsa e o medalhão exclusivos de Carter. O inventário recebe candidatos de osso da mão e uma posição de fallback, para adaptar o socket ao rig de cada novo personagem.
+
 Desktop e mobile usam a mesma cena, o mesmo personagem, os mesmos objetos e o mesmo estado de inventário. Só a interface e os controles de entrada podem variar.
 
 ## 2. Base canônica — ferramentas e materiais

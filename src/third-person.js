@@ -186,7 +186,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     if (direction.lengthSq() > 0.0001) direction.normalize();
 
     const running = keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint;
-    const speedTarget = input.moving ? (running ? 5.8 : 2.25) * input.magnitude : 0;
+    const speedTarget = input.moving ? (running ? 7.2 : 3.6) * input.magnitude : 0;
     const currentPosition = getPosition();
     limitToZone(currentPosition, direction, Math.max(speedTarget, 2.25) * dt * 1.35);
 
@@ -203,7 +203,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       character.human.update(dt);
     } else {
       const targetVelocity = direction.clone().multiplyScalar(speedTarget);
-      smoothVelocity.lerp(targetVelocity, 1 - Math.exp(-10.5 * dt));
+      smoothVelocity.lerp(targetVelocity, 1 - Math.exp(-14 * dt));
       const current = character.model.position;
       const next = current.clone().addScaledVector(smoothVelocity, dt);
       const bounds = zones[zoneName].bounds;

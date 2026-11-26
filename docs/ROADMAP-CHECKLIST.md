@@ -1,6 +1,6 @@
 # CASABROOKLIN — checklist de produção por setores
 
-Atualizado: 26/11/2026 — padrão asset-first aplicado
+Atualizado: 26/11/2026 — exterior East River aprimorado; padrão asset-first aplicado
 
 Este documento é a fonte de verdade do andamento. A cada nova solicitação, classificar os setores afetados, trabalhar neles isoladamente, atualizar este checklist e manter desktop/mobile sincronizados.
 
@@ -107,6 +107,34 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [ ] Refinar terraço, piscina, refeições e fogueira.
 - [ ] Refinar quarto do Carter, banheiro, deck e pavimentos.
 - [ ] Construir enfermaria, treinamento e salas auxiliares como reconstruções interpretativas quando o texto não definir forma.
+
+## Setor 09 — exterior e chegada
+
+### East River
+- [x] Preservar a geometria ampliada do rio, a linha de margem e as ondulações instanciadas.
+- [x] Adicionar mapa de altura procedural periódico como bumpMap animado, com intensidade/repetição ajustadas para desktop e mobile.
+- [ ] Validar a escala das ondas em vista próxima e distante, reflexos e ausência de padrão repetitivo perceptível.
+- [ ] Avaliar leitura da água junto ao cais e ao barco; ajustar a transição visual da margem.
+
+### Cais, armazém e chegada
+- [x] Doca de madeira, juntas, estacas, cabeços, defensas de borracha e argolas de amarração.
+- [x] Armazém industrial com portão, marquise, tubulações, exaustores e objetos de carga.
+- [x] Mansão elevada, cinco pavimentos, portal sem maçaneta e escada metálica em caracol.
+- [x] Barco de papiro com casco trançado, cobertura de esteiras, banco, leme e luzes; inspeção por proximidade.
+- [ ] Testar circulação da margem ao patamar, escada espiral e passarela da entrada com o Carter.
+- [ ] Conferir a escala e o enquadramento do barco em relação ao cais e à fachada.
+
+### Horizonte urbano
+- [x] Williamsburg Bridge em geometria estrutural instanciada, cabos e pendurais.
+- [x] Margem distante e skyline de Manhattan em camadas.
+- [ ] Validar perspectiva, distância aparente, neblina e silhueta da ponte a partir do cais.
+- [ ] Avaliar densidade de janelas e custo de sombras no desktop/mobile.
+
+### QA exterior
+- [ ] Verificar sintaxe/imports e cache-busters.
+- [ ] Testar exterior em navegador desktop e celular paisagem.
+- [ ] Medir FPS, memória e estabilidade com o rio, ponte, skyline e interiores carregados.
+- [ ] Marcar separadamente implementado, testado e aprovado visualmente.
 
 ## Setor 07 — visual e desempenho
 

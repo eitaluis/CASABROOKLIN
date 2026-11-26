@@ -588,20 +588,63 @@ function addThoth(scene,marble,pale,brass,reliefTex) {
   const fill=new THREE.PointLight(0x8ea4a5,1,14,1.8);fill.position.set(2.3,19.4,2.6);scene.add(fill);
 }
 
-export function buildGrandSalon({ THREE: T, scene, animated=[] }) {
-  const stone=stoneMaterial(),walnut=woodMaterial(),marble=marbleMaterial();
-  const brass=new T.MeshStandardMaterial({color:0xb78d4f,metalness:.7,roughness:.31});
-  const pale=new T.MeshStandardMaterial({color:0xd3c09a,roughness:.9,bumpMap:stone.bumpMap,bumpScale:.03});
-  const darkWood=new T.MeshStandardMaterial({color:0x4a2d1d,map:walnut.map,bumpMap:walnut.bumpMap,bumpScale:.018,roughness:.78});
+export function buildGrandSalon({
+  THREE: T,
+  scene,
+  animated=[],
+  camera,
+  isTouchDevice=false,
+  colliders=[],
+  interactables=[]
+}) {
+  const stone=stoneMaterial();
+  const walnut=woodMaterial();
+  const marble=marbleMaterial();
+  const brass=new T.MeshStandardMaterial({color:0xb78d4f,metalness:.72,roughness:.29});
+  const pale=new T.MeshStandardMaterial({color:0xd3c09a,roughness:.9});
+  const floorMaterial=new T.MeshStandardMaterial({color:0xffffff,roughness:.72});
+
+  // Real PBR maps from CC0 Poly Haven / ambientCG sets, kept local in the project.
+  bindPbrMaps(stone,'plaster-smooth-beige',[2,1.4],false);
+  bindPbrMaps(walnut,'wood-walnut',[2.2,1.2],true);
+  bindPbrMaps(marble,'marble-white',[1,1],false);
+  bindPbrMaps(floorMaterial,'tile-limestone-beige',[1.2,1],true);
+
+  const darkWood=new T.MeshStandardMaterial({
+    color:0x76543b,
+    map:walnut.map,
+    normalMap:walnut.normalMap,
+    normalScale:new T.Vector2(.72,.72),
+    roughnessMap:walnut.roughnessMap,
+    roughness:.78
+  });
   const relief=reliefTexture();
 
   scene.traverse(o=>{
-    if(['sofá legado do Grande Salão','tapete legado do Grande Salão','mesa de centro legado','pé mesa legado','guarda-corpo da sacada','balaústre','viga sacada'].includes(o.name))o.visible=false;
-    if(o.name==='parede interna do salão'||o.name==='parede lateral do salão'||o.name==='sacada de calcário'||o.name==='piso do Grande Salão'||o.name==='coluna de calcário'||o.name==='moldura da lareira'||o.name==='manto de pedra')o.material=stone;
+    if([
+      'sofá legado do Grande Salão','tapete legado do Grande Salão',
+      'mesa de centro legado','pé mesa legado','guarda-corpo da sacada',
+      'balaústre','viga sacada'
+    ].includes(o.name)) o.visible=false;
+
+    if(
+      o.name==='parede interna do salão' ||
+      o.name==='parede lateral do salão' ||
+      o.name==='sacada de calcário' ||
+      o.name==='coluna de calcário' ||
+      o.name==='moldura da lareira' ||
+      o.name==='manto de pedra'
+    ) o.material=stone;
+
+    if(o.name==='piso do Grande Salão') o.material=floorMaterial;
   });
 
-  for(const x of [-8.8,8.8])for(const z of [-6.7,6.3])lotusColumn(scene,x,z,stone,pale,brass);
+  for(const x of [-8.8,8.8]) {
+    for(const z of [-6.7,6.3]) lotusColumn(scene,x,z,stone,pale,brass);
+  }
+
   addBalustrades(scene,stone,brass,darkWood);
+
   const stairRamps=[];
   const walkablePlatforms=[];
   for(const side of [-1,1]){
@@ -617,19 +660,71 @@ export function buildGrandSalon({ THREE: T, scene, animated=[] }) {
       {minX:side<0?-13:7.6,maxX:side<0?-7.6:13,minZ:-8,maxZ:8,height:24.375}
     );
   }
+
   addWallReliefs(scene,brass,darkWood,stone,relief);
   ceilingOrnament(scene,brass,darkWood);
 
-  const upholstery=new T.MeshStandardMaterial({color:0x65402f,map:walnut.map,bumpMap:walnut.bumpMap,bumpScale:.015,roughness:.84});
-  createSofa(scene,-3.2,3.45,Math.PI/2,upholstery,darkWood,brass);
-  createSofa(scene,3.2,3.45,-Math.PI/2,upholstery,darkWood,brass);
-  createRug(scene);
-  centerTable(scene,walnut,brass);
-  const fireLight=addFire(scene,animated);
+  const upholstery=new T.MeshStandardMaterial({
+    color:0x65402f,
+    roughness:.86,
+    bumpMap:walnut.normalMap,
+    bumpScale:.012
+  });
+
+  // Fallback sofa proportions match the physical Poly Haven model. It disappears only
+  // after the local GLB has loaded successfully.
+  const sofaFallbacks=[
+    createSofa(scene,-2.55,3.45,Math.PI/2,upholstery,darkWood,brass),
+    createSofa(scene,2.55,3.45,-Math.PI/2,upholstery,darkWood,brass)
+  ];
+  const sofaAssets=loadSofaAssets(scene,sofaFallbacks,colliders,interactables);
+
+  const rug=createRug(scene);
+  const table=centerTable(scene,walnut,brass);
+  addBoxCollider(colliders,0,13.47,3.45,1.58,.62,1.58);
+  interactables.push({
+    name:'Mesa de centro de nogueira',
+    kind:'inspect',
+    label:'Mesa de centro entalhada',
+    description:'Mesa circular baixa de nogueira, com medalhão solar e filetes de bronze',
+    position:new T.Vector3(0,13.62,3.45),
+    radius:1.55
+  });
+
+  const fire=addFire(scene,animated,camera,isTouchDevice);
+  const fireLight=fire.fireLight;
+  interactables.push({
+    name:'Lareira monumental',
+    kind:'inspect',
+    label:'Lareira do Grande Salão',
+    description:'Lareira monumental com lenha, brasas e chamas volumétricas animadas',
+    position:new T.Vector3(0,15.0,-7.9),
+    radius:2.2
+  });
+
   addThoth(scene,marble,pale,brass,relief);
+  addBoxCollider(colliders,0,17.35,-.5,2.35,8.35,2.35);
+  interactables.push({
+    name:'Estátua de Thoth',
+    kind:'inspect',
+    label:'Thoth, deus da escrita',
+    description:'Estátua monumental de Thoth em basalto negro, com cabeça de íbis, papiro e cetro. A superfície preserva reflexos profundos e veios minerais.',
+    position:new T.Vector3(0,15.0,-.5),
+    radius:2.6
+  });
 
-  const sideLight=new T.PointLight(0xffbe78,.9,12,1.8);sideLight.position.set(0,20.3,7.9);scene.add(sideLight);
+  const sideLight=new T.PointLight(0xffbe78,.9,12,1.8);
+  sideLight.position.set(0,20.3,7.9);
+  scene.add(sideLight);
 
-  // Superfícies de circulação associadas às duas escadarias e às galerias laterais.
-  return {fireLight,stairRamps,walkablePlatforms};
+  return {
+    fireLight,
+    update:fire.update,
+    stairRamps,
+    walkablePlatforms,
+    interactables,
+    sofaAssets,
+    rug,
+    table
+  };
 }

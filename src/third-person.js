@@ -1,6 +1,6 @@
 export function createThirdPersonController({ THREE, camera, canvas, character, zones, onZoneChange }) {
   const keys = new Set();
-  const touch = { forward: false, back: false, left: false, right: false, sprint: false };
+  const touch = { moveX: 0, moveY: 0, sprint: false };
   const position = new THREE.Vector3();
   const lookTarget = new THREE.Vector3();
   const desiredCamera = new THREE.Vector3();
@@ -93,18 +93,47 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   window.addEventListener('keyup', (event) => keys.delete(event.code));
   window.addEventListener('blur', () => keys.clear());
 
-  document.querySelectorAll('#mobile [data-move]').forEach((button) => {
-    const key = button.dataset.move;
-    button.addEventListener('pointerdown', (event) => {
+  // Joystick analógico: direção e intensidade controlam a marcha sem passos digitais.
+  const joystick = document.getElementById('joystick');
+  const joystickKnob = document.getElementById('joystickKnob');
+  let joystickPointer = null;
+  const joystickRadius = 34;
+  function setJoystick(event) {
+    if (!joystick) return;
+    const rect = joystick.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    let dx = event.clientX - cx;
+    let dy = event.clientY - cy;
+    const length = Math.hypot(dx, dy);
+    if (length > joystickRadius) {
+      dx = dx / length * joystickRadius;
+      dy = dy / length * joystickRadius;
+    }
+    touch.moveX = dx / joystickRadius;
+    touch.moveY = dy / joystickRadius;
+    if (joystickKnob) joystickKnob.style.transform = `translate(${dx}px,${dy}px)`;
+  }
+  function resetJoystick() {
+    joystickPointer = null;
+    touch.moveX = 0;
+    touch.moveY = 0;
+    if (joystickKnob) joystickKnob.style.transform = 'translate(0,0)';
+  }
+  if (joystick) {
+    joystick.addEventListener('pointerdown', event => {
       event.preventDefault();
-      touch[key] = true;
-      button.setPointerCapture?.(event.pointerId);
+      joystickPointer = event.pointerId;
+      joystick.setPointerCapture?.(event.pointerId);
+      setJoystick(event);
     });
-    const release = () => { touch[key] = false; };
-    button.addEventListener('pointerup', release);
-    button.addEventListener('pointercancel', release);
-    button.addEventListener('lostpointercapture', release);
-  });
+    joystick.addEventListener('pointermove', event => {
+      if (joystickPointer === event.pointerId) setJoystick(event);
+    });
+    joystick.addEventListener('pointerup', resetJoystick);
+    joystick.addEventListener('pointercancel', resetJoystick);
+    joystick.addEventListener('lostpointercapture', resetJoystick);
+  }
 
   document.querySelectorAll('#mobile [data-action]').forEach((button) => {
     const action = button.dataset.action;
@@ -121,10 +150,10 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   });
 
   function inputDirection() {
-    let forward = (keys.has('KeyW') || keys.has('ArrowUp') || touch.forward ? 1 : 0)
-      - (keys.has('KeyS') || keys.has('ArrowDown') || touch.back ? 1 : 0);
-    let strafe = (keys.has('KeyD') || keys.has('ArrowRight') || touch.right ? 1 : 0)
-      - (keys.has('KeyA') || keys.has('ArrowLeft') || touch.left ? 1 : 0);
+    let forward = (keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0)
+      - (keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0) - touch.moveY;
+    let strafe = (keys.has('KeyD') || keys.has('ArrowRight') ? 1 : 0)
+      - (keys.has('KeyA') || keys.has('ArrowLeft') ? 1 : 0) + touch.moveX;
     const magnitude = Math.hypot(forward, strafe);
     if (magnitude > 1) { forward /= magnitude; strafe /= magnitude; }
     return { forward, strafe, moving: magnitude > 0.001 };

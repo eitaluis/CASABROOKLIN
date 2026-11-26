@@ -85,18 +85,19 @@ export function createInventory({
 
     // Cajado simples de madeira: haste reta e ponta superior discretamente mais larga.
     // A silhueta evita metais, discos, gemas, halos ou motivos zoomórficos.
+    // Escala-alvo: 2,00 m, acima da altura de referência do Carter (1,75 m no rig Ara).
     const profile = [
       new THREE.Vector2(0, 0),
       new THREE.Vector2(0.039, 0),
-      new THREE.Vector2(0.043, 0.035),
-      new THREE.Vector2(0.043, 1.47),
-      new THREE.Vector2(0.046, 1.52),
-      new THREE.Vector2(0.058, 1.56),
-      new THREE.Vector2(0.071, 1.61),
-      new THREE.Vector2(0.074, 1.68),
-      new THREE.Vector2(0.068, 1.72),
-      new THREE.Vector2(0.045, 1.75),
-      new THREE.Vector2(0, 1.75)
+      new THREE.Vector2(0.043, 0.04),
+      new THREE.Vector2(0.043, 1.68),
+      new THREE.Vector2(0.046, 1.74),
+      new THREE.Vector2(0.058, 1.78),
+      new THREE.Vector2(0.071, 1.84),
+      new THREE.Vector2(0.074, 1.92),
+      new THREE.Vector2(0.068, 1.97),
+      new THREE.Vector2(0.045, 2.0),
+      new THREE.Vector2(0, 2.0)
     ];
     const geometry = new THREE.LatheGeometry(profile, 16);
     geometry.computeVertexNormals();

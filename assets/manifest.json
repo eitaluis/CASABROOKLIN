@@ -145,6 +145,36 @@
       "path": "src/grand-salon.js",
       "role": "three inspectable timber doors per side and each of the three balcony levels (18 total), with limestone PBR surrounds, walnut PBR panels, brass rails/handles and physical colliders; quantity/layout is an interpretive level-design choice because the novel gives no exact count",
       "license": "project-original-code using CC0 Poly Haven PBR maps"
+    },
+    {
+      "id": "brooklyn-east-river-williamsburg-bridge",
+      "path": "src/exterior.js",
+      "role": "shared 3D exterior: expanded East River, custom Williamsburg suspension bridge with towers, cable lines, vertical suspenders and lattice structure; proportion guided by public NYC DOT dimensions",
+      "license": "project-original-code; official dimensions used as factual reference"
+    },
+    {
+      "id": "brooklyn-papyrus-arrival-boat",
+      "path": "src/exterior.js",
+      "role": "original procedural papyrus-reed boat with woven hull, arched mat shelter, rudder/paddle and two bow torches; no visible pilot; proximity inspection",
+      "license": "project-original-code"
+    },
+    {
+      "id": "brooklyn-house-entry-portal",
+      "path": "src/exterior.js + src/world.js + src/main.js",
+      "role": "portal opening with dark wood slab without handle/lock, open aperture and animated upward movement; shared E/INTERAGIR interaction",
+      "license": "project-original-code"
+    },
+    {
+      "id": "brooklyn-house-exterior-stair-movement",
+      "path": "src/world.js + src/third-person.js + src/main.js",
+      "role": "height interpolation along winding exterior metal stair, top landing, passage walkway and Great Hall floor connection; shared controller",
+      "license": "project-original-code"
+    },
+    {
+      "id": "brooklyn-house-waterfront-minimap",
+      "path": "src/main.js",
+      "role": "shared canvas map with Brooklyn warehouse, pier, East River, Williamsburg Bridge and Manhattan shore",
+      "license": "project-original-code"
     }
   ],
   "openSourceReferences": [
@@ -324,6 +354,70 @@
       "source": "https://tevy.dev/models/open-parchment-scroll",
       "license": "CC0-1.0",
       "role": "candidate mesh study only: open parchment GLB, 7,772 tris LOD0, 986 KB; contains invented glyphs and fantasy/medieval styling, not integrated as an Egyptian artifact",
+      "runtimeImported": false
+    },
+    {
+      "id": "nyc-dot-williamsburg-bridge-dimensions",
+      "source": "https://www.nyc.gov/html/dot/html/infrastructure/williamsburg-bridge.shtml",
+      "license": "official public reference; no asset imported",
+      "role": "official bridge data for total length, main span, navigation clearance, tower height and cable count; guide for proportions only",
+      "runtimeImported": false
+    },
+    {
+      "id": "nyc-doris-williamsburg-bridge-archive",
+      "source": "https://www.archives.nyc/blog/tag/Williamsburg%2BBridge",
+      "license": "historical photographic reference only; no image imported",
+      "role": "visual reference for the steel bridge and Brooklyn waterfront",
+      "runtimeImported": false
+    },
+    {
+      "id": "polyhaven-red-brick-reference",
+      "source": "https://polyhaven.com/a/red_brick",
+      "license": "CC0-1.0",
+      "author": "Rob Tuytel",
+      "role": "candidate PBR material for future warehouse brick refinement; not currently loaded in runtime",
+      "runtimeImported": false
+    },
+    {
+      "id": "polyhaven-brick-wall-001-reference",
+      "source": "https://polyhaven.com/a/brick_wall_001",
+      "license": "CC0-1.0",
+      "role": "alternative aged industrial brick PBR reviewed; not loaded in runtime",
+      "runtimeImported": false
+    },
+    {
+      "id": "polyhaven-broken-brick-wall-reference",
+      "source": "https://polyhaven.com/a/broken_brick_wall",
+      "license": "CC0-1.0",
+      "role": "reference for localized brick damage; not loaded in runtime",
+      "runtimeImported": false
+    },
+    {
+      "id": "quaternius-city-kit-not-used",
+      "source": "https://github.com/Quaternius/Modular-Dungeons",
+      "license": "CC0-1.0",
+      "role": "city-kit visual style reviewed and rejected for close exterior hero pieces because low-poly styling conflicts with target quality",
+      "runtimeImported": false
+    },
+    {
+      "id": "kayquer-city-kit-not-used",
+      "source": "https://github.com/kayquer/kit-cidade-lowpoly",
+      "license": "CC0-1.0",
+      "role": "low-poly city pack reviewed and rejected for close hero pieces due to insufficient surface detail",
+      "runtimeImported": false
+    },
+    {
+      "id": "tevy-steel-warehouse-not-used",
+      "source": "https://github.com/tevy/steel-warehouse",
+      "license": "CC0-1.0",
+      "role": "modern metal warehouse reviewed and rejected because the novel calls for a graffiti-covered brick factory",
+      "runtimeImported": false
+    },
+    {
+      "id": "disney-red-pyramid-graphic-novel-reference",
+      "source": "https://books.disney.com/book/the-red-pyramid-the-graphic-novel/",
+      "license": "publisher bibliographic reference only; no panel image imported",
+      "role": "official graphic novel edition confirmed; no public verifiable exterior Brooklyn House panel found",
       "runtimeImported": false
     }
   ]

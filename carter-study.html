@@ -92,7 +92,7 @@ input[type=range]{width:100%;accent-color:var(--gold);grid-column:1/3}
   <p class="small">Ajuste de estudo para visualizar a bolsa vestida no lado do corpo, e não no centro das costas ou à frente da pelve.</p>
   <div class="range"><label for="bagX">Afastamento lateral</label><output id="bagXValue">0.25</output><input id="bagX" type="range" min="0.12" max="0.42" step="0.01" value="0.25"></div>
   <div class="range"><label for="bagY">Altura no quadril</label><output id="bagYValue">-0.14</output><input id="bagY" type="range" min="-0.30" max="-0.04" step="0.01" value="-0.14"></div>
-  <div class="range"><label for="bagZ">Projeção para fora</label><output id="bagZValue">0.12</output><input id="bagZ" type="range" min="-0.04" max="0.26" step="0.01" value="0.12"></div>
+  <div class="range"><label for="bagZ">Projeção para fora</label><output id="bagZValue">0.12</output><input id="bagZ" type="range" min="-0.26" max="0.26" step="0.01" value="0.12"></div>
   <div class="range"><label for="bagYaw">Ângulo da aba</label><output id="bagYawValue">0.55</output><input id="bagYaw" type="range" min="-1.2" max="1.2" step="0.05" value="0.55"></div>
   <button id="swapBagSide" class="subtle wide">Trocar para o outro quadril</button>
  </div>
@@ -373,12 +373,21 @@ function rebuildStrap() {
 }
 
 function updateBagMount() {
- if (!bagPivot || !hipsBone) return;
- bagPivot.position.set(
-  bagSide * bagOptions.x / modelScale,
-  bagOptions.y / modelScale,
-  bagOptions.z / modelScale
- );
+ if (!bagPivot) return;
+ if (hipsBone) {
+  bagPivot.position.set(
+   bagSide * bagOptions.x / modelScale,
+   bagOptions.y / modelScale,
+   bagOptions.z / modelScale
+  );
+ } else {
+  // Safe fallback: keep the satchel at hip height rather than at the model origin/feet.
+  bagPivot.position.set(
+   bagSide * bagOptions.x,
+   0.78 + bagOptions.y,
+   bagOptions.z
+  );
+ }
  bagPivot.rotation.set(0, bagOptions.yaw + (bagOptions.z < 0 ? Math.PI : 0), 0);
  bagPivot.visible = bagVisible;
  if (strapGroup) strapGroup.visible = bagVisible;
@@ -499,15 +508,16 @@ loader.load(
    avatar.traverse(object => { if (object.isBone) bones.push(object); });
    hipsBone = findBone(/(^|[:_])hips$|pelvis/i) || findBone(/hips/i);
    spineBone = findBone(/spine1|spine_01|spine$/i);
-   if (!hipsBone) {
-    hipsBone = avatar;
-    setStatus('Rig carregado; osso de quadril não identificado. A bolsa ficará em posição aproximada.', true);
+   const hasHipBone = !!hipsBone;
+   if (!hasHipBone) {
+    setStatus('Rig carregado; osso Hips não identificado. A bolsa usa um ponto de quadril aproximado até podermos ajustar o rig.', true);
    }
 
    bagPivot = createBag();
-   bagPivot.scale.setScalar(1 / modelScale);
+   bagPivot.scale.setScalar(hasHipBone ? 1 / modelScale : 1);
    bagPivot.visible = bagVisible;
-   hipsBone.add(bagPivot);
+   if (hasHipBone) hipsBone.add(bagPivot);
+   else actorRoot.add(bagPivot);
    updateBagMount();
    rebuildStrap();
 

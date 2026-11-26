@@ -1,6 +1,6 @@
 # Carter Kane — modelo, movimento e refinamento
 
-Status: **revisão da bolsa, remoção da mochila-base e ajuste de encaixe do colar implementados; inspeção visual real ainda pendente.**
+Status: **inventário Duat com oito objetos e ação de alcance integrados; revisão visual real e refinamento da pose de atravessar a membrana ainda pendentes.**
 
 ## Decisões confirmadas
 
@@ -23,7 +23,7 @@ Status: **revisão da bolsa, remoção da mochila-base e ajuste de encaixe do co
 
 `src/inventory.js` mantém o cajado e o khopesh e acrescenta shabti de cera, caixa de magia, papiro, cálamo, recipiente de tinta e amuleto de proteção. Os objetos começam guardados no Duat e são retirados por uma abertura visual presa ao socket da mão; o retorno usa a transição inversa. O catálogo usa IDs estáveis e separa armas, ferramentas, artefatos e recipiente, sem habilitar o comando de ataque para itens que não sejam armas.
 
-A primeira camada visual do portal e os modelos procedurais iniciais do kit estão implementados. A animação corporal específica de Carter atravessando a membrana, abertura da caixa, refinamento visual dos objetos e inspeção real no navegador permanecem pendentes. Consulte `docs/CHARACTER-INVENTORY-DUAT.md`.
+O portal está ancorado ao tórax (prioridade Spine2, depois Spine1/Chest/Spine) no ponto de contato previsto pelo clipe Ara `use_press`; o socket dos itens continua preso à mão direita. O mesmo clipe é usado para retirar e guardar. O controlador bloqueia deslocamento, salto e joystick durante os 1,65 s da interação, tanto no desktop como no mobile. O clipe original termina com o indicador estendido, como um toque; a pose completa de palma/dedos atravessando uma membrana ainda poderá receber um refinamento próprio. A geometria procedural dos itens e a posição real do portal precisam de inspeção no navegador. Consulte `docs/CHARACTER-INVENTORY-DUAT.md`.
 
 ## Acessórios autorais integrados
 
@@ -43,6 +43,7 @@ O módulo Three.js é a implementação em runtime. O gerador Blender foi sincro
 
 src/character.js consulta ANIMATIONS do pacote Ara antes de pedir os clips. Além da locomoção e do salto, solicita somente os IDs encontrados no catálogo:
 
+- use_press — alcançar com a mão direita e tocar um ponto à frente do tórax; usado pelo portal do Duat.
 - look_around — observar o ambiente (loop).
 - talk_gestures — gesticular ao falar (loop).
 - wave — acenar.

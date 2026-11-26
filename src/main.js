@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js?v=brooklyn-exterior-spiralwalk-20261126a';
 import { buildExterior } from './exterior.js?v=brooklyn-east-river-surface-20261126c';
-import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
+import { buildInteriorDetails } from './interior-details.js?v=library-interactions-deterministic-20261126a';
 import { buildGrandSalon } from './grand-salon.js?v=grand-salon-circulation-20261126a';
 import { buildTrainingRoom } from './training-room.js?v=training-room-interactive-20261126b';
 import { createInventory } from './inventory.js?v=training-weapon-hook-20261126a';
@@ -96,7 +96,7 @@ const { zones, groundSurfaces, water } = world;
 const exterior = buildExterior({ THREE, scene, world, interactables, isTouchDevice });
 
 // Interior passes are shared by desktop and mobile.
-buildInteriorDetails({ THREE, scene });
+buildInteriorDetails({ THREE, scene, interactables });
 const grandSalon = buildGrandSalon({
   THREE, scene, animated, camera, isTouchDevice, colliders, interactables, groundSurfaces
 });

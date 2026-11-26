@@ -77,7 +77,7 @@ Não foi importado um pacote externo de modelos 3D para esta sala: as peças pri
 ### Basquete
 
 1. Aproxime-se da bola e pressione **E** (desktop) ou **INTERAGIR** (mobile) para pegá-la.
-2. Pressione o mesmo botão novamente para arremessar na direção atual da câmera.
+2. Pressione o mesmo botão novamente para arremessar na direção atual da câmera. Quando a mira estiver alinhada com uma das cestas solares, o protótipo aplica uma assistência de arco para tornar o acerto jogável.
 3. A bola recebe gravidade, quique e desaceleração simplificados.
 4. Ao atravessar a região de um aro solar, o placar registra uma cesta.
 
@@ -131,7 +131,7 @@ Essa sequência se inspira na cena do romance em que quatro pequenas estatuetas 
 ### Ainda não testado em navegador real
 - [ ] Validar o primeiro acesso pela galeria do Grande Salão e atravessar o portal sem teleporte.
 - [ ] Conferir se a câmera enquadra a quadra, as cestas de Rá e a abóbada de forma convincente.
-- [ ] Testar pegar/arremessar a bola, colisão com a cesta e pontuação.
+- [ ] Testar pegar/arremessar a bola, assistência de arco, passagem descendente pelo aro e pontuação.
 - [ ] Testar a prática de alvos, o cajado e a resposta visual ao acertar.
 - [ ] Testar os quatro shabtis com cajado e khopesh, inclusive transformação, distância, direção dos golpes e retorno à forma de estatueta.
 - [ ] Avaliar uma próxima etapa de IA: aproximação, defesa e ataques dos guerreiros (não implementados nesta versão).

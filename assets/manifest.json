@@ -179,7 +179,7 @@
     {
       "id": "training-room-interactive-second-floor",
       "path": "src/training-room.js",
-      "role": "second-floor training wing with a 15x28m marked basketball court, procedural hardwood color/bump maps, vaulted original fresco, deity busts, Ra falcon-headed solar-disc hoops, basketball physics and scoring, target-practice magic orbs, clay shabti challenge, interactive doors, colliders and shared desktop/mobile gameplay",
+      "role": "second-floor training wing with a 15x28m marked basketball court, procedural hardwood color/bump maps, vaulted original fresco, deity busts, Ra falcon-headed solar-disc hoops, basketball physics and scoring, target-practice magic orbs, four growing clay shabti warriors with swords and shields for the Whatever Works challenge, interactive doors, colliders and shared desktop/mobile gameplay",
       "license": "project-original-code; no third-party model imported"
     }
   ],

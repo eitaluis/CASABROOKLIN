@@ -412,7 +412,7 @@ export function buildTrainingRoom({
   const hoops = [];
   function addRaHoop(baselineZ, facing, name) {
     const group = new THREE.Group();
-    group.position.set(centerX, floorY + 2.45, baselineZ);
+    group.position.set(centerX, floorY + 1.95, baselineZ);
     group.rotation.y = facing;
     const plinth = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.42, 0.9), limestoneShade);
     plinth.position.set(0, -1.28, -0.08); group.add(plinth);
@@ -433,7 +433,7 @@ export function buildTrainingRoom({
       eyeLine.position.set(side * 0.25, 0.2, 0.43); group.add(eyeLine);
     }
     // Disco solar: el aro central se deja hueco para funcionar como cesta.
-    const rimY = 1.05;
+    const rimY = 1.1;
     const rim = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.075, 14, 64), bronze);
     rim.position.set(0, rimY, 0.82); rim.rotation.x = Math.PI / 2; group.add(rim);
     const sunRays = new THREE.Mesh(new THREE.TorusGeometry(0.76, 0.035, 8, 64), darkBronze);
@@ -457,7 +457,7 @@ export function buildTrainingRoom({
     }
     group.traverse(obj => { if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; } });
     scene.add(group);
-    const hoopPosition = new THREE.Vector3(centerX, floorY + 2.45 + rimY, baselineZ + (facing === 0 ? 0.82 : -0.82));
+    const hoopPosition = new THREE.Vector3(centerX, floorY + 1.95 + rimY, baselineZ + (facing === 0 ? 0.82 : -0.82));
     hoops.push({ position: hoopPosition, label: name });
     addInteractable({
       name, label: 'Cesta solar de Rá',
@@ -491,7 +491,7 @@ export function buildTrainingRoom({
   );
   scoreboard.name = 'placar da sala de treinamento';
   scoreboard.position.set(centerX, floorY + 3.5, room.minZ + 0.42);
-  scoreboard.rotation.y = Math.PI;
+  scoreboard.rotation.y = 0;
   scene.add(scoreboard);
   let baskets = 0, targetHits = 0;
   drawScoreboard(baskets, targetHits, false);

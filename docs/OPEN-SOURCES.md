@@ -121,3 +121,14 @@ Os mapas estão locais para que a sala não dependa de downloads de textura em t
 - Poly Haven Broken Brick Wall: https://polyhaven.com/a/broken_brick_wall — CC0. Referência para danos localizados, não carregada.
 - Kits de cidade low-poly e galpão contemporâneo em aço foram avaliados e rejeitados para as peças principais por incompatibilidade de linguagem visual e do edifício descrito no romance.
 - O estudo detalhado e as fichas estão em docs/BROOKLYN-HOUSE-EXTERIOR.md. A geometria da ponte, skyline e barco é original; as páginas acima são referências, não assets runtime.
+
+
+## Sala de Treinamento
+
+**Geometria e interações originais — `src/training-room.js`.**
+- Piso de madeira com mapas canvas de cor e bump, marcações de quadra, abóbada/afresco, nervuras, arandelas, bustos, efígies de Rá, cesta, placar, bola, alvos mágicos, guerreiro shabti e portal articulado.
+- Código e modelos sob medida do projeto; não foi importado pacote de modelos de terceiros.
+- A textura [ambientCG Wood Floor 001](https://ambientcg.com/view?id=WoodFloor001) foi avaliada como candidata de referência (CC0), mas não foi baixada/integrada ao runtime desta versão. O material atual é procedural.
+- Referência narrativa detalhada da sala: [Brooklyn House — Riordan Wiki](https://riordan.fandom.com/wiki/Brooklyn_House) (fonte secundária). A existência e o propósito de formação da Casa são corroborados pela página oficial Disney do [Brooklyn House Magician's Manual](https://books.disney.com/book/brooklyn-house-magicians-manual/).
+- A quadra de 15 × 28 m e a faixa de circulação seguem o Art. 2 das [Official Basketball Rules 2026](https://www.nz.basketball/wp-content/uploads/2026/07/documents-corporate-fiba-official-rules-2026-v1-1.pdf); são parâmetros modernos adotados para escala, não uma medida canônica do romance.
+- A descrição da cesta a 3,05 m é uma referência técnica de basquete; conferir o padrão de equipamento vigente na documentação FIBA antes de qualquer futura alegação de conformidade oficial. A cena é uma reconstrução ficcional e não uma instalação certificada.

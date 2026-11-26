@@ -25,7 +25,8 @@ CASABROOKLIN/
 - `src/main.js`: inicialização Three.js, materiais-base, iluminação, HUD, minimapa, pós-processamento adaptativo e loop de renderização.
 - `src/world.js`: geometria da doca, armazém, fachada, escada em caracol, Grande Salão, biblioteca e ala dos quartos.
 - `src/interior-details.js`: decoração procedural compartilhada dos interiores, incluindo lustre, arandelas, estandartes, cúpula de Nut, piso de Geb, nichos de papiros e shabtis.
-- `src/grand-salon.js`: passe escultórico do Grande Salão — texturas locais, colunas de lótus, escadarias laterais, balaustradas torneadas, relevos, sofás, tapete, mesa, estátua de Thoth e fogo animado.
+- `src/grand-salon.js`: passe asset-first do Grande Salão — GLB Poly Haven Sofa 03, texturas PBR locais, colunas de lótus, escadarias laterais, balaustradas, tapete serpentino, mesa, estátua de Thoth e fogo volumétrico; expõe colliders, superfícies caminháveis e objetos inspecionáveis.
+- `src/vendor/volumetric-fire.js`: shader volumétrico Housz MIT adaptado a GLSL3/WebGL2; licença preservada em licenses/THREE-VOLUMETRIC-FIRE-MIT.txt.
 - `src/character.js`: personagem humano rigado gerado pelo Ara 3D Gen, bolsa transversal local no quadril direito, socket WeaponR e ponte para clips de locomoção.
 - `src/inventory.js`: inventário inicial, cajado, khopesh, encaixe WeaponR e ações de uso.
 - `src/third-person.js`: WASD, corrida com lean frontal, salto, rotação por mouse/toque, câmera com proteção do piso, teleporte e colisão leve por volumes AABB.

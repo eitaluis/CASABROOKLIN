@@ -705,7 +705,9 @@ export function buildTrainingRoom({
     scene.add(group);
     const state = {
       group, index, health: 2, spawnScale: 0.24, hitAt: 0,
-      defeatTime: 0, active: false, defeated: false, collider: null
+      defeatTime: 0, active: false, defeated: false, collider: null,
+      aiState: 'idle', windup: 0, strike: 0, strikeResolved: false,
+      attackCooldown: 0, moveSpeed: 1.55
     };
     addInteractable({
       name: 'Guerreiro shabti ' + (index + 1),
@@ -722,6 +724,8 @@ export function buildTrainingRoom({
     return state;
   });
   let shabtiActive = false, shabtiRemaining = 0;
+  const maxPlayerHealth = 5;
+  let playerHealth = maxPlayerHealth, playerInvulnerability = 0;
 
   function addShabtiCollider(state) {
     const p = state.group.position;
@@ -746,6 +750,10 @@ export function buildTrainingRoom({
       removeShabtiCollider(state);
       state.health = 2;
       state.spawnScale = 0.24;
+      state.aiState = 'approach';
+      state.windup = 0; state.strike = 0; state.strikeResolved = false;
+      state.attackCooldown = 0.35 + state.index * 0.22;
+      state.moveSpeed = 1.45 + (state.index % 2) * 0.18;
       state.hitAt = 0;
       state.defeatTime = 0;
       state.active = true;
@@ -796,6 +804,8 @@ export function buildTrainingRoom({
     if (!shabtiActive || !state?.active) return null;
     state.health -= 1;
     state.hitAt = 0.42;
+    state.aiState = 'stunned';
+    state.attackCooldown = 0.45;
     if (state.health <= 0) {
       state.active = false;
       state.defeated = true;
@@ -886,6 +896,7 @@ export function buildTrainingRoom({
     let message = null;
     latestPlayerPosition.copy(playerPosition);
     latestForward.copy(forward).setY(0).normalize();
+    playerInvulnerability = Math.max(0, playerInvulnerability - dt);
     if (ballHeld) {
       const dir = forward.clone().setY(0).normalize();
       ball.position.copy(playerPosition).add(new THREE.Vector3(0, 1.35, 0)).addScaledVector(dir, 0.9);
@@ -959,20 +970,108 @@ export function buildTrainingRoom({
             });
           }
         }
+
+        const enemyPosition = state.group.position;
+        const dx = playerPosition.x - enemyPosition.x;
+        const dz = playerPosition.z - enemyPosition.z;
+        const distance = Math.hypot(dx, dz);
+        const faceYaw = Math.atan2(dx, dz);
+        state.group.rotation.y = faceYaw;
+
         if (state.hitAt > 0) {
           state.hitAt = Math.max(0, state.hitAt - dt);
-          state.group.rotation.z = Math.sin(time * 38 + state.index) * state.hitAt * 0.55;
+          state.group.rotation.z = Math.sin(time * 38 + state.index) * state.hitAt * 0.7;
+          if (state.hitAt <= 0) {
+            state.group.rotation.z = 0;
+            state.aiState = 'approach';
+            state.attackCooldown = Math.max(state.attackCooldown, 0.3);
+          }
         } else {
-          const dx = playerPosition.x - state.group.position.x;
-          const dz = playerPosition.z - state.group.position.z;
-          state.group.rotation.y = Math.atan2(dx, dz);
-          state.group.rotation.z = Math.sin(time * 2.2 + state.index) * 0.035;
-          state.group.position.y = floorY + Math.sin(time * 3.2 + state.index) * 0.035;
+          if (state.aiState === 'approach') {
+            if (distance > 2.15) {
+              const step = Math.min(distance - 1.85, state.moveSpeed * dt);
+              if (distance > 0.001) {
+                const nextX = enemyPosition.x + (dx / distance) * step;
+                const nextZ = enemyPosition.z + (dz / distance) * step;
+                let blocked = false;
+                for (const other of shabtiWarriors) {
+                  if (other === state || !other.active) continue;
+                  if (Math.hypot(nextX - other.group.position.x, nextZ - other.group.position.z) < 1.15) {
+                    blocked = true; break;
+                  }
+                }
+                if (!blocked) {
+                  enemyPosition.x = THREE.MathUtils.clamp(nextX, room.minX + 1.1, room.maxX - 1.1);
+                  enemyPosition.z = THREE.MathUtils.clamp(nextZ, room.minZ + 1.1, room.maxZ - 1.1);
+                }
+              }
+            } else if (state.attackCooldown <= 0) {
+              state.aiState = 'windup';
+              state.windup = 0.62;
+              state.strikeResolved = false;
+            } else {
+              state.attackCooldown = Math.max(0, state.attackCooldown - dt);
+            }
+          } else if (state.aiState === 'windup') {
+            state.windup = Math.max(0, state.windup - dt);
+            state.group.rotation.z = -0.24 + Math.sin(time * 20) * 0.035;
+            if (state.windup <= 0) {
+              state.aiState = 'strike';
+              state.strike = 0.34;
+              state.strikeResolved = false;
+            }
+          } else if (state.aiState === 'strike') {
+            state.strike = Math.max(0, state.strike - dt);
+            state.group.rotation.z = 0.38 * Math.sin((1 - state.strike / 0.34) * Math.PI);
+            if (!state.strikeResolved && state.strike < 0.22) {
+              state.strikeResolved = true;
+              if (distance < 2.75 && playerInvulnerability <= 0) {
+                playerHealth = Math.max(0, playerHealth - 1);
+                playerInvulnerability = 1.35;
+                message = 'O guerreiro shabti acertou Carter. Vitalidade: '
+                  + playerHealth + '/' + maxPlayerHealth + '.';
+                if (playerHealth <= 0) {
+                  shabtiActive = false;
+                  shabtiRemaining = 0;
+                  for (const warrior of shabtiWarriors) {
+                    if (warrior.active) {
+                      warrior.active = false;
+                      warrior.defeated = true;
+                      warrior.defeatTime = 2.4;
+                      removeShabtiCollider(warrior);
+                    }
+                  }
+                  playerHealth = maxPlayerHealth;
+                  message = 'A prova foi interrompida. Os shabtis recolheram-se; aproxime-se do quadro para tentar novamente.';
+                }
+              }
+            }
+            if (state.strike <= 0) {
+              state.aiState = 'recover';
+              state.attackCooldown = 1.05;
+              state.group.rotation.z = 0;
+            }
+          } else if (state.aiState === 'recover') {
+            state.attackCooldown = Math.max(0, state.attackCooldown - dt);
+            if (state.attackCooldown <= 0) state.aiState = 'approach';
+          } else {
+            state.aiState = 'approach';
+          }
+          state.group.rotation.z += Math.sin(time * 2.2 + state.index) * 0.012;
+          state.group.position.y = floorY + Math.sin(time * 3.2 + state.index) * 0.025;
+        }
+
+        if (state.collider) {
+          state.collider.minX = enemyPosition.x - 0.54;
+          state.collider.maxX = enemyPosition.x + 0.54;
+          state.collider.minZ = enemyPosition.z - 0.48;
+          state.collider.maxZ = enemyPosition.z + 0.48;
         }
       } else {
         state.group.rotation.z *= 0.86;
         state.group.position.y = floorY;
       }
+
       if (state.defeatTime > 0) {
         state.defeatTime = Math.max(0, state.defeatTime - dt);
         if (state.defeatTime === 0) {
@@ -1024,6 +1123,18 @@ export function buildTrainingRoom({
     walkablePlatforms,
     zonePortals,
     onWeaponUse,
-    update
+    update,
+    getStatus() {
+      return {
+        challengeActive: shabtiActive,
+        targetPracticeActive,
+        playerHealth,
+        maxPlayerHealth,
+        shabtiRemaining,
+        totalShabti: shabtiWarriors.length,
+        baskets,
+        targetHits
+      };
+    }
   };
 }

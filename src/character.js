@@ -12,7 +12,13 @@ const CORE_ANIMATIONS = [
   'run',
   'jump_start',
   'jump_air',
-  'jump_land'
+  'jump_land',
+  'walk_slouch',
+  'crouch',
+  'hit_front',
+  'hit_back',
+  'hit_left',
+  'hit_right'
 ];
 
 // A lista pública do Ara é consultada antes do carregamento:
@@ -28,6 +34,9 @@ const CINEMATIC_ANIMATIONS = [
 
 const ARA_ANIMATION_IDS = new Set(ANIMATIONS.map((animation) => animation.id));
 const AVAILABLE_CINEMATIC_ANIMATIONS = CINEMATIC_ANIMATIONS.filter((id) => ARA_ANIMATION_IDS.has(id));
+const REACTION_ANIMATIONS = ['hit_front', 'hit_back', 'hit_left', 'hit_right'];
+const AVAILABLE_ACTION_ANIMATIONS = [...AVAILABLE_CINEMATIC_ANIMATIONS, ...REACTION_ANIMATIONS]
+  .filter((id) => ARA_ANIMATION_IDS.has(id));
 
 export async function createCharacter({
   scene,
@@ -42,7 +51,8 @@ export async function createCharacter({
     // The saved Ara share originally included a backpack. Remove that built-in
     // carried prop; Carter now uses only the custom side satchel below.
     carry: 'none',
-    animations: [...CORE_ANIMATIONS, ...AVAILABLE_CINEMATIC_ANIMATIONS],
+    rootMotion: false,
+    animations: [...new Set([...CORE_ANIMATIONS, ...AVAILABLE_CINEMATIC_ANIMATIONS])],
     detail: 'medium',
     onProgress: (label, fraction) => {
       if (!loading || loading.classList.contains('done')) return;
@@ -54,7 +64,12 @@ export async function createCharacter({
   });
 
   const mixer = new THREE.AnimationMixer(hero.scene);
-  let locomotion = hero.locomotion(mixer);
+  let injured = false;
+  let actionInterruptOnMovement = true;
+  const locomotionOptions = () => injured
+    ? { idle: 'crouch', walk: 'walk_slouch', run: 'walk_slouch', smoothing: 0.12 }
+    : { smoothing: 0.12 };
+  let locomotion = hero.locomotion(mixer, locomotionOptions());
   let jumping = false;
   let movementSpeed = 0;
   let disposed = false;
@@ -130,7 +145,7 @@ export async function createCharacter({
 
   function restoreLocomotion() {
     if (disposed || jumping) return;
-    locomotion = hero.locomotion(mixer);
+    locomotion = hero.locomotion(mixer, locomotionOptions());
     locomotion.speed = movementSpeed;
     if (state) state.locomotion = locomotion;
   }
@@ -140,6 +155,7 @@ export async function createCharacter({
     actionSequence?.stop();
     actionSequence = null;
     currentAction = null;
+    actionInterruptOnMovement = true;
     onActionChange(null);
   }
 
@@ -150,13 +166,14 @@ export async function createCharacter({
   }
 
   function playAction(id, options = {}) {
-    if (disposed || jumping || !AVAILABLE_CINEMATIC_ANIMATIONS.includes(id)) return false;
+    if (disposed || jumping || !AVAILABLE_ACTION_ANIMATIONS.includes(id)) return false;
     const clip = hero.clip(id);
     if (!clip) return false;
 
     cancelAction();
     locomotion.stop();
     currentAction = id;
+    actionInterruptOnMovement = options.interruptOnMovement !== false;
     actionSequence = hero.playSequence(mixer, id, {
       repeat: options.loop === true,
       fade: Number.isFinite(options.fade) ? options.fade : 0.38
@@ -273,10 +290,10 @@ export async function createCharacter({
   }
 
   function jump() {
-    if (disposed || jumping) return;
+    if (disposed || jumping) return false;
     if (!hero.clip('jump_start') || !hero.clip('jump_air') || !hero.clip('jump_land')) {
       console.warn('O conjunto de animações de salto não está completo.');
-      return;
+      return false;
     }
 
     cancelAction();
@@ -292,11 +309,12 @@ export async function createCharacter({
       jumpSequence?.stop();
       jumpSequence = null;
       jumping = false;
-      locomotion = hero.locomotion(mixer);
+      locomotion = hero.locomotion(mixer, locomotionOptions());
       locomotion.speed = movementSpeed;
       state.locomotion = locomotion;
     };
     mixer.addEventListener('finished', finishJump);
+    return true;
   }
 
   state = {
@@ -308,6 +326,18 @@ export async function createCharacter({
     jump,
     playAction,
     stopAction,
+    playReaction(direction = 'front') {
+      const id = REACTION_ANIMATIONS.includes('hit_' + direction) ? 'hit_' + direction : 'hit_front';
+      return playAction(id, { fade: 0.08, interruptOnMovement: false });
+    },
+    setInjured(value) {
+      const next = Boolean(value);
+      if (next === injured) return;
+      injured = next;
+      if (!jumping && !actionSequence) restoreLocomotion();
+    },
+    get isInjured() { return injured; },
+    get movementMultiplier() { return injured ? 0.76 : 1; },
     setCastingHandPose,
     setCastingBodyPose,
     getHandWorldPosition(side = 'Right', target = new THREE.Vector3()) {
@@ -349,7 +379,7 @@ export async function createCharacter({
       if (disposed) return;
       movementSpeed = speed;
       // Release one-shot/gesture poses as soon as navigation resumes to avoid foot sliding.
-      if (actionSequence && speed > 0.25) {
+      if (actionSequence && speed > 0.25 && actionInterruptOnMovement) {
         cancelAction();
         restoreLocomotion();
       }

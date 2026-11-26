@@ -131,6 +131,14 @@ O Ara 3D Gen disponibiliza clipes de pegar objeto no chão, deixar objeto no ch�
 
 Não fixar a magia a um botão ou a um tipo de dispositivo. Desktop e mobile chamam as mesmas ações lógicas; teclado, clique e controles táteis são apenas entradas diferentes.
 
+## 8.1 Cajado — pivô de empunhadura (primeira calibração)
+
+- O cajado continua sendo geometria original do projeto: haste reta de madeira escura, 2,00 m, sem adornos adicionados.
+- A malha agora tem um pivô de pega separado da base. O ponto inicial de contato foi configurado a 0,72 m da base: a mão fica nesse ponto, com 0,72 m de haste abaixo e 1,28 m acima.
+- O objeto continua anexado ao socket da mão direita; por isso acompanha o osso durante os clipes de locomoção existentes. O ajuste do pivô não substitui a validação da orientação real da palma e dos dedos.
+- O preview independente ganhou um controle deslizante para calibrar a altura do ponto de pega em tempo real, entre 0,35 m e 1,20 m. O valor volta a 0,72 m ao recarregar; a calibração final deverá ser registrada no código após inspeção visual.
+- **Ainda pendente:** fechar visualmente os dedos ao redor da haste, confirmar a rotação do cajado na mão, criar/selecionar poses de sustentação para idle/walk/run e validar a transição sem flicker. Não declarar empunhadura aprovada antes do teste do rig no navegador.
+
 ## 9. Critérios de QA
 
 - [ ] Cada um dos doze objetos tem escala, orientação, origem e ponto de pega revisados no rig real.

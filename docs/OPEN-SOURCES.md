@@ -140,6 +140,17 @@ Os mapas estão locais para que a sala não dependa de downloads de textura em t
 - Sir John Soane's Museum — [Ushabti figure A47](https://collections.soane.org/object-a47). A ficha documenta faiança com esmalte azul vivo, detalhes em relevo e pequena escala; referência de material/silhueta para as miniaturas shabti. O modelo do jogo é original e mais complexo porque se transforma em guerreiro.
 - The Met — [Head of an anthropomorphic falcon god](https://www.metmuseum.org/art/collection/search/549699). Referência para a leitura do falcão antropomórfico, peruca estriada e possível disco solar.
 
+### Referências históricas de escultura (somente pesquisa visual)
+
+- The Metropolitan Museum of Art — [Statuette of Re-Harakhty](https://www.metmuseum.org/art/collection/search/551042): referência iconográfica para a figura de cabeça de falcão e disco solar.
+- The Metropolitan Museum of Art — [Head of an anthropomorphic falcon god](https://www.metmuseum.org/art/collection/search/549699): referência para crânio, bico e nemes estriado.
+- Sir John Soane's Museum — [Ushabti figure A47](https://collections.soane.org/object-a47): referência de pequena escala e faiança azul vitrificada.
+- Smarthistory — [Meet an Ushabti](https://smarthistory.org/meet-an-ushabti/): referência para silhueta mumiiforme, braços cruzados, barba postiça e material de faiança.
+- Australian Museum — [Shabti](https://australian.museum/learn/cultures/museum-archives/egyptian-collection/shabti/): consulta complementar sobre atributos e iconografia de ushabtis.
+- Art Institute of Chicago — [About Shabtis and Ushabtis](https://www.artic.edu/articles/1012/about-shabtis-and-ushabtis): referência para variação de forma e atributos dos shabtis.
+
+Essas páginas foram usadas como referência de pesquisa. Nenhuma digitalização, fotografia ou malha 3D desses acervos foi importada para o runtime. A geometria de Rá, dos shabtis e dos relevos é original do projeto; não há licença de terceiros atribuída a esses modelos.
+
 ### Texturas PBR locais
 
 - [Poly Haven Walnut Veneer 02](https://polyhaven.com/a/walnut_veneer_02) — CC0-1.0. Os mapas locais de normal e roughness em `assets/textures/wood-walnut/` são usados no piso de madeira; a cor das tábuas e as juntas continuam num mapa procedural criado para a quadra.
@@ -149,14 +160,16 @@ Os mapas estão locais para que a sala não dependa de downloads de textura em t
 ### Assets e interações da sala
 
 - Piso: tábuas cor de mel, junta e veio procedural, roughness/normal PBR local, acabamento de verniz leve, moldura de nogueira e filetes de bronze.
-- Paredes: reboco mineral bege-creme com PBR local, fallback procedural de calcário, rodapés, cornijas, pilastras e frisos; não utilizar cinza liso como acabamento final.
+- Paredes: reboco mineral bege-creme com PBR local, paredes de fundo em calcário quente, fallback procedural de calcário, rodapés, cornijas e pilastras. As fachadas que atravessavam o cômodo são ocultadas; a parede leste com portal é reconstruída uma única vez. Os acabamentos foram afastados dos planos de alvenaria para reduzir z-fighting.
 - Arandelas: suporte de bronze, motivo de lótus, taça de óleo, pavio e chama emissiva com luz quente.
-- Efígies de Rá: figura humana sentada com cabeça de falcão, bico, olhos, nemes, colar, kilt, trono e estela arqueada. O disco solar fica num plano vertical voltado para a quadra; a cesta interna tem 45 cm de abertura e borda superior a 3,05 m. A pontuação verifica a passagem da bola pelo plano vertical, não uma queda sobre um aro horizontal.
+- Efígies de Rá: figuras sentadas reconstruídas em perfis escultóricos contínuos, com diorito escuro, pernas, kilt, braços, colar, cabeça de falcão, bico, olhos, nemes, uraeus e disco solar vertical. O aro interno tem 45 cm de abertura e borda superior a 3,05 m. A pontuação verifica a passagem da bola pelo plano vertical.
 - Bola: 24 cm de diâmetro, pega e arremessa por proximidade; o lançamento pode receber assistência para a cesta ou para a cabeça de um shabti ativo.
-- Shabtis: pequenas figuras mumiformes em faiança vitrificada, com nemes, hieróglifos, espada curva e escudo. Ao iniciar a aula, crescem dentro de uma coluna de luz e usam braços/pernas articulados na aproximação, preparação e golpe.
+- Shabtis: estatuetas mumiiformes de faiança azul-esverdeada, com rosto, barba postiça, nemes estriado, uraeus, braços cruzados, pilar dorsal e inscrição. Ao despertar, abrem os braços e revelam as pernas, a espada curva e o escudo; a IA fica limitada à área útil central para não atravessar os relevos nem os muros.
 - SA-PER: ao interagir com um shabti ativo, Carter pode fazê-lo errar e correr até a parede, reproduzindo a solução hieroglífica descrita na aula do romance.
 - Quadro Magic Problem-Solving 101 / Whatever Works: informa os comandos de início, combate, SA-PER e basquete. Avisos contextuais aparecem perto de objetos interativos e adaptam as instruções aos controles de toque.
+- Relevos laterais: placas arqueadas de alto-relevo, com cabeça e atributos iconográficos específicos; foram afastadas da espessura dos muros para evitar que apareçam embutidas na alvenaria.
 - Alvos de magia, placar e portas duplas permanecem como interações da reconstrução; o treino de precisão com projéteis mágicos é um complemento de gameplay, não uma mecânica apresentada como canônica.
+- A revisão removeu caixas arquitetônicas duplicadas e ajustou a área de navegação dos shabtis. A validação visual final ainda depende de navegador real.
 
 A documentação separa elementos narrativos confirmados, referências históricas de material/iconografia e interpretações de level design. A revisão no código não equivale a aprovação visual: é obrigatório conferir escala, iluminação, mapas UV, sombras, colisões e FPS em navegador real no desktop e em celular paisagem.
 

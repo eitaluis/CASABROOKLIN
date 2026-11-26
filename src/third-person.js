@@ -49,7 +49,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   document.addEventListener('mousemove', (event) => {
     if (!pointerLocked) return;
     cameraYaw -= event.movementX * 0.0027;
-    cameraPitch = THREE.MathUtils.clamp(cameraPitch - event.movementY * 0.0018, 0.04, 0.82);
+    cameraPitch = THREE.MathUtils.clamp(cameraPitch - event.movementY * 0.0018, 0.04, 1.52);
   });
 
   // Em telas sensíveis ao toque, arrastar sobre a cena orbita a câmera sem Pointer Lock.
@@ -63,7 +63,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     const dx = event.clientX - touchLook.x;
     const dy = event.clientY - touchLook.y;
     cameraYaw -= dx * 0.006;
-    cameraPitch = THREE.MathUtils.clamp(cameraPitch - dy * 0.004, 0.04, 0.82);
+    cameraPitch = THREE.MathUtils.clamp(cameraPitch - dy * 0.004, 0.04, 1.52);
     touchLook.x = event.clientX;
     touchLook.y = event.clientY;
   });
@@ -180,8 +180,8 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
 
   function update(dt) {
     const input = inputDirection();
-    // Ara Carter está orientado para +Z: o avanço deve acompanhar a frente visível do modelo.
-    const forward = new THREE.Vector3(Math.sin(cameraYaw), 0, Math.cos(cameraYaw));
+    // A câmera fica atrás do Carter; o eixo frontal do personagem aponta para -Z.
+    const forward = new THREE.Vector3(-Math.sin(cameraYaw), 0, -Math.cos(cameraYaw));
     const right = new THREE.Vector3(Math.cos(cameraYaw), 0, -Math.sin(cameraYaw));
     const direction = forward.multiplyScalar(input.forward).add(right.multiplyScalar(input.strafe));
     if (direction.lengthSq() > 0.0001) direction.normalize();
@@ -213,7 +213,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       if (next.z >= bounds[2] && next.z <= bounds[3]) current.z = next.z;
       fallbackSpeed = smoothVelocity.length();
       if (direction.lengthSq() > 0.0001) {
-        const targetHeading = Math.atan2(direction.x, direction.z);
+        const targetHeading = Math.atan2(-direction.x, -direction.z);
         character.model.rotation.y = THREE.MathUtils.damp(character.model.rotation.y, targetHeading, 13.5, dt);
       }
       character.updateFallback(dt, fallbackSpeed);

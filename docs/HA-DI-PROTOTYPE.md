@@ -41,7 +41,7 @@ O clipe Point é uma base técnica disponível no Ara 3D Gen; não é apresentad
 - Sequência de sinais: 𓉔𓆓.
 - Cor: dourado.
 - Posição: suspenso diante da mão direita, no espaço 3D; nunca como ícone de HUD.
-- Escala: inscrição final aproximadamente 24% menor que a versão anterior, sem perder legibilidade.
+- Escala: inscrição final aproximadamente 20% menor que a versão anterior, sem perder legibilidade.
 - Brilho: halo radial mais forte, texto mais claro, três anéis concêntricos e luz pontual local pulsante.
 - Animação: materialização rápida, brilho aditivo, anéis em rotação e desaparecimento breve.
 - Efeito: pulso dourado percorre o espaço entre a mão e o alvo.

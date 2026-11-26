@@ -128,7 +128,27 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [ ] Fazer o portal mágico funcionar como passagem física.
 - [ ] Refinar terraço, piscina, refeições e fogueira.
 - [ ] Refinar quarto do Carter, banheiro, deck e pavimentos.
-- [ ] Construir enfermaria, treinamento e salas auxiliares como reconstruções interpretativas quando o texto não definir forma.
+- [ ] Construir enfermaria e salas auxiliares como reconstruções interpretativas quando o texto não definir forma.
+
+### Sala de Treinamento — implementada, QA pendente
+
+Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
+
+- [x] Criar módulo independente `src/training-room.js`, conectado ao mundo compartilhado.
+- [x] Criar quadra de madeira 15 × 28 m, marcações, afresco de abóbada, nervuras, frisos e iluminação.
+- [x] Criar efígies de Rá com discos solares vazados usados como cestas, aro a 3,05 m do piso.
+- [x] Criar bola interativa, arremesso simplificado, detecção de cesta e placar.
+- [x] Criar prática de mira com alvos e orbes mágicos acionados pelo cajado.
+- [x] Criar desafio “Whatever Works” com guerreiro shabti e interação por cajado/khopesh.
+- [x] Criar inspeção de bustos/afrescos e portas duplas que abrem/fecham.
+- [x] Conectar a sala à galeria do Grande Salão por passarela e transição física de zona.
+- [x] Adicionar acesso rápido pelo menu e tecla 5.
+- [x] Usar o mesmo mundo, personagem, inventário, colisões e interações em desktop/mobile.
+- [ ] Testar a travessia real da galeria ao portal e o retorno ao Grande Salão.
+- [ ] Conferir escala, composição, materiais, cestas, abóbada, iluminação e câmera em navegador.
+- [ ] Testar bola, cesta, placar, alvos, cajado, khopesh, shabti e portas.
+- [ ] Testar celular em paisagem e medir desempenho.
+- [ ] Ajustar o que for identificado na revisão visual antes de aprovar a sala.
 
 ## Setor 09 — exterior e chegada
 

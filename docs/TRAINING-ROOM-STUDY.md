@@ -2,13 +2,13 @@
 
 Data: 26/11/2026  
 Projeto: CASABROOKLIN  
-Status: **ambiente integrado com interações e combate básico; revisão visual e testes em navegador ainda pendentes**
+Status: **passe de refinamento asset-first integrado; aprovação visual e QA em navegador desktop/mobile ainda pendentes**
 
 ## 1. Evidência narrativa e grau de certeza
 
 A Brooklyn House é apresentada oficialmente pela Disney como local onde jovens magos aprendem a usar seus poderes. O material complementar *Brooklyn House Magician's Manual* é descrito pela editora como manual de treinamento, com quizzes, histórias e conteúdo sobre divindades, criaturas e o Duat: https://books.disney.com/book/brooklyn-house-magicians-manual/
 
-A descrição detalhada da sala de treinamento foi consultada em referência secundária do universo Kane Chronicles: https://riordan.fandom.com/wiki/Brooklyn_House. Ela descreve a sala no segundo andar, aproximadamente do tamanho de uma quadra de basquete, com piso de madeira, teto abobadado pintado com cenas do Egito Antigo e estátuas de divindades ao longo das paredes. Nas linhas de fundo, estátuas de Rá com cabeça de falcão e discos solares ocos funcionam como cestas.
+A descrição detalhada da sala de treinamento foi consultada em referência secundária do universo Kane Chronicles: https://riordan.fandom.com/wiki/Brooklyn_House. Ela descreve a sala no segundo andar, aproximadamente do tamanho de uma quadra de basquete, com piso de madeira, teto abobadado pintado com cenas do Egito Antigo e estátuas de divindades ao longo das paredes. Nas linhas de fundo, estátuas de Rá com cabeça de falcão e discos solares ocos funcionam como cestas. A sequência de aula em *The Throne of Fire* também mostra quatro pequenas estatuetas shabti que se transformam em guerreiros armados; o texto explora diferentes soluções para a prova: um hieróglifo que faz o guerreiro errar e bater na parede e uma bola de basquete arremessada contra a cabeça do shabti.
 
 A página oficial de *The Throne of Fire* também descreve a Brooklyn House como um campo de treinamento para jovens magos: https://books.disney.com/book/the-throne-of-fire/. A mesma referência secundária associa as aulas de Carter ao exercício *Magic Problem-Solving 101*, apelidado pelos alunos de “Whatever Works”, no qual os iniciados precisam enfrentar um guerreiro shabti de barro.
 
@@ -30,9 +30,11 @@ A Disney também lista oficialmente *The Throne of Fire: The Graphic Novel* como
 - A localização como ala a oeste do Grande Salão, o portal e a passarela de conexão são escolhas de level design para a planta 3D atual, não uma planta oficial publicada.
 - O programa exato dos afrescos, nervuras de bronze, frisos, arandelas e acabamento de pedra foi criado para completar a arquitetura sem afirmar que cada motivo é descrito no romance.
 - A seleção de bustos — Anúbis, Sekhmet, Hórus, Ísis e Bastet — é uma escolha artística, não uma lista confirmada de estátuas do livro.
-- O quadro de prática de alvos, os três alvos circulares e os projéteis mágicos são interações originais inspiradas no treinamento mágico; não são apresentados como mecanismos canônicos.
-- O guerreiro shabti é inspirado no exercício citado, enquanto seus quatro pontos de resistência, a animação de derrota e o sistema de combate são adaptações de gameplay.
-- As dimensões regulamentares da quadra são usadas como referência arquitetônica moderna, não como informação textual do universo.
+- A representação de Rá como figura humana sentada com cabeça de falcão, nemes e disco solar é uma reconstrução iconográfica; a forma da escultura, trono, estela arqueada e o aro esportivo adaptado são escolhas de modelagem.
+- O hieróglifo SA-PER (errar) e a solução da bola contra a cabeça do shabti são soluções narrativas do romance; os comandos, colisões, distâncias, tempos, vitalidade e efeitos de gameplay são adaptações interativas.
+- O quadro de treino de precisão, os três alvos circulares e os projéteis mágicos são complementos autorais, inspirados na formação dos iniciados.
+- A aparência em faiança azul-esverdeada dos shabtis usa referência histórica de ushabtis vitrificados; a escala inicial de cerca de 19 cm e o corpo articulado em runtime são decisões de reconstrução.
+- As dimensões regulamentares da quadra e da cesta são referências arquitetônicas modernas, não medidas publicadas como canônicas no romance.
 
 ## 2. Escala e implantação
 
@@ -55,31 +57,31 @@ O módulo `src/training-room.js` cria a sala como um passe independente do mundo
 
 | Asset | Construção / função | Estado |
 |---|---|---|
-| Piso de madeira | Tábuas com variação de cor, juntas, veios e bump procedural | Implementado |
+| Piso de madeira | Tábuas esportivas de carvalho/nogueira em tom mel, mapa de cor procedural, micro-relevo PBR local, roughness, verniz leve e moldura perimetral | Refinado no código; QA visual pendente |
 | Marcações da quadra | Linhas perimetrais, centrais, círculo e garrafões | Implementado |
 | Abóbada | Malha curva segmentada, afresco panorâmico original e nervuras de bronze | Implementado |
-| Frisos e pilastras | Calcário, bronze e detalhes egípcios | Implementado |
-| Arandelas | Suportes, chamas emissivas e luz pontual quente | Implementado |
-| Bustos de divindades | Conjuntos esculpidos para inspeção por proximidade | Implementado |
-| Efígies de Rá | Cabeça de falcão, disco solar vazado e rede de cesta | Implementado |
-| Bola de basquete | Malha esférica texturizada, costuras, gravidade e quique simplificados | Implementado |
+| Paredes e frisos | Reboco mineral bege-creme com mapas locais PBR CC0, alvenaria de calcário procedural como fallback, rodapés, cornijas, pilastras e filetes de bronze | Refinado no código; QA visual pendente |
+| Arandelas | Suporte de bronze, aplique de lótus, taça de óleo, pavio, chama animada e luz quente | Refinado no código |
+| Relevos de divindades | Figuras de corpo inteiro em nichos rasos, com atributos animais, pigmentos e molduras de bronze; seleção artística não canônica | Refinado no código |
+| Efígies de Rá | Figura humana sentada, cabeça de falcão com bico e olhos, nemes listrado, colar, kilt, trono e estela arqueada; disco solar vazado com rede adaptado como cesta | Reconstruído no código; QA visual pendente |
+| Bola de basquete | Esfera de couro com 24 cm de diâmetro, canais, gravidade, quique, assistência de mira para cestas e shabtis | Redimensionada e integrada |
 | Placar | Textura de canvas atualizada por pontuação | Implementado |
-| Guerreiro shabti | Figura de barro com equipamento cerimonial e estado de combate | Implementado |
+| Quatro shabtis | Miniaturas mumiformes em faiança vitrificada, nemes, inscrição, espada curva e escudo oval; crescimento animado, membros articulados, perseguição, golpes, SA-PER e reação à bola | Reconstruídos no código; QA de combate pendente |
 | Alvos mágicos | Três alvos com resposta visual ao acerto | Implementado |
 | Quadros de instrução | Quadro da prática de alvos e quadro “Whatever Works” | Implementado |
 | Portas duplas | Folhas articuladas que abrem e fecham por interação | Implementado |
 | Passarela e portal | Conexão física com a galeria, colisões e troca de zona | Implementado |
 
-Não foi importado um pacote externo de modelos 3D para esta sala: as peças principais são geometria e materiais originais em Three.js. Isso evita misturar um pack low-poly com a direção cinematográfica híbrida já estabelecida. A textura Wood Floor 001 do ambientCG foi avaliada como candidata PBR CC0, mas **não** está integrada; o piso desta versão usa mapas procedurais próprios. Página da referência avaliada: https://ambientcg.com/view?id=WoodFloor001
+As peças tridimensionais principais continuam como geometria original sob medida em Three.js, evitando um pack low-poly incompatível com a direção cinematográfica híbrida. Nesta revisão, as tábuas mantêm mapa de cor e juntas próprios, mas recebem mapas PBR locais CC0 de normal/roughness da coleção Poly Haven Walnut Veneer 02 (`assets/textures/wood-walnut`). As paredes usam os mapas locais de cor/normal/roughness de Poly Haven Beige Wall 001 (`assets/textures/plaster-smooth-beige`), com uma textura procedural de alvenaria de calcário como fallback. A referência Wood Floor 001 do ambientCG continua apenas como referência de aparência, não como textura runtime: https://ambientcg.com/view?id=WoodFloor001.
 
 ## 4. Interações e controles
 
 ### Basquete
 
-1. Aproxime-se da bola e pressione **E** (desktop) ou **INTERAGIR** (mobile) para pegá-la.
-2. Pressione o mesmo botão novamente para arremessar na direção atual da câmera. Quando a mira estiver alinhada com uma das cestas solares, o protótipo aplica uma assistência de arco para tornar o acerto jogável.
-3. A bola recebe gravidade, quique e desaceleração simplificados.
-4. Ao atravessar a região de um aro solar, o placar registra uma cesta.
+1. Aproxime-se da bola. O aviso contextual aparece na tela; pressione **E** (desktop) ou **INTERAGIR** (mobile) para pegá-la.
+2. Pressione **E / INTERAGIR** novamente para arremessar na direção da câmera. Mire no disco solar de Rá para receber assistência de arco.
+3. A bola tem 24 cm de diâmetro, gravidade, quique e desaceleração simplificados.
+4. Ao atravessar a abertura da cesta, o placar registra uma cesta. Durante *Whatever Works*, também é possível mirar na cabeça de um shabti desperto e derrubá-lo, como na solução de basquete descrita no romance.
 
 ### Prática de mira mágica
 
@@ -92,19 +94,20 @@ Esta atividade é um complemento autoral de gameplay, não uma mecânica descrit
 
 ### “Whatever Works” — guerreiro shabti
 
-1. Aproxime-se do quadro *Magic Problem-Solving 101* e pressione **E / INTERAGIR**.
-2. O guerreiro shabti desperta.
-3. Equipe o cajado ou o khopesh e use **F / USAR** quando estiver perto e voltado para ele.
-4. Quatro estatuetas mumiformes ficam em pontos diferentes da quadra. Ao iniciar a aula, cada uma cresce até o tamanho de um guerreiro de barro, revelando espada e escudo.
-5. Equipe o cajado ou o khopesh e use **F / USAR** perto de cada guerreiro, voltado para ele. Cada guerreiro requer dois golpes; derrote os quatro para concluir a prova.
-6. Após ser derrotado, o guerreiro encolhe novamente para a forma de estatueta. O quadro pode reiniciar a aula.
+1. Aproxime-se do quadro *Magic Problem-Solving 101* — o próprio quadro agora lista os comandos — e pressione **E / INTERAGIR** (ou o botão móvel **INTERAGIR**).
+2. As quatro miniaturas de faiança em torno da quadra entram numa coluna de luz e crescem até a escala de guerreiros, revelando nemes, espada curva e escudo. A transformação usa easing, brilho e animação articulada.
+3. Para combater, aproxime-se de um shabti e equipe o cajado ou o khopesh no inventário (**I / MOCHILA**). Pressione **F / USAR** (ou **USAR** no mobile) quando estiver perto e voltado para ele. Cada guerreiro exige dois golpes.
+4. Para usar a solução SA-PER, aproxime-se de um shabti ativo e pressione **E / INTERAGIR**. A figura cambaleia, corre na direção da parede e se desfaz ao bater nela.
+5. Para usar a solução da bola, pegue-a com **E / INTERAGIR**, aponte a câmera para a cabeça de um shabti ativo e pressione novamente. O arremesso recebe assistência de mira e pode derrubar o guerreiro.
+6. Quando derrotado, o shabti encolhe e retorna ao ponto original. O quadro reinicia a prova.
 
-Essa sequência se inspira na cena do romance em que quatro pequenas estatuetas shabti crescem e se transformam em guerreiros armados com espadas e escudos. A contagem de golpes e as regras de combate são adaptações de gameplay. A IA básica agora faz os guerreiros aproximarem-se de Carter, anunciarem o golpe com uma preparação corporal, avançarem para atacar e entrarem em recuperação antes de tentar novamente. O jogador tem cinco pontos de vitalidade e um breve intervalo de invulnerabilidade após cada acerto. Ao esgotar a vitalidade, a prova é interrompida, os shabtis recolhem-se e o quadro permite reiniciar. São regras de jogo autorais, não detalhes descritos no romance; comportamento, colisões e equilíbrio ainda precisam de validação em navegador.
+O crescimento das miniaturas, os guerreiros com espada/escudo, SA-PER e a solução da bola são inspirados diretamente na aula de *The Throne of Fire*. As velocidades, pontos de vida, distância de acerto, invulnerabilidade e as respostas de colisão são regras de jogo autorais. Os guerreiros se aproximam, preparam o golpe, atacam e recuperam a postura; Carter tem cinco pontos de vitalidade. Um aviso contextual junto ao objeto mostra qual botão usar, com texto adaptado ao mobile. A validação visual, das colisões e do equilíbrio ainda precisa ser feita num navegador real.
 
 ### Portas e inspeção
 
+- O aviso contextual aparece quando Carter chega perto de um objeto interativo. No desktop mostra **E / INTERAGIR** e **F / USAR**; em mobile mostra os rótulos dos botões de toque.
 - A porta dupla do portal abre e fecha por **E / INTERAGIR**.
-- As efígies e os afrescos podem ser examinados por proximidade.
+- As efígies, relevos, afrescos e objetos podem ser examinados por proximidade.
 - A lista de áreas inclui a Sala de Treinamento como acesso rápido e o atalho **5** também a seleciona.
 
 ## 5. Integração técnica e paridade
@@ -123,7 +126,11 @@ Essa sequência se inspira na cena do romance em que quatro pequenas estatuetas 
 - [x] Portal físico e transição entre Grande Salão e treinamento.
 - [x] Interação da bola, cesta e placar.
 - [x] Prática de alvos com projéteis mágicos.
-- [x] Desafio do shabti.
+- [x] Quatro miniaturas shabti com transformação animada e retorno à forma pequena.
+- [x] Braços/pernas articulados durante aproximação, preparação e golpe.
+- [x] Solução SA-PER com corrida e colisão contra a parede.
+- [x] Arremesso de basquete capaz de acertar a cabeça do shabti.
+- [x] Avisos contextuais de interação desktop/mobile.
 - [x] Portas interativas.
 - [x] Controles compartilhados desktop/mobile.
 - [x] Medidas da quadra atualizadas para 15 × 28 m.
@@ -133,14 +140,15 @@ Essa sequência se inspira na cena do romance em que quatro pequenas estatuetas 
 - [ ] Conferir se a câmera enquadra a quadra, as cestas de Rá e a abóbada de forma convincente.
 - [ ] Testar pegar/arremessar a bola, assistência de arco, passagem descendente pelo aro e pontuação.
 - [ ] Testar a prática de alvos, o cajado e a resposta visual ao acertar.
-- [ ] Testar os quatro shabtis com cajado e khopesh, inclusive transformação, distância, direção dos golpes e retorno à forma de estatueta.
+- [ ] Testar os quatro shabtis com cajado e khopesh, inclusive coluna de luz, crescimento, animação dos membros, SA-PER, bola na cabeça e retorno à forma de estatueta.
 - [x] IA básica dos quatro shabtis: aproximação de Carter, preparação do golpe, ataque, recuperação e recuo em caso de derrota.
 - [x] Vitalidade do jogador com cinco pontos, invulnerabilidade temporária e encerramento/reinício da prova ao esgotar a energia.
 - [ ] Testar perseguição, distância de ataque, colisões móveis, golpes e telemetria da HUD em navegador real.
 - [ ] Testar abrir/fechar o portal e garantir que as colisões acompanhem o estado das portas.
 - [ ] Testar toque, joystick, inventário e interação em celular paisagem.
 - [ ] Medir FPS, memória e temperatura no mobile.
-- [ ] Revisar escala dos bustos, do guerreiro, da bola e das estátuas de Rá em relação ao Carter.
+- [ ] Revisar escala dos relevos, guerreiros, bola de 24 cm, disco solar, abertura da cesta e estátuas de Rá em relação ao Carter.
+- [ ] Comparar o calcário/reboco PBR e o piso de madeira em luz real de jogo; conferir repetição, escala UV, brilho e sombras.
 
 **Não marcar como concluído visualmente até a revisão real em navegador desktop e mobile.**
 

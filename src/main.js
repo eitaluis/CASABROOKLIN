@@ -154,7 +154,7 @@ trainingHud.id = 'trainingHud';
 trainingHud.hidden = true;
 trainingHud.setAttribute('aria-live', 'polite');
 trainingHud.style.cssText = [
-  'position:fixed','top:78px','left:50%','transform:translateX(-50%)',
+  'position:fixed','top:158px','left:50%','transform:translateX(-50%)',
   'z-index:9','display:flex','align-items:center','gap:16px',
   'padding:9px 14px','border:1px solid rgba(208,173,105,.52)',
   'background:rgba(8,15,17,.84)','backdrop-filter:blur(12px)',
@@ -172,7 +172,7 @@ document.body.appendChild(trainingHud);
 const trainingHudStyle = document.createElement('style');
 trainingHudStyle.textContent = [
   '#trainingHud[hidden]{display:none!important}',
-  '@media(max-width:900px) and (pointer:coarse){#trainingHud{top:52px!important;padding:6px 9px!important;gap:8px!important;font-size:8px!important;letter-spacing:.06em!important}#trainingHud strong{font-size:12px!important}}',
+  '@media(max-width:900px) and (pointer:coarse){#trainingHud{top:112px!important;padding:6px 9px!important;gap:8px!important;font-size:8px!important;letter-spacing:.06em!important}#trainingHud strong{font-size:12px!important}}',
   '@media(max-width:560px){#trainingHud{max-width:calc(100vw - 24px);white-space:normal!important;justify-content:center;flex-wrap:wrap}}'
 ].join('');
 document.head.appendChild(trainingHudStyle);

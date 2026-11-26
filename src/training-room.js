@@ -181,8 +181,8 @@ export function buildTrainingRoom({
   });
 
   // Linhas de quadra embutidas na madeira, com dimensões aproximadas de uma quadra real.
-  const courtHalfWidth = 7.62;
-  const courtHalfLength = 14.325;
+  const courtHalfWidth = 7.5; // Quadra regulamentar: 15 m de largura (FIBA 2026).
+  const courtHalfLength = 14.0; // Quadra regulamentar: 28 m de comprimento (FIBA 2026).
   const courtZ0 = centerZ;
   const courtX0 = centerX;
   function courtLine(points, name = 'marcação de quadra') {

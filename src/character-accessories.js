@@ -290,7 +290,7 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
     'CarterSatchelRearAttachmentRing'
   );
   attachmentRing.position.set(-0.018 * unit, bagHeight * 0.28, bagDepth * 0.12);
-  attachmentRing.rotation.y = Math.PI / 2;
+  // The bag pivot already turns the ring's local +Z normal toward the side.
 
   // The top half of the strap stays on the shoulder/chest; the bag itself follows the pelvis.
   const topRing = addMesh(

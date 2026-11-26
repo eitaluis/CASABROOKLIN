@@ -2148,9 +2148,10 @@ export function buildGrandSalon({
     if(o.name==='parede interna do salão' || o.name==='coluna de calcário') o.material=stone;
     if(o.name==='piso do Grande Salão') o.material=floorMaterial;
     if(o.name==='viga de cedro do teto') {
-      o.material=darkWood;
+      // Preserve the warm cedar material assigned by world.js; the former walnut
+      // override made these structural rafters read almost black.
       o.geometry.dispose();
-      o.geometry=new T.BoxGeometry(28,.68,.66);
+      o.geometry=new T.BoxGeometry(28,.5,.5);
       o.position.y=28.12;
     }
   });

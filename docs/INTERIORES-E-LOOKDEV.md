@@ -180,3 +180,18 @@ O Grande Salão tem três níveis de galerias circundantes com fileiras de porta
 ### Televisão — decisão asset-first
 
 Foram avaliadas as páginas oficiais [Poly Haven Television 01](https://polyhaven.com/a/Television_01) e [Television 02](https://polyhaven.com/a/television_02), ambas CC0. Os dois modelos são televisores CRT antigos. Como o livro especifica uma televisão de plasma sobre o manto, os dois foram rejeitados por incompatibilidade histórica/visual. Mantivemos uma geometria original de tela plana, com vidro físico refletivo e estado emissivo que alterna por interação.
+
+
+## Referência visual publicada — Grande Salão
+
+A graphic novel de *The Red Pyramid* é ilustrada por Orpheus Collar (Disney-Hyperion, 2012). Usar as pranchas como referência de composição, escala e linguagem de desenho; não extrair texturas/arte final diretamente para o jogo sem uma licença adequada. A versão do jogo deve reconstruir os volumes com malhas e materiais próprios. Referências institucionais: [Disney Books — The Red Pyramid: The Graphic Novel](https://books.disney.com/book/red-pyramid-the-graphic-novel/) e [portfólio de Orpheus Collar](https://orpheusartist.com/images/).
+
+## Materiais pétreos — revisão 26/11/2026
+
+- Paredes, pilares e molduras usam cor procedural em blocos de calcário, com normal/roughness CC0 do conjunto limestone local. O relevo deve permanecer discreto; a leitura vem de variação de roughness, pequenas imperfeições e sombras de contato, não de uma aparência de reboco pintado.
+- O piso continua com o conjunto PBR tile-limestone local. Separar o comportamento dos materiais: piso mais uniforme e ligeiramente acetinado; blocos/pilares mais foscos e de escala maior.
+- Referências de novos sets CC0 a avaliar antes de substituir os atuais: [ambientCG — Tiles 143](https://ambientcg.com/view?id=Tiles143), [ambientCG — Rock 051](https://ambientcg.com/view?id=Rock051) e [Poly Haven — Rock Wall 13](https://www.mixos.io/free-textures/stone/ph_rock_wall_13). Estes links são alternativas de pesquisa, não assets já importados para o repositório.
+
+## Varanda panorâmica — reconstrução interpretativa
+
+A descrição textual estabelece paredes envidraçadas e um terraço que contorna a casa, com piscina, jantar e fogueira. O acesso lateral de vidro e a abertura alinhada na fachada externa são decisões de level design para tornar essa área realmente caminhável. A disposição exata do terraço, sua planta e as salas atrás das portas das galerias não são fixadas pelo romance; mantê-las identificadas como interpretação.

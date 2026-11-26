@@ -513,7 +513,7 @@ export function buildTrainingRoom({
   const ballMaterial = new THREE.MeshStandardMaterial({ map: ballMap, roughness: 0.84, metalness: 0.01 });
   const ball = new THREE.Mesh(new THREE.SphereGeometry(0.23, 40, 32), ballMaterial);
   ball.name = 'bola de basquete interativa';
-  ball.position.set(centerX - 1.5, floorY + 0.24, centerZ - 2.2);
+  ball.position.set(centerX, floorY + 0.24, centerZ - 2.2);
   ball.castShadow = true; ball.receiveShadow = true; scene.add(ball);
   const seamMaterial = new THREE.MeshStandardMaterial({ color: 0x211812, roughness: 0.9 });
   const seamA = new THREE.Mesh(new THREE.TorusGeometry(0.231, 0.009, 6, 80), seamMaterial);
@@ -523,7 +523,7 @@ export function buildTrainingRoom({
   const seamC = new THREE.Mesh(new THREE.TorusGeometry(0.231, 0.009, 6, 80), seamMaterial);
   seamC.name = 'costura da bola'; seamC.rotation.z = Math.PI / 2; ball.add(seamC);
   const ballVelocity = new THREE.Vector3();
-  let ballHeld = false, lastBallZ = ball.position.z, ballAge = 0;
+  let ballHeld = false, ballAge = 0;
   const latestPlayerPosition = new THREE.Vector3(centerX, floorY, centerZ);
   const latestForward = new THREE.Vector3(0, 0, -1);
   addInteractable({
@@ -535,11 +535,11 @@ export function buildTrainingRoom({
         ballHeld = true; ballVelocity.set(0, 0, 0);
         return 'Bola recolhida. Pressione E/INTERAGIR novamente para arremessar na direção da câmera.';
       }
-      ballHeld = false; ballAge = 0; lastBallZ = ball.position.z;
+      ballHeld = false; ballAge = 0;
       ballVelocity.copy(latestForward).setY(0).normalize();
       if (ballVelocity.lengthSq() < 0.1) ballVelocity.set(0, 0, -1);
       ballVelocity.multiplyScalar(11.5);
-      ballVelocity.y = 6.1;
+      ballVelocity.y = 6.25;
       return 'Arremesso! Tente acertar o disco solar de Rá.';
     }
   });
@@ -785,7 +785,7 @@ export function buildTrainingRoom({
       ball.rotation.x += dt * 1.2;
       ball.rotation.z += dt * 0.8;
     } else if (ballVelocity.lengthSq() > 0.02) {
-      const previousZ = ball.position.z;
+      const previousY = ball.position.y;
       ballVelocity.y -= 9.81 * dt;
       ball.position.addScaledVector(ballVelocity, dt);
       ballAge += dt;
@@ -801,17 +801,21 @@ export function buildTrainingRoom({
       ball.position.x = THREE.MathUtils.clamp(ball.position.x, room.minX + 0.7, room.maxX - 0.7);
       ball.position.z = THREE.MathUtils.clamp(ball.position.z, room.minZ + 0.7, room.maxZ - 0.7);
       ballVelocity.multiplyScalar(Math.max(0, 1 - dt * 0.13));
-      // Passagem da bola pelo plano do aro solar.
+      // Aro em plano horizontal: contabiliza a passagem descendente pelo nível do aro,
+      // com o centro da bola dentro da abertura livre do disco solar.
       for (const hoop of hoops) {
-        const crossed = (previousZ - hoop.position.z) * (ball.position.z - hoop.position.z) <= 0;
-        if (crossed && Math.abs(ball.position.x - hoop.position.x) < 0.34 && Math.abs(ball.position.y - hoop.position.y) < 0.34) {
+        const crossedDown = previousY > hoop.position.y && ball.position.y <= hoop.position.y && ballVelocity.y < 0;
+        const radialDistance = Math.hypot(
+          ball.position.x - hoop.position.x,
+          ball.position.z - hoop.position.z
+        );
+        if (crossedDown && radialDistance < 0.24) {
           baskets += 1; drawScoreboard(baskets, targetHits, targetPracticeActive);
           message = 'Cesta! A bola atravessou o disco solar de Rá. Total: ' + baskets + '.';
           ballVelocity.multiplyScalar(0.28);
           break;
         }
       }
-      lastBallZ = ball.position.z;
       if (ballAge > 28 || ball.position.y < floorY + 0.24 && ballVelocity.length() < 0.35) {
         ballVelocity.set(0, 0, 0);
       }

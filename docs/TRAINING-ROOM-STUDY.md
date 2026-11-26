@@ -2,7 +2,7 @@
 
 Data: 26/11/2026  
 Projeto: CASABROOKLIN  
-Status: **primeira implementação integrada; revisão visual em navegador ainda pendente**
+Status: **ambiente integrado com interações e combate básico; revisão visual e testes em navegador ainda pendentes**
 
 ## 1. Evidência narrativa e grau de certeza
 
@@ -99,7 +99,7 @@ Esta atividade é um complemento autoral de gameplay, não uma mecânica descrit
 5. Equipe o cajado ou o khopesh e use **F / USAR** perto de cada guerreiro, voltado para ele. Cada guerreiro requer dois golpes; derrote os quatro para concluir a prova.
 6. Após ser derrotado, o guerreiro encolhe novamente para a forma de estatueta. O quadro pode reiniciar a aula.
 
-Essa sequência se inspira na cena do romance em que quatro pequenas estatuetas shabti crescem e se transformam em guerreiros armados com espadas e escudos. A contagem de golpes e as regras de combate são adaptações de gameplay. Nesta primeira versão, os guerreiros giram para encarar Carter, mas ainda não perseguem nem atacam o jogador; a IA de combate permanece como etapa futura.
+Essa sequência se inspira na cena do romance em que quatro pequenas estatuetas shabti crescem e se transformam em guerreiros armados com espadas e escudos. A contagem de golpes e as regras de combate são adaptações de gameplay. A IA básica agora faz os guerreiros aproximarem-se de Carter, anunciarem o golpe com uma preparação corporal, avançarem para atacar e entrarem em recuperação antes de tentar novamente. O jogador tem cinco pontos de vitalidade e um breve intervalo de invulnerabilidade após cada acerto. Ao esgotar a vitalidade, a prova é interrompida, os shabtis recolhem-se e o quadro permite reiniciar. São regras de jogo autorais, não detalhes descritos no romance; comportamento, colisões e equilíbrio ainda precisam de validação em navegador.
 
 ### Portas e inspeção
 
@@ -134,7 +134,9 @@ Essa sequência se inspira na cena do romance em que quatro pequenas estatuetas 
 - [ ] Testar pegar/arremessar a bola, assistência de arco, passagem descendente pelo aro e pontuação.
 - [ ] Testar a prática de alvos, o cajado e a resposta visual ao acertar.
 - [ ] Testar os quatro shabtis com cajado e khopesh, inclusive transformação, distância, direção dos golpes e retorno à forma de estatueta.
-- [ ] Avaliar uma próxima etapa de IA: aproximação, defesa e ataques dos guerreiros (não implementados nesta versão).
+- [x] IA básica dos quatro shabtis: aproximação de Carter, preparação do golpe, ataque, recuperação e recuo em caso de derrota.
+- [x] Vitalidade do jogador com cinco pontos, invulnerabilidade temporária e encerramento/reinício da prova ao esgotar a energia.
+- [ ] Testar perseguição, distância de ataque, colisões móveis, golpes e telemetria da HUD em navegador real.
 - [ ] Testar abrir/fechar o portal e garantir que as colisões acompanhem o estado das portas.
 - [ ] Testar toque, joystick, inventário e interação em celular paisagem.
 - [ ] Medir FPS, memória e temperatura no mobile.

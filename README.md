@@ -26,7 +26,7 @@ Também pode ser executado por um servidor estático local. Abrir o HTML diretam
 | F | Usar arma equipada |
 | E | Inspecionar objeto próximo |
 | INTERAGIR (mobile) | Inspecionar objeto próximo |
-| 1–4 | Teleportar entre áreas |
+| 1–5 | Teleportar entre áreas |
 
 ## Personagem — Carter Kane
 
@@ -36,7 +36,7 @@ O jogo preserva o Carter Kane aprovado no Ara 3D Gen. O módulo `src/character.j
 
 ## Estrutura do repositório
 
-Veja [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) para a divisão dos módulos, [docs/OPEN-SOURCES.md](docs/OPEN-SOURCES.md) para fontes e licenças, [docs/ROADMAP-CHECKLIST.md](docs/ROADMAP-CHECKLIST.md) para o checklist por setores e [docs/ASSET-FIRST-ROOM-BUILDING.md](docs/ASSET-FIRST-ROOM-BUILDING.md) para o padrão obrigatório de pesquisa e integração de assets em cada espaço.
+Veja [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) para a divisão dos módulos, [docs/OPEN-SOURCES.md](docs/OPEN-SOURCES.md) para fontes e licenças, [docs/ROADMAP-CHECKLIST.md](docs/ROADMAP-CHECKLIST.md) para o checklist por setores, [docs/ASSET-FIRST-ROOM-BUILDING.md](docs/ASSET-FIRST-ROOM-BUILDING.md) para o padrão de pesquisa e integração de assets e [docs/TRAINING-ROOM-STUDY.md](docs/TRAINING-ROOM-STUDY.md) para o estudo e as interações da Sala de Treinamento.
 
 ## Fidelidade ao livro
 

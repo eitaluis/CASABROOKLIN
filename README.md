@@ -28,9 +28,12 @@ Também pode ser executado por um servidor estático local. Abrir o HTML diretam
 
 ## Personagem — Carter Kane
 
-A primeira versão local do Carter já está integrada em `src/character.js`: Game 3D gráfico, rosto humano natural, corpo jovem e ágil, cabelo crespo curto, camiseta azul, calça cargo cáqui, tênis e bolsa transversal no quadril direito. O movimento é procedural e compartilhado entre desktop e mobile, com caminhada, sprint inclinado, salto e aterrissagem.
+O runtime usa novamente a base humana contínua e rigada do Ara 3D Gen, que já havia sido aprovada visualmente antes do protótipo procedural rejeitado. O Carter mantém rosto humano natural, cabelo crespo curto, camiseta azul, calça cargo cáqui e tênis. A mochila automática foi removida.
 
-Use [Abrir preview 3D do Carter](./character-preview.html) para inspecionar o mesmo modelo do jogo, orbitar a câmera e testar as poses. A bolsa é uma recriação procedural local baseada na referência CC0 Innerscene; o GLB original não foi integrado. Veja [docs/CHARACTER.md](docs/CHARACTER.md) para limites técnicos e validação.
+A bolsa transversal conhaque fica no quadril direito, com alça diagonal sobre o peito. O corpo da bolsa e a alça são geometria local de encaixe, inspirada na referência CC0 Innerscene; o GLB original não foi baixado. O jogo usa o rig/skin weights e as animações idle, walk, run e jump do Ara, com inclinação de sprint aplicada pelo controlador comum de desktop e mobile.
+
+Use [Abrir preview 3D do Carter](./character-preview.html) para inspecionar o mesmo módulo usado no jogo. A posição final da bolsa e as transições ainda precisam de teste visual em navegador real; veja [docs/CHARACTER.md](docs/CHARACTER.md).
+
 
 ## Estrutura do repositório
 
@@ -49,9 +52,3 @@ A escada metálica em caracol, o armazém na margem do East River, os blocos de 
 ## Licenças
 
 Consulte [docs/OPEN-SOURCES.md](docs/OPEN-SOURCES.md) e [assets/manifest.json](assets/manifest.json). Assets remotos permanecem nos seus repositórios de origem; confirme as licenças antes de redistribuir binários offline.
-
-
-## Personagem — Carter Kane
-
-A primeira versão local do Carter está em `src/character.js`, com direção Game 3D gráfico, rosto humano natural, rig articulado, bolsa transversal no quadril direito e locomoção procedural. A página `character-preview.html` permite inspecionar o mesmo modelo em 3D antes de testar a cena completa.
-

@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -185,7 +185,7 @@
     {
       "id": "carter-crossbody-satchel-and-medallion",
       "path": "src/character-accessories.js",
-      "role": "geometria e materiais originais Three.js para bolsa transversal de couro conhaque no quadril direito (âncora Hips), trecho superior da alça do ombro esquerdo ao quadril direito (âncora Spine2), ferragens em latão e medalhão dourado com corrente (âncora Spine2); oscilação secundária sutil; compartilhado desktop/mobile",
+      "role": "geometria e materiais originais Three.js para bolsa transversal de couro conhaque cerca de 15% menor, corpo arredondado/afunilado, face larga girada 90° para a lateral e posicionada na pelve posterior direita (âncora Hips); alça cruza o peito e contorna o flanco até o quadril posterior (âncora Spine2); ferragens pequenas e medalhão dourado/corrente recuados 4,5 cm para o tórax (âncora Spine2); movimento secundário; compartilhado desktop/mobile",
       "license": "project-original-code"
     },
     {
@@ -193,6 +193,12 @@
       "path": "src/character.js + src/third-person.js",
       "role": "integração das ações look_around, talk_gestures, wave, point e bow após consulta ao catálogo Ara; suavização da aceleração, desaceleração, rotação corporal, inclinação lateral e easing da câmera; Carter também direciona cabeça e pescoço ao objeto examinado por E/INTERAGIR; tudo no controlador comum desktop/mobile",
       "license": "project-original-code; os clips do personagem permanecem sujeitos aos termos de Ara/CMU descritos em openSourceReferences"
+    },
+    {
+      "id": "carter-ara-backpack-removal",
+      "path": "src/character.js",
+      "role": "sobrescreve o carried prop gravado no share Ara com carry: none; remove a mochila integrada ao personagem-base, mantendo a bolsa transversal autoral separada",
+      "license": "project-original-code; API Ara 3D Gen MIT"
     }
   ],
   "openSourceReferences": [
@@ -449,7 +455,7 @@
       "id": "carter-blender-accessories-source",
       "source": "assets/models/carter/blender/create_carter_accessories.py",
       "license": "project-original-code",
-      "role": "script-fonte editável Blender com três anchors: bolsa/Hips, alça/Spine2 e corrente-medalhão/Spine2; ferramenta de lookdev, não carregada no runtime",
+      "role": "script-fonte editável Blender com bolsa menor e rotacionada para o lado na pelve posterior direita, alça em volta do flanco e colar recuado; âncoras Hips/Spine2; ferramenta de lookdev, não carregada no runtime",
       "runtimeImported": false
     }
   ]

@@ -45,7 +45,6 @@ export function buildTrainingRoom({
   const raGold = new THREE.MeshStandardMaterial({ color: 0xc69a4e, metalness: 0.78, roughness: 0.25 });
   const raGoldLight = new THREE.MeshStandardMaterial({ color: 0xe0bb70, metalness: 0.68, roughness: 0.22 });
   const raLapis = new THREE.MeshPhysicalMaterial({ color: 0x183c59, metalness: 0.12, roughness: 0.3, clearcoat: 0.28 });
-  const faience = new THREE.MeshPhysicalMaterial({ color: 0x3d8582, metalness: 0.06, roughness: 0.26, clearcoat: 0.38, clearcoatRoughness: 0.2 });
   const paintedLine = new THREE.MeshStandardMaterial({ color: 0xe6d8b6, roughness: 0.62 });
   const warmEmissive = new THREE.MeshStandardMaterial({
     color: 0xffc16a, emissive: 0xff8a29, emissiveIntensity: 1.6,

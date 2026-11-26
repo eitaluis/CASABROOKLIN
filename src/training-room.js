@@ -66,10 +66,12 @@ export function buildTrainingRoom({
   });
   function rebuildSideWall(name, x, thickness, zMin, zMax, yMin, yMax, holeCenter, holeWidth, openingBottom, openingTop, material) {
     const half = holeWidth / 2;
-    const leftLength = Math.max(0, (holeCenter - half) - zMin);
-    const rightLength = Math.max(0, zMax - (holeCenter + half));
+    const openingStart = holeCenter - half;
+    const openingEnd = holeCenter + half;
+    const leftLength = Math.max(0, openingStart - zMin);
+    const rightLength = Math.max(0, zMax - openingEnd);
     if (leftLength > 0.1) addBox(name + ' trecho norte', [x, (yMin + yMax) / 2, zMin + leftLength / 2], [thickness, yMax - yMin, leftLength], material, true, false);
-    if (rightLength > 0.1) addBox(name + ' trecho sul', [x, (yMin + yMax) / 2, holeCenter + half + rightLength / 2], [thickness, yMax - yMin, rightLength], material, true, false);
+    if (rightLength > 0.1) addBox(name + ' trecho sul', [x, (yMin + yMax) / 2, openingEnd + rightLength / 2], [thickness, yMax - yMin, rightLength], material, true, false);
     if (openingBottom > yMin) addBox(name + ' peitoril', [x, (yMin + openingBottom) / 2, holeCenter], [thickness, openingBottom - yMin, holeWidth], material, true, false);
     if (openingTop < yMax) addBox(name + ' verga', [x, (openingTop + yMax) / 2, holeCenter], [thickness, yMax - openingTop, holeWidth], material, true, false);
   }
@@ -216,8 +218,12 @@ export function buildTrainingRoom({
   // A parede leste é seccionada para deixar o portal aberto.
   const openingWidth = 4.5;
   const openingHalf = openingWidth / 2;
-  addBox('parede leste antes do portal', [eastWallX, wallBottom + wallHeight / 2, room.minZ + (roomLength - (openingHalf - room.minZ)) / 2], [0.5, wallHeight, (roomLength - (openingHalf - room.minZ)) / 2], wallMat, true, false);
-  addBox('parede leste depois do portal', [eastWallX, wallBottom + wallHeight / 2, openingHalf + (room.maxZ - openingHalf) / 2], [0.5, wallHeight, (room.maxZ - openingHalf) / 2], wallMat, true, false);
+  const openingStart = centerZ - openingHalf;
+  const openingEnd = centerZ + openingHalf;
+  const northWallLength = openingStart - room.minZ;
+  const southWallLength = room.maxZ - openingEnd;
+  addBox('parede leste antes do portal', [eastWallX, wallBottom + wallHeight / 2, room.minZ + northWallLength / 2], [0.5, wallHeight, northWallLength], wallMat, true, false);
+  addBox('parede leste depois do portal', [eastWallX, wallBottom + wallHeight / 2, openingEnd + southWallLength / 2], [0.5, wallHeight, southWallLength], wallMat, true, false);
   addBox('verga interna do portal', [eastWallX, floorY + 3.98, centerZ], [0.5, wallTop - (floorY + 3.75), openingWidth], wallMat, true, false);
   addBox('base do portal', [eastWallX, floorY + 0.08, centerZ], [0.5, 0.16, openingWidth], limestone, false, false);
   // Batentes e lintel entalhados.
@@ -387,11 +393,11 @@ export function buildTrainingRoom({
       position: group.position, radius: 2.1
     });
   }
-  addWallDeity(westWallX + 0.72, -9.4, 'Anúbis', 0);
-  addWallDeity(westWallX + 0.72, -1.0, 'Sekhmet', 0);
-  addWallDeity(westWallX + 0.72, 7.8, 'Hórus', 0);
-  addWallDeity(eastWallX - 0.72, -9.4, 'Ísis', Math.PI);
-  addWallDeity(eastWallX - 0.72, 7.8, 'Bastet', Math.PI);
+  addWallDeity(westWallX + 0.72, -9.4, 'Anúbis', Math.PI / 2);
+  addWallDeity(westWallX + 0.72, -1.0, 'Sekhmet', Math.PI / 2);
+  addWallDeity(westWallX + 0.72, 7.8, 'Hórus', Math.PI / 2);
+  addWallDeity(eastWallX - 0.72, -9.4, 'Ísis', -Math.PI / 2);
+  addWallDeity(eastWallX - 0.72, 7.8, 'Bastet', -Math.PI / 2);
 
   // Efígies de Rá: cabeças de falcão, discos solares vazados e redes de aro.
   const hoops = [];
@@ -509,6 +515,8 @@ export function buildTrainingRoom({
   seamC.name = 'costura da bola'; seamC.rotation.z = Math.PI / 2; ball.add(seamC);
   const ballVelocity = new THREE.Vector3();
   let ballHeld = false, lastBallZ = ball.position.z, ballAge = 0;
+  const latestPlayerPosition = new THREE.Vector3(centerX, floorY, centerZ);
+  const latestForward = new THREE.Vector3(0, 0, -1);
   addInteractable({
     name: 'Bola de basquete', label: 'Bola de basquete',
     description: 'Uma bola de couro está no piso. Aproxime-se e pressione E/INTERAGIR para pegá-la; pressione novamente para arremessar.',
@@ -519,6 +527,10 @@ export function buildTrainingRoom({
         return 'Bola recolhida. Pressione E/INTERAGIR novamente para arremessar na direção da câmera.';
       }
       ballHeld = false; ballAge = 0; lastBallZ = ball.position.z;
+      ballVelocity.copy(latestForward).setY(0).normalize();
+      if (ballVelocity.lengthSq() < 0.1) ballVelocity.set(0, 0, -1);
+      ballVelocity.multiplyScalar(11.5);
+      ballVelocity.y = 6.1;
       return 'Arremesso! Tente acertar o disco solar de Rá.';
     }
   });
@@ -635,7 +647,7 @@ export function buildTrainingRoom({
   const problemBoard = new THREE.Group();
   problemBoard.name = 'quadro da aula Whatever Works';
   problemBoard.position.set(westWallX + 0.48, floorY + 2.0, 11.2);
-  problemBoard.rotation.y = 0;
+  problemBoard.rotation.y = Math.PI / 2;
   const problemBack = new THREE.Mesh(new THREE.BoxGeometry(0.14, 2.4, 3.1), darkBronze);
   problemBoard.add(problemBack);
   const paperCanvas = document.createElement('canvas');
@@ -706,6 +718,7 @@ export function buildTrainingRoom({
     doorLeaves.push({ hinge, side });
   }
   let doorOpen = true;
+  const closedDoorColliders = [];
   addInteractable({
     name: 'Portas duplas da sala de treinamento', label: 'Portas de nogueira e bronze',
     description: 'Portas duplas entalhadas no portal entre o Grande Salão e a sala de treinamento.',
@@ -715,6 +728,23 @@ export function buildTrainingRoom({
       doorLeaves.forEach(({ hinge, side }) => {
         hinge.rotation.y = doorOpen ? (side < 0 ? -Math.PI / 2 : Math.PI / 2) : 0;
       });
+      if (doorOpen) {
+        for (const item of closedDoorColliders) {
+          const index = colliders.indexOf(item);
+          if (index >= 0) colliders.splice(index, 1);
+        }
+        closedDoorColliders.length = 0;
+      } else {
+        for (const side of [-1, 1]) {
+          const item = {
+            minX: eastWallX - 0.12, maxX: eastWallX + 0.12,
+            minY: floorY, maxY: floorY + 3.65,
+            minZ: centerZ + side * (openingHalf / 2), maxZ: centerZ + side * (openingHalf / 2) + (side < 0 ? openingHalf : -openingHalf)
+          };
+          if (item.minZ > item.maxZ) [item.minZ, item.maxZ] = [item.maxZ, item.minZ];
+          colliders.push(item); closedDoorColliders.push(item);
+        }
+      }
       return doorOpen ? 'As portas se abriram.' : 'As portas se fecharam.';
     }
   });
@@ -737,10 +767,13 @@ export function buildTrainingRoom({
 
   function update(time, dt, playerPosition, forward) {
     let message = null;
+    latestPlayerPosition.copy(playerPosition);
+    latestForward.copy(forward).setY(0).normalize();
     if (ballHeld) {
       const dir = forward.clone().setY(0).normalize();
       ball.position.copy(playerPosition).add(new THREE.Vector3(0, 1.35, 0)).addScaledVector(dir, 0.9);
-      ball.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().cross(new THREE.Vector3(0, 1, 0)).normalize().lengthSq() > 0.01 ? dir : new THREE.Vector3(0, 0, 1));
+      ball.rotation.x += dt * 1.2;
+      ball.rotation.z += dt * 0.8;
     } else if (ballVelocity.lengthSq() > 0.02) {
       const previousZ = ball.position.z;
       ballVelocity.y -= 9.81 * dt;

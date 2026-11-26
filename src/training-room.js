@@ -997,6 +997,7 @@ export function buildTrainingRoom({
       ball.position.z = THREE.MathUtils.clamp(ball.position.z, room.minZ + 0.7, room.maxZ - 0.7);
       ballVelocity.multiplyScalar(Math.max(0, 1 - dt * 0.13));
       // O arremesso de basquete também pode derrubar um shabti, como no exercício do livro.
+      let ballHitShabti=false;
       for(const state of shabtiWarriors){
         if(!state.active||state.spawnProgress<.92)continue;
         const head=state.group.position.clone().add(new THREE.Vector3(0,1.92*state.fullScale,0));
@@ -1007,7 +1008,6 @@ export function buildTrainingRoom({
       }
       // O disco solar fica vertical, voltado para a quadra. A bola precisa cruzar seu plano em Z,
       // com o centro dentro da abertura circular no plano X/Y (45 cm livres menos o raio da bola).
-      let ballHitShabti=false;
       for (const hoop of hoops) {
         const crossedPlane=hoop.approachDirection<0
           ? previousZ>hoop.position.z&&ball.position.z<=hoop.position.z&&ballVelocity.z<0

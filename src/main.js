@@ -1,19 +1,50 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js';
+import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126a';
 import { createCharacter } from './character.js?v=ara-game-jump-set-20261126c';
 import { createThirdPersonController } from './third-person.js?v=ara-collisions-camera-265-20261126f';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 
 
 const canvas=document.getElementById('scene');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.55));
+const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 820;
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,isTouchDevice?1.15:1.45));
 renderer.setSize(window.innerWidth,window.innerHeight);
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x83949a);scene.fog=new THREE.FogExp2(0x87979a,.0048);
 const camera=new THREE.PerspectiveCamera(58,window.innerWidth/window.innerHeight,.1,700);
+
 camera.rotation.order='YXZ';
+
+// Pós-processamento cinematográfico compartilhado. No mobile, o AO é omitido
+// e o bloom trabalha com pixel ratio menor para proteger o desempenho.
+const composer = new EffectComposer(renderer);
+composer.setPixelRatio(isTouchDevice ? 0.72 : Math.min(window.devicePixelRatio || 1, 1.12));
+composer.setSize(window.innerWidth, window.innerHeight);
+composer.addPass(new RenderPass(scene, camera));
+let ssaoPass = null;
+if (!isTouchDevice) {
+  ssaoPass = new SSAOPass(scene, camera, window.innerWidth, window.innerHeight);
+  ssaoPass.kernelRadius = 11;
+  ssaoPass.minDistance = 0.004;
+  ssaoPass.maxDistance = 0.12;
+  composer.addPass(ssaoPass);
+}
+const bloomPass = new UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  isTouchDevice ? 0.13 : 0.24,
+  0.28,
+  isTouchDevice ? 0.9 : 0.84
+);
+composer.addPass(bloomPass);
+composer.addPass(new OutputPass());
 const hemi=new THREE.HemisphereLight(0xc2d4d7,0x30251c,1.45);scene.add(hemi);
 const sun=new THREE.DirectionalLight(0xffd7a0,2.15);sun.position.set(-42,58,35);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-90;sun.shadow.camera.right=90;sun.shadow.camera.top=90;sun.shadow.camera.bottom=-90;sun.shadow.bias=-.00025;scene.add(sun);
 const fill=new THREE.DirectionalLight(0x9dbbc7,.55);fill.position.set(50,24,-40);scene.add(fill);
@@ -58,6 +89,9 @@ const world = buildWorld({
   cedarMat, darkGlass, plaster
 });
 const { zones, groundSurfaces, water, fireLight } = world;
+
+// Interior pass shared by desktop and mobile.
+buildInteriorDetails({ THREE, scene });
 
 function toast(message) {
   const element = document.getElementById('toast');
@@ -157,14 +191,17 @@ function animate() {
   }
   water.material.opacity = 0.9 + 0.03 * Math.sin(time * 1.2);
   drawMap();
-  renderer.render(scene, camera);
+  composer.render();
 }
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isTouchDevice ? 1.15 : 1.45));
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.55));
+  composer.setPixelRatio(isTouchDevice ? 0.72 : Math.min(window.devicePixelRatio || 1, 1.12));
+  composer.setSize(window.innerWidth, window.innerHeight);
+  if (ssaoPass) ssaoPass.setSize(window.innerWidth, window.innerHeight);
 });
 
 try {

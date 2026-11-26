@@ -106,16 +106,6 @@ Fluxo proposto:
 
 **Animações:** `use_press` é apenas a primeira ação de alcance criada para abrir o Duat. O clipe Ara estende o indicador como se tocasse um ponto à frente do tórax; não é a animação final de conjuração. Para os feitiços, vamos selecionar clipes Ara adequados e criar clips próprios/retargetados quando não houver gesto convincente. O movimento deve ser bloqueado durante a janela de conjuração no desktop e no mobile.
 
-### Recarga e energia mágica
-
-Em *The Serpent’s Shadow*, Carter explica que uma Divine Word não pode ser repetida logo depois de pronunciada: a espera pode durar vários minutos e, em alguns casos, horas. O mesmo trecho diz que palavras divinas consomem energia e que usar muitas em sequência pode esgotar o mago rapidamente; dominar um único hieróglifo pode levar anos.
-
-**Regra de fidelidade:** o sistema precisa prever cooldown por Divine Word e um recurso de energia mágica. Os valores exatos de duração, custo e recuperação serão balanceamento de gameplay, não números canônicos. O cooldown deve ser por comando, não um bloqueio global que impeça usar toda a magia depois de lançar um único feitiço.
-
-O exemplo de Carter também dá um efeito visual canônico para N’DAH: luz azul cintila ao redor da pessoa protegida. Isso sustenta a proposta de escudo, mantendo o formato/quantidade de dano absorvido como regra de jogo.
-
-
-
 ### Propostas de gesto para a primeira rodada (adaptação, não cânone)
 
 | Feitiço | Gesto corporal a estudar | Direção do movimento |
@@ -132,6 +122,13 @@ O exemplo de Carter também dá um efeito visual canônico para N’DAH: luz azu
 
 Esses gestos servem como brief de animação. Antes de selecionar clips Ara, precisamos testar se o movimento cabe no rig do Carter e se o objeto/hieróglifo fica visível na câmera de terceira pessoa. Se não houver clip convincente, a alternativa é criar um clip próprio ou retargetar um movimento compatível; não forçar `use_press` em todas as magias.
 
+### Recarga e energia mágica
+
+Em *The Serpent’s Shadow*, Carter explica que uma Divine Word não pode ser repetida logo depois de pronunciada: a espera pode durar vários minutos e, em alguns casos, horas. O mesmo trecho diz que palavras divinas consomem energia e que usar muitas em sequência pode esgotar o mago rapidamente; dominar um único hieróglifo pode levar anos.
+
+**Regra de fidelidade:** o sistema precisa prever cooldown por Divine Word e um recurso de energia mágica. Os valores exatos de duração, custo e recuperação serão balanceamento de gameplay, não números canônicos. O cooldown deve ser por comando, não um bloqueio global que impeça usar toda a magia depois de lançar um único feitiço.
+
+O exemplo de Carter também dá um efeito visual canônico para N’DAH: luz azul cintila ao redor da pessoa protegida. Isso sustenta a proposta de escudo, mantendo o formato/quantidade de dano absorvido como regra de jogo.
 
 ## 7. Arquitetura reutilizável
 

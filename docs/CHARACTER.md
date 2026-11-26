@@ -25,7 +25,8 @@ Módulo: src/character-accessories.js.
 
 - Bolsa transversal em couro conhaque, com corpo estruturado, aba, bolso frontal, costuras e ferragens em latão.
 - Alça diagonal do ombro esquerdo ao quadril direito do Carter.
-- Bolsa posicionada no quadril direito; o grupo é anexado ao osso Hips quando esse osso está disponível, com fallback no root do modelo.
+- Bolsa posicionada no quadril direito; o grupo é anexado ao osso Hips quando disponível, com fallback no root do modelo.
+- Corrente e medalhão têm âncora independente no alto do tronco (prioridade Spine2, depois Spine1/Chest/Spine), para acompanhar o tórax em vez de oscilar com a pelve.
 - Medalhão dourado independente, corrente e relevo egípcio simplificado.
 - Oscilação secundária discreta da bolsa e do medalhão, atualizada pelo mesmo ciclo de movimento.
 - Geometria e materiais são originais do projeto; não dependem de GLB externo nem de download em runtime.

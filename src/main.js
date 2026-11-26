@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=brooklyn-waterfront-scale-20261126a';
+import { buildWorld } from './world.js?v=grand-salon-circulation-20261126a';
 import { buildExterior } from './exterior.js?v=brooklyn-waterfront-scale-20261126a';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
-import { buildGrandSalon } from './grand-salon.js?v=great-hall-asset-first-20261126i';
+import { buildGrandSalon } from './grand-salon.js?v=grand-salon-circulation-20261126a';
 import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
 import { createCharacter } from './character.js?v=carter-ara-approved-restore-20261126d';
-import { createThirdPersonController } from './third-person.js?v=grand-salon-stair-navigation-20261126b';
+import { createThirdPersonController } from './third-person.js?v=grand-salon-stair-navigation-20261126c';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
@@ -97,7 +97,7 @@ const exterior = buildExterior({ THREE, scene, world, interactables, isTouchDevi
 // Interior passes are shared by desktop and mobile.
 buildInteriorDetails({ THREE, scene });
 const grandSalon = buildGrandSalon({
-  THREE, scene, animated, camera, isTouchDevice, colliders, interactables
+  THREE, scene, animated, camera, isTouchDevice, colliders, interactables, groundSurfaces
 });
 const fireLight = grandSalon.fireLight;
 

@@ -187,7 +187,8 @@ A documentação separa elementos narrativos confirmados, referências históric
 ### Referências técnicas avaliadas
 - **ThreeJS VFX** — https://github.com/majidmanzarpour/threejs-vfx — MIT. Estudo de técnicas de partículas, shaders e efeitos procedurais de magia. Nenhum código, textura ou asset foi copiado para o runtime.
 - **Ara 3D Gen** — https://github.com/olatunde85/3d-gen — MIT para o código do pacote; dados e clips seguem as licenças próprias documentadas pelo projeto. O runtime já utilizado pela CASABROOKLIN fornece o clipe Point como base corporal; a adaptação de dois dedos é código original em src/character.js.
-- **Three.js** — https://github.com/mrdoob/three.js — MIT, versão 0.165.0 já fixada no projeto. Hieróglifo, pulso dourado, anéis, impacto, partículas e fragmentos de faiança são construídos proceduralmente no projeto; não há dependência runtime adicional.
+- **Noto Sans Egyptian Hieroglyphs** — https://github.com/notofonts/egyptian-hieroglyphs — SIL OFL 1.1. A família é carregada via Google Fonts CSS para renderizar 𓉔𓆓 no Canvas; a fonte não foi copiada para o repositório.
+- **Three.js** — https://github.com/mrdoob/three.js — MIT, versão 0.165.0 já fixada no projeto. Hieróglifo, pulso dourado, anéis, impacto, partículas e fragmentos de faiança são construídos proceduralmente no projeto; não há dependência runtime adicional além da fonte remota.
 
 ### Limites da primeira implementação
 - HA-DI atinge somente Shabtis despertos na Sala de Treinamento, conforme a decisão de gameplay do usuário.

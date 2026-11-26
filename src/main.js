@@ -3,6 +3,7 @@ import { buildWorld } from './world.js?v=grand-salon-circulation-20261126a';
 import { buildExterior } from './exterior.js?v=brooklyn-waterfront-scale-20261126a';
 import { buildInteriorDetails } from './interior-details.js?v=interiors-nut-geb-20261126c';
 import { buildGrandSalon } from './grand-salon.js?v=grand-salon-circulation-20261126a';
+import { buildTrainingRoom } from './training-room.js?v=training-room-interactive-20261126a';
 import { createInventory } from './inventory.js?v=weapons-inventory-20261126a';
 import { createCharacter } from './character.js?v=carter-ara-approved-restore-20261126d';
 import { createThirdPersonController } from './third-person.js?v=grand-salon-stair-navigation-20261126c';
@@ -100,6 +101,9 @@ const grandSalon = buildGrandSalon({
   THREE, scene, animated, camera, isTouchDevice, colliders, interactables, groundSurfaces
 });
 const fireLight = grandSalon.fireLight;
+const trainingRoom = buildTrainingRoom({
+  THREE, scene, zones, groundSurfaces, colliders, interactables, animated
+});
 
 function toast(message) {
   const element = document.getElementById('toast');
@@ -120,8 +124,6 @@ const character = await createCharacter({
 character.model.position.set(...zones.dock.pos);
 if (character.human) character.human.reset();
 
-const inventory = createInventory({ THREE, character });
-
 const controller = createThirdPersonController({
   THREE, camera, canvas, character, zones, colliders,
   stairRamps: grandSalon.stairRamps,
@@ -140,9 +142,23 @@ const controller = createThirdPersonController({
       dock: 'Margem do Brooklyn — o East River e Manhattan ficam além do cais; a mansão está oculta sobre o armazém.',
       hall: 'Grande Salão — quatro alturas, três níveis de balcões e Tot ao centro.',
       library: 'Biblioteca subterrânea — câmara circular escavada na rocha.',
-      bedroom: 'Ala residencial — reconstrução interpretativa dos quartos.'
+      bedroom: 'Ala residencial — reconstrução interpretativa dos quartos.',
+      training: 'Sala de Treinamento — quadra, cestas solares de Rá e desafios mágicos.'
     };
     toast(notices[name] || zone.label);
+  }
+});
+
+const inventory = createInventory({
+  THREE, character,
+  onUse: (weapon) => {
+    const result = trainingRoom.onWeaponUse({
+      weapon,
+      position: controller.getPosition(),
+      forward: controller.getForward(),
+      zone: controller.zone
+    });
+    if (result) toast(result);
   }
 });
 
@@ -243,6 +259,8 @@ function animate() {
   }
   if (fireLight) fireLight.intensity = 4.25 + Math.sin(time * 8.7) * 0.72;
   grandSalon.update?.(time);
+  const trainingMessage = trainingRoom.update(time, dt, controller.getPosition(), controller.getForward());
+  if (trainingMessage) toast(trainingMessage);
   inventory.update(dt);
   exterior.update(dt, time);
   drawMap();

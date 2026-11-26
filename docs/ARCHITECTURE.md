@@ -25,7 +25,7 @@ CASABROOKLIN/
 - `src/main.js`: inicialização Three.js, materiais-base, iluminação, HUD, minimapa, pós-processamento adaptativo e loop de renderização.
 - `src/world.js`: geometria da doca, armazém, fachada, escada em caracol, Grande Salão, biblioteca e ala dos quartos.
 - `src/interior-details.js`: decoração procedural compartilhada dos interiores, incluindo lustre, arandelas, estandartes, cúpula de Nut, piso de Geb, nichos de papiros e shabtis.
-- `src/character.js`: personagem Carter local, geometria gráfica, rig articulado, bolsa transversal, socket WeaponR e animação procedural.
+- `src/character.js`: personagem humano rigado gerado pelo Ara 3D Gen, bolsa transversal local no quadril direito, socket WeaponR e ponte para clips de locomoção.
 - `src/inventory.js`: inventário inicial, cajado, khopesh, encaixe WeaponR e ações de uso.
 - `src/third-person.js`: WASD, corrida com lean frontal, salto, rotação por mouse/toque, câmera com proteção do piso, teleporte e colisão leve por volumes AABB.
 - `assets/manifest.json`: proveniência e licenças dos assets locais e referências externas.

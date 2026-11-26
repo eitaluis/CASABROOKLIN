@@ -50,6 +50,10 @@ button.active,button:hover{background:#9b7542;color:#111}
     <button data-preview-equip="reed_pen">CÁLAMO</button>
     <button data-preview-equip="ink">TINTA</button>
     <button data-preview-equip="protective_amulet">AMULETO</button>
+    <button data-preview-equip="wax_lump">CERA BRANCA</button>
+    <button data-preview-equip="scribe_palette">PALETA</button>
+    <button data-preview-equip="brown_twine">CORDÃO</button>
+    <button data-preview-equip="ebony_cat">GATO DE ÉBANO</button>
   </div>
   <button id="preview-store" type="button">GUARDAR NO DUAT</button>
 </aside>
@@ -78,7 +82,7 @@ button.active,button:hover{background:#9b7542;color:#111}
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createCharacter } from './src/character.js?v=carter-satchel-fit-20261126i';
-import { createInventory } from './src/inventory.js?v=duat-preview-20261126a';
+import { createInventory } from './src/inventory.js?v=duat-kit-full-20261126a';
 
 const canvas = document.getElementById('stage');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -200,7 +204,11 @@ const previewItemNames = {
   papyrus: 'PAPIRO',
   reed_pen: 'CÁLAMO',
   ink: 'TINTA',
-  protective_amulet: 'AMULETO DE PROTEÇÃO'
+  protective_amulet: 'AMULETO DE PROTEÇÃO',
+  wax_lump: 'CERA BRANCA',
+  scribe_palette: 'PALETA DE ESCRIBA',
+  brown_twine: 'CORDÃO MARROM',
+  ebony_cat: 'ESTÁTUA DE GATO EM ÉBANO'
 };
 
 function setMode(mode) {

@@ -380,6 +380,7 @@ function updateBagMount() {
  );
  bagPivot.rotation.set(0, bagOptions.yaw, 0);
  bagPivot.visible = bagVisible;
+ if (strapGroup) strapGroup.visible = bagVisible;
 }
 
 function resolveClip(name) {

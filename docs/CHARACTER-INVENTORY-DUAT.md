@@ -26,7 +26,7 @@ O *As Crônicas dos Kane: Guia de Sobrevivência* descreve uma pequena caixa de 
 
 O guia explica que um mago treinado pode guardar essa caixa no Duat e acessá-la quando necessário. Também descreve o cajado como ferramenta para controlar elementos, invocar espíritos e conjurar chamas, além de servir em combate; o khopesh é uma espada curva egípcia usada para desarmar o oponente; e shabtis são pequenas figuras que podem despertar ao chamado do mestre.
 
-Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, seção “Hieroglyphs, Symbols & Commands”, páginas impressas 68–70 (feitiços, regras de escrita e símbolos) e seção “Artifacts of Power”, página impressa 131 (caixa de magia e Duat), conforme a edição consultada.
+Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, páginas impressas 16–17 (conteúdo da caixa de Julius), seção “Hieroglyphs, Symbols & Commands”, pp. 68–70 (feitiços e regras de escrita) e seção “Artifacts of Power”, p. 131 (caixa de magia e Duat), conforme a edição consultada.
 
 ## 3. Catálogo inicial de objetos de Carter
 

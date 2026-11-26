@@ -28,16 +28,9 @@ Também pode ser executado por um servidor estático local. Abrir o HTML diretam
 
 ## Personagem — Carter Kane
 
-O runtime usa novamente a base humana contínua e rigada do Ara 3D Gen, que já havia sido aprovada visualmente antes do protótipo procedural rejeitado. O Carter mantém rosto humano natural, cabelo crespo curto, camiseta azul, calça cargo cáqui e tênis. A mochila automática foi removida.
-
-A bolsa transversal conhaque fica no quadril direito, com alça diagonal sobre o peito. O corpo da bolsa e a alça são geometria local de encaixe, inspirada na referência CC0 Innerscene; o GLB original não foi baixado. O jogo usa o rig/skin weights e as animações idle, walk, run e jump do Ara, com inclinação de sprint aplicada pelo controlador comum de desktop e mobile.
-
-Use [Abrir preview 3D do Carter](./character-preview.html) para inspecionar o mesmo módulo usado no jogo. A posição final da bolsa e as transições ainda precisam de teste visual em navegador real; veja [docs/CHARACTER.md](docs/CHARACTER.md).
+O jogo voltou ao Carter Kane do Ara 3D Gen que havia sido aprovado antes das tentativas de substituição. O arquivo `src/character.js` foi restaurado à implementação compartilhada anterior, com os clips de locomoção do modelo. O estudo modular foi descartado e não faz parte do jogo.
 
 
-## Carter — estudo isolado de personagem
-
-O novo estudo não altera o personagem atualmente usado no jogo. Abra o [Character Lab — Carter](./carter-study.html) para avaliar a primeira base Quaternius, testar clips de locomoção e ajustar a posição da bolsa transversal separadamente. Consulte [docs/CARTER-DESIGN-STUDY.md](docs/CARTER-DESIGN-STUDY.md) para decisões, proveniência e critérios de aprovação.
 
 ## Estrutura do repositório
 

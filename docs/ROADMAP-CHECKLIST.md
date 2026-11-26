@@ -62,8 +62,9 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Acrescentar medalhão de cedro, frisos, relevos solares alados e pilastras junto à lareira.
 - [x] Substituir os antigos balaústres cilíndricos por balaústres torneados, corrimãos curvos e filetes de latão.
 - [x] Substituir harpas/tambores/lanças placeholders por modelos sob medida: harpas arqueadas e cordas tensionadas, tambores com pele e amarrações, lanças com ponta foliácea de bronze e khopeshes de lâmina curva.
-- [x] Substituir a TV em bloco por moldura metálica arredondada e vidro escuro refletivo.
+- [x] Substituir a TV em bloco por tela plana física refletiva e toggle de energia via E/INTERAGIR. Os modelos CC0 Poly Haven Television 01/02 foram avaliados e rejeitados por serem CRT, não plasma.
 - [x] Acrescentar uma parede envidraçada panorâmica com montantes/travessas de bronze e colisores, mantendo a abertura das portas centrais.
+- [x] Criar fileiras de portas de madeira em cada galeria (três por lado/nível como decisão de layout, não uma contagem canônica), com molduras de calcário PBR e painéis de nogueira PBR.
 - [x] Construir duas escadarias laterais em zigue-zague, cada uma com três lances alternados para alcançar os três níveis de galeria; degraus de pedra arredondados, filetes de bronze, balaústres torneados, corrimãos e patamares.
 - [x] Adicionar portas duplas de madeira em painéis, Olho de Hórus, correntes de ferro, seis cadeados, collider e interação de inspeção; a porta continua trancada.
 - [x] Adicionar placas SVG CC BY 3.0 (Eye of Horus, harp, drum, flute, spears, crossed chains, padlock) com atribuição por autor e notas das modificações.
@@ -72,17 +73,17 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 ### Peças de destaque
 - [x] Atualizar Thoth para uma figura humana com pernas/tronco separados, kilt shendyt pregueado, faixa diagonal, colar largo, cabeça/bico de íbis, papiro aberto com sinal Per Ankh e estilete de escriba; altura aproximada de 9,1 m.
 - [x] Substituir as línguas poligonais por fogo volumétrico de shader MIT com ruído, textura de perfil, lenha, brasas, faíscas e luz dinâmica.
-- [x] Aumentar a densidade de amostragem do volume (desktop: slice spacing 0,042 / 38 segmentos; mobile: 0,085 / 22 segmentos) para reduzir arestas visíveis.
+- [x] Aumentar a densidade de amostragem do volume (desktop: slice spacing 0,024 / 66 segmentos; mobile: 0,052 / 34 segmentos) para reduzir arestas visíveis.
 - [x] Substituir a moldura quadrada da lareira por arco de calcário, pilastras, capitéis, inlay de bronze e manto arredondado.
-- [x] Substituir sofás reserva por GLB Poly Haven Sofa 03 CC0, com MeshoptDecoder, materiais PBR embutidos e escala 0,78; colocados um de cada lado da lareira.
+- [x] Usar o GLB Poly Haven Sofa 03 CC0 com MeshoptDecoder, materiais PBR, normalização por bounding box e escala 0,72 (~1,97 m), um de cada lado da lareira; manter fallback proporcional visível se o GLB falhar.
 - [x] Reduzir a mesa central para altura/diâmetro de mesa baixa e aplicar walnut PBR, bronze e medalhão solar.
 - [x] Refazer o tapete como pele de serpente em escamas sobrepostas, com color/bump procedural e dimensões de cerca de 12,2 × 4,6 m conforme o livro.
 - [x] Manter lustre, arandelas e estandartes da decoração anterior.
 
 ### QA ainda pendente
 - [ ] Conferir se o novo fogo volumétrico está orgânico e corretamente orientado à câmera; avaliar custo no mobile.
-- [ ] Conferir o tamanho do Sofa 03 (escala 0,78) com o Carter e ajustar posição/rotação caso necessário.
-- [ ] Conferir se as interações E/INTERAGIR estão acessíveis para sofás, mesa, estátua, lareira, harpas, tambores, lanças, khopeshes e TV, e se as colisões não bloqueiam passagem útil.
+- [ ] Conferir o tamanho do Sofa 03 (escala 0,72) com o Carter e ajustar posição/rotação caso necessário.
+- [ ] Conferir se as interações E/INTERAGIR estão acessíveis para sofás, mesa, estátua, lareira, harpas, tambores, flautas, lanças, khopeshes, portas e TV (toggle), e se as colisões não bloqueiam passagem útil.
 - [ ] Conferir a leitura da estátua humana com kilt, faixa, colar, papiro e estilete; verificar mapas de normal/roughness e preservar a reflexão.
 - [ ] Conferir arco e pilastras da lareira, portas/fechaduras, transparência da parede envidraçada, sombras, texturas PBR, z-fighting e placas SVG em visão 3/4 e de dentro do salão.
 - [ ] Testar a subida e descida nos três níveis de galeria, incluindo as transições entre os lances e os patamares.

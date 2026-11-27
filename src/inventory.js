@@ -750,9 +750,14 @@ export function createInventory({
       else status.textContent = 'MÃOS LIVRES · OBJETOS NO DUAT';
     }
 
-    const usable = activeItem === 'staff' || activeItem === 'khopesh';
+    const armed = activeItem === 'staff' || activeItem === 'khopesh';
+    character.setSprintArmed?.(armed);
     [document.getElementById('inventoryUse'), document.getElementById('inventoryMobileUse')]
-      .forEach((button) => { if (button) button.disabled = !usable || Boolean(transition); });
+      .forEach((button) => {
+        if (!button) return;
+        button.disabled = Boolean(transition);
+        button.setAttribute('aria-label', armed ? 'Atacar com arma equipada' : 'Ataque corpo a corpo');
+      });
   };
 
   function beginDuatReach() {
@@ -811,10 +816,15 @@ export function createInventory({
 
   const use = () => {
     if (transition) return;
-    if (activeItem !== 'staff' && activeItem !== 'khopesh') {
-      if (status) status.textContent = 'RETIRE UM CAJADO OU KHOPESH PARA USAR';
-      return;
+    const armed = activeItem === 'staff' || activeItem === 'khopesh';
+    const animationStarted = character.attack?.(armed);
+    if (!animationStarted) {
+      console.warn('CASABROOKLIN: o clip de combate do Carter ainda não está disponível.');
     }
+    if (!armed) return;
+
+    // O efeito de combate existente (alvos e treino) continua ligado ao mesmo
+    // comando; o clipe pesado agora acompanha o cajado ou o khopesh no WeaponR.
     attackDuration = activeItem === 'khopesh' ? 0.4 : 0.52;
     attackRemaining = attackDuration;
     onUse(activeItem);

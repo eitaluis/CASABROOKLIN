@@ -190,10 +190,11 @@ def parent_keep_world(obj, parent=None):
     return obj
 
 # Compact posterior/right-hip satchel. The broad leather panel turns toward the side.
-bag_width = 0.305 * UNIT
-bag_height = 0.245 * UNIT
-bag_depth = 0.092 * UNIT
-bag_anchor_point = Vector((-0.245 * UNIT, 0.375 * HEIGHT, -0.135 * UNIT))
+bag_width = 0.202 * UNIT
+bag_height = 0.158 * UNIT
+bag_depth = 0.076 * UNIT
+# Runtime surface-fit target; Blender lookdev remains an approximate static placement.
+bag_anchor_point = Vector((-0.205 * UNIT, 0.375 * HEIGHT, -0.085 * UNIT))
 # The body is extruded from the rear anchor along local +Z, matching the runtime.
 bag_center = bag_anchor_point.copy()
 side_rotation = (0.0, -math.pi / 2.0, 0.0)
@@ -292,17 +293,17 @@ parent_keep_world(attachment_ring, bag_anchor)
 
 # Crossbody strap crosses the chest, rounds the right flank and ends at the rear hip.
 strap_points = [
-    (0.145 * UNIT, 0.835 * HEIGHT, 0.115 * UNIT),
-    (0.125 * UNIT, 0.765 * HEIGHT, 0.135 * UNIT),
-    (0.045 * UNIT, 0.665 * HEIGHT, 0.135 * UNIT),
-    (-0.095 * UNIT, 0.555 * HEIGHT, 0.125 * UNIT),
-    (-0.205 * UNIT, 0.475 * HEIGHT, 0.105 * UNIT),
-    (-0.255 * UNIT, 0.425 * HEIGHT, 0.045 * UNIT),
-    (-0.265 * UNIT, 0.405 * HEIGHT, -0.035 * UNIT),
-    (-0.265 * UNIT, 0.405 * HEIGHT, -0.105 * UNIT),
-    (-0.255 * UNIT, 0.415 * HEIGHT, -0.155 * UNIT)
+    (0.145 * UNIT, 0.835 * HEIGHT, 0.165 * UNIT),
+    (0.125 * UNIT, 0.765 * HEIGHT, 0.185 * UNIT),
+    (0.045 * UNIT, 0.665 * HEIGHT, 0.190 * UNIT),
+    (-0.095 * UNIT, 0.555 * HEIGHT, 0.185 * UNIT),
+    (-0.170 * UNIT, 0.490 * HEIGHT, 0.150 * UNIT),
+    (-0.220 * UNIT, 0.455 * HEIGHT, 0.085 * UNIT),
+    (-0.245 * UNIT, 0.420 * HEIGHT, 0.015 * UNIT),
+    (-0.255 * UNIT, 0.400 * HEIGHT, -0.070 * UNIT),
+    (-0.214 * UNIT, 0.399 * HEIGHT, -0.101 * UNIT)
 ]
-strap = make_ribbon("Carter_Crossbody_Strap", strap_points, 0.038 * UNIT, leather_dark)
+strap = make_ribbon("Carter_Crossbody_Strap", strap_points, 0.022 * UNIT, leather_dark)
 parent_keep_world(strap, strap_anchor)
 
 # Fine edge seams along the strap.
@@ -316,21 +317,21 @@ for sign, suffix in [(-1, "L"), (1, "R")]:
         side = Vector((-tangent.y, tangent.x, 0.0))
         if side.length > 0.0001:
             side.normalize()
-        edge_points.append(tuple(point + side * (0.013 * UNIT * sign) + Vector((0, 0, 0.002 * UNIT))))
+        edge_points.append(tuple(point + side * (0.008 * UNIT * sign) + Vector((0, 0, 0.001 * UNIT))))
     edge = make_curve("Carter_Strap_Stitch_" + suffix, edge_points, stitch, 0.0011 * UNIT, 2)
     parent_keep_world(edge, strap_anchor)
 
 adjuster = rounded_box(
     "Carter_Strap_Brass_Adjuster",
-    (0.055 * UNIT, 0.025 * UNIT, 0.009 * UNIT),
-    (0.102 * UNIT, 0.73 * HEIGHT, 0.151 * UNIT),
+    (0.032 * UNIT, 0.010 * UNIT, 0.003 * UNIT),
+    (0.102 * UNIT, 0.73 * HEIGHT, 0.190 * UNIT),
     brass,
     0.003 * UNIT
 )
 parent_keep_world(adjuster, strap_anchor)
 
 # Keep the approved medallion design, but bring chain and pendant 4.5 cm closer to the torso.
-NECKLACE_INSET = 0.045 * UNIT
+NECKLACE_INSET = 0.0 * UNIT
 necklace_points = [
     (-0.105 * UNIT, 0.86 * HEIGHT, 0.125 * UNIT - NECKLACE_INSET),
     (-0.092 * UNIT, 0.795 * HEIGHT, 0.155 * UNIT - NECKLACE_INSET),

@@ -10,7 +10,11 @@ Todo novo objeto ou espaço deve seguir [ASSET-FIRST-ROOM-BUILDING.md](ASSET-FIR
 - O corpo, rosto, cabelo, rig e clips principais preservam o Carter aprovado no share salvo do Ara.
 - src/character.js carrega idle, walk, run e a sequência de salto, além de consultar ANIMATIONS para selecionar ações cinematográficas disponíveis (look_around, talk_gestures, wave, point e bow). O clipe Ara Point serve como base do gesto HA-DI; a extensão do dedo médio é uma adaptação procedural original do projeto.
 - src/character.js sobrescreve o item carregado do share Ara com `carry: 'none'`, removendo a mochila original.
-- src/character-accessories.js acrescenta geometria original do projeto: bolsa de couro conhaque menor, arredondada e virada para a lateral/posterior do quadril direito; alça cruza o peito e contorna o flanco. A bolsa segue Hips; alça e colar seguem o alto do tronco. O medalhão foi recuado para assentar sobre a camisa. Não utiliza GLB de terceiro.
+- src/character-accessories.js contém um protótipo procedural da bolsa/alça/medalhão; o screenshot do usuário em 27/11/2026 mostra que os acessórios ainda flutuam e a bolsa não corresponde à referência aprovada. O protótipo **não está visualmente aprovado** e não deve ser tratado como forma final.
+- A próxima revisão segue `SKILL.md` e `docs/CARTER-ACCESSORIES-REFERENCE-STUDY.md`: leitura do texto, comparação de arte oficial e fan art corretamente rotulada, pesquisa de assets 3D, painel visual no chat e aprovação explícita antes de qualquer novo download/integração.
+- Candidato principal em pesquisa, ainda não baixado: Innerscene Crossbody Bag GLB CC0 (3.5 MB; corpo 230 × 86 × 180 mm). A alça do asset fica no chão em laço e deverá ser substituída se o usuário aprovar o corpo.
+- A peça preta visível no ombro no screenshot não é criada por `src/character-accessories.js`; sua origem no share Ara ainda precisa ser localizada antes de removê-la. Não apagar peças do personagem-base por aproximação.
+- O módulo procedural atual não utiliza GLB de terceiro; nenhuma bolsa nova foi integrada.
 - assets/models/carter/blender/create_carter_accessories.py é a fonte editável de lookdev no Blender; ainda não é um .blend nem um asset carregado em runtime.
 - src/main.js direciona o olhar para o objeto examinado por E/INTERAGIR.
 - src/third-person.js suaviza aceleração, curvas, inclinação e câmera; o mesmo controlador e os mesmos assets são usados no desktop e mobile.

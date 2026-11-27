@@ -1,4 +1,5 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 
 const FLOOR_Y = 24.375;
 const ZONE = 'bedroom';
@@ -235,7 +236,7 @@ export function buildResidentialWing({
   box('Piso de travertino do banheiro', 31.65, FLOOR_Y - 0.055, -7.03, 5.85, 0.12, 3.85, stoneMat, false);
   box('Parede do box', 34.45, FLOOR_Y + 1.58, -7.0, 0.09, 3.05, 3.5, glass, false);
   box('Parede de fundo do box', 32.6, FLOOR_Y + 1.58, -8.75, 3.8, 3.05, 0.08, glass, false);
-  box('Borda de pedra do box', 33.35, FLOOR_Y + 0.1, -7.25, 2.15, 0.2, 2.65, stoneMat, true);
+  box('Borda de pedra do box', 33.35, FLOOR_Y + 0.1, -7.25, 2.15, 0.2, 2.65, stoneMat, false);
 
   // Nicho e molduras no corredor residencial.
   for (const z of [-7.2, 7.2]) {
@@ -404,8 +405,102 @@ export function buildResidentialWing({
     }, undefined, error => console.warn('Asset residencial não carregou:', file, error));
   };
 
+  // Cama king-size original do projeto. A malha GLB da fonte MIT não pôde ser
+  // transferida pelo conector binário; esta peça é geometria própria, com volumes
+  // arredondados, roupa de cama em linho e proporções reais (1,95 x 2,10 m).
+  const bedRoot = new THREE.Group();
+  bedRoot.name = 'Cama king-size original de Carter';
+  bedRoot.position.set(28.9, FLOOR_Y, -2.75);
+  roomGroup.add(bedRoot);
+
+  const linenCanvas = document.createElement('canvas');
+  linenCanvas.width = 512; linenCanvas.height = 512;
+  const linenCtx = linenCanvas.getContext('2d');
+  linenCtx.fillStyle = '#e7dfce'; linenCtx.fillRect(0,0,512,512);
+  for(let y=0;y<512;y+=5){
+    linenCtx.strokeStyle = y%10===0 ? 'rgba(118,103,80,.055)' : 'rgba(255,255,255,.18)';
+    linenCtx.lineWidth=1;
+    linenCtx.beginPath(); linenCtx.moveTo(0,y); linenCtx.lineTo(512,y); linenCtx.stroke();
+  }
+  for(let x=0;x<512;x+=5){
+    linenCtx.strokeStyle = x%10===0 ? 'rgba(118,103,80,.05)' : 'rgba(255,255,255,.14)';
+    linenCtx.lineWidth=1;
+    linenCtx.beginPath(); linenCtx.moveTo(x,0); linenCtx.lineTo(x,512); linenCtx.stroke();
+  }
+  for(let i=0;i<1100;i++){
+    linenCtx.fillStyle = i%2 ? 'rgba(115,97,72,.035)' : 'rgba(255,255,255,.10)';
+    linenCtx.fillRect(Math.random()*512,Math.random()*512,1.2,1.2);
+  }
+  const linenTexture = new THREE.CanvasTexture(linenCanvas);
+  linenTexture.colorSpace = THREE.SRGBColorSpace;
+  linenTexture.wrapS = linenTexture.wrapT = THREE.RepeatWrapping;
+  linenTexture.repeat.set(2.2,2.4);
+  linenTexture.anisotropy = isTouchDevice ? 4 : 8;
+  const linenMaterial = new THREE.MeshStandardMaterial({
+    color:0xf0e9d9, map:linenTexture, roughness:0.96
+  });
+  const pillowMaterial = linenMaterial.clone();
+  pillowMaterial.color.set(0xf5efe3);
+  const sageMaterial = new THREE.MeshStandardMaterial({color:0x818874,roughness:0.98});
+  const bedFrameMaterial = woodMat.clone();
+  const bedDark = new THREE.MeshStandardMaterial({color:0x493326,roughness:0.76});
+
+  const addRounded = (parent,name,w,h,d,x,y,z,material,radius=0.06,segments=5) => {
+    const mesh = new THREE.Mesh(new RoundedBoxGeometry(w,h,d,segments,radius),material);
+    mesh.name=name; mesh.position.set(x,y,z); mesh.castShadow=true; mesh.receiveShadow=true;
+    parent.add(mesh); return mesh;
+  };
+  const legPositions=[[-0.82,-0.92],[0.82,-0.92],[-0.82,0.92],[0.82,0.92]];
+  for(const [x,z] of legPositions){
+    const leg=new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.075,0.31,20),bedDark);
+    leg.name='Pé torneado da cama'; leg.position.set(x,0.155,z);
+    leg.castShadow=true; leg.receiveShadow=true; bedRoot.add(leg);
+    const ferrule=new THREE.Mesh(new THREE.CylinderGeometry(0.052,0.06,0.035,20),bronze);
+    ferrule.position.set(x,0.035,z); bedRoot.add(ferrule);
+  }
+  addRounded(bedRoot,'Estrutura de nogueira da cama king',2.03,0.25,2.18,0,0.34,0,bedFrameMaterial,0.085,7);
+  addRounded(bedRoot,'Painel recuado da base da cama',1.88,0.075,2.03,0,0.48,0,bedDark,0.035,5);
+  // Filete contínuo de bronze escovado no perímetro inferior.
+  for(const z of [-1.045,1.045]){
+    addRounded(bedRoot,'Filete de bronze da cama',1.9,0.025,0.025,0,0.225,z,bronzeLight,0.012,4);
+  }
+  addRounded(bedRoot,'Colchão de linho',1.91,0.29,2.08,0,0.59,0,linenMaterial,0.13,9);
+  addRounded(bedRoot,'Lençol superior com caimento',1.88,0.045,1.96,0,0.755,-0.015,pillowMaterial,0.12,9);
+  // Dobra de edredom ao pé da cama, com pequenas costuras em baixo relevo.
+  addRounded(bedRoot,'Edredom marfim dobrado',1.88,0.12,0.65,0,0.79,0.56,linenMaterial,0.085,8);
+  for(const x of [-0.89,0.89]){
+    const seam = new THREE.Mesh(new THREE.TubeGeometry(
+      new THREE.CatmullRomCurve3([
+        new THREE.Vector3(x,0.85,0.28),
+        new THREE.Vector3(x,0.85,0.52),
+        new THREE.Vector3(x,0.85,0.82)
+      ]),20,0.006,6,false),new THREE.MeshStandardMaterial({color:0xb8ad98,roughness:1}));
+    bedRoot.add(seam);
+  }
+  // Dois travesseiros volumosos na extremidade da cabeça da cama.
+  for(const x of [-0.49,0.49]){
+    const pillow=addRounded(bedRoot,'Travesseiro de linho',0.76,0.18,0.43,x,0.86,-0.68,pillowMaterial,0.12,9);
+    pillow.rotation.y=x<0?0.035:-0.035;
+  }
+  addRounded(bedRoot,'Manta verde-sálvia dobrada',1.82,0.065,0.42,0,0.855,0.20,sageMaterial,0.06,7);
+  for(let i=0;i<13;i++){
+    const fringe=addRounded(bedRoot,'Franja da manta',0.012,0.022,0.095,-0.84+i*0.14,0.82,0.42,sageMaterial,0.008,3);
+    fringe.rotation.x=-0.1;
+  }
+  addRounded(bedRoot,'Saia têxtil da cama',1.98,0.16,2.11,0,0.25,0,linenMaterial,0.055,6);
+  // Uma linha de costura discreta acompanha o contorno visível do edredom.
+  const duvetSeamPoints=[
+    new THREE.Vector3(-0.9,0.84,-0.9),new THREE.Vector3(-0.9,0.84,0.83),
+    new THREE.Vector3(0,0.84,0.86),new THREE.Vector3(0.9,0.84,0.83),
+    new THREE.Vector3(0.9,0.84,-0.9)
+  ];
+  bedRoot.add(new THREE.Mesh(new THREE.TubeGeometry(
+    new THREE.CatmullRomCurve3(duvetSeamPoints),56,0.0045,6,false),
+    new THREE.MeshStandardMaterial({color:0xc5bba8,roughness:1})
+  ));
+  addCollider(28.9,FLOOR_Y+0.52,-2.75,2.05,1.05,2.15);
+
   // Mobiliário PBR local, com origem e dimensões reais do catálogo de origem.
-  loadModel('bed.glb', [28.9, FLOOR_Y, -2.75], [1.22, 1, 1], Math.PI, 'Cama king-size de Carter');
   loadModel('nightstand.glb', [27.55, FLOOR_Y, -2.75], [1, 1, 1], Math.PI, 'Mesa de cabeceira oeste');
   loadModel('nightstand.glb', [30.25, FLOOR_Y, -2.75], [1, 1, 1], Math.PI, 'Mesa de cabeceira leste');
   loadModel('table-lamp.glb', [27.55, FLOOR_Y + 0.55, -2.75], [1, 1, 1], 0, 'Luminária da mesa de cabeceira oeste');
@@ -494,7 +589,6 @@ export function buildResidentialWing({
   roomGroup.add(fridgeGlow);
 
   // Pequenos colliders físicos dos móveis: não cobrem corredores nem portas.
-  addCollider(28.9, FLOOR_Y + 0.52, -2.75, 2.05, 1.05, 2.15);
   addCollider(27.55, FLOOR_Y + 0.34, -2.75, 0.52, 0.7, 0.46);
   addCollider(30.25, FLOOR_Y + 0.34, -2.75, 0.52, 0.7, 0.46);
   addCollider(24.8, FLOOR_Y + 0.38, -3.0, 1.35, 0.8, 0.72);

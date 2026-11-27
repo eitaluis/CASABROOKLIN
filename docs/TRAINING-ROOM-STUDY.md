@@ -294,3 +294,29 @@ Decisão: preservar a geometria procedural original em src/training-room.js, usa
 - [ ] Repetir a validação no celular em paisagem e medir o impacto de desempenho.
 
 **Não marcar como visualmente aprovado ou browser-tested até executar essas verificações no runtime real.**
+
+
+## 3C. Fechamento das paredes de fundo e encaixe das efígies (27/11/2026)
+
+### Esclarecimento do texto-fonte
+
+A passagem de *The Throne of Fire* descreve as estátuas de Rá nas paredes das linhas de fundo, projetando-se para fora da parede e posicionadas cerca de dez pés acima do piso. Em seguida, Carter volta a se referir à estátua como algo que se projeta da parede, dez pés acima deles. Portanto, a leitura de que essas efígies ficam apoiadas no chão não corresponde a esse trecho do romance. O código mantém a implantação mural elevada; o problema corrigido aqui era a leitura de objeto mal encaixado na parede, não a altura descrita no livro.
+
+Fonte textual consultada: https://anyflip.com/sbybe/zcnp/basic/51-100 (passagem da sala de treinamento e, logo adiante, a estátua de Rá que começa a desmoronar).
+
+### Alterações no código
+
+- Ajustada a profundidade das efígies para que o painel dorsal e os braços de sustentação encontrem o lado interno das paredes norte/sul. O conjunto agora projeta-se para dentro da quadra, sem parecer embutido nem ficar com uma folga visível atrás.
+- Construídos dois frontões sólidos de calcário, com perfil amostrado da mesma curva semicircular usada pela abóbada. Cada frontão atravessa a espessura da parede de fundo e fecha o vazio triangular acima da linha de mola.
+- O material dos frontões é explicitamente opaco, com faces duplas e escrita/teste de profundidade. As faces internas das paredes também recebem ordem de renderização controlada para manter a superfície de calcário visível pela câmera interna.
+- O fechamento acompanha a curva do teto, para que o mar, o skyline e os prédios exteriores não apareçam por trás das estátuas ou acima da parede.
+
+### Validação
+
+- [x] src/training-room.js atualizado.
+- [x] Verificação estática de sintaxe JavaScript aprovada.
+- [ ] Confirmar no navegador desktop que os frontões fecham toda a vista exterior sem cobrir a abóbada.
+- [ ] Confirmar no navegador que as efígies parecem apoiadas na parede, projetando-se para a quadra.
+- [ ] Repetir inspeção em celular paisagem e testar a interação/arremesso nas duas extremidades.
+
+**QA visual em navegador ainda pendente; não marcar como browser-tested ou aprovado visualmente antes da inspeção real.**

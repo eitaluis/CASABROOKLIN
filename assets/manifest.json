@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.16",
+  "version": "0.4.17",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -204,15 +204,15 @@
       "id": "kinemiq-carter-movement-pack",
       "source": "https://kinemiq.app/animations/",
       "directUrls": {
-        "araPack": "https://cdn.jsdelivr.net/gh/eitaluis/CASABROOKLIN@f77ad108a0e81f1ff50152842eb26ba8fa456eeb/assets/animations/carter-movement.ara-pack.json",
+        "araPack": "https://cdn.jsdelivr.net/gh/eitaluis/CASABROOKLIN@main/assets/animations/carter-movement.ara-pack.json",
         "credits": "assets/animations/carter-movement-source-credits.json"
       },
-      "author": "Quaternius / ACCAD Open Motion Project / The 100STYLE Dataset, distributed by KinemIQ",
+      "author": "Quaternius (Universal Animation Library / Universal Animation Library 2), distributed by KinemIQ",
       "version": "6 clips; Ara content pack carter-moves",
-      "license": "Mixed CC0-1.0 / CC-BY-3.0 / CC-BY-4.0; see per-source credits",
+      "license": "CC0-1.0",
       "format": "Ara pack JSON",
       "runtimeImported": true,
-      "role": "Carter's sprint with/without object, ninja double jump, landing, unarmed melee combo and heavy armed combo; all retargeted to the Ara character rig. Shared desktop/mobile runtime; physical root motion remains controlled by src/third-person.js."
+      "role": "Six user-selected Quaternius CC0 clips retargeted to Ara: sprint without an object, sprint with an object, ninja double jump, landing, unarmed melee combo and heavy armed combo. Shared desktop/mobile runtime; src/third-person.js retains physical root movement."
     },
     {
       "id": "innerscene-cc0-carter-crossbody-bag",

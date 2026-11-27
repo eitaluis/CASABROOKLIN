@@ -9,6 +9,10 @@ Este diretório reserva espaço para capturas, moodboards e estudos de referênc
 - Biblioteca: espaço circular escavado na rocha, três níveis, pinturas coloridas, nichos e anel de luz azul.
 - East River: água, píer, Williamsburg Bridge e horizonte urbano.
 
+## Fluxo de aprovação visual obrigatório
+
+A regra completa está no [SKILL.md do Projeto Brooklyn](../../SKILL.md). Para qualquer mudança visual ou de gameplay com representação visual, pesquisar primeiro no livro, depois em arte oficial/ilustrações de artistas, depois em assets e modelos abertos. Mostrar imagens, previews e comparação ao usuário e aguardar aprovação explícita antes de baixar, criar ou integrar. Não tratar fan art como arte oficial. Não afirmar que um item é canônico quando o livro só descreve a categoria geral.
+
 ## Separação de fidelidade
 - Canônico: descrito diretamente no romance.
 - Histórico: baseado em construções e objetos reais.

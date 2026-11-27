@@ -162,3 +162,49 @@ Todos os objetos interativos precisam de prompt visível em desktop e mobile, us
 - [ ] Testar todas as ações com E em desktop e INTERAGIR no mobile.
 - [ ] Validar em navegador desktop e celular em paisagem; testar carregamento local dos GLBs, FPS e estabilidade.
 - [ ] Marcar separadamente implementado, testado e aprovado visualmente.
+
+## 8. Pesquisa ampliada de assets e implementação residencial — 27/11/2026
+
+### Matriz asset-first por peça
+
+| Peça / espaço | Fonte e licença | Decisão de uso | Observações |
+|---|---|---|---|
+| Cama de Carter e Sadie | Geometria autoral em Three.js; referência de comparação: Innerscene TATAMI — Low Platform Bed, GLB CC0, 1,95 × 2,28 × 0,57 m, ~22k triângulos | A cama procedural PBR atual foi mantida para não introduzir um GLB com cabeceira estofada incompatível com o ivory headrest. A TATAMI fica como candidata à próxima comparação visual | O GLB da Innerscene ainda não foi carregado; disponibilidade do ficheiro e CORS precisam ser confirmados no browser. Página: https://www.innerscene.com/tools/library/3d-parts/tatami-low-platform-bed-3e8a3cb6 |
+| Cama king-size alternativa | 3DAssets.dev, King bed with upholstered headboard, CC0, 2,02 × 1,422 × 2,204 m, 6.194 triângulos | Avaliada e não selecionada como cama principal | O modelo é gerado com ferramentas de IA e inclui cabeceira estofada convencional; não substitui a peça histórica que o romance descreve como apoio/travesseiro. Página: https://3dassets.dev/assets/hotel-and-resort-operations-bed-king-upholstered-819ff50d |
+| Minibar / cômoda de Sadie | 3DAssets.dev, Minibar cabinet, GLB CC0, 0,64 × 0,89 × 0,591 m, 960 triângulos, clips de animação open e close | Carregado em runtime pelo CDN com GLTFLoader; recebe collider no projeto e fallback local autoral se a ligação falhar | É uma peça AI-assisted declarada pelo provedor; é um módulo de minibar, não a cômoda inteira. Personalizado na composição residencial. Página: https://3dassets.dev/assets/hotel-and-resort-operations-minibar-cabinet-601f19a1 |
+| Poltrona de Sadie | 3DAssets.dev, Guest room armchair, GLB CC0, 0,745 × 0,83 × 0,72 m, 2.320 triângulos | Carregada em runtime via CDN; collider de navegação é próprio do jogo | Modelo AI-assisted declarado pelo provedor; mantido como peça secundária, não como elemento arquitetónico hero. Página: https://3dassets.dev/assets/hotel-and-resort-operations-guest-armchair-bb3c4e37 |
+| Cama, criado-mudo, mesa, cadeira, guarda-roupa, luminárias, TV, kitchenette e sanitários | Repositório GitHub jamesEmerson112/NVIDIA-Crusoe-The-Recursive-Agents-Hackathon, modelos originais Blender, MIT; ficheiros locais em assets/models/residential/ | Reutilizados nos dois quartos e nas suítes | Os GLBs têm materiais PBR embutidos e não exigem Draco/Meshopt/KTX2. A origem do conteúdo e a licença constam em CREDITS.md e LICENSE do projeto de origem. |
+| bed.glb da fonte MIT | Mesmo repositório MIT; catálogo informa 1,48 MB e 18.428 triângulos | Não carregado: o ficheiro copiado em CASABROOKLIN está vazio (0 bytes). Mantém-se a cama procedural própria até importar e validar o binário correto | Não substituir o conteúdo por um arquivo com o mesmo nome sem validar bytes, origem e licença. |
+| Quarto completo como referência de layout | 3DAssets.dev, Guest Room with En-Suite, CC0, 4,168 × 2,7 × 6,792 m, ~36k triângulos | Referência de escala e composição; não foi importado como sala inteira | O pack é declarado como AI-generated. A sala pronta reúne cama, mesinhas, banco, poltrona, mesa, cadeira, TV, armário, minibar e banheiro; seria genérica demais para substituir a planta narrativa. Página: https://3dassets.dev/assets/hotel-and-resort-operations-guest-room-w-0766f7ed |
+| Cabeceira / apoio de cabeça de marfim | Grand Egyptian Museum GEM 270; geometria autoral de CASABROOKLIN | Criado sob medida e reposicionado diretamente sobre o travesseiro da cama, em escala aproximada de 15 cm do grupo-base (comprimento final ~29 cm) | Não existe correspondência GLB gratuita verificada com os dois leões e Shu. A peça não é uma cabeceira estofada. |
+| Gravador cassete, dock, fones, runas e roupas mágicas | Geometria autoral Three.js | Criados sob medida | O livro nomeia os objetos e efeitos, mas não oferece um asset 3D que corresponda ao gravador trazido de Londres, ao dock ou às paredes encantadas. O dock e o gravador alteram o estado visual; não reproduzem música comercial. |
+| Paredes, piso, banheiro e closet | PBR local: plaster smooth beige, limestone tile e walnut; GLBs locais MIT para duchas, lavatório, vaso, espelho e guarda-roupa | Reaproveitados e adaptados à geometria da suíte | O desenho e as dimensões exatas dos compartimentos são reconstrução interpretativa; o romance não fornece planta cotada. |
+
+### Atualização de implementação
+
+- A circulação agora passa da galeria mais alta do Grande Salão por uma sala lateral com a parede posterior aberta, segue por um vestíbulo/corredor residencial e chega às portas independentes de Carter e Sadie. Os portais de zona estão alinhados ao vão físico e preservam a posição do personagem no retorno.
+- O quarto de Sadie recebeu cama, luminária, closet com arara de roupas, banheiro próprio, minibar animado, poltrona, dock de iPod, fones, gravador cassete e runas de isolamento acústico.
+- O minibar abre e fecha por clips do GLB. Se o CDN não responder, um modelo procedural de fallback mantém a ação acessível.
+- Abrir o minibar e recolher os lanches são interações distintas. A cama permite descansar e recuperar energia, sem restaurar vitalidade/saúde.
+- Os dois banheiros têm interações de pia e chuveiro; portas interiores removem/recolocam o collider no mesmo gesto que abre/fecha.
+- O apoio de cabeça GEM 270 deixou a mesa lateral e foi colocado sobre o travesseiro: a referência histórica é uma peça de apoio, não uma cabeceira de cama.
+- Desktop e mobile usam o mesmo módulo, geometria, assets e interações. Apenas os meios de entrada permanecem diferentes.
+
+### Proveniência dos assets remotos
+
+- Minibar: https://3dassets.dev/assets/hotel-and-resort-operations-minibar-cabinet-601f19a1 — CC0 1.0, CDN CORS, 960 triângulos, clips open/close.
+- Poltrona: https://3dassets.dev/assets/hotel-and-resort-operations-guest-armchair-bb3c4e37 — CC0 1.0, CDN CORS, 2.320 triângulos.
+- A página de documentação do provedor declara modelos GLB self-contained, materiais em WebP, sem Draco/Meshopt/KTX2, URLs CDN imutáveis e CORS aberto: https://3dassets.dev/docs. Os modelos selecionados são AI-assisted conforme declarado pelo provedor; isso permanece registrado como ressalva de lookdev.
+
+### Estado de validação
+
+- [x] Pesquisa de referências literárias e visuais para Carter, Sadie e o headrest.
+- [x] Verificação individual de licença, dimensões e compatibilidade de GLTFLoader dos assets CC0 selecionados.
+- [x] Correção do posicionamento e da escala do headrest.
+- [x] Suíte de Sadie com banheiro, closet, mobiliário e interações.
+- [x] Ação de descanso integrada ao sistema global de energia.
+- [x] Portal físico de ida/volta entre galeria superior e corredor residencial presente no código.
+- [ ] Verificar os modelos remotos carregados no GitHub Pages (CORS real, aparência, pivôs e materiais).
+- [ ] Testar todas as colisões e interações no browser desktop e mobile em paisagem.
+- [ ] Percorrer salão → sala lateral superior → corredor → Carter → Sadie → retorno sem teleporte.
+- [ ] Inspecionar escalas, orientação, iluminação, sombras, clipping e desempenho antes da aprovação visual.

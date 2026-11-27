@@ -442,16 +442,30 @@ export function buildBedroom({
   root.add(fallback.toilet);
 
   // A small audio system is deliberately separate from the TV.
-  const speakerFallback = new THREE.Group();
-  for (const x of [25.75, 28.4]) {
+  const speakerFallbacks = [new THREE.Group(), new THREE.Group()];
+  for (const [index, x] of [25.75, 28.4].entries()) {
+    const group = speakerFallbacks[index];
     addBox('caixa acústica de nogueira', [x, floorY + 0.62, 4.55],
-      [0.24, 0.66, 0.28], mat.walnut, speakerFallback);
+      [0.24, 0.66, 0.28], mat.walnut, group);
     addCylinder('woofer da caixa acústica', [x, floorY + 0.64, 4.395],
-      0.082, 0.082, 0.018, mat.black, speakerFallback, 20).rotation.x = Math.PI / 2;
+      0.082, 0.082, 0.018, mat.black, group, 20).rotation.x = Math.PI / 2;
     addCylinder('tweeter da caixa acústica', [x, floorY + 0.85, 4.395],
-      0.035, 0.035, 0.018, mat.brass, speakerFallback, 16).rotation.x = Math.PI / 2;
+      0.035, 0.035, 0.018, mat.brass, group, 16).rotation.x = Math.PI / 2;
+    root.add(group);
   }
-  root.add(speakerFallback);
+
+  // Stereo receiver/amplifier: a small project-original component between the speakers.
+  addBox('amplificador estéreo de nogueira e metal', [27.08, floorY + 0.57, 4.36],
+    [0.62, 0.22, 0.34], mat.black);
+  addBox('painel frontal do amplificador', [27.08, floorY + 0.57, 4.18],
+    [0.56, 0.16, 0.025], mat.walnutLight, root, false);
+  for (const x of [26.88, 27.08, 27.28]) {
+    const knob = addCylinder('controle giratório do amplificador',
+      [x, floorY + 0.57, 4.155], 0.025, 0.025, 0.022, mat.brass, root, 12);
+    knob.rotation.x = Math.PI / 2;
+  }
+  addSphere('led de estado do amplificador', [27.42, floorY + 0.57, 4.15],
+    [0.014, 0.014, 0.014], new THREE.MeshBasicMaterial({ color: 0x7bc4a3 }), root, 10);
 
   // Countertop snacks: ginger ale, a chocolate bar and fruit candy.
   function labelTexture(title, background, foreground) {
@@ -619,11 +633,11 @@ export function buildBedroom({
   loadModel('Banheira privativa', 'bathtub', 'v1',
     [21.2, floorY, -3.2], 0, 1.0, fallback.bathtub);
   loadModel('Vaso sanitário', 'toilet', 'v1',
-    [22.35, floorY, -5.45], Math.PI, 1.0, fallback.toilet);
+    [22.35, floorY, -5.45], 0, 1.0, fallback.toilet);
   loadModel('Caixa acústica esquerda', 'bookshelf-speaker', 'v1',
-    [25.75, floorY + 0.28, 4.55], 0, 1.0, speakerFallback);
+    [25.75, floorY + 0.28, 4.55], 0, 1.0, speakerFallbacks[0]);
   loadModel('Caixa acústica direita', 'bookshelf-speaker', 'v1',
-    [28.4, floorY + 0.28, 4.55], 0, 1.0, null);
+    [28.4, floorY + 0.28, 4.55], 0, 1.0, speakerFallbacks[1]);
 
   // Colliders for solid furniture, leaving the passage and deck opening clear.
   addCollider(26.2, floorY + 0.65, 0.0, 2.45, 1.3, 2.15);
@@ -660,7 +674,7 @@ export function buildBedroom({
     name: 'Apoio de cabeça egípcio',
     label: 'Apoio de cabeça de marfim',
     prompt: 'E / INTERAGIR · Examinar o apoio de cabeça egípcio',
-    position: new THREE.Vector3(25.12, floorY + 1.02, 0.0),
+    position: new THREE.Vector3(25.12, floorY + 0.88, 0.0),
     radius: 1.9,
     onInteract: () => 'O apoio de cabeça de marfim tem dois leões guardiões, Shu sustentando o arco e uma faixa de hieróglifos gravados.'
   });

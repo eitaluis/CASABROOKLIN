@@ -321,3 +321,12 @@ A leitura canônica permanece: câmara circular escavada na rocha; descida de tr
 - Removida a parede divisória central que atravessava o bloco residencial e obstruía a visão entre as áreas do quarto. Permanecem as paredes perimetrais e os limites externos do ambiente.
 - Nenhum colisor específico estava associado à divisória removida; portanto, não foi necessário alterar a navegação ou os limites de colisão.
 - A alteração fica no módulo compartilhado `src/world.js` e mantém a mesma geometria no desktop e no mobile.
+
+
+## Grande Salão — fechamento opaco da parede do portal do Olho de Hórus (27/11/2026)
+
+- Diagnóstico: a fachada frontal da mansão é construída em dois panos laterais separados pelo vão do portal. A montagem das portas do Olho de Hórus tinha folhas e moldura, mas não havia um pano contínuo de alvenaria atrás delas nem fechamento alto no trecho central até o teto; desse modo, a vista externa podia atravessar a parede, sobretudo acima e ao redor das folhas.
+- Correção: reposicionada a montagem das portas para o plano da fachada (Z≈10,75) e inserido um painel de calcário opaco de altura integral atrás das folhas e da moldura, cobrindo o vão central desde o piso até perto da cobertura. O painel reutiliza o material PBR opaco de calcário do salão.
+- Colisão: o colisor das folhas foi alinhado ao novo plano; foi acrescentado um colisor para a alvenaria superior, impedindo atravessar ou subir pelo espaço acima da porta trancada.
+- Interação: o ponto de inspeção da porta foi aproximado da nova posição física.
+- Estado: geometria e colisores ajustados em código; renderização real e confirmação de que não há mais linha de visão para o rio aguardam teste no navegador, em desktop e celular paisagem.

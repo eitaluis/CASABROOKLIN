@@ -213,3 +213,10 @@ A avaliação visual e a escolha entre (A) shabtis em nichos e (B) relevos arqui
 - A bola de basquete e seu raio de colisão não foram modificados nesta iteração.
 - **Limite de integração dos scans:** os escaneamentos de Re-Horakhty e shabti foram usados como referência iconográfica e de proporção; os arquivos binários não foram incorporados ao runtime nesta passagem. As geometrias implementadas são modelos procedurais originais da CASABROOKLIN, não scans apresentados como originais arqueológicos.
 - **QA:** validação de sintaxe dos módulos passou. Ainda é necessária inspeção visual em navegador para conferir proporção, posição do aro e encaixe dos nichos no interior.
+
+
+### Ajuste de proporção dos nichos (27/11/2026)
+
+- Os cinco nichos de shabti foram compactados para corresponder à escala de uma estatueta mumiforme, com moldura de calcário, fundo escurecido, ombreiras, arco superior e plinto. As figuras foram ampliadas ligeiramente dentro dos nichos para manter legibilidade sem se tornarem estátuas humanas.
+- As cinco figuras de nicho continuam decorativas e sem colisão. Os quatro shabtis do centro da quadra mantêm a mecânica de despertar e combate.
+- A cena usa a mesma implementação em desktop e mobile. Cache do módulo de treinamento atualizado para `ra-shabti-niches-20261127b`.

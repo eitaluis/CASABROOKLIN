@@ -426,15 +426,20 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
   const chestStrapCurve = makeStrapSegment(strapFit.slice(0, splitIndex + 1), strapChestRoot, 'CarterBagStrapChest');
   makeStrapSegment(strapFit.slice(splitIndex), strapHipRoot, 'CarterBagStrapHip');
 
-  const adjusterPoint = chestStrapCurve.getPoint(0.22);
+  const adjusterT = 0.22;
   const adjuster = addMesh(
     new THREE.BoxGeometry(0.032 * unit, 0.010 * unit, 0.003 * unit),
     brass,
     strapChestRoot,
     'CarterBagStrapAdjuster'
   );
-  adjuster.position.copy(adjusterPoint);
-  adjuster.position.addScaledVector(interpolateNormal(strapFit.slice(0, splitIndex + 1).map(item => item.normal), 0.22), 0.002 * unit);
+  const adjusterNormal = interpolateNormal(strapFit.slice(0, splitIndex + 1).map(item => item.normal), adjusterT);
+  const adjusterTangent = chestStrapCurve.getTangentAt(adjusterT).normalize();
+  const adjusterSide = ribbonSide(adjusterTangent, adjusterNormal);
+  const adjusterBasis = new THREE.Matrix4().makeBasis(adjusterSide, adjusterTangent, adjusterNormal);
+  adjuster.quaternion.setFromRotationMatrix(adjusterBasis);
+  adjuster.position.copy(chestStrapCurve.getPoint(adjusterT));
+  adjuster.position.addScaledVector(adjusterNormal, 0.002 * unit);
 
   // The pendant design is preserved. The chain is projected onto the real
   // shirt surface, while its root follows the upper torso rather than a guessed offset.

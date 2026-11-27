@@ -1043,6 +1043,9 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
       bob + (progress > 0.43 && progress < 0.56 ? 0.08 : 0),
       activeTask.targetLocal.z * travel
     );
+    const outboundFacing = activeTask.index === 3 ? Math.PI : 0;
+    const returnTurn = progress < 0.56 ? 0 : THREE.MathUtils.smoothstep((progress - 0.56) / 0.44, 0, 1);
+    activeTask.figure.rotation.y = outboundFacing * (1 - returnTurn);
     activeTask.figure.rotation.z = Math.sin(time * 9.5) * 0.035 * (progress > 0.04 && progress < 0.96 ? 1 : 0);
     activeTask.figure.rotation.x = Math.cos(time * 9.5) * 0.025 * (progress > 0.04 && progress < 0.96 ? 1 : 0);
 

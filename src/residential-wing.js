@@ -825,6 +825,21 @@ export function buildResidentialWing({
   addCollider(33.65, FLOOR_Y + 0.95, 8.08, 0.95, 1.95, 0.95);
   addCollider(32.15, FLOOR_Y + 0.4, 8.45, 0.82, 0.82, 0.55);
   addCollider(30.65, FLOOR_Y + 0.38, 8.15, 0.45, 0.78, 0.7);
+  const sadieSinkWater = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.014, 0.028, 0.22, 12), waterMaterial
+  );
+  sadieSinkWater.position.set(32.15, FLOOR_Y + 0.73, 8.12);
+  sadieSinkWater.visible = false;
+  roomGroup.add(sadieSinkWater);
+  const sadieShowerWater = new THREE.Group();
+  sadieShowerWater.position.set(33.65, FLOOR_Y, 8.08);
+  sadieShowerWater.visible = false;
+  for (let i = 0; i < 7; i++) {
+    const drop = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.015, 0.78, 7), waterMaterial);
+    drop.position.set(-0.25 + i * 0.08, 1.05, (i % 3 - 1) * 0.07);
+    sadieShowerWater.add(drop);
+  }
+  roomGroup.add(sadieShowerWater);
 
   // Pequenos colliders físicos dos móveis: não cobrem corredores nem portas.
   addCollider(27.55, FLOOR_Y + 0.34, -2.75, 0.52, 0.7, 0.46);
@@ -1006,7 +1021,26 @@ export function buildResidentialWing({
   addInspect('Banheiro de Sadie', 'Banheiro privativo',
     'Suíte com banheiro próprio, box de vidro, lavatório, espelho e metais contemporâneos.',
     32.1, 7.3, 1.9);
-  
+  let sadieSinkRunning = false;
+  let sadieShowerRunning = false;
+  addInspect('Lavatório do banheiro de Sadie', 'Lavatório de Sadie',
+    'Lavatório do banheiro privativo de Sadie.',
+    32.15, 8.45, 1.45, () => {
+      sadieSinkRunning = !sadieSinkRunning;
+      sadieSinkWater.visible = sadieSinkRunning;
+      return sadieSinkRunning ? 'A água da pia de Sadie começou a correr.' : 'A água da pia de Sadie foi fechada.';
+    });
+  addInspect('Chuveiro do banheiro de Sadie', 'Chuveiro de Sadie',
+    'Box de vidro do banheiro privativo de Sadie.',
+    33.65, 8.08, 1.45, () => {
+      sadieShowerRunning = !sadieShowerRunning;
+      sadieShowerWater.visible = sadieShowerRunning;
+      return sadieShowerRunning ? 'O chuveiro de Sadie foi aberto.' : 'O chuveiro de Sadie foi fechado.';
+    });
+  addInspect('Espelho do banheiro de Sadie', 'Espelho de Sadie',
+    'Espelho acima do lavatório do banheiro privativo.',
+    32.15, 8.78, 1.25);
+
   // A bacia está no deck fechado pela barreira invisível; pode ser inspecionada
   // do interior, mas não atravessada até que o selo seja removido numa etapa narrativa.
   return {

@@ -212,8 +212,14 @@ export function buildResidentialWing({
 
   // Banheiro privativo no trecho posterior da suíte. O layout é interpretativo.
   wallZ(-5.05, 28.65, 34.65, [[30.0, 31.75]]);
+  makeDoorOnZ({
+    name: 'Porta do banheiro de Carter', x: 30.875, z: -5.05, width: 1.65,
+    prompt: 'E / INTERAGIR · abrir o banheiro',
+    openedText: 'A porta do banheiro está aberta.',
+    closedText: 'A porta do banheiro está fechada.'
+  });
   box('Divisória de calcário do banheiro', 28.6, FLOOR_Y + 1.65, -7.02, 0.22, 3.3, 3.95, wallMat, true);
-  box('Piso de travertino do banheiro', 31.65, FLOOR_Y + 0.005, -7.03, 5.85, 0.12, 3.85, stoneMat, false);
+  box('Piso de travertino do banheiro', 31.65, FLOOR_Y - 0.055, -7.03, 5.85, 0.12, 3.85, stoneMat, false);
   box('Parede do box', 34.45, FLOOR_Y + 1.58, -7.0, 0.09, 3.05, 3.5, glass, false);
   box('Parede de fundo do box', 32.6, FLOOR_Y + 1.58, -8.75, 3.8, 3.05, 0.08, glass, false);
   box('Borda de pedra do box', 33.35, FLOOR_Y + 0.1, -7.25, 2.15, 0.2, 2.65, stoneMat, true);
@@ -296,7 +302,7 @@ export function buildResidentialWing({
   // base alongada, leões nas extremidades e Shu sustentando a curva central.
   const headrest = new THREE.Group();
   headrest.name = 'Apoio de cabeça de marfim com leões — referência GEM 270';
-  headrest.position.set(31.6, FLOOR_Y + 0.78, -2.65);
+  headrest.position.set(31.6, FLOOR_Y + 0.78, -3.45);
   roomGroup.add(headrest);
   const plinth = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.18, 0.5), darkWood);
   plinth.position.y = -0.13;
@@ -409,6 +415,10 @@ export function buildResidentialWing({
   const computerScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.69, 0.39), screenOff);
   computerScreen.position.set(0, 0.36, 0.031);
   computer.add(computerScreen);
+  const tvScreenMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.12, 0.64), screenOff);
+  tvScreenMesh.position.set(29.15, FLOOR_Y + 1.77, -0.505);
+  tvScreenMesh.rotation.y = Math.PI;
+  roomGroup.add(tvScreenMesh);
   box('Base do monitor', 0, 0.08, 0, 0.18, 0.16, 0.16, bronze, false, computer);
   box('Teclado do computador', 0, -0.08, 0.26, 0.58, 0.045, 0.2, darkWood, false, computer);
   const computerLight = new THREE.PointLight(0x74b8d0, 0, 2.8);
@@ -454,7 +464,7 @@ export function buildResidentialWing({
   addCollider(33.35, FLOOR_Y + 1.0, -7.0, 0.9, 2.0, 0.9);
   addCollider(31.4, FLOOR_Y + 0.43, -5.9, 0.8, 0.9, 0.5);
   addCollider(29.85, FLOOR_Y + 0.39, -7.45, 0.42, 0.8, 0.7);
-  addCollider(31.6, FLOOR_Y + 0.55, -2.65, 2.0, 1.1, 0.55);
+  addCollider(31.6, FLOOR_Y + 0.55, -3.45, 2.0, 1.1, 0.55);
   addCollider(37.2, FLOOR_Y + 0.7, -3.05, 1.65, 1.5, 1.65);
 
   // Objetos e ações: a busca de proximidade é compartilhada com biblioteca e treinamento.
@@ -483,7 +493,7 @@ export function buildResidentialWing({
   let tvOn = false;
   const tvControl = () => {
     tvOn = !tvOn;
-    computerScreen.material = tvOn ? screenOn : screenOff;
+    tvScreenMesh.material = tvOn ? screenOn : screenOff;
     return tvOn ? 'A tela da televisão acendeu.' : 'A televisão foi desligada.';
   };
   addInspect('Televisão de Carter', 'Televisão moderna',

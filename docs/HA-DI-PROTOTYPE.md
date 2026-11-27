@@ -112,3 +112,15 @@ O sistema HA-DI atual foi escrito como código original do projeto, sem dependê
 - [ ] Desktop e mobile mantêm a mesma sequência e resultado.
 
 A integração no GitHub confirma que o código e a documentação foram adicionados; os itens de QA acima só devem ser marcados após teste visual no navegador.
+
+
+### Correção de desempenho e gesto de lançamento (27/11/2026)
+
+- **Causa provável do engasgo:** a versão anterior criava dezenas de Mesh/Sprite, geometrias e materiais individuais no momento do impacto. Na primeira conjuração, isso também podia exigir compilação de novos shaders e envio de muitos objetos à GPU no mesmo frame.
+- **Pool persistente:** projétil, núcleo, flash, casca, ondas, sigilo e corte agora são construídos uma vez e reutilizados. Os 18 raios, 46 faíscas e 9 puffs de fumaça usam três `THREE.InstancedMesh`, mantendo os elementos e a duração do impacto, mas reduzindo draw calls e evitando criar/destruir dezenas de objetos em cada disparo.
+- **Pré-compilação:** `magicSystem.prepare(renderer)` prepara os materiais de HA-DI numa cena temporária antes de liberar os controles. As texturas preservam o fallback Canvas e podem ser substituídas pelos sprites Kenney sem reconstruir os materiais.
+- **Hieróglifo:** removidos o halo circular e os três torus que cercavam o glifo. A inscrição 𓉔𓆓 permanece como único elemento luminoso diante da mão.
+- **Movimento:** Carter passa a usar o clipe `throw_grenade` do Ara 3D Gen como gesto corporal de lançamento, sem equipar nem desenhar uma granada. O pulso é liberado em 0,82 s, sincronizado com o marco de liberação descrito para o clipe; o gesto dos dois dedos e a compensação de cabeça ereta continuam ativos.
+- **Referência de animação:** https://github.com/olatunde85/3d-gen/blob/main/docs/animations.md — categoria Shooter, `Throw grenade`; clipe de 2,2 s, liberação em 0,82 s. A documentação upstream identifica a origem CMU Motion Capture e os respectivos termos de uso.
+- **Compatibilidade:** a mesma implementação atende desktop e mobile; os controles e a cena continuam compartilhados, com apenas os ajustes de resolução já existentes no mobile.
+- **Validação:** sintaxe dos módulos e estrutura do manifesto verificadas. A fluidez real, a leitura da pose no rig e o FPS ainda exigem conferência num navegador desktop e num celular em modo paisagem; não foi feita captura de gameplay nesta alteração.

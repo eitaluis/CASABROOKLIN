@@ -10,12 +10,42 @@ const bagAssetPath = path.join(root, 'assets/models/carter/innerscene-crossbody-
 const bagDownloadUrl = 'https://files.innerscene.com/library/crossbody-bag-42a4ebf2/14c278501b0655fa74c6/crossbody-bag.glb';
 
 const selectedClips = [
-  { slug: 'sprint_shield_loop', id: 'sprint_shield_loop', name: 'Corrida com cajado', category: 'Locomotion', loop: true },
-  { slug: 'sprint_loop', id: 'sprint_loop', name: 'Corrida sem objeto', category: 'Locomotion', loop: true },
-  { slug: 'ninjajump_double', id: 'ninjajump_double', name: 'Salto ninja duplo', category: 'Actions', loop: false },
-  { slug: 'jump_land', id: 'jump_land', name: 'Aterrissagem', category: 'Actions', loop: false },
-  { slug: 'melee_combo', id: 'melee_combo', name: 'Combo desarmado', category: 'Combat', loop: false },
-  { slug: 'sword_heavy_combo', id: 'sword_heavy_combo', name: 'Combo pesado com arma', category: 'Combat', loop: false }
+  {
+    slug: 'sprint_shield_loop', id: 'sprint_shield_loop', name: 'Corrida com cajado',
+    category: 'Locomotion', loop: true,
+    sourcePage: 'https://kinemiq.app/animations/run-sprint-with-a-shield/',
+    sourceLibrary: 'Universal Animation Library 2 by Quaternius'
+  },
+  {
+    slug: 'sprint_loop', id: 'sprint_loop', name: 'Corrida sem objeto',
+    category: 'Locomotion', loop: true,
+    sourcePage: 'https://kinemiq.app/animations/run-sprint/',
+    sourceLibrary: 'Universal Animation Library by Quaternius'
+  },
+  {
+    slug: 'ninjajump_double', id: 'ninjajump_double', name: 'Salto ninja duplo',
+    category: 'Actions', loop: false,
+    sourcePage: 'https://kinemiq.app/animations/jump-ninja-double/',
+    sourceLibrary: 'Universal Animation Library 2 by Quaternius'
+  },
+  {
+    slug: 'jump_land', id: 'jump_land', name: 'Aterrissagem',
+    category: 'Actions', loop: false,
+    sourcePage: 'https://kinemiq.app/animations/jump-landing/',
+    sourceLibrary: 'Universal Animation Library by Quaternius'
+  },
+  {
+    slug: 'melee_combo', id: 'melee_combo', name: 'Combo desarmado',
+    category: 'Combat', loop: false,
+    sourcePage: 'https://kinemiq.app/animations/punch-combo-of-punches-and-kicks/',
+    sourceLibrary: 'Universal Animation Library 2 by Quaternius'
+  },
+  {
+    slug: 'sword_heavy_combo', id: 'sword_heavy_combo', name: 'Combo pesado com arma',
+    category: 'Combat', loop: false,
+    sourcePage: 'https://kinemiq.app/animations/sword-heavy-combo/',
+    sourceLibrary: 'Universal Animation Library by Quaternius'
+  }
 ];
 
 function readGlbJson(buffer, name) {
@@ -93,6 +123,11 @@ async function prepare() {
     creditRecords.push({
       id: clip.id,
       source: url,
+      sourcePage: clip.sourcePage,
+      sourceLibrary: clip.sourceLibrary,
+      author: 'Quaternius',
+      license: 'CC0-1.0',
+      licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
       sourceClip: sourceClips[0]?.name || null,
       glbBytes: buffer.byteLength,
       assetExtras: gltf.asset?.extras || null
@@ -104,19 +139,19 @@ async function prepare() {
     $schema: 'https://ara3dgen.com/schemas/pack-source.v1.json',
     id: 'carter-moves',
     name: 'Carter — corrida, salto e combate',
-    author: 'Quaternius / ACCAD Open Motion Project / The 100STYLE Dataset, via KinemIQ',
-    license: 'Mixed CC0-1.0 / CC-BY-3.0 / CC-BY-4.0',
+    author: 'Quaternius (Universal Animation Library / Universal Animation Library 2), distributed by KinemIQ',
+    license: 'CC0-1.0',
     homepage: 'https://kinemiq.app/animations/',
-    description: 'Seis animações escolhidas para Carter Kane. Os arquivos-fonte são baixados dos GLBs públicos do KinemIQ e retargetados para o rig Ara por ara3d pack.',
+    description: 'Seis clipes CC0 escolhidos para Carter Kane, baixados do catálogo KinemIQ e retargetados para o rig Ara por ara3d pack.',
     animations
   };
   await writeFile(path.join(buildDir, 'pack.json'), JSON.stringify(pack, null, 2) + '\n');
   await writeFile(path.join(buildDir, 'source-credits.json'), JSON.stringify({
     generatedAt: new Date().toISOString(),
     bagAsset: { source: 'Innerscene - original model', url: 'https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2', license: 'CC0-1.0', file: 'assets/models/carter/innerscene-crossbody-bag.glb', bytes: bagBuffer.byteLength },
-    sourceLibrary: 'KinemIQ public animation library',
+    sourceLibrary: 'KinemIQ public animation library; all six selected clips are Quaternius Universal Animation Library / Universal Animation Library 2',
     sourceCreditsPage: 'https://kinemiq.app/sources/',
-    licensingNote: 'KinemIQ identifies Quaternius Universal Animation Library/UAL2 as CC0-1.0, Open Motion Project (ACCAD / The Ohio State University) as CC-BY-3.0, and The 100STYLE Dataset as CC-BY-4.0. The pack declares the mixed source set; retain the per-file metadata and attribution when redistributing.',
+    licensingNote: 'Each of the six selected clip pages identifies the motion as CC0 1.0 and names the corresponding Quaternius Universal Animation Library or Universal Animation Library 2. The wider KinemIQ catalogue also contains CC BY 3.0 and CC BY 4.0 motions, but those licences do not apply to these six selected clips. Page-level source and licence are recorded on each clip below.',
     clips: creditRecords
   }, null, 2) + '\n');
   console.log('Pack source preparado com ' + animations.length + ' animações.');

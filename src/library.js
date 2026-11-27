@@ -9,7 +9,7 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   const wallTop = -6.65;
   const wallBottom = floorY;
   const wallHeight = wallTop - wallBottom;
-  const rowCenters = [-15.55, -11.95, -8.35];
+  const rowCenters = [-15.56, -11.96, -8.36];
   const columns = 16;
   const nicheRadius = 0.57;
   const segmentWidth = (Math.PI * 2 * radius) / columns;
@@ -17,8 +17,6 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   // Desativa apenas as versões antigas da biblioteca. A escada helicoidal e a
   // cartografia de Nut/Geb ficam preservadas nesta etapa para não quebrar a rota.
   const legacyNames = new Set([
-    'parede lisa antiga da biblioteca',
-    'piso antigo da biblioteca',
     'mosaico antigo da biblioteca',
     'mesa de leitura antiga da biblioteca',
     'pé da mesa antiga da biblioteca',
@@ -27,6 +25,10 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   ]);
   scene.traverse((object) => {
     const name = object.name || '';
+    if (name === 'parede lisa antiga da biblioteca') {
+      object.scale.x = 1.02;
+      object.scale.z = 1.02;
+    }
     if (legacyNames.has(name)) object.visible = false;
     if (
       name === 'estante curva' ||
@@ -279,7 +281,7 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
       const angle = (col + 0.5) * (Math.PI * 2 / columns);
       const panel = new THREE.Shape();
       const halfWidth = segmentWidth * 0.5 - 0.055;
-      const halfHeight = 1.53;
+      const halfHeight = 1.75;
       panel.moveTo(-halfWidth, -halfHeight);
       panel.lineTo(halfWidth, -halfHeight);
       panel.lineTo(halfWidth, halfHeight);
@@ -472,8 +474,8 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
 
       if (row === 0 && interactables) {
         let opened = false;
-        const worldX = niche.position.x - inward.x * 0.72;
-        const worldZ = niche.position.z - inward.z * 0.72;
+        const worldX = niche.position.x + inward.x * 0.72;
+        const worldZ = niche.position.z + inward.z * 0.72;
         interactables.push({
           name: 'cápsula de papiro ' + String(col + 1).padStart(2, '0'),
           label: 'Examinar cápsula de papiro',

@@ -180,6 +180,8 @@ export function buildBedroom({
     pane.position.set(31.59, floorY + 1.4, z);
     pane.castShadow = false;
     root.add(pane);
+    // Fixed side lights remain solid even when the central sliding leaves open.
+    addCollider(31.6, floorY + 1.4, z, 0.18, 2.7, 2.2);
   }
 
   const doorPanelA = addBox('folha móvel esquerda da porta de vidro',

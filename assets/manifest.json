@@ -551,6 +551,12 @@
       "path": "src/bedroom.js",
       "role": "Geometria procedural local de reserva para cama, criado, TV, estação de computador, kitchenette, frigobar, banheiro e caixas acústicas. Continua visível quando o GLB remoto não carrega.",
       "license": "project-original-code"
+    },
+    {
+      "id": "carter-bedroom-stereo-amplifier-20261127",
+      "path": "src/bedroom.js",
+      "role": "Receiver estéreo procedural original, com painel frontal, três controles de latão e LED de estado entre as duas caixas acústicas; representa o aparelho de som mencionado no romance sem alegar que o texto especifica este modelo.",
+      "license": "project-original-code"
     }
   ],
   "openSourceReferences": [

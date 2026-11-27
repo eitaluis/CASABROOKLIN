@@ -294,19 +294,19 @@
     {
       "id": "residential-wing-original-mit-furniture",
       "path": "assets/models/residential/*.glb",
-      "role": "Local GLB copies of original Blender-authored furniture assets: king-size bed base, nightstands, desk, desk chair, table/floor lamps, kitchenette counter, refrigerator, shower enclosure, sink, toilet, mirror, towel rail, wardrobe, flat-screen TV and TV console. Files contain embedded PBR materials; metres, Y-up and bottom-centre origins; do not require Draco, Meshopt or KTX2.",
+      "role": "Local GLB copies of original Blender-authored MIT furniture: nightstands, desk, desk chair, table/floor lamps, kitchenette counter, refrigerator, shower enclosure, sink, toilet, mirror, towel rail, TV, TV console and wardrobes. All contain embedded PBR materials. The copied bed.glb is 0 bytes and is NOT used; both king beds are original Three.js geometry until a valid bed GLB is imported and visually approved.",
       "license": "MIT; original geometry/materials from https://github.com/jamesEmerson112/NVIDIA-Crusoe-The-Recursive-Agents-Hackathon; source license preserved at assets/models/residential/LICENSE-MIT.txt"
     },
     {
       "id": "residential-egyptian-headrest-scrying-bowl",
       "path": "src/residential-wing.js",
-      "role": "Original game geometry for the ivory headrest with lions and Shu based on the Grand Egyptian Museum GEM 270 historical reference, plus a low bronze scrying bowl on a stone pedestal inspired by the later narrative description; neither museum object is imported as a game asset.",
+      "role": "Original game geometry for the ivory headrest with lions and Shu based on Grand Egyptian Museum GEM 270. The headrest is placed on the bed as a pillow-scale object (~29 cm), not a headboard or nightstand ornament; a low bronze scrying bowl on a stone pedestal is also original geometry.",
       "license": "project-original-code; visual references: https://gem.eg/en/collection/artefacts/lions-headrest and https://gem.eg/en/collection/artefacts/fluted-basin-of-mesehti"
     },
     {
       "id": "residential-wing-layout-and-interactions",
       "path": "src/residential-wing.js + src/grand-salon.js + src/main.js + src/world.js",
-      "role": "Interpretive third-floor corridor and adjacent residential rooms, upper-gallery physical opening, hinged room/bathroom doors with dynamic colliders, shared zone-filtered E/mobile interactions, kitchenette, bathroom, electronically interactive devices, blocked magical glazing and deck.",
+      "role": "Interpretive third-floor corridor connecting the upper east gallery through a physically open side-room passage to Carter and Sadie's adjoining suites. Includes individual bedroom doors, Sadie's walk-in closet and private bathroom, animated minibar, CC0 armchair, kitchenette, modern devices, shared E/mobile interactions, rest-to-energy recovery, magical acoustic runes, blocked magical deck glazing and reversible hall/bedroom zone thresholds.",
       "license": "project-original-code; canon-vs-interpretation and object-level asset decisions documented in docs/RESIDENTIAL-WING-STUDY.md"
     }
   ],
@@ -624,6 +624,13 @@
       "license": "CC0-1.0",
       "role": "reviewed external animation pack candidate: 35 FBX/GLB humanoid clips on a 66-bone, 30 fps skeleton, including sword slash/idle/block, crouch locomotion, jump phases and directional hit reactions; not yet imported because the Shabti enemies are procedural non-skinned meshes and Carter's current combat uses Ara-native clips; Ara content packs can retarget compatible GLB/FBX/BVH clips onto the Carter rig",
       "runtimeImported": false
+    },
+    {
+      "id": "3dassetsdev-residential-minibar-and-armchair",
+      "source": "https://3dassets.dev/assets/hotel-and-resort-operations-minibar-cabinet-601f19a1; https://3dassets.dev/assets/hotel-and-resort-operations-guest-armchair-bb3c4e37",
+      "license": "CC0-1.0",
+      "role": "Runtime direct CDN GLBs: minibar cabinet (0.64 x 0.89 x 0.591 m, 960 triangles, open/close clips) and guest armchair (0.745 x 0.83 x 0.72 m, 2,320 triangles). Both loaded via GLTFLoader; the provider declares CORS-enabled immutable URLs and no Draco/Meshopt/KTX2 requirement. AI-assisted authoring is disclosed on both asset pages.",
+      "runtimeImported": true
     }
   ]
 }

@@ -130,7 +130,7 @@ As quatro estatuetas humanas de cerâmica permanecem diferentes dos guerreiros m
 1. **Figura de mãos vazias:** ao interagir, desperta, vai até a área de armazenamento, procura a cápsula com a versão em inglês e retorna; a folha recuperada aparece sobre a mesa.
 2. **Figura com cajado em gancho:** ao interagir, sai do pedestal e retorna com uma representação simplificada da Paleta de Narmer.
 
-A movimentação atual é **procedural** (deslocamento, oscilação e inclinação), não um clip de caminhada humanoide retargetado. O pacote KinemIQ CC0 (35 clips GLB/FBX num esqueleto de 66 ossos) foi avaliado, mas não importado: as estatuetas atuais são geometrias articuladas por componentes, sem skin weights/skeleton compatível. Para usar o pacote será necessário rigar ou reconstruir as estatuetas como malha skinned e então testar o retarget; não se deve fingir que o pack já está no runtime.
+A movimentação atual é **procedural** (deslocamento, oscilação e inclinação), não um clip de caminhada humanoide retargetado. O pacote KinemIQ CC0 (35 clips GLB/FBX num esqueleto de 66 ossos) foi avaliado, mas não importado: as estatuetas atuais são geometrias articuladas por componentes, sem skin weights/skeleton compatível. Para usar o pacote será necessário rigar ou reconstruir as estatuetas como malha skinned e então testar o retarget; não se deve fingir que o pack já está no runtime. Durante o trecho de retorno, a figura mostra na mão o pequeno rolo de papiro ou a miniatura da paleta; ao chegar ao pedestal, o objeto é transferido visualmente para a mesa e a miniatura de mão some.
 
 ### Mesa de trabalho de Julius Kane
 

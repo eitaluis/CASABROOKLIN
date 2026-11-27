@@ -362,3 +362,33 @@ O piso de Geb e a abóbada de Nut foram redimensionados para a nova câmara, mas
 ### Validação
 
 A integração e a sintaxe foram verificadas estaticamente. A travessia, as cápsulas, as tarefas dos servos, a mesa, a leitura do mural, o enquadramento e o desempenho ainda precisam ser testados no navegador desktop e em celular paisagem. Não marcar este setor como visualmente aprovado antes dessa inspeção.
+
+## Quarto de Carter — primeira integração asset-first — 27/11/2026
+
+A ala residencial deixou de ser o blockout com duas camas, cômoda e parede central. O bloco antigo foi removido de src/world.js; src/bedroom.js constrói agora a suíte de Carter no terceiro pavimento e é montado no mesmo grupo de interiores em desktop e mobile.
+
+### Canônico e interpretação
+
+O romance The Red Pyramid situa Carter e Sadie em quartos adjacentes no terceiro andar. O quarto de Carter inclui cama king-size, apoio de cabeça egípcio de marfim com leões e hieróglifos, kitchenette com ginger ale/Twix/Skittles, TV, computador, aparelho de som, banheiro privativo e portas de vidro para um deck com vista ao porto, Manhattan e Estátua da Liberdade. Na chegada, tanto as portas do deck quanto a passagem para o quarto de Sadie estão trancadas.
+
+A planta cotada, cores, acabamento de nogueira, distribuição do banheiro, banheira, geladeira e desenho do deck são interpretação de produção. A ficha oficial do Grand Egyptian Museum para o Lions Headrest #270 orienta a referência histórica de marfim, Shu ajoelhado, apoio curvo e dois leões; Shu é referência histórica, não informação textual explícita do romance.
+
+### Construção e interação
+
+- A sala foi posicionada na cota y=20,625, correspondente ao terceiro pavimento.
+- A parede divisória central foi removida. O banheiro fica em um canto e recebe painéis de vidro fosco, sem atravessar a linha de visão da suíte.
+- A fachada voltada ao East River recebe vidro panorâmico e duas folhas deslizantes. A primeira interação destranca; a seguinte abre/fecha.
+- O deck prolonga o piso em direção ao East River e recebe guarda-corpo de vidro e bronze.
+- A porta de comunicação com Sadie existe na parede sul e permanece trancada, com mensagem contextual.
+- O apoio de cabeça é geometria independente e está apoiado sobre o colchão.
+- TV, computador, kitchenette, áudio, banheiro, apoio e portas têm prompts E/INTERAGIR compartilhados.
+
+### Modelos e materiais
+
+Os móveis principais usam modelos Tevy CC0 com URLs de versão fixada: double-bed v1, nightstand v2, tv-stand v2, office-desk v2, kitchen-base-unit-sink v1, kitchen-base-unit-drawers v1, bathroom-vanity v1, bathtub v1, toilet v1 e bookshelf-speaker v1. O frigobar usa o modelo CC0 Innerscene Undercounter Fridge como tentativa de carregamento remoto, com fallback procedural.
+
+Os GLBs Tevy usam geometria Meshopt e texturas KTX2. src/bedroom.js registra MeshoptDecoder e KTX2Loader do Three.js r165.0. Desktop carrega LOD1; mobile carrega LOD2. A documentação da fonte informa HTTPS, CORS aberto e licença CC0. Os arquivos permanecem nos provedores originais; não foram armazenados no repositório nesta etapa.
+
+### Estado de QA
+
+A checagem estática de sintaxe dos módulos alterados foi concluída. Ainda falta validar no navegador se cada GLB é servido corretamente, se a escala/orientação está correta com Carter, se as portas e colisores funcionam, e se a vista do deck corresponde ao skyline de Manhattan em desktop e celular paisagem. Não marcar como visualmente aprovado antes desses testes.

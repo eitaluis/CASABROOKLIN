@@ -7,17 +7,30 @@ export function buildResidentialWing({
   THREE, scene, colliders, groundSurfaces, interactables,
   materials = {}, isTouchDevice = false
 }) {
-  const wallMat = (materials.plaster || materials.stone).clone();
-  wallMat.color?.set(0xd6c9ad);
-  wallMat.roughness = 0.88;
-
-  const stoneMat = (materials.stone || materials.plaster).clone();
-  stoneMat.color?.set(0xc9b895);
-  stoneMat.roughness = 0.84;
-
-  const woodMat = (materials.wood || materials.cedar).clone();
-  woodMat.color?.set(0x8b6746);
-  woodMat.roughness = 0.78;
+  const textureLoader = new THREE.TextureLoader();
+  const makeLocalPbr = (folder, tint, repeatX, repeatY, roughness) => {
+    const loadMap = (file, colorSpace = THREE.NoColorSpace) => {
+      const map = textureLoader.load(new URL('../assets/textures/' + folder + '/' + file, import.meta.url).href);
+      map.wrapS = THREE.RepeatWrapping;
+      map.wrapT = THREE.RepeatWrapping;
+      map.repeat.set(repeatX, repeatY);
+      map.anisotropy = isTouchDevice ? 4 : 8;
+      map.colorSpace = colorSpace;
+      return map;
+    };
+    const material = new THREE.MeshStandardMaterial({
+      color:tint,
+      map:loadMap('color.webp',THREE.SRGBColorSpace),
+      normalMap:loadMap('normal.webp'),
+      roughnessMap:loadMap('roughness.webp'),
+      roughness
+    });
+    material.normalScale.set(0.62,0.62);
+    return material;
+  };
+  const wallMat = makeLocalPbr('plaster-smooth-beige',0xe0d4bc,2.1,1.45,0.9);
+  const stoneMat = makeLocalPbr('tile-limestone-beige',0xd0c19f,2.7,1.8,0.88);
+  const woodMat = makeLocalPbr('wood-walnut',0x9a744f,2.2,1.35,0.82);
 
   const darkWood = new THREE.MeshStandardMaterial({ color: 0x3d2a20, roughness: 0.68 });
   const bronze = new THREE.MeshStandardMaterial({ color: 0x88613b, metalness: 0.72, roughness: 0.34 });
@@ -34,8 +47,8 @@ export function buildResidentialWing({
     color: 0x9dbdc4, emissive: 0x376a7b, emissiveIntensity: 0.9,
     metalness: 0.04, roughness: 0.16
   });
-  const floorMat = stoneMat.clone();
-  floorMat.color?.set(0xc8b996);
+  const floorMat = woodMat.clone();
+  floorMat.color?.set(0xb58e64);
 
   const roomGroup = new THREE.Group();
   roomGroup.name = 'Ala residencial — reconstrução interpretativa do terceiro andar';
@@ -90,7 +103,7 @@ export function buildResidentialWing({
 
   // Corredor físico: o eixo oeste continua diretamente a partir da sala lateral
   // da galeria superior. A geometria exata do corredor é interpretação espacial.
-  addFloor('Piso do corredor residencial', 20.25, 0, 4.7, 18.0);
+  addFloor('Piso do corredor residencial', 20.25, 0, 4.7, 18.0, stoneMat);
   box('Rodapé de calcário do corredor norte', 20.25, FLOOR_Y + 0.09, -8.98, 4.7, 0.18, 0.22, stoneMat, true);
   box('Rodapé de calcário do corredor sul', 20.25, FLOOR_Y + 0.09, 8.98, 4.7, 0.18, 0.22, stoneMat, true);
   box('Parede lateral norte do corredor', 20.25, FLOOR_Y + 1.75, -9.05, 4.7, 3.5, 0.24, wallMat, true);

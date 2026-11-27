@@ -8,7 +8,8 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   let zoneName = 'dock';
   let cameraYaw = 0;
   let cameraPitch = 0.20;
-  let cameraDistance = 3.2;
+  let cameraDistance = window.innerHeight > window.innerWidth ? 4.0 : 3.2;
+  window.addEventListener('resize', () => { cameraDistance = window.innerHeight > window.innerWidth ? 4.0 : 3.2; });
   let pointerLocked = false;
   let controlsLocked = false;
   let firstCameraFrame = true;
@@ -363,7 +364,12 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     if (direction.lengthSq() > 0.0001) direction.normalize();
 
     const injured = character.isInjured === true;
-    const running = !controlsLocked && !injured && (keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint);
+    const keyboardSprint = keys.has('ShiftLeft') || keys.has('ShiftRight');
+    // No celular, empurrar o joystick progressivamente para frente aumenta a velocidade.
+    // A corrida entra suavemente no trecho final do curso, sem botão separado.
+    const forwardPush = Math.max(0, -touch.moveY);
+    const analogSprintBlend = THREE.MathUtils.clamp((forwardPush - 0.48) / 0.48, 0, 1);
+    const running = !controlsLocked && !injured && (keyboardSprint || touch.sprint || analogSprintBlend > 0.02);
     const injuryMultiplier = Number.isFinite(character.movementMultiplier) ? character.movementMultiplier : 1;
     const characterScale = (Number.isFinite(character.height) ? character.height : 1.75) / 1.78;
     // Keep normal walking below Ara's walk/run blend threshold, so the unarmed
@@ -371,7 +377,10 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     // Ara's natural run pace; the approved staff sprint keeps its original speed.
     const walkSpeed = 1.5 * characterScale * 0.98;
     const runSpeed = character.isSprintArmed === true ? 4.2 : 3.7 * characterScale;
-    const speedTarget = input.moving ? (running ? runSpeed : walkSpeed) * input.magnitude * injuryMultiplier : 0;
+    const analogSpeed = walkSpeed + (runSpeed - walkSpeed) * analogSprintBlend;
+    const speedTarget = input.moving
+      ? (keyboardSprint || touch.sprint ? runSpeed : analogSpeed) * input.magnitude * injuryMultiplier
+      : 0;
     const currentPosition = getPosition();
     limitToZone(currentPosition, direction, Math.max(speedTarget, 2.25) * dt * 1.35);
 

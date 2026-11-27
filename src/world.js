@@ -66,7 +66,7 @@ export function buildWorld(ctx){
    const geometry = new THREE.ShapeGeometry(shape, 10);
    const positions = geometry.getAttribute('position'), uv = geometry.getAttribute('uv');
    // Broken Brick Wall: scan físico de 1,8 × 1,8 m.
-   for (let i = 0; i < positions.count; i++) uv.setXY(i, (positions.getX(i) + 0.9) / 1.8, (positions.getY(i) + 0.9) / 1.8);
+   for (let i = 0; i < positions.count; i++) uv.setXY(i, (positions.getX(i) + width * 0.5) / 1.8, (positions.getY(i) + height * 0.5) / 1.8);
    uv.needsUpdate = true;
    geometry.computeVertexNormals();
    const patch = new THREE.Mesh(geometry, brokenBrickMaterial);
@@ -134,9 +134,9 @@ for(let y=.7;y<7.7;y+=.55)box('ripas do portão',[0,y,15.9],[8.8,.07,.08],metal,
 makeGraffiti(-12,4.2,15.9);makeGraffiti(13,4.5,15.9);
 // Danos pontuais, recuados das tábuas, do portão e das duas pichações frontais.
 addBrokenBrickPatch(-16.5, 2.45, 15.535, 3.0, 2.05, 0, 0);
-addBrokenBrickPatch(16.9, 2.35, 15.535, 2.65, 1.8, 0, 1);
-addBrokenBrickPatch(21.535, 3.2, -6.8, 3.0, 2.0, Math.PI / 2, 2);
-addBrokenBrickPatch(-21.535, 3.8, -7.2, 2.65, 1.8, -Math.PI / 2, 1);
+addBrokenBrickPatch(17.2, 2.2, 15.535, 2.4, 1.7, 0, 1);
+addBrokenBrickPatch(20.235, 3.2, -6.8, 3.0, 2.0, Math.PI / 2, 2);
+addBrokenBrickPatch(-20.235, 3.8, -7.2, 2.65, 1.8, -Math.PI / 2, 1);
 for(let x of [-18,18]){box('tubo de drenagem',[x,6,15.95],[.2,11,.2],metal);cyl('lâmpada industrial',[x,10.8,16.4],.22,.22,.3,new THREE.MeshStandardMaterial({color:0xd8b77a,emissive:0xb07b36,emissiveIntensity:1.4}),12)}
 // Equipamento abandonado e pilhas de sucata.
 for(let i=0;i<15;i++){const x=-28+Math.random()*17,z=8+Math.random()*20,y=.55+Math.random()*1.4;const m=box('sucata metálica',[x,y,z],[1.5+Math.random()*2,.35+Math.random()*1.1,.7+Math.random()*1.8],i%2?metal:darkBrick);m.rotation.y=Math.random()*1.8;m.rotation.z=(Math.random()-.5)*.4}

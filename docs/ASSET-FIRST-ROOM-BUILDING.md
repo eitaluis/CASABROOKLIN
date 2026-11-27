@@ -16,6 +16,16 @@ Todo espaço começa pela compreensão do lugar descrito no livro e por uma pesq
 
 ## Fluxo obrigatório
 
+**Skill operacional do projeto:** consulte sempre o [SKILL.md — pesquisa visual e aprovação de assets](../SKILL.md). Este fluxo vale para o projeto Brooklyn inteiro, incluindo personagens, roupas, acessórios, objetos, salas, texturas, luzes, efeitos, feitiços, animações, combate e interações — não apenas para ambientes.
+
+### Fase 00 — aprovação visual (bloqueio antes da implementação)
+- [ ] Depois de compreender o pedido, pesquisar a descrição nas passagens do(s) livro(s) e registrar o que é canônico e o que o texto não especifica.
+- [ ] Buscar ilustrações oficiais do autor/editora e material de ilustradores creditados; separar essas fontes de fan art e referências históricas.
+- [ ] Buscar assets 3D/código/texturas reais em repositórios e páginas dos autores; conferir preview, licença, formato, medidas, hierarquia, pivôs/rig, texturas e compatibilidade Three.js/mobile.
+- [ ] Preparar um painel visual no chat com as imagens/visualizadores de cada referência e candidato, diferenças, vantagens, limitações e recomendação.
+- [ ] Aguardar aprovação explícita do usuário. Não baixar, alterar, criar nem integrar o novo visual/asset antes dessa aprovação.
+- [ ] Se nenhum asset servir, apresentar uma proposta de geometria original com referências visuais antes de modelar.
+
 ### Fase 01 — leitura e intenção
 - [ ] Ler as passagens do livro relacionadas ao cômodo, não apenas uma frase isolada.
 - [ ] Criar lista de elementos canônicos, referências históricas e detalhes interpretativos.

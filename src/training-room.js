@@ -300,7 +300,7 @@ export function buildTrainingRoom({
   }
   const wallMaps=makeLimestoneWallMaps();
   const wallMat=new THREE.MeshStandardMaterial({map:wallMaps.map,bumpMap:wallMaps.bump,bumpScale:.035,color:0xfff4df,roughness:.88,metalness:0});
-  const endWallMat=new THREE.MeshStandardMaterial({map:wallMaps.map,bumpMap:wallMaps.bump,bumpScale:.048,color:0xffe4b7,roughness:.92,metalness:0});
+  const endWallMat=new THREE.MeshStandardMaterial({map:wallMaps.map,bumpMap:wallMaps.bump,bumpScale:.048,color:0xffe4b7,roughness:.92,metalness:0,side:THREE.DoubleSide,transparent:false,opacity:1,depthWrite:true,depthTest:true});
   // Reboco mineral PBR local CC0; alvenaria procedural permanece como fallback offline.
   const wallPbrColor=roomTextureLoader.load('./assets/textures/plaster-smooth-beige/color.webp',
     tex=>{tex.colorSpace=THREE.SRGBColorSpace;},undefined,

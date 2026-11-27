@@ -175,7 +175,7 @@ async function publish() {
     hipsBuffer.writeInt16LE(0, frame * 6 + 4);
   }
   unarmedSprint.motion.hips = hipsBuffer.toString('base64');
-  await writeFile(finalPack, JSON.stringify(pack, null, 2) + '\\n');
+  await writeFile(finalPack, JSON.stringify(pack, null, 2) + '\n');
   await copyFile(path.join(buildDir, 'source-credits.json'), finalCredits);
   await rm(buildDir, { recursive: true, force: true });
   await rm(generatedPack, { force: true });

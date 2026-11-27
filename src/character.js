@@ -29,6 +29,9 @@ const CINEMATIC_ANIMATIONS = [
   'talk_gestures',
   'wave',
   'fight_idle',
+  'sword_idle',
+  'sword_combo',
+  'sword_thrust',
   'point',
   'bow'
 ];

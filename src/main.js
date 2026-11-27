@@ -6,9 +6,9 @@ import { buildInteriorDetails } from './interior-details.js?v=great-hall-travers
 import { buildLibrary } from './library.js?v=library-asset-first-20261127b';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-traversal-20261127b';
 import { buildTrainingRoom } from './training-room.js?v=museum-statues-board-20261127b';
-import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
+import { createInventory } from './inventory.js?v=inventory-asset-first-hand-sphere-20261127a';
 import { createMagicSystem } from './magic-system.js?v=ha-di-direct-combat-point-20261127a';
-import { createCharacter } from './character.js?v=ha-di-fighting-point-20261127a';
+import { createCharacter } from './character.js?v=inventory-sword-action-clips-20261127a';
 import { createThirdPersonController } from './third-person.js?v=yaw-only-neutral-root-20261127a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -340,13 +340,21 @@ haDiButton?.addEventListener('click', event => {
 const inventory = createInventory({
   THREE, character,
   setControlsLocked: controller.setLocked,
+  canSpendEnergy: (amount) => playerVitals.energy >= amount,
+  spendEnergy: (amount) => {
+    if (playerVitals.energy < amount) return false;
+    playerVitals.energy = Math.max(0, playerVitals.energy - amount);
+    return true;
+  },
+  retrievalCost: 2,
+  onInsufficientEnergy: (amount) => toast('Energia insuficiente: retirar um objeto do Duat custa ' + amount + ' ponto(s).'),
   onUse: (weapon) => {
     const practice = trainingRoom.getStatus();
     if (weapon === 'staff' && practice.targetPracticeActive && !practice.challengeActive) {
       const spellCost = 12;
       if (playerVitals.energy < spellCost) {
         toast('Energia insuficiente para lançar o orbe de treino.');
-        return;
+        return false;
       }
       playerVitals.energy = Math.max(0, playerVitals.energy - spellCost);
     }
@@ -357,6 +365,7 @@ const inventory = createInventory({
       zone: controller.zone
     });
     if (result) toast(result);
+    return true;
   }
 });
 

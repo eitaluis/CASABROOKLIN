@@ -1719,34 +1719,48 @@ function addFireplaceSurround(scene,stone,brass,wood) {
 }
 
 function arcBenchBandGeometry(innerRadius,outerRadius,startAngle,endAngle,bottomY,topY,centerZ=-.5,segments=96) {
-  const positions=[],indices=[];
+  const positions=[],uvs=[],indices=[];
   const point=(angle,radius,y)=>[
     Math.sin(angle)*radius,y,centerZ+Math.cos(angle)*radius
   ];
-  const quad=(a,b,c,d)=>{
+  const quad=(a,b,c,d,faceUvs)=>{
     const base=positions.length/3;
     positions.push(...a,...b,...c,...d);
+    uvs.push(...faceUvs.flat());
     indices.push(base,base+1,base+2,base,base+2,base+3);
   };
   for(let i=0;i<segments;i++) {
     const a=startAngle+(endAngle-startAngle)*i/segments;
     const b=startAngle+(endAngle-startAngle)*(i+1)/segments;
+    const u0=i/segments,u1=(i+1)/segments;
+    // Top and underside map along the arc (U) and across the seat depth (V).
     quad(point(a,innerRadius,topY),point(a,outerRadius,topY),
-      point(b,outerRadius,topY),point(b,innerRadius,topY));
+      point(b,outerRadius,topY),point(b,innerRadius,topY),
+      [[u0,0],[u0,1],[u1,1],[u1,0]]);
     quad(point(b,innerRadius,bottomY),point(b,outerRadius,bottomY),
-      point(a,outerRadius,bottomY),point(a,innerRadius,bottomY));
+      point(a,outerRadius,bottomY),point(a,innerRadius,bottomY),
+      [[u1,0],[u1,1],[u0,1],[u0,0]]);
+    // Outer and inner vertical faces map along the arc and through their height.
     quad(point(a,outerRadius,bottomY),point(b,outerRadius,bottomY),
-      point(b,outerRadius,topY),point(a,outerRadius,topY));
+      point(b,outerRadius,topY),point(a,outerRadius,topY),
+      [[u0,0],[u1,0],[u1,1],[u0,1]]);
     quad(point(b,innerRadius,bottomY),point(a,innerRadius,bottomY),
-      point(a,innerRadius,topY),point(b,innerRadius,topY));
+      point(a,innerRadius,topY),point(b,innerRadius,topY),
+      [[u1,0],[u0,0],[u0,1],[u1,1]]);
   }
   quad(point(startAngle,innerRadius,bottomY),point(startAngle,outerRadius,bottomY),
-    point(startAngle,outerRadius,topY),point(startAngle,innerRadius,topY));
+    point(startAngle,outerRadius,topY),point(startAngle,innerRadius,topY),
+    [[0,0],[1,0],[1,1],[0,1]]);
   quad(point(endAngle,outerRadius,bottomY),point(endAngle,innerRadius,bottomY),
-    point(endAngle,innerRadius,topY),point(endAngle,outerRadius,topY));
+    point(endAngle,innerRadius,topY),point(endAngle,outerRadius,topY),
+    [[0,0],[1,0],[1,1],[0,1]]);
   const geometry=new THREE.BufferGeometry();
   geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
-  geometry.setIndex(indices);geometry.computeVertexNormals();
+  geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  geometry.computeBoundingBox();
+  geometry.computeBoundingSphere();
   return geometry;
 }
 
@@ -1858,7 +1872,7 @@ function addThothBaseSeating(scene,stone,marble,wood,brass,colliders,interactabl
 function createTaperedTube(points,radii,material,tubularSegments=48,radialSegments=16) {
   const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)),false,'centripetal');
   const frames=curve.computeFrenetFrames(tubularSegments,false);
-  const positions=[],indices=[];
+  const positions=[],uvs=[],indices=[];
   const radiusAt=t=>{
     const scaled=t*(radii.length-1),index=Math.min(radii.length-2,Math.floor(scaled));
     return THREE.MathUtils.lerp(radii[index],radii[index+1],scaled-index);
@@ -1869,8 +1883,9 @@ function createTaperedTube(points,radii,material,tubularSegments=48,radialSegmen
       const angle=j/radialSegments*Math.PI*2;
       const normal=frames.normals[i].clone().multiplyScalar(Math.cos(angle));
       const binormal=frames.binormals[i].clone().multiplyScalar(Math.sin(angle));
-      const vertex=centre.addScaledVector(normal,radius).addScaledVector(binormal,radius);
+      const vertex=centre.clone().addScaledVector(normal,radius).addScaledVector(binormal,radius);
       positions.push(vertex.x,vertex.y,vertex.z);
+      uvs.push(t,j/radialSegments);
     }
   }
   for(let i=0;i<tubularSegments;i++)for(let j=0;j<radialSegments;j++) {
@@ -1879,7 +1894,9 @@ function createTaperedTube(points,radii,material,tubularSegments=48,radialSegmen
   }
   const geometry=new THREE.BufferGeometry();
   geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));
   geometry.setIndex(indices);geometry.computeVertexNormals();
+  geometry.computeBoundingBox();geometry.computeBoundingSphere();
   const mesh=new THREE.Mesh(geometry,material);
   mesh.castShadow=true;mesh.receiveShadow=true;
   return mesh;

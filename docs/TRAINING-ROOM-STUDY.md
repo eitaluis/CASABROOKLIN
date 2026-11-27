@@ -201,3 +201,15 @@ O catálogo inicial e a separação entre feitiços canônicos, exemplos narrati
 **Candidatos para shabtis:** o Kelsey Museum oferece um STL de ushabti de faiança azul-esverdeada (13,5 cm) com corpo mumiforme, barba, toucado e inscrição; o projeto de Liverpool oferece um modelo interativo em point cloud/mesh; a Factum Foundation publicou digitalizações de dois ushabtis do túmulo de Seti I. Estes são objetos funerários pequenos, não estátuas monumentais de parede.
 
 A avaliação visual e a escolha entre (A) shabtis em nichos e (B) relevos arquitetônicos egípcios devem acontecer antes de remover os relevos existentes.
+
+
+### Reconstrução escultórica e nichos com shabtis (27/11/2026)
+
+- Os cinco bustos laterais procedurais foram removidos. No lugar, a sala recebeu cinco nichos de calcário com shabtis mumiformes em faiança azul-esverdeada, toucado nemes, barba postiça e coluna de inscrição. Os exemplares de parede são decorativos; os quatro shabtis da quadra continuam sendo os únicos agentes interativos.
+- A composição de nicho foi dimensionada para não invadir a área segura de navegação e combate. As miniaturas decorativas não geram colisão nem participam da IA.
+- A efígie de Rá foi revista a partir das referências do Metropolitan Museum e do scan de Re-Horakhty: cabeça de falcão em diorito escuro, bico curvo, olhos incisos, nemes de pedra e disco solar maciço elevado. O aro de basquete foi separado do disco solar e projetado à frente do corpo com suportes próprios; a lógica da cesta aponta para a nova posição do aro.
+- A máscara de profundidade invisível da casca externa da mansão agora é desativada ao entrar no interior e reativada ao retornar à margem. Isso corrige o conflito de profundidade que podia encobrir paredes internas com a máscara externa sem cor.
+- A correção de opacidade das duas paredes de fundo permanece ativa. Desktop e mobile compartilham o mesmo módulo, cenário e cache revisionado.
+- A bola de basquete e seu raio de colisão não foram modificados nesta iteração.
+- **Limite de integração dos scans:** os escaneamentos de Re-Horakhty e shabti foram usados como referência iconográfica e de proporção; os arquivos binários não foram incorporados ao runtime nesta passagem. As geometrias implementadas são modelos procedurais originais da CASABROOKLIN, não scans apresentados como originais arqueológicos.
+- **QA:** validação de sintaxe dos módulos passou. Ainda é necessária inspeção visual em navegador para conferir proporção, posição do aro e encaixe dos nichos no interior.

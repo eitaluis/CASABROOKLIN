@@ -125,7 +125,10 @@ const walkablePlatforms = [
 const walkableCurves = [];
 const zonePortals = [
   { from:'dock', to:'hall', axis:'z', direction:'lt', threshold:11.8, rangeMin:-2.15, rangeMax:2.15 },
-  { from:'hall', to:'dock', axis:'z', direction:'gt', threshold:12.15, rangeMin:-2.15, rangeMax:2.15 }
+  { from:'hall', to:'dock', axis:'z', direction:'gt', threshold:12.15, rangeMin:-2.15, rangeMax:2.15 },
+  // Portal da sala de treinamento é conhecido desde o início; a geometria da sala continua lazy.
+  { from:'hall', to:'training', axis:'x', direction:'lt', threshold:-15.45, rangeMin:-2.8, rangeMax:1.8 },
+  { from:'training', to:'hall', axis:'x', direction:'gt', threshold:-14.05, rangeMin:-2.8, rangeMax:1.8 }
 ];
 let interiorDetailsBuilt = false;
 let libraryScene = null;
@@ -164,7 +167,7 @@ function ensureRoom(name) {
       onPlayerHit: handlePlayerHit
     });
     walkablePlatforms.push(...(trainingRoomImpl.walkablePlatforms || []));
-    zonePortals.push(...(trainingRoomImpl.zonePortals || []));
+    // Os portais são declarados antecipadamente para permitir a entrada física na sala.
   }
 }
 trainingRoom = {

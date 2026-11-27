@@ -21,6 +21,8 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   const legacyNames = new Set([
     'parede lisa antiga da biblioteca',
     'biblioteca teto plano provisório',
+    'mosaico antigo da biblioteca',
+    'placa direcional de hieróglifos da biblioteca',
     'estante curva',
     'livro antigo',
     'coluna da biblioteca',
@@ -244,9 +246,47 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   }
 
   const wallFresco = makeWallFresco();
+  // Alpha map perfura a superfície exatamente nas coordenadas UV de cada cavidade.
+  // O túnel, o fundo recuado e a cápsula instanciada ficam visíveis através da abertura.
+  const nicheAlphaCanvas = document.createElement('canvas');
+  nicheAlphaCanvas.width = 4096;
+  nicheAlphaCanvas.height = 2048;
+  const alphaContext = nicheAlphaCanvas.getContext('2d');
+  alphaContext.fillStyle = '#ffffff';
+  alphaContext.fillRect(0, 0, nicheAlphaCanvas.width, nicheAlphaCanvas.height);
+  const uvColumns = columns;
+  const circumference = Math.PI * 2 * radius;
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < columns; col++) {
+      const angle = (col + (row % 2) * 0.5) * rowAngleStep;
+      const u = ((angle - Math.PI / 2) / (Math.PI * 2) + 1) % 1;
+      const v = (rowCenters[row] - floorY) / wallHeight;
+      const cx = u * nicheAlphaCanvas.width;
+      const cy = (1 - v) * nicheAlphaCanvas.height;
+      const rx = nicheRadius / circumference * nicheAlphaCanvas.width;
+      const ry = nicheRadius / wallHeight * nicheAlphaCanvas.height;
+      alphaContext.fillStyle = '#000000';
+      alphaContext.beginPath();
+      alphaContext.ellipse(cx, cy, rx * 1.13, ry * 1.13, 0, 0, Math.PI * 2);
+      alphaContext.fill();
+    }
+  }
+  const nicheAlphaMap = new THREE.CanvasTexture(nicheAlphaCanvas);
+  nicheAlphaMap.needsUpdate = true;
+  const wallMaterial = new THREE.MeshStandardMaterial({
+    map: wallFresco,
+    alphaMap: nicheAlphaMap,
+    alphaTest: 0.5,
+    transparent: true,
+    depthWrite: true,
+    color: 0xffffff,
+    roughness: 0.98,
+    metalness: 0,
+    side: THREE.DoubleSide
+  });
   const wall = new THREE.Mesh(
     new THREE.CylinderGeometry(radius, radius, wallHeight, 320, 24, true),
-    new THREE.MeshStandardMaterial({ map: wallFresco, color: 0xffffff, roughness: 0.98, metalness: 0, side: THREE.DoubleSide })
+    wallMaterial
   );
   wall.name = 'parede circular pintada da biblioteca';
   wall.position.set(0, floorY + wallHeight * 0.5, centerZ);

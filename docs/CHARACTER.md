@@ -1,6 +1,6 @@
 # Carter Kane — modelo, movimento e refinamento
 
-Status: **locomoção ferida, arco físico do salto, recursos vitais/energia e reação a dano integrados; revisão visual real de personagem e acessórios ainda pendente.**
+Status: **locomoção/combate e recursos integrados; acessórios do Carter em revisão porque o screenshot de 27/11/2026 mostra bolsa, alça e colar flutuando. A nova direção visual depende de aprovação explícita antes da implementação.**
 
 ## Decisões confirmadas
 
@@ -30,15 +30,15 @@ O portal está ancorado ao tórax (prioridade Spine2, depois Spine1/Chest/Spine)
 
 Módulo: src/character-accessories.js.
 
-- Bolsa transversal em couro conhaque, agora cerca de 15% menor, com corpo arredondado e levemente afunilado, aba flexível, bolso discreto e ferragens pequenas em latão. A silhueta foi revista para não parecer um estojo rígido.
-- A bolsa fica no quadril direito posterior, próxima à região do cóccix, com a face larga girada 90° para a lateral; vista de frente ou de costas, deve aparecer predominantemente de perfil.
-- Bolsa e alça usam o mesmo pivô Hips para preservar o encontro entre as duas peças durante a animação. A corrente e o medalhão usam o alto do tronco (prioridade Spine2, depois Spine1/Chest/Spine).
-- A mochila que vinha gravada no share do Ara foi removida na geração do personagem por `carry: 'none'`. A bolsa transversal autoral é o único item de carga.
-- A posição da corrente e do medalhão foi ajustada para fora da camisa (deslocamento local positivo no eixo frontal) para reduzir clipping; o encaixe final ainda depende de inspeção visual em idle, caminhada, corrida e salto.
-- Oscilação secundária discreta da bolsa e do medalhão, atualizada pelo mesmo ciclo de movimento.
-- Geometria e materiais são originais do projeto; não dependem de GLB externo nem de download em runtime.
+- O módulo `src/character-accessories.js` atual é um protótipo procedural, não uma versão aprovada. O screenshot de 27/11/2026 confirma: bolsa com leitura de estojo grande/afastado, alça sem aderência ao tronco e colar fora da superfície da camisa.
+- A bolsa atual permanece somente como placeholder técnico; não assumir que a forma atual, proporções ou attachment points estão aprovados.
+- A peça preta no ombro vista no screenshot não é criada pelo módulo de acessórios. Sua origem ainda precisa ser identificada na hierarquia do share Ara; não remover sem confirmação.
+- A mochila embutida no share Ara continua desativada por `carry: 'none'`; isso não garante que todos os elementos visíveis no ombro pertençam ao acessório antigo.
+- O desenho do medalhão permanece aprovado e deve ser preservado. O que precisa ser revisto é o contato da corrente e do pingente com a camisa/torso.
+- O estudo de referências, imagens e candidato 3D fica em `docs/CARTER-ACCESSORIES-REFERENCE-STUDY.md`. O candidato Innerscene Crossbody Bag é CC0 e tem corpo 230 × 86 × 180 mm, mas sua alça de chão não serve para o Carter; ainda não foi baixado nem integrado.
+- Nenhuma nova geometria/asset de bolsa, alça ou colar será integrada antes de o usuário avaliar o painel visual e aprovar a direção.
 
-O módulo Three.js é a implementação em runtime. O gerador Blender foi sincronizado com escala, posição posterior, rotação lateral e recuo do colar; ainda falta abrir o conjunto sobre o Carter Ara no Blender, fazer o ajuste visual fino e salvar uma cena .blend validada.
+O gerador Blender continua sendo apenas uma fonte de lookdev e não foi aberto/validado sobre o Carter Ara. A forma atual não deve ser tratada como referência final.
 
 ## Ações cinematográficas
 
@@ -75,8 +75,10 @@ Abra character-preview.html para conferir o mesmo módulo usado pelo jogo. O pre
 - Confirmar que a mochila Ara não aparece e que a bolsa transversal é o único item de carga.
 - Confirmar que a bolsa está menor, na lateral posterior do quadril direito, e que a face larga não aponta para a frente nem para trás.
 - Conferir se a alça cruza o peito e contorna a lateral sem atravessar pescoço, rosto, clavícula ou braço.
-- Confirmar que o corpo da bolsa lê como couro macio e arredondado, não como rádio/estojo rígido.
+- Confirmar que o corpo da bolsa lê como satchel marrom compacta conforme a referência de Karen de la Vega, não como rádio/estojo rígido.
+- Conferir se a alça acompanha a superfície do peito e do flanco, entra nos pontos de fixação da bolsa e não forma laços soltos.
 - Conferir se o colar acompanha a superfície do tórax, sem flutuar nem atravessar a camisa.
+- Identificar a origem da peça preta no ombro antes de removê-la ou substituí-la.
 - Verificar clipping da bolsa e da alça em idle, walk, run, curvas e salto.
 - Confirmar que a caminhada realmente alterna pernas e braços, sem o efeito de andar parado.
 - Confirmar elevação física do root durante o salto e contato dos pés na aterrissagem.
@@ -91,7 +93,7 @@ Abra character-preview.html para conferir o mesmo módulo usado pelo jogo. O pre
 
 ## Próximas etapas
 
-1. Abrir o preview no navegador e inspecionar frente, costas, perfil e 3/4; calibrar a bolsa posterior/lateral e o contato do colar com o tórax.
+1. Apresentar e obter aprovação do painel visual de bolsa/alça/colar. Depois da aprovação, identificar a peça escura do ombro no Ara e construir um preview de montagem antes de alterar o runtime.
 2. Executar assets/models/carter/blender/create_carter_accessories.py no Blender, comparar a posição com o Carter Ara e salvar a cena-fonte .blend após a inspeção.
 3. Fazer revisão de materiais e costuras à escala real, mantendo leitura clara no mobile.
 4. Ampliar as interações situacionais — observar estátuas, livros e objetos, cumprimentar e gesticular — sem interromper indevidamente a locomoção. O olhar dirigido ao objeto já está integrado ao exame por proximidade.

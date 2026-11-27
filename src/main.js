@@ -6,6 +6,7 @@ import { buildInteriorDetails } from './interior-details.js?v=great-hall-travers
 import { buildLibrary } from './library.js?v=library-asset-first-20261127b';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-traversal-20261127b';
 import { buildTrainingRoom } from './training-room.js?v=museum-statues-board-20261127b';
+import { buildResidentialWing } from './residential-wing.js?v=residential-suite-reconciled-20261127a';
 import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
 import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
 import { createCharacter } from './character.js?v=ha-di-fighting-point-20261127a';
@@ -116,6 +117,10 @@ const fireLight = grandSalon.fireLight;
 
 // Estado de jogo global: a vida persiste entre ambientes e a energia recarrega em tempo real.
 const playerVitals = { health: 100, maxHealth: 100, energy: 100, maxEnergy: 100, energyRegen: 8 };
+const residentialWing = buildResidentialWing({
+  THREE, scene:magicalInteriorGroup, colliders, groundSurfaces, interactables, isTouchDevice,
+  onRest: () => { playerVitals.energy = playerVitals.maxEnergy; }
+});
 const damageOverlay = document.createElement('div');
 damageOverlay.id = 'damageOverlay';
 damageOverlay.style.cssText = [
@@ -286,6 +291,7 @@ const controller = createThirdPersonController({
   walkablePlatforms: [
     ...(grandSalon.walkablePlatforms || []),
     ...(trainingRoom.walkablePlatforms || []),
+    ...(residentialWing.walkablePlatforms || []),
     { minX: 22.2, maxX: 27.8, minZ: 10.2, maxZ: 15.8, height: 13.05 },
     { minX: -0.2, maxX: 25.2, minZ: 10.7, maxZ: 13.5, height: 13.05 },
     { minX: -14.4, maxX: 14.4, minZ: -10.4, maxZ: 9.7, height: 13.175 }
@@ -293,7 +299,9 @@ const controller = createThirdPersonController({
   zonePortals: [
     ...(trainingRoom.zonePortals || []),
     { from:'dock', to:'hall', axis:'z', direction:'lt', threshold:11.8, rangeMin:-2.15, rangeMax:2.15 },
-    { from:'hall', to:'dock', axis:'z', direction:'gt', threshold:12.15, rangeMin:-2.15, rangeMax:2.15 }
+    { from:'hall', to:'dock', axis:'z', direction:'gt', threshold:12.15, rangeMin:-2.15, rangeMax:2.15 },
+    { from:'hall', to:'bedroom', axis:'x', direction:'gt', threshold:19.15, rangeMin:-2.12, rangeMax:2.12 },
+    { from:'bedroom', to:'hall', axis:'x', direction:'lt', threshold:18.35, rangeMin:-2.12, rangeMax:2.12 }
   ],
   spiralStair: world.spiralStair,
   onZoneChange: (name, zone) => {
@@ -309,7 +317,7 @@ const controller = createThirdPersonController({
       dock: 'Margem do Brooklyn — do lado de fora, o que se vê é apenas o antigo galpão industrial.',
       hall: 'Grande Salão — quatro alturas, três níveis de balcões e Tot ao centro.',
       library: 'Biblioteca subterrânea — câmara circular escavada na rocha.',
-      bedroom: 'Ala residencial — reconstrução interpretativa dos quartos.',
+      bedroom: 'Ala residencial — corredor do terceiro andar, suítes contíguas de Carter e Sadie, closet e deck.',
       training: 'Sala de Treinamento — quadra, cestas solares de Rá e desafios mágicos.'
     };
     toast(notices[name] || zone.label);
@@ -367,6 +375,8 @@ function interactWithNearby() {
   let nearest = null;
   let nearestDistance = Infinity;
   for (const item of interactables) {
+    if (item.zone && item.zone !== controller.zone) continue;
+    if (!item.zone && controller.zone !== 'training') continue;
     const distance = p.distanceTo(item.position);
     if (distance <= item.radius && distance < nearestDistance) {
       nearest = item;
@@ -484,25 +494,26 @@ function animate() {
   }
   if (fireLight) fireLight.intensity = 4.25 + Math.sin(time * 8.7) * 0.72;
   grandSalon.update?.(time);
+  residentialWing.update?.(time);
   const trainingMessage = trainingRoom.update(time, dt, controller.getPosition(), controller.getForward());
   if (trainingMessage) toast(trainingMessage);
   // Atualiza a magia depois da simulação da sala: os 10 s dos fragmentos começam no impacto real.
   magicSystem.update(dt);
   updateVitalsHud(dt);
   const trainingStatus = trainingRoom.getStatus();
-  let nearbyTrainingItem=null, nearbyTrainingDistance=Infinity;
-  if(controller.zone==='training'){
-    const player=controller.getPosition();
-    for(const item of interactables){
-      const distance=player.distanceTo(item.position);
-      if(distance<=item.radius&&distance<nearbyTrainingDistance){
-        nearbyTrainingItem=item;nearbyTrainingDistance=distance;
-      }
+  let nearbyItem=null, nearbyDistance=Infinity;
+  const playerPosition=controller.getPosition();
+  for(const item of interactables){
+    if(item.zone && item.zone!==controller.zone) continue;
+    if(!item.zone && controller.zone!=='training') continue;
+    const distance=playerPosition.distanceTo(item.position);
+    if(distance<=item.radius&&distance<nearbyDistance){
+      nearbyItem=item;nearbyDistance=distance;
     }
   }
-  if(nearbyTrainingItem){
-    let prompt=typeof nearbyTrainingItem.prompt==='function'?nearbyTrainingItem.prompt():nearbyTrainingItem.prompt;
-    if(!prompt)prompt=nearbyTrainingItem.label||nearbyTrainingItem.name;
+  if(nearbyItem){
+    let prompt=typeof nearbyItem.prompt==='function'?nearbyItem.prompt():nearbyItem.prompt;
+    if(!prompt)prompt=nearbyItem.label||nearbyItem.name;
     if(isTouchDevice)prompt=String(prompt).replaceAll('E / INTERAGIR','TOQUE · INTERAGIR').replaceAll('E ·','TOQUE ·').replaceAll('F / USAR','BOTÃO USAR');
     interactionPrompt.textContent=prompt;
     interactionPrompt.hidden=false;

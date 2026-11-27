@@ -313,3 +313,22 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [ ] QA visual em 360° desktop e mobile, incluindo leitura do skyline e da conexão ponte/margens.
 - [ ] Testar FPS e distância de renderização em celular.
 - [ ] Confirmar carregamento dos GLBs em hospedagem GitHub Pages e fallback do skyline caso falhem.
+
+
+## Grande Salão — entrada e conexões (27/11/2026)
+
+- [x] Reposicionar o ponto de entrada para fora do anel de assentos e manter espaço livre diante de Thoth.
+- [x] Fazer o atalho físico `2`/`Numpad2` chamar a entrada do Grande Salão.
+- [x] Substituir oito bancos soltos por três níveis de assentos curvos integrados, abertos para a entrada.
+- [x] Trocar o plinto quadrado da estátua por uma base circular coerente com os níveis de assento.
+- [x] Rebaixar treliças e exaustores do telhado industrial para não cruzarem o piso do salão.
+- [x] Trocar luminárias cônicas por difusores cilíndricos opalinos.
+- [x] Substituir painéis laterais totalmente transparentes por peitoris de calcário, vidro fumê, montantes de bronze e portas operáveis para o terraço.
+- [x] Abrir a fachada posterior nos dois eixos das passagens inferiores e recompor a alvenaria superior/lateral.
+- [x] Conectar as passagens inferiores ao passeio posterior do terraço perimetral.
+- [ ] Validar no navegador que a entrada pelo botão e pela tecla 2 não prende Carter; testar saída e circulação em torno de Thoth.
+- [ ] Testar colisões nos três níveis de assentos, escadas principais, passarela central e saídas para o terraço.
+- [ ] Inspecionar o vidro fumê e a cor quente do calcário em desktop e celular paisagem.
+- [ ] Construir a descida canônica de três pavimentos do Grande Salão até a biblioteca.
+- [ ] Reposicionar/conectar o portal do Olho de Hórus no extremo oposto, conforme o texto-fonte.
+- [ ] Confirmar percurso completo entre Grande Salão, terraço/piscina, galerias e biblioteca.

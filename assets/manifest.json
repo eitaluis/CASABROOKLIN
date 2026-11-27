@@ -807,6 +807,14 @@
       "license": "CC0-1.0",
       "role": "Reviewed as a fallback humanoid sitting animation set (including enter/idle/exit sitting); not imported because Ara's built-in retargeted sit_down/sit_idle/stand_up clips already serve the same purpose on the approved Carter rig.",
       "runtimeImported": false
+    },
+    {
+      "id": "ara3d-stand-up-reverse-clip-source",
+      "source": "https://github.com/olatunde85/3d-gen/blob/025894503533e59fcaa4dd32e37f0c86f824618c/src/core/anim/clips/index.ts",
+      "license": "MIT-code; underlying motion capture is subject to the CMU terms documented by Ara",
+      "author": "Ara 3D Gen",
+      "role": "Verified upstream implementation: SIT_DOWN is created from the CMU sit_down take; CLIPS registers stand_up as reversed(SIT_DOWN, 'stand_up', 'Stand up (chair)'). This confirms stand_up is a native Ara clip ID, even though its motion is the reversed sit_down performance. Source code reference only; no separate code copied.",
+      "runtimeImported": false
     }
   ],
   "features": [

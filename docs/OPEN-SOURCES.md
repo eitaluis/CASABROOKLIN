@@ -246,3 +246,12 @@ As fontes externas são registradas separadamente do código de integração. S�
 - **Origem e licença dos movimentos:** o README upstream identifica os dados de movimento como gravações retargetadas da CMU Motion Capture Database e documenta as condições de uso comercial e de não revenda isolada.
 - **Three.js 0.165:** VFX de HA-DI reorganizados em pools persistentes, com três `InstancedMesh` para raios/faíscas/fumaça. Não foi incluída dependência adicional.
 - **Pré-compilação:** os shaders dos materiais do feitiço são preparados via `WebGLRenderer.compileAsync` antes de liberar o jogo, reduzindo o trabalho no primeiro disparo.
+
+
+### HA-DI — fighting stance + point (27/11/2026)
+
+- **Ara 3D Gen — Fighting stance:** https://github.com/olatunde85/3d-gen/blob/main/src/core/anim/clips/combat.ts. ID real `fight_idle`, duração 2 s, loop. A definição oficial põe o pé esquerdo à frente, joelhos suaves, tronco com leve rotação e guarda com punhos à altura do queixo.
+- **Ara 3D Gen — Point:** https://github.com/olatunde85/3d-gen/blob/main/src/core/anim/clips/emotes.ts. ID `point`, duração 1,4 s. O gesto estende o indicador direito durante 0,5 s e mantém o apontamento até o fim.
+- **Composição:** captura local dos ossos do braço esquerdo durante `fight_idle`; transição de ação para `point` mantém a guarda esquerda enquanto a camada de corpo reconstrói a base de combate no rig do Carter. A sequência usa o mesmo game rig Ara; nenhum novo rig ou dependência é carregado.
+- **Alternativa externa verificada:** https://github.com/Kinemiq/free-game-animations — 35 clips humanoides CC0 1.0 (GLB/FBX), derivados da Universal Animation Library de Quaternius. Não importada porque o Ara já oferece os movimentos necessários no próprio esqueleto.
+- **HA-DI:** o projétil foi removido. O método `trainingRoom.applyHaDi` e a explosão são disparados diretamente no Shabti aos 0,82 s, sincronizados com a extensão do Point.

@@ -319,7 +319,7 @@ const controller = createThirdPersonController({
       dock: 'Margem do Brooklyn — do lado de fora, o que se vê é apenas o antigo galpão industrial.',
       hall: 'Grande Salão — quatro alturas, três níveis de balcões e Tot ao centro.',
       library: 'Biblioteca subterrânea — câmara circular escavada na rocha.',
-      bedroom: 'Ala residencial — corredor do terceiro andar, suíte de Carter, banheiro, kitchenette e deck.'
+      bedroom: 'Ala residencial — corredor do terceiro andar, suíte de Carter, suíte de Sadie, closet e deck.',
       training: 'Sala de Treinamento — quadra, cestas solares de Rá e desafios mágicos.'
     };
     toast(notices[name] || zone.label);

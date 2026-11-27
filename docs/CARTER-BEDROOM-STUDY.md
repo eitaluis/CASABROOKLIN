@@ -95,3 +95,8 @@ Geladeira: Innerscene Undercounter Fridge, CC0, GLB de 452 KB, dimensões nomina
 - [ ] Confirmar a vista real do deck para Manhattan e a Estátua da Liberdade.
 
 Não marcar como visualmente aprovado antes dos testes de navegador.
+
+
+### Sistema de som — detalhe de produção
+
+A implementação representa o aparelho de som com duas caixas acústicas de estante e um amplificador/receiver próprio com controles e LED. O romance menciona um aparelho de som, mas não especifica modelo ou componentes; o receiver e a configuração em duas caixas são interpretação técnica de produção.

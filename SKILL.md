@@ -111,6 +111,7 @@ Review each integrated item at real character scale and in the actual gameplay c
 - No floating, clipping, unwanted props, duplicate straps, geometry intersections or sudden jumps.
 - Desktop and mobile landscape with the same content/runtime.
 - Check load errors, console errors, performance and asset disposal.
+- **GitHub Pages cache invalidation:** whenever a JavaScript module changes, bump the importing `?v=` token in `src/main.js`; whenever `src/main.js` changes, bump its script `?v=` token in `index.html`. Verify that both URLs point to the new revision before reporting the fix.
 - Distinguish status precisely: **researched**, **visuals presented**, **approved**, **integrated**, **tested in browser**, **visually approved**. Never claim a later stage when only an earlier stage is complete.
 
 ## 7. Project record

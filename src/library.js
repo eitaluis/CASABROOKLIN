@@ -56,7 +56,7 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
     metalness: 0.015
   });
   const darkStone = new THREE.MeshStandardMaterial({ color: 0x39352e, roughness: 0.98 });
-  const nicheStone = new THREE.MeshStandardMaterial({ color: 0x655844, roughness: 0.95 });
+  const nicheStone = new THREE.MeshStandardMaterial({ color: 0x655844, roughness: 0.95, side: THREE.DoubleSide });
   const brass = new THREE.MeshStandardMaterial({ color: 0x98764a, metalness: 0.52, roughness: 0.48 });
   const darkBrass = new THREE.MeshStandardMaterial({ color: 0x463624, metalness: 0.45, roughness: 0.58 });
   const polymer = new THREE.MeshStandardMaterial({
@@ -274,7 +274,7 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
     map: wallFresco,
     alphaMap: nicheAlphaMap,
     alphaTest: 0.5,
-    transparent: true,
+    transparent: false,
     depthWrite: true,
     color: 0xffffff,
     roughness: 0.98,

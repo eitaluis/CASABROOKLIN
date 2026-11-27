@@ -8,7 +8,7 @@ import { buildGrandSalon } from './grand-salon.js?v=great-hall-curves-20261127a'
 import { buildTrainingRoom } from './training-room.js?v=museum-statues-board-20261127b';
 import { createInventory } from './inventory.js?v=inventory-polyfork-quarterstaff-20261127a';
 import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
-import { createCharacter } from './character.js?v=great-hall-curves-20261127a';
+import { createCharacter } from './character.js?v=carter-accessories-rig-fit-20261127a';
 import { createThirdPersonController } from './third-person.js?v=great-hall-curves-20261127a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';

@@ -1,6 +1,6 @@
 # CASABROOKLIN — checklist de produção por setores
 
-Atualizado: 26/11/2026 — átrio central do Grande Salão reestruturado; refinamento do Carter e exterior East River
+Atualizado: 27/11/2026 — primeira reconstrução asset-first da biblioteca subterrânea
 
 Este documento é a fonte de verdade do andamento. A cada nova solicitação, classificar os setores afetados, trabalhar neles isoladamente, atualizar este checklist e manter desktop/mobile sincronizados.
 
@@ -112,12 +112,12 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Setor 05 — Biblioteca subterrânea
 
-- [x] Substituir estantes genéricas por nichos de papiros, Nut, Geb e quatro shabtis.
-- [x] Material da parede cilíndrica renderiza os dois lados.
+- [x] Primeira reconstrução asset-first da biblioteca: parede mural curva, nichos circulares escavados, cápsulas pneumáticas com papiro, quatro estatuetas humanas cerâmicas e mesa pétrea com bolsa de Julius.
+- [x] Painéis murais curvos com recortes circulares reais, profundidade interna e parede rochosa como substrato.
 - [x] Clareamento da tonalidade da parede.
 - [ ] Testar face interna, profundidade, cúpula, piso e distribuição dos nichos.
 - [ ] Ajustar luz ambiente e materiais para evitar aparência cinza/transparente.
-- [x] Adicionar abertura/fechamento visual dos 16 papiros inferiores e inspeção dos quatro shabtis e mesa de leitura (E/INTERAGIR compartilhado).
+- [x] Adicionar abertura/fechamento das 16 cápsulas inferiores e inspeção das quatro estatuetas humanas e da mesa com a bolsa de Julius (E/INTERAGIR compartilhado).
 - [x] Fixar a seed das texturas de Nut e Geb para manter a composição estável entre recarregamentos e dispositivos.
 - [ ] Criar leitura aprofundada/coleção de papiros e interações de uso dos artefatos.
 
@@ -127,6 +127,22 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Tornar determinística a geração das texturas de Nut e Geb.
 - [ ] Validar alcance e leitura dos prompts no navegador desktop e em celular paisagem.
 - [ ] Refinar materiais/iluminação da câmara após inspeção visual.
+
+
+### Atualização 27/11/2026 — reconstrução estrutural asset-first
+
+- [x] Criar módulo compartilhado src/library.js e ligá-lo ao runtime desktop/mobile.
+- [x] Substituir a parede visual lisa por 48 painéis curvos com pintura original e aberturas circulares recortadas na geometria.
+- [x] Criar profundidade de cavidade com túnel interno, fundo recuado e aro de acabamento.
+- [x] Colocar uma cápsula plástica translúcida com papiro dentro de cada nicho; manter 16 interações na faixa inferior.
+- [x] Substituir os quatro shabtis mumiformes antigos por estatuetas humanas de cerâmica com kilt, sandálias, corte de cabelo angular e kohl; diferenciar estilete/rolo, caixa, cajado em gancho e mãos vazias.
+- [x] Substituir a mesa de madeira por mesa comprida de pedra com a bolsa de Julius Kane.
+- [x] Remover colisores invisíveis das estantes desativadas e adicionar limites físicos à parede, mesa e pedestais.
+- [x] Registrar matriz de fontes, assets aceitos/rejeitados e distinção canônico/interpretação em docs/BIBLIOTECA-STUDY.md.
+- [ ] Validar recortes, normais, materiais, interação e circulação no navegador desktop.
+- [ ] Repetir QA em celular paisagem e medir desempenho/estabilidade.
+- [ ] Reconstruir Nut e Geb como figuras humanas pintadas; texturas atuais ainda são provisórias.
+- [ ] Revisar a escada dos três andares; sua forma helicoidal é uma interpretação, não uma exigência do romance.
 
 ## Setor 06 — arquitetura, circulação e interiores
 

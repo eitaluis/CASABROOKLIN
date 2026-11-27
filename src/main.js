@@ -9,8 +9,8 @@ import { buildTrainingRoom } from './training-room.js?v=training-room-opaque-end
 import { buildBedroom } from './bedroom.js?v=carter-bedroom-asset-first-20261127a';
 import { createInventory } from './inventory.js?v=carter-combat-inputs-20261127a';
 import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
-import { createCharacter } from './character.js?v=carter-portrait-hud-20261127a';
-import { createThirdPersonController } from './third-person.js?v=carter-portrait-hud-20261127a';
+import { createCharacter } from './character.js?v=carter-portrait-hud-20261127b';
+import { createThirdPersonController } from './third-person.js?v=carter-portrait-hud-20261127b';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
@@ -285,7 +285,8 @@ const energyBar = makeVitalBar('ENERGIA', 'energyFill', 'linear-gradient(90deg,#
 const vitalsHudStyle = document.createElement('style');
 vitalsHudStyle.textContent = [
   '@media(max-width:900px) and (pointer:coarse){#playerVitalsHud{top:55px!important;width:min(300px,calc(100vw - 250px));padding:7px 9px;gap:6px}#playerVitalsHud span{font-size:7px!important}}',
-  '@media(max-width:560px){#playerVitalsHud{top:8px!important;left:50%!important;width:min(260px,calc(100vw - 24px));padding:6px 8px}}'
+  '@media(max-width:560px){#playerVitalsHud{top:8px!important;left:50%!important;width:min(260px,calc(100vw - 24px));padding:6px 8px}}',
+  '@media(max-width:560px) and (orientation:portrait){#playerVitalsHud{top:calc(48px + env(safe-area-inset-top))!important;left:50%!important;width:min(230px,calc(100vw - 32px));padding:5px 7px}}'
 ].join('');
 document.head.appendChild(vitalsHudStyle);
 document.body.appendChild(vitalsHud);

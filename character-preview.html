@@ -62,7 +62,8 @@ button.active,button:hover{background:#9b7542;color:#111}
   <button data-mode="walk">CAMINHAR</button>
   <button data-mode="sprint">SPRINT</button>
   <button data-mode="jump">SALTAR</button>
-  <button data-action="look_around">OBSERVAR</button>
+  <button data-action="attack">ATACAR · F</button>
+   <button data-action="look_around">OBSERVAR</button>
   <button data-action="talk_gestures">GESTICULAR</button>
   <button data-action="wave">ACENAR</button>
   <button data-action="point">APONTAR</button>
@@ -81,8 +82,8 @@ button.active,button:hover{background:#9b7542;color:#111}
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createCharacter } from './src/character.js?v=carter-accessories-rig-fit-20261127c';
-import { createInventory } from './src/inventory.js?v=inventory-polyfork-quarterstaff-20261127a';
+import { createCharacter } from './src/character.js?v=carter-kinemiq-motion-pack-20261127a';
+import { createInventory } from './src/inventory.js?v=carter-combat-inputs-20261127a';
 
 const canvas = document.getElementById('stage');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -230,7 +231,7 @@ document.querySelectorAll('[data-mode]').forEach(button => button.addEventListen
 document.querySelectorAll('[data-action]').forEach(button => {
   const action = button.dataset.action;
   const available = character.availableActions || [];
-  if (action !== 'stop' && !available.includes(action)) {
+  if (action !== 'stop' && action !== 'attack' && !available.includes(action)) {
     button.disabled = true;
     button.title = 'Ação não disponibilizada pelo catálogo Ara atual';
   }
@@ -238,6 +239,11 @@ document.querySelectorAll('[data-action]').forEach(button => {
     if (interactionLocked) return;
     if (action === 'stop') {
       character.stopAction?.();
+      return;
+    }
+    if (action === 'attack') {
+      speed = 0;
+      inventory.use();
       return;
     }
     speed = 0;

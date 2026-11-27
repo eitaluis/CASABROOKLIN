@@ -137,49 +137,10 @@ export function createMagicSystem({
   let casting = false;
   let castElapsed = 0;
   let activeTarget = null;
-  let projectile = null;
+  let pointStarted = false;
   let impactApplied = false;
   let impactActive = false;
   let impactAge = 0;
-
-  // Projétil persistente: curva, geometria, materiais e luz são construídos uma vez.
-  const projectileAxis = new THREE.Vector3(1, 0, 0);
-  const projectilePath = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0, 0, 0),
-    new THREE.Vector3(0.48, 0.16, 0),
-    new THREE.Vector3(1, 0, 0)
-  ]);
-  const projectilePoint = new THREE.Vector3();
-  const projectileGroup = new THREE.Group();
-  projectileGroup.name = 'HA-DI · pulso dourado reutilizável';
-  const projectileTrail = new THREE.Mesh(
-    new THREE.TubeGeometry(projectilePath, 36, 0.032, 7, false),
-    new THREE.MeshBasicMaterial({
-      color: GOLD, transparent: true, opacity: 0.9,
-      blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
-    })
-  );
-  projectileGroup.add(projectileTrail);
-  const projectileCore = new THREE.Mesh(
-    new THREE.SphereGeometry(0.105, 16, 12),
-    new THREE.MeshBasicMaterial({
-      color: PALE_GOLD, transparent: true, opacity: 0.98,
-      blending: THREE.AdditiveBlending, toneMapped: false
-    })
-  );
-  projectileGroup.add(projectileCore);
-  const projectileHalo = new THREE.Mesh(
-    new THREE.SphereGeometry(0.19, 14, 10),
-    new THREE.MeshBasicMaterial({
-      color: GOLD, transparent: true, opacity: 0.32,
-      blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
-    })
-  );
-  projectileGroup.add(projectileHalo);
-  const projectileLight = new THREE.PointLight(GOLD, 2.2, 3.8, 2);
-  projectileGroup.add(projectileLight);
-  projectileGroup.visible = false;
-  scene.add(projectileGroup);
 
   // Impacto persistente: o conjunto visual é reutilizado em cada conjuração.
   const impactGroup = new THREE.Group();
@@ -325,29 +286,6 @@ export function createMagicSystem({
   rayInstances.instanceColor.needsUpdate = true;
   sparkInstances.instanceColor.needsUpdate = true;
 
-  function createProjectile(start, end) {
-    const delta = end.clone().sub(start);
-    const distance = Math.max(0.001, delta.length());
-    projectileGroup.position.copy(start);
-    projectileGroup.quaternion.setFromUnitVectors(projectileAxis, delta.normalize());
-    projectileTrail.scale.set(distance, 1, 1);
-    projectileCore.position.set(0, 0, 0);
-    projectileHalo.position.set(0, 0, 0);
-    projectileLight.position.set(0, 0, 0);
-    projectileGroup.visible = true;
-    projectile = {
-      progress: 0,
-      distance,
-      duration: THREE.MathUtils.clamp(distance / 28, 0.18, 0.46)
-    };
-  }
-
-  function disposeProjectile() {
-    if (!projectile) return;
-    projectileGroup.visible = false;
-    projectile = null;
-  }
-
   function createImpact(position, floorHeight = position.y - 1) {
     impactGroup.position.copy(position);
     impactGroup.visible = true;
@@ -482,7 +420,7 @@ export function createMagicSystem({
     const warmCamera = new THREE.PerspectiveCamera(55, 1, 0.1, 50);
     warmCamera.position.set(0, 0, 5);
     warmCamera.lookAt(0, 0, 0);
-    const warmObjects = [glyphGroup, projectileGroup, impactGroup];
+    const warmObjects = [glyphGroup, impactGroup];
     try {
       for (const object of warmObjects) {
         scene.remove(object);
@@ -526,12 +464,12 @@ export function createMagicSystem({
   }
 
   function finishCast() {
-    disposeProjectile();
     glyphGroup.visible = false;
     glyphMaterial.opacity = 0;
     character.setCastingHandPose?.(false);
     character.setCastingBodyPose?.(false);
-    character.stopAction?.();
+    character.setCastingGuardPose?.(false);
+    if (character.action) character.stopAction?.();
     character.lookAt?.(null);
     controller.setLocked(false);
     casting = false;
@@ -571,6 +509,7 @@ export function createMagicSystem({
     activeTarget = target;
     casting = true;
     castElapsed = 0;
+    pointStarted = false;
     impactApplied = false;
     glyphGroup.visible = true;
     glyphGroup.scale.setScalar(0.12);
@@ -578,10 +517,10 @@ export function createMagicSystem({
     controller.setLocked(true);
     character.lookAt?.(null);
     character.faceTarget?.(target.position);
-    character.setCastingBodyPose?.(true);
-    const throwStarted = character.playAction?.('throw_grenade', { fade: 0.16, interruptOnMovement: false });
-    if (!throwStarted) character.playAction?.('point');
-    character.setCastingHandPose?.(true);
+    character.setCastingGuardPose?.(false);
+    character.setCastingBodyPose?.(false);
+    character.setCastingHandPose?.(false);
+    character.playAction?.('fight_idle', { loop: true, fade: 0.18, interruptOnMovement: false });
     updateGlyphAnchor();
 
     return { success: true, message: 'HA-DI! A inscrição dourada se acende diante da mão de Carter.' };
@@ -596,41 +535,36 @@ export function createMagicSystem({
         updateGlyphAnchor();
         const reveal = THREE.MathUtils.clamp(castElapsed / 0.2, 0, 1);
         glyphGroup.scale.setScalar((0.12 + reveal * 0.68) * (1 + Math.sin(castElapsed * 23) * 0.035));
+
+        // Primeiro: base de combate do Ara. Depois: transição para o Point,
+        // preservando a guarda esquerda capturada do próprio fight_idle.
+        if (!pointStarted && castElapsed >= 0.26) {
+          pointStarted = true;
+          character.captureCastingGuardPose?.();
+          character.playAction?.('point', { fade: 0.2, interruptOnMovement: false });
+          character.setCastingBodyPose?.(true);
+          character.setCastingHandPose?.(true);
+        }
+
+        // O hieróglifo acompanha a mão até o apontamento se completar.
         glyphMaterial.opacity = castElapsed < 1.08
           ? 1
           : THREE.MathUtils.clamp(1 - (castElapsed - 1.08) / 0.36, 0, 1);
 
-        // Ara throw_grenade solta o objeto aos 0,82 s; o pulso HA-DI usa esse marco.
-        if (castElapsed >= 0.82 && !projectile && !impactApplied && activeTarget) {
-          const hand = handTransform();
-          const start = hand.position.clone().addScaledVector(hand.direction, 0.28);
-          createProjectile(start, activeTarget.position.clone());
+        // O poder não é arremessado: o impacto acontece diretamente no Shabti
+        // no instante em que o gesto Point alcança a extensão máxima.
+        if (castElapsed >= 0.82 && !impactApplied && activeTarget) {
+          impactApplied = true;
+          const targetFloorY = activeTarget.state.group.position.y;
+          const impactPosition = activeTarget.state.group.position.clone()
+            .add(new THREE.Vector3(0, 1.05 * activeTarget.state.fullScale, 0));
+          const destroyed = trainingRoom.applyHaDi(activeTarget);
+          if (destroyed) createImpact(impactPosition, targetFloorY);
         }
 
-        if (projectile && activeTarget) {
-          projectile.progress = Math.min(1, projectile.progress + dt / projectile.duration);
-          const t = projectile.progress;
-          projectilePath.getPoint(t, projectilePoint);
-          projectilePoint.x *= projectile.distance;
-          projectileCore.position.copy(projectilePoint);
-          projectileHalo.position.copy(projectilePoint);
-          projectileLight.position.copy(projectilePoint);
-          const pulse = 0.9 + Math.sin(castElapsed * 35) * 0.16;
-          projectileCore.scale.setScalar(pulse);
-          projectileHalo.scale.setScalar(0.8 + pulse * 0.35);
-
-          if (t >= 1 && !impactApplied) {
-            impactApplied = true;
-            const targetFloorY = activeTarget.state.group.position.y;
-            const impactPosition = activeTarget.state.group.position.clone()
-              .add(new THREE.Vector3(0, 1.05 * activeTarget.state.fullScale, 0));
-            const destroyed = trainingRoom.applyHaDi(activeTarget);
-            if (destroyed) createImpact(impactPosition, targetFloorY);
-            disposeProjectile();
-          }
-        }
-
-        if (castElapsed >= 2.24) finishCast();
+        // Point dura 1,4 s. O cast começa a transição para a locomoção quando
+        // a ação conclui, evitando que Carter fique preso em posição de ataque.
+        if (castElapsed >= 1.68) finishCast();
       }
     }
     updateImpact(dt);

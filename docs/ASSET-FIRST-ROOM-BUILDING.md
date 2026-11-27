@@ -261,3 +261,6 @@ Tevy fornece GLB com geometria Meshopt e texturas KTX2. O carregador usa GLTFLoa
 - [ ] Inspecionar GLBs, materiais e encaixes em navegador desktop.
 - [ ] Inspecionar paridade, toque, FPS e carregamento em celular paisagem.
 - [ ] Confirmar a vista para Manhattan e a Estátua da Liberdade no enquadramento real.
+
+
+**Complemento do sistema de som:** src/bedroom.js também constrói um amplificador/receiver estéreo procedural original, com painel, controles e LED, posicionado entre as caixas acústicas. É uma solução de produção para representar o aparelho de som descrito no livro; não foi importado um asset externo de amplificador.

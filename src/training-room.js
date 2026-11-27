@@ -355,7 +355,42 @@ export function buildTrainingRoom({
     face.rotation.y = wallFace.rotationY;
     face.castShadow = false;
     face.receiveShadow = true;
+    face.renderOrder = 2;
     scene.add(face);
+  }
+
+  // Frontões maciços fecham o espaço entre a linha das paredes e a abóbada.
+  // Sem eles, o teto arqueado termina na linha de mola e deixa o skyline exterior visível
+  // por trás das efígies de Rá. O contorno acompanha exatamente o raio da abóbada.
+  const endGableShape = new THREE.Shape();
+  endGableShape.moveTo(-vaultRadius, 0);
+  endGableShape.lineTo(vaultRadius, 0);
+  for (let i = 1; i <= 72; i++) {
+    const angle = Math.PI * i / 72;
+    endGableShape.lineTo(Math.cos(angle) * vaultRadius, Math.sin(angle) * vaultRadius);
+  }
+  endGableShape.closePath();
+  const endGableGeometry = new THREE.ExtrudeGeometry(endGableShape, {
+    depth: 0.5, bevelEnabled: false, steps: 1, curveSegments: 72
+  });
+  const endGableMaterial = endWallMat.clone();
+  endGableMaterial.side = THREE.DoubleSide;
+  endGableMaterial.transparent = false;
+  endGableMaterial.opacity = 1;
+  endGableMaterial.depthWrite = true;
+  endGableMaterial.needsUpdate = true;
+  const endGables = [
+    { name: 'frontão opaco norte em calcário — fechamento da abóbada', z: room.minZ - 0.03 },
+    { name: 'frontão opaco sul em calcário — fechamento da abóbada', z: room.maxZ - 0.47 }
+  ];
+  for (const endGable of endGables) {
+    const gable = new THREE.Mesh(endGableGeometry, endGableMaterial);
+    gable.name = endGable.name;
+    gable.position.set(centerX, springY, endGable.z);
+    gable.castShadow = true;
+    gable.receiveShadow = true;
+    gable.renderOrder = 2;
+    scene.add(gable);
   }
   // A parede leste é seccionada para deixar o portal aberto.
   const openingWidth = 4.5;
@@ -526,7 +561,7 @@ export function buildTrainingRoom({
   function addRaHoop(baselineZ, facing, name) {
     const group=new THREE.Group();group.name='efígie mural de Rá em diorito polido';
     const statueScale=.78;
-    const mountHeight=3.05;
+    const mountHeight=3.05; // A implantação mural fica aproximadamente dez pés acima do piso, conforme o livro.
     group.position.set(centerX,floorY+mountHeight,baselineZ);
     group.rotation.y=facing;
     group.scale.setScalar(statueScale);
@@ -757,9 +792,11 @@ export function buildTrainingRoom({
       position:new THREE.Vector3(centerX,floorY+mountHeight+1.8,baselineZ),radius:5.2
     });
   }
-  // As esculturas ficam rente às paredes de fundo; o painel dorsal encosta no calcário.
-  addRaHoop(room.minZ + 1.09, 0, 'Rá — cesta norte');
-  addRaHoop(room.maxZ - 1.09, Math.PI, 'Rá — cesta sul');
+  // Encoste a face posterior do trono e os braços de sustentação no lado interno do calcário.
+  // A figura projeta-se para dentro da quadra, em vez de ficar embutida ou suspensa diante da parede.
+  const raWallInset = 0.98;
+  addRaHoop(room.minZ + raWallInset, 0, 'Rá — cesta norte');
+  addRaHoop(room.maxZ - raWallInset, Math.PI, 'Rá — cesta sul');
 
   // Painel de pontuação em papiro, atualizado quando a bola ou os projéteis acertam.
   const scoreCanvas = document.createElement('canvas');

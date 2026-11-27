@@ -16,6 +16,14 @@ Status: **pesquisado e documentado; ainda não integrado ao runtime.** A priorid
 - A referência deve orientar silhueta/energia, sem copiar figurino, rosto, símbolos ou identidade visual de Naruto.
 - Adaptação desejada para Carter: corrida baixa, tronco inclinado, joelhos flexionados, cabeça estável e uma mão segurando o cajado/khopesh atrás do corpo, com a arma apontada para trás. O braço livre atua como contrapeso, evitando uma pose simétrica artificial.
 
+### Nota biomecânica obtida na fonte oficial de Naruto
+
+A mesma matéria oficial descreve um teste real com um corredor profissional: erguer demais os braços prejudicou a estabilidade dos ombros; uma posição mais baixa permitiu maior uso do core, e a versão revisada encontrou melhor equilíbrio com os braços aproximadamente a 30° em relação ao corpo. A matéria também observa maior frequência de passadas/apoio, mas perda de parte da propulsão dos braços.
+
+Aplicação ao Carter: não fixar os dois braços exatamente horizontais. A arma pode apontar para trás com o braço direito ligeiramente mais baixo e próximo do tronco, enquanto a mão esquerda fica livre como contrapeso. A passada deve ser curta/rápida, com inclinação controlada e sem torção excessiva do tronco. Isso mantém a leitura ninja sem transformar a corrida numa pose rígida ou desequilibrada.
+
+Fonte oficial: https://naruto-official.com/en/news/01_1479
+
 ## 2. Candidatos de corrida
 
 ### A — KinemIQ: Run - crouched

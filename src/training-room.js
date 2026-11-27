@@ -539,15 +539,19 @@ export function buildTrainingRoom({
     const backPanel=new THREE.Mesh(new THREE.ExtrudeGeometry(backShape,{depth:.22,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.035,bevelThickness:.035}),raBasalt);
     backPanel.name='pilar dorsal esculpido do trono de Rá';backPanel.position.set(0,.86,-.57);group.add(backPanel);
     const backInset=new THREE.Mesh(new THREE.ShapeGeometry(backShape),raBasaltLight);backInset.position.set(0,.86,-.345);group.add(backInset);
-    // Fixações de bronze prendem o painel dorsal à parede; a escultura não toca o piso.
+    // Braços cantilever e fixações de bronze ancoram o trono na faixa alta da parede.
+    // A carga visual fica apoiada no calcário; não há pedestal nem peça solta no piso.
     for(const side of [-1,1]){
+      addTube('braço de sustentação mural de Rá',[
+        [side*.49,.56,-.24],[side*.51,.46,-.43],[side*.53,.38,-.60]
+      ],.055,raGold,group,20);
       const wallSocket=new THREE.Mesh(new THREE.CylinderGeometry(.075,.09,.10,20),raGold);
       wallSocket.name='fixação de bronze da efígie mural';
       wallSocket.rotation.x=Math.PI/2;
-      wallSocket.position.set(side*.53,1.18,-.43);
+      wallSocket.position.set(side*.53,.38,-.43);
       group.add(wallSocket);
       const wallBolt=new THREE.Mesh(new THREE.SphereGeometry(.035,14,10),raGoldLight);
-      wallBolt.position.set(side*.53,1.18,-.49);
+      wallBolt.position.set(side*.53,.38,-.49);
       group.add(wallBolt);
     }
     for(const side of [-1,1]){

@@ -1,6 +1,6 @@
 # Carter Kane — modelo, movimento e refinamento
 
-Status: **correção estrutural da bolsa/alça/medalhão integrada ao módulo compartilhado em 27/11/2026. O encaixe usa os transforms reais do SkinnedMesh e ossos Ara em runtime; a validação visual final ainda depende de abrir o preview/jogo em navegador. O GLB Innerscene aprovado não foi baixado/importado nesta sessão; a silhueta/dimensões atuais são uma implementação procedural provisória, identificada como tal.**
+Status: **seis animações escolhidas pelo usuário integradas ao rig Ara; GLB Innerscene CC0 da bolsa baixado, inspecionado e carregado no runtime; alça transversal e colar presos aos ossos/superfície do Carter. A validação automatizada do pack passou. A inspeção visual final em navegador desktop e mobile ainda está pendente.**
 
 ## Decisões confirmadas
 
@@ -18,7 +18,7 @@ Status: **correção estrutural da bolsa/alça/medalhão integrada ao módulo co
 - `createCharacter()` aceita `characterSource` e `characterName`; a mesma camada de locomoção e ações Ara pode ser reaproveitada em outro mago sem carregar os acessórios exclusivos de Carter (`attachCarterAccessories: false`).
 - O controlador de terceira pessoa continua em src/third-person.js; teclado, mouse, joystick e toque conduzem a mesma instância.
 - A escala é obtida do próprio rig, com fallback de 1,75 m.
-- As animações centrais incluem idle/walk/run, jump_start/jump_air/jump_land, walk_slouch e crouch; as reações direcionais hit_front/back/left/right são carregadas no mesmo rig Ara.
+- O rig mantém idle/walk e reações direcionais Ara; o pack `carter-moves` acrescenta `sprint_loop`, `sprint_shield_loop`, `ninjajump_double`, `jump_land`, `melee_combo` e `sword_heavy_combo`, sem trocar a malha humana, o rosto, o cabelo ou as proporções.
 
 ## Inventário e objetos do Duat
 
@@ -26,21 +26,16 @@ Status: **correção estrutural da bolsa/alça/medalhão integrada ao módulo co
 
 O portal está ancorado ao tórax (prioridade Spine2, depois Spine1/Chest/Spine) no ponto de contato previsto pelo clipe Ara `use_press`; o socket dos itens continua preso à mão direita. O mesmo clipe é usado para retirar e guardar. O controlador bloqueia deslocamento, salto e joystick durante os 1,65 s da interação, tanto no desktop como no mobile. O clipe original termina com o indicador estendido, como um toque; a pose completa de palma/dedos atravessando uma membrana ainda poderá receber um refinamento próprio. A geometria procedural dos itens e a posição real do portal precisam de inspeção no navegador. Consulte `docs/CHARACTER-INVENTORY-DUAT.md`.
 
-## Acessórios autorais integrados
+## Acessórios integrados
 
-Módulo: src/character-accessories.js.
+Módulo compartilhado: `src/character-accessories.js`.
 
-- `src/character-accessories.js` foi refeito para corrigir a ordem de montagem: a geometria é criada em coordenadas locais do Carter e somente depois os grupos são anexados aos ossos com `Object3D.attach()`, preservando a pose neutra.
-- Bolsa: pivô lateral/posterior direito projetado por raycast na superfície do corpo e ancorado a `Hips`; dimensão-alvo provisória de 202 × 158 × 76 mm, equivalente à redução aprovada de 0,88 do corpo Innerscene.
-- Alça: faixa de couro de 22 mm projetada sobre os vértices já deformados do `SkinnedMesh`; o trecho superior acompanha `Spine2`/`Spine1` e o trecho inferior acompanha `Hips`, com junção na lateral do tronco. As normais são calculadas a partir dos vértices deformados, para orientar a faixa e o pesponto sobre a camisa.
-- Medalhão: desenho e dimensões aprovados preservados. Corrente e pingente são projetados sobre a superfície real da camisa e o conjunto acompanha o osso torácico.
-- **Limite de proveniência:** o GLB Innerscene Crossbody Bag continua como referência CC0 aprovada, mas não foi importado. A tentativa de download redirecionou para `files.innerscene.com`, host que não ficou acessível às ferramentas desta sessão. Portanto, o corpo da bolsa no runtime é geometria procedural provisória com a silhueta/dimensões-alvo, não o GLB original.
-- A peça preta no ombro vista no screenshot anterior não é criada por `src/character-accessories.js`; sua origem ainda precisa ser identificada na hierarquia do share Ara. Não remover por aproximação.
-- A mochila embutida no share Ara permanece desativada por `carry: 'none'`.
-- O mesmo módulo é usado pelo jogo e pelo preview, portanto a geometria e a lógica são idênticas em desktop e mobile; apenas a camada de controles muda.
-- A revisão está integrada no código, mas **não está marcada como visualmente testada/aprovada** até inspeção real do Carter em navegador.
-
-O gerador Blender continua sendo apenas uma fonte de lookdev e não foi aberto/validado sobre o Carter Ara. A forma atual não deve ser tratada como referência final.
+- **Bolsa:** GLB real Innerscene CC0 versionado em `assets/models/carter/innerscene-crossbody-bag.glb`. O corpo, aba, costura e ferragens são preservados; a dimensão final-alvo após escala 0,88 é aproximadamente 202 × 76 × 158 mm. O pivô fica no quadril direito lateral/posterior e acompanha `Hips`.
+- **Alça:** a alça caída original do GLB é ocultada. Uma fita de couro autoral de 22 mm é projetada na superfície do `SkinnedMesh`, dividida em trecho torácico (`Spine2`/`Spine1`) e trecho do quadril (`Hips`), com junção na lateral.
+- **Colar:** a corrente é projetada ponto a ponto na superfície da camisa; o medalhão mantém o desenho aprovado e acompanha a normal da superfície do tórax, preso ao osso torácico.
+- **Fallback:** se o GLB local não carregar, a bolsa procedural de contingência permanece visível; isso não altera o asset principal versionado.
+- **Paridade:** o jogo e `character-preview.html` usam o mesmo módulo e os mesmos transforms, tanto no desktop quanto no mobile.
+- **QA:** o fit de frente, costas, perfil e 3/4 precisa ser conferido em idle, corrida, salto e combate no navegador real antes da aprovação visual.
 
 ## Ações cinematográficas
 
@@ -57,15 +52,12 @@ As ações expressivas são expostas por playAction() e stopAction(). Se algum I
 
 ## Movimento compartilhado
 
-- A locomoção continua sendo orientada pela velocidade física do controlador e pelo blending idle/walk/run do Ara.
-- A aceleração e a desaceleração foram suavizadas.
-- A rotação horizontal do corpo é suavizada, mas o root fica estritamente neutro nos eixos de inclinação: somente yaw é aplicado. Não há inclinação frontal nem lateral ao correr, andar para os lados ou girar a câmera.
-- Ao trocar de cômodo, o controlador de locomoção anterior é encerrado antes de criar o novo; os portais automáticos reativam a locomoção sem acumular controladores no mesmo mixer.
-- A câmera de terceira pessoa acompanha com easing mais lento.
-- O salto combina jump_start/jump_air/jump_land com um arco físico vertical no controlador (impulso inicial + gravidade), em vez de manter o root no piso durante o clip.
-- A partir de 50% de vitalidade, Carter troca para crouch idle e walk_slouch; o sprint fica bloqueado. O blend mantém três clips distintos (crouch / walk_slouch / run) para evitar duas ações concorrentes com o mesmo clip.
-- A reação hit_* tem uma janela curta de impacto; ao continuar andando, o jogador pode retomar a locomoção sem esperar o fim de uma animação longa. Hits repetidos não reiniciam indefinidamente a mesma reação.
-- Os valores são compartilhados entre desktop e mobile; somente os controles de entrada diferem.
+- O pack Ara `carter-moves` é carregado por `src/character.js` com `rootMotion: false`; os deslocamentos X/Z, aceleração, colisões e gravidade continuam no controlador físico `src/third-person.js`, evitando root motion duplicado.
+- **Sprint sem objeto:** `carter-moves/sprint_loop`. **Sprint com cajado/khopesh:** `carter-moves/sprint_shield_loop`. O clipe com escudo é usado como referência corporal de corrida com objeto; não adiciona um escudo ao inventário.
+- **Salto:** `ninjajump_double` toca no impulso e segura a última pose enquanto o controlador calcula o arco. `jump_land` só começa quando a colisão detecta contato real com o piso; a locomoção retorna ao fim da aterrissagem.
+- **Ataque:** a tecla `F` e o botão de uso no inventário móvel chamam a mesma função. Sem arma equipada, toca `melee_combo`; com cajado ou khopesh, toca `sword_heavy_combo`.
+- O sprint só fica disponível quando Carter não está ferido; a condição de ferimento continua reduzindo a velocidade e usando as animações alternativas já existentes.
+- O mesmo rig, os mesmos clipes e a mesma lógica de acessórios são compartilhados; só os controles e os elementos de interface mudam entre desktop e mobile.
 
 ## Preview
 

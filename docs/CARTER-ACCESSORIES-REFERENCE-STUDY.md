@@ -1,6 +1,8 @@
 # Carter Kane — estudo visual dos acessórios (revisão após screenshot)
 
-Status em 27/11/2026: **direção A aprovada e asset Innerscene CC0 baixado, inspecionado e integrado ao runtime.** O corpo GLB real está versionado em `assets/models/carter/innerscene-crossbody-bag.glb`; a alça original está separada em um nó próprio e é ocultada, enquanto a alça customizada de Carter permanece projetada na superfície e ligada aos ossos. O colar mantém corrente/medalhão projetados no tórax. A validação de arquivos e hierarquia passou; a inspeção visual em navegador desktop/mobile ainda é necessária antes de chamar o encaixe de aprovado.
+Status em 27/11/2026: **direção A aprovada e asset Innerscene CC0 baixado, inspecionado e integrado ao runtime.** O corpo GLB está versionado em `assets/models/carter/innerscene-crossbody-bag.glb`; a alça original é ocultada e substituída por uma fita customizada projetada na superfície e presa aos ossos. O colar mantém corrente/medalhão projetados no tórax. A inspeção visual em navegador desktop/mobile ainda é necessária antes de chamar o encaixe de aprovado.
+
+> Nota de leitura: as seções 4–10 e a primeira seção 11 registram a pesquisa e os bloqueios históricos. O estado final do asset e da integração está na seção 12; use a seção 12 como fonte de verdade para o status atual.
 
 ## 1. Diagnóstico do screenshot enviado em 27/11/2026
 
@@ -42,7 +44,7 @@ O screenshot atual mostra:
 4. **Innerscene Crossbody Bag — candidato real de 3D.** O preview interativo está disponível no link de origem; ver ficha técnica abaixo.
 5. **Outros modelos do Innerscene estudados:** handbag de alça de mão é mais estruturada, maior e burgundy; briefcase é muito grande; tote/duffel são tipologias erradas. Não recomendar esses modelos para Carter.
 
-## 4. Asset 3D principal — aprovado, aguardando bytes para inspeção e integração
+## 4. Histórico da pesquisa de asset — bloqueio superado na seção 12
 
 ### Innerscene — Crossbody bag
 
@@ -53,7 +55,7 @@ O screenshot atual mostra:
 - Fonte: modelo original Innerscene.
 - Corpo: aproximadamente 230 × 86 × 180 mm; couro conhaque liso, topo arredondado, aba frontal costurada, fecho rotativo de latão, anéis laterais.
 - Alça do modelo: 22 mm, mas foi modelada caída atrás da bolsa e em laço no chão. **Não serve para uso direto no Carter.** Se o corpo for aprovado, a alça solta será removida/substituída por uma nova, montada e retargetada aos ossos corretos.
-- Compatibilidade esperada: GLB glTF 2.0 com materiais e dimensões reais em metros. Three.js oferece `GLTFLoader`, mas a integração só pode ser validada após inspecionar a hierarquia, separar a malha da alça original, verificar materiais/texturas/pivôs e testar a origem local. O arquivo não foi baixado nesta sessão: o endpoint de download redireciona para `files.innerscene.com`, inacessível pelas ferramentas disponíveis. Nenhum arquivo foi testado no runtime.
+- Registro histórico: na etapa inicial, o arquivo ainda não havia sido baixado e a inspeção estava pendente. Esse bloqueio foi resolvido posteriormente; veja a seção 12 para a integração efetiva.
 - Trade-off: é o candidato mais próximo de uma pequena satchel de couro conhaque com aba e ferragem simples; pode ainda exigir alteração da silhueta para coincidir com a ilustração de Karen.
 
 ### Alternativa de referência, não de importação
@@ -66,13 +68,13 @@ O screenshot atual mostra:
 - Innerscene Leather Briefcase: GLB CC0, mas o corpo de 410 × 105 × 300 mm é muito grande e tem alça de mão; leitura de pasta/briefcase.
 - Bolsa genérica baixa/low-poly “survival prop” encontrada em outro catálogo tem proporção e linguagem incompatíveis; não selecionada.
 
-## 5. Composição aprovada e plano de implementação
+## 5. Composição aprovada e implementada
 
-**Direção recomendada:** usar o corpo GLB Innerscene como base de modelagem/material, mas não manter a alça original. Adaptar a silhueta para mais compacta, arredondada e achatada, preservando a leitura da satchel da ilustração de Karen; construir uma alça nova que envolva ombro/peito/flanco e se conecte de verdade à bolsa na lateral posterior do quadril direito. Reposicionar corrente e medalhão pela superfície real da camisa, sem alterar o medalhão aprovado.
+**Direção implementada:** usar o corpo GLB Innerscene como base e material; ocultar a alça original; construir uma fita nova que acompanha ombro/peito/flanco e se conecta à bolsa na lateral posterior do quadril direito. Corrente e medalhão são projetados na superfície da camisa, mantendo o desenho aprovado.
 
-**Aprovação recebida:** o usuário aprovou a direção A (corpo Innerscene como base e nova alça) e respondeu “pode seguir” à proposta de composição/tamanho/posição. Não solicitar nova aprovação estética para essa mesma direção. O bloqueio atual é exclusivamente técnico: falta obter o arquivo GLB para inspecionar e modificar a malha real.
+**Aprovação recebida:** o usuário aprovou a direção A (corpo Innerscene como base e nova alça) e a composição/tamanho/posição. A implementação consta na seção 12; a pendência atual é apenas a inspeção visual no navegador.
 
-## 6. Próximas verificações antes de qualquer merge
+## 6. QA pós-integração
 
 - Identificar a peça preta no ombro percorrendo os filhos do modelo Ara e nomes de mesh/material do share original.
 - Verificar eixos frontais, rotação do root e transformações dos ossos reais Hips/Spine/Chest/Clavicle/Neck.
@@ -91,13 +93,9 @@ A ilustração oficial mostra Carter em pose de movimento, usando bolsa marrom d
 
 `src/character.js` já cria o personagem com a opção `carry: 'none'`, conforme a documentação oficial do Ara: https://ara3dgen.com/docs/library/ (seção Options, linhas sobre `carry` e remoção de props). Portanto, não repetir alterações cegas nessa opção. A forma escura ainda visível deve ser rastreada pela hierarquia de `hero.scene` e `hero.props` quando o runtime e/ou os bytes do modelo puderem ser inspecionados; só remover a peça exata identificada.
 
-## 9. Próximo insumo técnico necessário
+## 9. Etapa histórica — obtenção do GLB (superada)
 
-Para prosseguir com o asset escolhido sem substituí-lo por geometria aproximada, é necessário obter o arquivo original `crossbody-bag.glb`. Abrir a página do asset, usar **Download GLB** e anexar o arquivo nesta conversa:
-
-https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2
-
-Após obter os bytes: inspecionar meshes/nodes e materiais; remover apenas a alça caída original; aplicar escala-alvo de 0,88; ajustar orientação lateral/posterior no quadril direito; construir a nova alça adaptada à superfície real do Carter e aos ossos do rig; preservar o medalhão aprovado e corrigir seu contato com a camisa; validar vistas frontal, posterior, perfil e 3/4 em idle, walk, run, turn, jump e hit. Até lá, o código runtime atual permanece explicitamente marcado como protótipo procedural não aprovado visualmente.
+O pedido antigo para anexar manualmente o GLB deixou de ser necessário: o arquivo original foi obtido e versionado em `assets/models/carter/innerscene-crossbody-bag.glb`. A hierarquia e os materiais foram inspecionados e a alça original foi ocultada. Consulte a seção 12.
 
 ## 10. Alternativas de asset após limite de upload do usuário — 27/11/2026
 
@@ -149,7 +147,9 @@ As páginas e URLs de download foram verificadas. Entretanto, nesta sessão, os 
 Recomendação atual: manter Innerscene como referência aprovada de direção, e levar à avaliação estética prioritária o Vinish Leather Satchel (melhor tipologia/cor, apesar da proporção muito alta) e o Grab3D Handbag (melhor corpo suave/aba, apesar de ser handbag rosa). O Meshy CC0 fica como referência adicional. Nenhum candidato substitui a direção A até aprovação explícita.
 
 
-## 11. Correção de rig e encaixe — 27/11/2026
+## 11. Histórico da primeira correção estrutural — 27/11/2026 (superado pela seção 12)
+
+> Esta seção preserva o registro de uma etapa anterior, quando o GLB ainda não estava disponível. As afirmações de que o GLB não foi baixado e de que o runtime usa somente geometria procedural foram superadas pela seção 12.
 
 A revisão foi integrada ao runtime em três partes: src/character-accessories.js, src/character.js (cache-buster), e o import de src/character.js usado por src/main.js e por character-preview.html.
 
@@ -181,7 +181,7 @@ Commits de implementação em main:
 O resultado esperado é bolsa sentada na lateral posterior da pelve, faixa colada à camisa e medalhão apoiado na parte superior do tórax. Esta é a intenção técnica documentada; só a inspeção real do preview pode confirmar o resultado visual.
 
 
-## 11. Download e integração efetiva do asset Innerscene — 27/11/2026
+## 12. Download e integração efetiva do asset Innerscene — 27/11/2026
 
 O antigo bloqueio de download desta pesquisa foi resolvido usando o redirecionamento público oficial da página para o arquivo GLB. O arquivo foi baixado e gravado no repositório em `assets/models/carter/innerscene-crossbody-bag.glb` (3.687.552 bytes). A página oficial descreve o corpo como couro conhaque, com aba costurada, fecho de latão e anéis laterais, em dimensões aproximadas de 230 × 86 × 180 mm; a própria página declara CC0.
 

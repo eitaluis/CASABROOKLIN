@@ -320,3 +320,25 @@ Fonte textual consultada: https://anyflip.com/sbybe/zcnp/basic/51-100 (passagem 
 - [ ] Repetir inspeção em celular paisagem e testar a interação/arremesso nas duas extremidades.
 
 **QA visual em navegador ainda pendente; não marcar como browser-tested ou aprovado visualmente antes da inspeção real.**
+
+
+## 3D. Reforço de opacidade e invalidação do cache (27/11/2026)
+
+A primeira tentativa de frontões já estava no repositório, mas a página ainda podia executar a versão anterior do módulo: o import em src/main.js continuava com o identificador de cache antigo museum-statues-board-20261127b. Como a URL do módulo não mudava, o navegador podia reutilizar a resposta em cache e não carregar os frontões atualizados. A mesma situação podia ocorrer com o próprio main.js pela URL do script de entrada.
+
+Correções aplicadas:
+- Faces internas das paredes norte/sul e frontões passaram a usar MeshBasicMaterial opaco, com DoubleSide, opacity 1, depthWrite e depthTest. A textura de calcário é apenas visual; a ocultação do exterior não depende de luz, PBR ou alpha.
+- Foi criada uma face interna selada para cada frontão, ligeiramente deslocada para dentro da sala para evitar z-fighting.
+- O import do módulo em src/main.js agora usa v=training-room-opaque-endwalls-20261127c.
+- A entrada em index.html usa o mesmo identificador novo para forçar a recarga de main.js, que por sua vez importa a versão nova de training-room.js.
+- mobile.html redireciona para index.html, portanto os dois dispositivos seguem a mesma cadeia de atualização.
+
+### Verificação estática
+- [x] src/training-room.js parseado sem erro.
+- [x] src/main.js parseado como módulo com suporte a top-level await.
+- [x] index.html referencia a nova versão do main.js.
+- [x] main.js referencia a nova versão do training-room.js.
+- [ ] Confirmar no navegador desktop que o skyline e o rio não aparecem pelas paredes norte/sul.
+- [ ] Repetir a inspeção no celular em paisagem.
+
+A invalidação do cache resolve a possibilidade de o navegador servir a versão antiga; a inspeção real da cena ainda é necessária para confirmar visualmente o fechamento.

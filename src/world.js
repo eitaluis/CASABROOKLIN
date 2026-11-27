@@ -81,12 +81,12 @@ for(const x of [-19.6,19.6]){
 }
 for(const x of [-13,-4,5,14]){
  const vent=new THREE.Mesh(new THREE.CylinderGeometry(.42,.55,.7,12),outdoorSteel);
- vent.name='exaustor industrial';vent.position.set(x,12.75,-5.5);vent.castShadow=true;scene.add(vent);
- const cap=new THREE.Mesh(new THREE.CylinderGeometry(.58,.48,.12,12),metal);cap.position.set(x,13.15,-5.5);scene.add(cap);
+ vent.name='exaustor industrial';vent.position.set(x,11.58,-5.5);vent.castShadow=true;scene.add(vent);
+ const cap=new THREE.Mesh(new THREE.CylinderGeometry(.58,.48,.12,12),metal);cap.position.set(x,11.98,-5.5);scene.add(cap);
 }
 for(const x of [-18,-9,0,9,18]){
- beamBetween('tesoura metálica do telhado',[x-4,12.05,-14.5],[x,14.0,0],.075,outdoorSteel);
- beamBetween('tesoura metálica do telhado',[x,14.0,0],[x+4,12.05,14.5],.075,outdoorSteel);
+ beamBetween('tesoura metálica do telhado',[x-4,11.62,-14.5],[x,11.9,0],.075,outdoorSteel);
+ beamBetween('tesoura metálica do telhado',[x,11.9,0],[x+4,11.62,14.5],.075,outdoorSteel);
 }
 // Pallets, tambores, caixas e entulho em agrupamentos legíveis.
 pallet(-26,11,.12);pallet(-23,15,-.18);pallet(-27,20,.32);
@@ -342,7 +342,7 @@ for(let x of [-8,0,8])for(let z of [-6,5]){const lamp=new THREE.PointLight(0xffd
 
  const zones={
  dock:{label:'DOCA · BROOKLYN',pos:[0,0,31],yaw:0,bounds:[-34,34,-14,58],base:0},
- hall:{label:'GRANDE SALÃO',pos:[0,13.175,2.2],yaw:0,bounds:[-21,21,-15,32],base:13.175},
+ hall:{label:'GRANDE SALÃO',pos:[0,13.175,7.0],yaw:0,bounds:[-21,21,-15,32],base:13.175},
  library:{label:'BIBLIOTECA SUBTERRÂNEA',pos:[0,-17.4,2.5],yaw:0,bounds:[-11.4,11.4,-11.4,11.4],base:-17.4},
  bedroom:{label:'ALA DOS QUARTOS',pos:[25,17.275,2.5],yaw:0,bounds:[19.3,32.2,-5.5,5.5],base:17.275}
 };

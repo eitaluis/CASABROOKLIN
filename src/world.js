@@ -35,10 +35,10 @@ for(const x of [21.4,30.6]){
  for(const z of [25.55,32.45]) cyl('estaca de sustentação da pequena doca',[x,-.62,z],.19,.23,1.9,woodMat,12);
 }
 for(const z of [25.6,32.4]){
- const cleat=new THREE.Mesh(new THREE.BoxGeometry(.42,.18,.22),outdoorSteel);
+ const cleat=new THREE.Mesh(new THREE.BoxGeometry(.42,.18,.22),metal);
  cleat.name='cabeço baixo de amarração da doca';
  cleat.position.set(29.8,.49,z);cleat.castShadow=true;scene.add(cleat);
- const ring=new THREE.Mesh(new THREE.TorusGeometry(.15,.035,8,16),outdoorSteel);
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(.15,.035,8,16),metal);
  ring.name='argola de amarração da pequena doca';
  ring.position.set(29.8,.61,z);ring.rotation.x=Math.PI/2;scene.add(ring);
 }

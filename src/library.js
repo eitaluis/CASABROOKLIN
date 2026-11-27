@@ -254,11 +254,10 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   const alphaContext = nicheAlphaCanvas.getContext('2d');
   alphaContext.fillStyle = '#ffffff';
   alphaContext.fillRect(0, 0, nicheAlphaCanvas.width, nicheAlphaCanvas.height);
-  const uvColumns = columns;
   const circumference = Math.PI * 2 * radius;
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < columns; col++) {
-      const angle = (col + (row % 2) * 0.5) * rowAngleStep;
+      const angle = (col + (row % 2) * 0.5) * ((Math.PI * 2) / columns);
       const u = ((angle - Math.PI / 2) / (Math.PI * 2) + 1) % 1;
       const v = (rowCenters[row] - floorY) / wallHeight;
       const cx = u * nicheAlphaCanvas.width;

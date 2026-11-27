@@ -1,4 +1,5 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 // Brooklyn House — Sala de Treinamento
 // Reconstrução 3D jogável: quadra de madeira, abóbada pintada, efígies de Rá/cestas,
 // guerreiros shabti e prática de magia. Layout e vários acabamentos são interpretativos.
@@ -514,11 +515,11 @@ export function buildTrainingRoom({
   // A descrição do romance fala em estátuas de deuses nas paredes, não em shabtis.
   // Os expositores abaixo recebem scans de peças arqueológicas reais (ver OPEN-SOURCES.md).
   const wallGodStatuePlacements = [
-    { side: 'west', z: -6.2, asset: 'bronzeHorus', title: 'Hórus — bronze' },
-    { side: 'west', z: 3.0, asset: 'thothBaboon', title: 'Thoth — babuíno' },
-    { side: 'east', z: -9.2, asset: 'horusFalcon', title: 'Hórus — falcão' },
-    { side: 'east', z: 4.2, asset: 'thothBaboon', title: 'Thoth — babuíno' },
-    { side: 'east', z: 7.6, asset: 'bronzeHorus', title: 'Hórus — bronze' }
+    { side: 'west', z: -9.2, asset: 'jackalStatuette', title: 'Estatueta de chacal' },
+    { side: 'west', z: 0.0, asset: 'bronzeHorus', title: 'Hórus — bronze' },
+    { side: 'west', z: 9.2, asset: 'thothBaboon', title: 'Thoth — babuíno' },
+    { side: 'east', z: -9.2, asset: 'horusFalconBritish', title: 'Hórus — falcão de pedra' },
+    { side: 'east', z: 4.2, asset: 'falconSphinx', title: 'Esfinge com cabeça de falcão' }
   ];
 
   // Efígies de Rá: cabeças de falcão, discos solares vazados e redes de aro.
@@ -1056,13 +1057,17 @@ export function buildTrainingRoom({
   // Scans glTF/GLB em repositório público, com versões otimizadas e licenças auditadas.
   // O commit fixo evita que um update externo altere silenciosamente os modelos usados no jogo.
   const museumAssetBase = 'https://cdn.jsdelivr.net/gh/storystage/backstage-assets@502f84adbc9a71d1434e7cc5ab61422bfd92c781/models/sketchfab-history/Prop/';
+  const atriumAssetBase = 'https://cdn.jsdelivr.net/gh/never-nude/atrium.earth@28aefba9209eab48535ee7a193bea310fde10f47/public/models/previews/egyptian/';
   const museumAssetUrls = {
     shabtiRamose: museumAssetBase + 'shabti-of-ramose.glb',
     bronzeHorus: museumAssetBase + 'bronze-horus.glb',
-    horusFalcon: museumAssetBase + 'horus-falcon.glb',
-    thothBaboon: museumAssetBase + 'thoth-baboon.glb'
+    thothBaboon: museumAssetBase + 'thoth-baboon.glb',
+    jackalStatuette: atriumAssetBase + 'jackal-statuette-art-institute-chicago/preview.glb',
+    horusFalconBritish: atriumAssetBase + 'horus-falcon-british-museum/preview.glb',
+    falconSphinx: atriumAssetBase + 'falcon-headed-sphinx-abu-simbel-british-museum/preview.glb'
   };
   const gltfLoader = new GLTFLoader();
+  gltfLoader.setMeshoptDecoder(MeshoptDecoder);
   const museumModelPromises = new Map();
   function loadMuseumModel(key) {
     if (!museumModelPromises.has(key)) {
@@ -1164,8 +1169,14 @@ export function buildTrainingRoom({
 
     loadMuseumModel(placement.asset).then(source => {
       if (!source) return;
-      const targetHeight = placement.asset === 'thothBaboon' ? 1.08 : 1.22;
-      const model = fitMuseumModel(source, targetHeight);
+      const targetHeightByAsset = {
+        jackalStatuette: 0.72,
+        bronzeHorus: 1.08,
+        thothBaboon: 1.08,
+        horusFalconBritish: 1.28,
+        falconSphinx: 1.35
+      };
+      const model = fitMuseumModel(source, targetHeightByAsset[placement.asset] || 1.2);
       model.name = 'scan 3D de ' + placement.title;
       model.position.set(0, 0.57, 0.16);
       group.add(model);

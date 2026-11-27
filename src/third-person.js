@@ -413,17 +413,16 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
 
       fallbackSpeed = smoothVelocity.length();
       if (direction.lengthSq() > 0.0001) {
-        // O modelo Ara começa com rotação PI; manter esse offset evita que ele vire para a câmera ao andar.
+        // O modelo Ara começa com rotação PI; o root externo só gira no eixo Y.
+        // Não adicionar pitch ou roll ao mudar de direção ou ao correr.
         const targetHeading = Math.atan2(-direction.x, -direction.z);
-        character.model.rotation.y = THREE.MathUtils.damp(character.model.rotation.y, targetHeading, 9.5, dt);
+        const yaw = THREE.MathUtils.damp(character.model.rotation.y, targetHeading, 9.5, dt);
+        character.model.rotation.set(0, yaw, 0);
+      } else {
+        // Elimina qualquer inclinação residual depois de soltar as teclas.
+        character.model.rotation.x = 0;
+        character.model.rotation.z = 0;
       }
-      // Inclinação frontal sutil no sprint e compensação lateral ao mudar de direção.
-      const leanTarget = running && fallbackSpeed > 2.4 ? -0.12 : input.moving ? -0.022 : 0;
-      // O personagem não deve tombar para a direita/esquerda ao correr ou virar;
-      // a corrida usa apenas inclinação frontal, sem roll lateral do root.
-      const bankTarget = 0;
-      character.model.rotation.x = THREE.MathUtils.damp(character.model.rotation.x, leanTarget, running ? 6.5 : 8, dt);
-      character.model.rotation.z = THREE.MathUtils.damp(character.model.rotation.z, bankTarget, 7, dt);
       character.updateFallback(dt, fallbackSpeed);
     }
 

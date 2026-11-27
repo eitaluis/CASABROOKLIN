@@ -57,7 +57,8 @@ As ações expressivas são expostas por playAction() e stopAction(). Se algum I
 
 - A locomoção continua sendo orientada pela velocidade física do controlador e pelo blending idle/walk/run do Ara.
 - A aceleração e a desaceleração foram suavizadas.
-- A rotação horizontal do corpo, a inclinação frontal e a inclinação lateral em curvas foram reduzidas para uma leitura menos atlética/exagerada.
+- A rotação horizontal do corpo e a inclinação frontal foram suavizadas. A inclinação lateral do root foi desativada para impedir que Carter tombe para a direita/esquerda ao correr.
+- Ao trocar de cômodo, o controlador de locomoção anterior é encerrado antes de criar o novo; os portais automáticos reativam a locomoção sem acumular controladores no mesmo mixer.
 - A câmera de terceira pessoa acompanha com easing mais lento.
 - O salto combina jump_start/jump_air/jump_land com um arco físico vertical no controlador (impulso inicial + gravidade), em vez de manter o root no piso durante o clip.
 - A partir de 50% de vitalidade, Carter troca para crouch idle e walk_slouch; o controlador bloqueia sprint enquanto o estado ferido estiver ativo.

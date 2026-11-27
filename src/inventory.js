@@ -684,7 +684,7 @@ export function createInventory({
         const image = new Image();
         image.onload = () => resolve(image);
         image.onerror = reject;
-        image.src = 'data:image/png;base64,' + encoded.replace(/\\s/g, '');
+        image.src = 'data:image/png;base64,' + encoded.replace(/\s/g, '');
         if (image.decode) image.decode().then(() => resolve(image)).catch(() => {});
       }))
       .then(image => {

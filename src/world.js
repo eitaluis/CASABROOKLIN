@@ -317,14 +317,14 @@ const ceiling=new THREE.Mesh(new THREE.CircleGeometry(libRadius,64),new THREE.Me
 for(let i=0;i<0;i++){const star=new THREE.Mesh(new THREE.SphereGeometry(.025+Math.random()*.035,6,6),new THREE.MeshBasicMaterial({color:i%4?0xc6a66e:0x8fb2b4}));const a=Math.random()*Math.PI*2,r=Math.random()*11.5;star.position.set(Math.cos(a)*r,-6.55,Math.sin(a)*r-.5);scene.add(star)}
 // Estantes circulares em três níveis.
 for(let tier=0;tier<3;tier++){const y=-16.2+tier*3.3;for(let a=0;a<32;a++){const angle=a/32*Math.PI*2;const x=Math.cos(angle)*10.65,z=Math.sin(angle)*10.65-.5;const shelf=box('estante curva',[x,y+1.05,z],[1.15,2.2,.55],woodMat,false);shelf.rotation.y=-angle+Math.PI/2;for(let n=0;n<6;n++){const book=box('livro antigo',[x+Math.cos(angle)*.03,y+.22+(n%3)*.58,z+Math.sin(angle)*.03],[.24,.42,.34],new THREE.MeshStandardMaterial({color:[0x754c37,0x334d50,0x8e7447,0x523d59][n%4],roughness:.9}),false,false);book.rotation.y=-angle+Math.PI/2}}}
-for(let a=0;a<8;a++){const angle=a*Math.PI/4;cyl('coluna da biblioteca',[Math.cos(angle)*7.4,-11.65,Math.sin(angle)*7.4-.5],.3,.4,10,stone,12)}
-// Escada helicoidal representando a descida de três níveis.
-for(let i=0;i<150;i++){const a=i*.13,r=5.1,y=-6.7-i*.071;const step=box('degrau da escada em espiral',[Math.cos(a)*r,y,Math.sin(a)*r-.5],[1.6,.18,.72],i%4===0?gold:woodMat,false);step.rotation.y=-a;groundSurfaces.push(step)}
-const legacyLibraryRail=line(Array.from({length:100},(_,i)=>{const a=i*.13;return [Math.cos(a)*4.1,-6.5-i*.107,Math.sin(a)*4.1-.5]}),gold,.045);legacyLibraryRail.name='corrimão da escada antiga da biblioteca';
+// As colunas genéricas da primeira versão foram removidas da câmara.
+
+// A escada de três lances curvos é construída em src/library.js e expõe
+// seu caminho caminhável ao controlador compartilhado desktop/mobile.
 const legacyLibraryTable=box('mesa de leitura antiga da biblioteca',[0,-16.2,-.5],[4.2,.25,2.2],woodMat,false);legacyLibraryTable.name='mesa de leitura antiga da biblioteca';for(let x of [-1.6,1.6]){const oldLeg=box('pé da mesa antiga da biblioteca',[x,-16.9,-.5],[.18,1.3,.18],cedarMat,false);oldLeg.name='pé da mesa antiga da biblioteca';}
 for(let x of [-3.8,3.8]){const oldCandlestick=cyl('castiçal antigo da biblioteca',[x,-15.6,-.5],.12,.12,.65,gold,12);oldCandlestick.name='castiçal antigo da biblioteca';const flame=new THREE.PointLight(0xffc77a,.55,5);flame.name='luz do castiçal antigo da biblioteca';flame.position.set(x,-15.05,-.5);scene.add(flame)}
 const libLight=new THREE.PointLight(0x9abdc0,1.8,28);libLight.position.set(0,-7.5,-.5);scene.add(libLight);
-for(let a=0;a<6;a++){const ang=a*Math.PI/3;glyphPanel(Math.cos(ang)*12,-12.7,Math.sin(ang)*12-.5,-ang,1.1)}
+// A iconografia e os hieróglifos são compostos no atlas mural de src/library.js.
 // Ala dos quartos: composição interpretativa com conforto moderno e peças antigas.
 const roomFloor=box('piso da ala dos quartos',[25.0,17.1,-.5],[13.3,.35,12.5],woodMat,false);groundSurfaces.push(roomFloor);
 for(let z of [-6.7,5.7])box('parede do quarto',[25,19,-.5+z],[13.3,4.2,.35],plaster,false);

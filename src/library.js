@@ -95,6 +95,29 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
     roughness: 0.94
   });
 
+  const capsuleLabelCanvas = document.createElement('canvas');
+  capsuleLabelCanvas.width = 256;
+  capsuleLabelCanvas.height = 96;
+  const capsuleLabelContext = capsuleLabelCanvas.getContext('2d');
+  capsuleLabelContext.fillStyle = '#d9d4c2';
+  capsuleLabelContext.fillRect(0, 0, 256, 96);
+  capsuleLabelContext.strokeStyle = '#6b604c';
+  capsuleLabelContext.lineWidth = 5;
+  capsuleLabelContext.strokeRect(5, 5, 246, 86);
+  capsuleLabelContext.fillStyle = '#282a25';
+  capsuleLabelContext.textAlign = 'center';
+  capsuleLabelContext.font = 'bold 29px serif';
+  capsuleLabelContext.fillText('PAPYRUS', 128, 42);
+  capsuleLabelContext.font = '25px serif';
+  capsuleLabelContext.fillText('𓂀 𓋹 𓇳', 128, 76);
+  const capsuleLabelTexture = new THREE.CanvasTexture(capsuleLabelCanvas);
+  capsuleLabelTexture.colorSpace = THREE.SRGBColorSpace;
+  const capsuleLabelMaterial = new THREE.MeshBasicMaterial({
+    map: capsuleLabelTexture,
+    transparent: true,
+    side: THREE.DoubleSide
+  });
+
   function drawMuralPerson(g, x, y, scale, palette, lean = 0) {
     g.save();
     g.translate(x, y);
@@ -263,6 +286,13 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   }
 
   const muralAtlas = makeMuralAtlas();
+  const frescoMaterial = new THREE.MeshStandardMaterial({
+    map: muralAtlas,
+    color: 0xffffff,
+    roughness: 0.98,
+    metalness: 0,
+    side: THREE.DoubleSide
+  });
   const wallStoneMaterial = new THREE.MeshStandardMaterial({
     color: 0xc0a77a,
     map: limestone || null,
@@ -311,29 +341,17 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
           rowCenters[row] + localY,
           -Math.cos(curvedAngle) * localRadius + centerZ
         );
-        uvs.setXY(
-          vertex,
-          THREE.MathUtils.clamp((localX + halfWidth) / (halfWidth * 2), 0, 1),
-          THREE.MathUtils.clamp((localY + halfHeight) / (halfHeight * 2), 0, 1)
-        );
+        const localU = THREE.MathUtils.clamp((localX + halfWidth) / (halfWidth * 2), 0, 1);
+        const localV = THREE.MathUtils.clamp((localY + halfHeight) / (halfHeight * 2), 0, 1);
+        // Coordenadas globais do atlas: todos os 48 painéis compartilham a mesma GPU texture.
+        uvs.setXY(vertex, (col + localU) / columns, (2 - row + localV) / 3);
       }
       positions.needsUpdate = true;
       uvs.needsUpdate = true;
       geometry.computeVertexNormals();
       geometry.computeBoundingSphere();
 
-      const tileTexture = muralAtlas.clone();
-      tileTexture.repeat.set(1 / columns, 1 / 3);
-      tileTexture.offset.set(col / columns, (2 - row) / 3);
-      tileTexture.needsUpdate = true;
-      const fresco = new THREE.MeshStandardMaterial({
-        map: tileTexture,
-        color: 0xffffff,
-        roughness: 0.98,
-        metalness: 0,
-        side: THREE.DoubleSide
-      });
-      const tile = new THREE.Mesh(geometry, [fresco, wallStoneMaterial]);
+      const tile = new THREE.Mesh(geometry, [frescoMaterial, wallStoneMaterial]);
       tile.name = 'painel mural escavado da biblioteca';
       tile.castShadow = true;
       tile.receiveShadow = true;
@@ -426,26 +444,9 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
       innerScroll.position.z = -0.005;
       capsule.add(innerScroll);
 
-      const labelCanvas = document.createElement('canvas');
-      labelCanvas.width = 256;
-      labelCanvas.height = 96;
-      const labelContext = labelCanvas.getContext('2d');
-      labelContext.fillStyle = '#d9d4c2';
-      labelContext.fillRect(0, 0, 256, 96);
-      labelContext.strokeStyle = '#6b604c';
-      labelContext.lineWidth = 5;
-      labelContext.strokeRect(5, 5, 246, 86);
-      labelContext.fillStyle = '#282a25';
-      labelContext.textAlign = 'center';
-      labelContext.font = 'bold 24px serif';
-      labelContext.fillText('PAPYRUS · ' + String(col + 1).padStart(2, '0'), 128, 39);
-      labelContext.font = '24px serif';
-      labelContext.fillText('𓂀 𓋹 𓇳', 128, 73);
-      const labelTexture = new THREE.CanvasTexture(labelCanvas);
-      labelTexture.colorSpace = THREE.SRGBColorSpace;
       const label = new THREE.Mesh(
         new THREE.PlaneGeometry(0.35, 0.13),
-        new THREE.MeshBasicMaterial({ map: labelTexture, transparent: true, side: THREE.DoubleSide })
+        capsuleLabelMaterial
       );
       label.name = 'etiqueta hieroglífica e inglesa da cápsula';
       label.position.set(0, 0, 0.154);

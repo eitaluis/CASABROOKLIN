@@ -380,8 +380,8 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [ ] Testar subida e descida dos três níveis no navegador e verificar que cada patamar se conecta corretamente às galerias.
 
 ### Interação / retarget Ara
-- [x] Preservar o Carter Ara aprovado e solicitar os clips nativos `sit_down`, `sit_idle` e `stand_up` quando presentes no catálogo ANIMATIONS.
-- [x] Implementar sequência sentar → idle sentado em loop → levantar.
+- [x] Preservar o Carter Ara aprovado e solicitar os clips nativos `sit_down` e `sit_idle` quando presentes no catálogo ANIMATIONS; usar `sit_down` invertido para levantar.
+- [x] Implementar sequência `sit_down` → `sit_idle` em loop → `sit_down` em sentido inverso para levantar.
 - [x] Travar a locomoção enquanto sentado e liberar ao concluir a animação de levantar.
 - [x] Criar anchors de posição e direção para sentar e sair, sem atravessar a estrutura.
 - [x] Retornar Carter à posição anterior se o conjunto de clips não estiver disponível.

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 function roundedRect(width, height, radius) {
   const halfW = width * 0.5;
@@ -309,18 +310,21 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
 
   const bagPivot = new THREE.Group();
   bagPivot.name = 'CarterRightHipSatchelPivot';
+  const bagProcedural = new THREE.Group();
+  bagProcedural.name = 'CarterSatchelProceduralFallback';
+  bagPivot.add(bagProcedural);
   bagPivot.position.copy(bagAnchorFit.point);
   const bagFacingYaw = Math.atan2(bagAnchorFit.normal.x, bagAnchorFit.normal.z);
   bagPivot.rotation.set(0, bagFacingYaw, -0.055);
   bagRoot.add(bagPivot);
 
   const bodyGeometry = extrudeShape(softSatchelShape(bagWidth, bagHeight), bagDepth, 0.011 * unit);
-  addMesh(bodyGeometry, leather, bagPivot, 'CarterSoftSatchelBody');
+  addMesh(bodyGeometry, leather, bagProcedural, 'CarterSoftSatchelBody');
 
   const gusset = addMesh(
     new THREE.BoxGeometry(0.012 * unit, bagHeight * 0.78, bagDepth * 0.88),
     leatherDark,
-    bagPivot,
+    bagProcedural,
     'CarterSatchelSoftGusset'
   );
   gusset.position.set(-bagWidth * 0.475, 0, bagDepth * 0.49);
@@ -330,7 +334,7 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
   const flap = addMesh(
     extrudeShape(roundedRect(flapWidth, flapHeight, 0.028 * unit), bagDepth * 0.17, 0.004 * unit),
     leatherDark,
-    bagPivot,
+    bagProcedural,
     'CarterSatchelSoftFlap'
   );
   flap.position.set(0, bagHeight * 0.275, bagDepth * 0.91);
@@ -340,7 +344,7 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
   const frontPocket = addMesh(
     extrudeShape(roundedRect(pocketWidth, pocketHeight, 0.022 * unit), 0.007 * unit, 0.003 * unit),
     leatherLight,
-    bagPivot,
+    bagProcedural,
     'CarterSatchelRoundedPocket'
   );
   frontPocket.position.set(0, -bagHeight * 0.24, bagDepth * 0.94);
@@ -350,13 +354,13 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
     new THREE.Vector3(0, -bagHeight * 0.24, bagDepth * 1.10),
     new THREE.Vector3(pocketWidth * 0.38, -bagHeight * 0.24, bagDepth * 1.10)
   ]);
-  addTube(pocketSeam, 0.0011 * unit, stitching, bagPivot, 'CarterSatchelPocketStitch', 24);
+  addTube(pocketSeam, 0.0011 * unit, stitching, bagProcedural, 'CarterSatchelPocketStitch', 24);
 
   for (const [index, x] of [-0.052, 0.052].entries()) {
     const snap = addMesh(
       new THREE.SphereGeometry(0.0048 * unit, 12, 8),
       brassHighlight,
-      bagPivot,
+      bagProcedural,
       'CarterSatchelBrassSnap' + index
     );
     snap.scale.set(1, 1, 0.45);
@@ -366,7 +370,7 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
   const attachmentRing = addMesh(
     new THREE.TorusGeometry(0.010 * unit, 0.0018 * unit, 7, 18),
     brass,
-    bagPivot,
+    bagProcedural,
     'CarterSatchelRearAttachmentRing'
   );
   const attachmentOffset = new THREE.Vector3(-0.016 * unit, bagHeight * 0.27, bagDepth * 0.12);
@@ -374,6 +378,58 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
 
   bagPivot.updateMatrix();
   const bagRingPoint = attachmentOffset.clone().applyMatrix4(bagPivot.matrix);
+
+  // A bolsa aprovada da Innerscene entra como malha PBR real; sua alça original
+  // é desligada porque a fita do Carter é refeita em duas partes, projetada no
+  // tórax e na lateral do quadril, e presa aos ossos correspondentes.
+  const approvedBagUrl = 'https://cdn.jsdelivr.net/gh/eitaluis/CASABROOKLIN@main/assets/models/carter/innerscene-crossbody-bag.glb';
+  const bagLoader = new GLTFLoader();
+  bagLoader.load(
+    approvedBagUrl,
+    (gltf) => {
+      const sourceBag = gltf.scene;
+      sourceBag.name = 'InnersceneCrossbodyBagBody';
+      sourceBag.scale.setScalar(0.88 * unit);
+      // O GLB original é Z-up e declara a frente no eixo -Y. A rotação converte
+      // para Y-up do Three.js e deixa a face da bolsa apontada para +Z do pivô.
+      sourceBag.rotation.x = -Math.PI / 2;
+      let removedSourceStrap = false;
+      sourceBag.traverse((node) => {
+        const name = String(node.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (name === 'shoulderstrap' || name.includes('shoulderstrap')) {
+          node.visible = false;
+          removedSourceStrap = true;
+        }
+      });
+      sourceBag.updateMatrixWorld(true);
+      const sourceBounds = new THREE.Box3().setFromObject(sourceBag);
+      const sourceSize = sourceBounds.getSize(new THREE.Vector3());
+      const sourceCenter = sourceBounds.getCenter(new THREE.Vector3());
+      // The body is centered laterally and vertically; its rear face starts at
+      // the fitted skin anchor, so the leather volume sits outside the pelvis.
+      sourceBag.position.sub(sourceCenter);
+      sourceBag.position.z += sourceSize.z * 0.5;
+      sourceBag.traverse((node) => {
+        if (!node.isMesh) return;
+        node.castShadow = true;
+        node.receiveShadow = true;
+        if (node.material) {
+          const map = node.material.map;
+          if (map) map.anisotropy = Math.max(map.anisotropy || 1, 8);
+        }
+      });
+      bagPivot.add(sourceBag);
+      bagProcedural.visible = false;
+      bagPivot.userData.assetState = 'loaded';
+      bagPivot.userData.assetSource = approvedBagUrl;
+      bagPivot.userData.sourceStrapRemoved = removedSourceStrap;
+    },
+    undefined,
+    (error) => {
+      bagPivot.userData.assetState = 'fallback';
+      console.warn('CASABROOKLIN: a bolsa CC0 da Innerscene não carregou; mantendo o modelo procedural com alça ajustada.', error);
+    }
+  );
 
   // The strap follows the actual skinned shirt surface. Its chest and hip
   // portions use separate bone anchors, meeting at the right flank.

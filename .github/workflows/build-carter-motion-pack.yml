@@ -38,7 +38,7 @@ jobs:
         run: npx --yes ara3d@0.18.1 pack assets/animations/_carter-motion-build
 
       - name: Validate the generated Ara pack
-        run: npx --yes ara3d@0.18.1 pack check assets/animations/_carter-motion-build.ara-pack.json
+        run: npx --yes ara3d@0.18.1 pack check assets/animations/carter-moves.ara-pack.json
 
       - name: Publish generated pack and source credits
         run: node scripts/build-carter-motion-pack.mjs publish

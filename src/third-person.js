@@ -1,4 +1,4 @@
-export function createThirdPersonController({ THREE, camera, canvas, character, zones, colliders = [], stairRamps = [], walkablePlatforms = [], zonePortals = [], spiralStair = null, onZoneChange }) {
+export function createThirdPersonController({ THREE, camera, canvas, character, zones, colliders = [], stairRamps = [], walkablePlatforms = [], walkableCurves = [], zonePortals = [], spiralStair = null, onZoneChange }) {
   const keys = new Set();
   const touch = { moveX: 0, moveY: 0, sprint: false };
   const position = new THREE.Vector3();
@@ -101,6 +101,29 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
         }
       }
     }
+
+    // Curved stair paths: project Carter onto each 3D path segment in X/Z.
+    // The same sampled path drives the visible treads and the physical walk surface.
+    let closestCurve = null;
+    for (const curve of walkableCurves) {
+      const points = curve.points || [];
+      for (let i = 0; i < points.length - 1; i++) {
+        const a = points[i], b = points[i + 1];
+        const dx = b.x - a.x, dz = b.z - a.z;
+        const lengthSq = dx * dx + dz * dz;
+        if (lengthSq < 0.0001) continue;
+        const t = THREE.MathUtils.clamp(((x - a.x) * dx + (z - a.z) * dz) / lengthSq, 0, 1);
+        const px = a.x + dx * t, pz = a.z + dz * t;
+        const distance = Math.hypot(x - px, z - pz);
+        if (distance > (curve.width || 2.4) * 0.5 + 0.38) continue;
+        const height = a.y + (b.y - a.y) * t;
+        const verticalDifference = Math.abs(height - currentY);
+        if (verticalDifference > (curve.maxSnapHeight || 1.3)) continue;
+        const score = verticalDifference * 1.8 + distance;
+        if (!closestCurve || score < closestCurve.score) closestCurve = { height, distance, score };
+      }
+    }
+    if (closestCurve) return { height: closestCurve.height, raised: true };
 
     const platforms = walkablePlatforms
       .filter(item =>

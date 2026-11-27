@@ -1470,9 +1470,9 @@ export function buildTrainingRoom({
   problemBoard.name = 'quadro-negro físico da aula Whatever Works';
   problemBoard.position.set(westWallX + 0.34, floorY + 2.03, 12.45);
   problemBoard.rotation.y = Math.PI / 2;
-  const boardBacking = new THREE.Mesh(new THREE.BoxGeometry(2.58, 2.0, 0.18), woodDark);
-  boardBacking.name = 'corpo espesso de madeira do quadro';
-  problemBoard.add(boardBacking);
+  const problemBoardBacking = new THREE.Mesh(new THREE.BoxGeometry(2.58, 2.0, 0.18), woodDark);
+  problemBoardBacking.name = 'corpo espesso de madeira do quadro';
+  problemBoard.add(problemBoardBacking);
   const chalkCanvas = document.createElement('canvas');
   chalkCanvas.width = 1024; chalkCanvas.height = 768;
   const chalkCtx = chalkCanvas.getContext('2d');
@@ -1493,7 +1493,7 @@ export function buildTrainingRoom({
   chalkCtx.font='italic 35px Georgia';chalkCtx.fillText('A aula de combate de Carter',512,359);
   chalkCtx.font='bold 34px Georgia';chalkCtx.fillText('DESPERTE OS QUATRO SHABTIS',512,466);
   chalkCtx.font='30px Georgia';chalkCtx.fillText('Use o que funcionar para neutralizá-los.',512,528);
-  chalkCtx.font='27px Georgia';chalkCtx.fillText('SA-PER  ·  HA-DI  ·  KHOpeSH  ·  BASQUETE',512,603);
+  chalkCtx.font='27px Georgia';chalkCtx.fillText('SA-PER  ·  HA-DI  ·  KHOPESH  ·  BASQUETE',512,603);
   chalkCtx.strokeStyle='rgba(234,224,195,.55)';chalkCtx.lineWidth=4;
   chalkCtx.beginPath();chalkCtx.moveTo(270,653);chalkCtx.lineTo(754,653);chalkCtx.stroke();
   const chalkTexture = new THREE.CanvasTexture(chalkCanvas);

@@ -122,3 +122,12 @@ O estado global do jogador vive em `src/main.js` e não é reiniciado ao sair da
 O repositório KinemIQ Free Game Animations disponibiliza 35 animações humanoides CC0 1.0 em FBX/GLB, incluindo sword slash, sword idle/block, crouch e hit reactions. A opção foi registrada como fonte pesquisada, mas não foi inserida no Carter ainda: os clips precisam ser retargetados/testados no rig Ara e a mão deve permanecer corretamente presa ao cajado/khopesh. A documentação oficial Ara permite esse fluxo por content pack. Já os Shabtis atuais não usam rig humanoide; seus ataques são articulados diretamente nos pivôs autorais do modelo procedural.
 
 Fontes: https://github.com/Kinemiq/free-game-animations · https://ara3dgen.com/docs/packs/
+
+
+## Movimento de combate de Carter — 27/11/2026
+
+O runtime usa o pack Ara `carter-moves` com seis clips retargetados: corrida livre, corrida com objeto, salto ninja, aterrissagem, combo desarmado e combo pesado armado. A tecla F chama o combo conforme o item equipado; o botão ATACAR do mobile é o mesmo callback. O controlador físico sincroniza a aterrissagem com o contato real ao solo. Detalhes, tempos e créditos estão em `assets/animations/README.md`.
+
+## Bolsa e colar — asset de runtime
+
+A bolsa usa o GLB Innerscene Crossbody Bag CC0 em `assets/models/carter/innerscene-crossbody-bag.glb`; somente o nó da alça original é ocultado e a alça nova é projetada no corpo/rig do Carter. A corrente e o medalhão continuam na malha da camisa, presos ao pivô do tórax. O QA visual em navegador continua pendente.

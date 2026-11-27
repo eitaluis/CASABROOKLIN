@@ -290,6 +290,24 @@
       "path": "src/main.js + src/training-room.js + src/magic-system.js + src/third-person.js",
       "role": "persistent shared player vitalidade and energia HUD; Shabti hits lower vitalidade and trigger Ara hit reaction, decaying camera shake and red peripheral damage vignette; below 50% vitality Carter uses crouch/slouch locomotion and cannot sprint; HA-DI spends 30 energy, training staff orbs spend 12, and energy regenerates at 8 points per second; desktop/mobile share the same runtime",
       "license": "project-original-code; Ara animation clips remain under their upstream terms in runtimeAssets and openSourceReferences"
+    },
+    {
+      "id": "residential-wing-original-mit-furniture",
+      "path": "assets/models/residential/*.glb",
+      "role": "Local GLB copies of original Blender-authored furniture assets: king-size bed base, nightstands, desk, desk chair, table/floor lamps, kitchenette counter, refrigerator, shower enclosure, sink, toilet, mirror, towel rail, wardrobe, flat-screen TV and TV console. Files contain embedded PBR materials; metres, Y-up and bottom-centre origins; do not require Draco, Meshopt or KTX2.",
+      "license": "MIT; original geometry/materials from https://github.com/jamesEmerson112/NVIDIA-Crusoe-The-Recursive-Agents-Hackathon; source license preserved at assets/models/residential/LICENSE-MIT.txt"
+    },
+    {
+      "id": "residential-egyptian-headrest-scrying-bowl",
+      "path": "src/residential-wing.js",
+      "role": "Original game geometry for the ivory headrest with lions and Shu based on the Grand Egyptian Museum GEM 270 historical reference, plus a low bronze scrying bowl on a stone pedestal inspired by the later narrative description; neither museum object is imported as a game asset.",
+      "license": "project-original-code; visual references: https://gem.eg/en/collection/artefacts/lions-headrest and https://gem.eg/en/collection/artefacts/fluted-basin-of-mesehti"
+    },
+    {
+      "id": "residential-wing-layout-and-interactions",
+      "path": "src/residential-wing.js + src/grand-salon.js + src/main.js + src/world.js",
+      "role": "Interpretive third-floor corridor and adjacent residential rooms, upper-gallery physical opening, hinged room/bathroom doors with dynamic colliders, shared zone-filtered E/mobile interactions, kitchenette, bathroom, electronically interactive devices, blocked magical glazing and deck.",
+      "license": "project-original-code; canon-vs-interpretation and object-level asset decisions documented in docs/RESIDENTIAL-WING-STUDY.md"
     }
   ],
   "openSourceReferences": [

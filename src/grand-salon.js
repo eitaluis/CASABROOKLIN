@@ -1305,7 +1305,7 @@ function addSideTerraceGlassDoors(scene,brass,stone,colliders,interactables) {
   for(const side of [-1,1]) {
     // Two deeply framed window bays: solid limestone below, muted glass above.
     for(const segment of [{z:-5.7,length:8.85},{z:5.7,length:8.85}]) {
-      const lower=new THREE.Mesh(new RoundedBoxGeometry(segment.length,.96,.5,8,.055),limestone);
+      const lower=new THREE.Mesh(new RoundedBoxGeometry(.5,.96,segment.length,8,.055),limestone);
       lower.name='peitoril maciço de calcário da janela lateral';
       lower.position.set(side*wallX,13.66,segment.z);
       lower.castShadow=true;lower.receiveShadow=true;scene.add(lower);

@@ -1,0 +1,56 @@
+name: Build Carter KinemIQ movement pack
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/build-carter-motion-pack.yml"
+      - "scripts/build-carter-motion-pack.mjs"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: carter-motion-pack
+  cancel-in-progress: false
+
+jobs:
+  build-pack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out project
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Download and validate selected KinemIQ clips
+        run: node scripts/build-carter-motion-pack.mjs prepare
+
+      - name: Convert clips to an Ara content pack
+        run: npx --yes ara3d@0.18.1 pack assets/animations/_carter-motion-build
+
+      - name: Validate the generated Ara pack
+        run: npx --yes ara3d@0.18.1 pack check assets/animations/_carter-motion-build.ara-pack.json
+
+      - name: Publish generated pack and source credits
+        run: node scripts/build-carter-motion-pack.mjs publish
+
+      - name: Commit the generated pack
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/animations/carter-movement.ara-pack.json assets/animations/carter-movement-source-credits.json
+          if git diff --cached --quiet; then
+            echo "The published pack is already up to date."
+            exit 0
+          fi
+          git commit -m "Build Carter movement and combat animation pack"
+          git push origin main

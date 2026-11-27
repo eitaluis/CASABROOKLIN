@@ -8,7 +8,7 @@ Todo novo objeto ou espaço deve seguir [ASSET-FIRST-ROOM-BUILDING.md](ASSET-FIR
 
 **Ara 3D Gen** — https://github.com/olatunde85/3d-gen — pacote JavaScript MIT; os dados de personagem usam MakeHuman CC0 e os clips de captura de movimento vêm da base CMU, livres para uso comercial conforme a licença/documentação do projeto.
 - O corpo, rosto, cabelo, rig e clips principais preservam o Carter aprovado no share salvo do Ara.
-- src/character.js carrega idle, walk, run e a sequência de salto, além de consultar ANIMATIONS para selecionar ações cinematográficas disponíveis (look_around, talk_gestures, wave, point e bow). O clipe Ara Point serve como base do gesto HA-DI; a extensão do dedo médio é uma adaptação procedural original do projeto.
+- src/character.js carrega idle, walk, run e a sequência de salto, além de consultar ANIMATIONS para selecionar ações cinematográficas disponíveis. As ações de arma aprovadas neste branch são sword_idle, sword_combo e sword_thrust; os clipes são nativos da biblioteca Ara e não exigem um pack FBX externo. O clipe Ara Point serve como base do gesto HA-DI; a extensão do dedo médio é uma adaptação procedural original do projeto.
 - src/character.js sobrescreve o item carregado do share Ara com `carry: 'none'`, removendo a mochila original.
 - src/character-accessories.js contém um protótipo procedural da bolsa/alça/medalhão; o screenshot do usuário em 27/11/2026 mostra que os acessórios ainda flutuam e a bolsa não corresponde à referência aprovada. O protótipo **não está visualmente aprovado** e não deve ser tratado como forma final.
 - A próxima revisão segue `SKILL.md` e `docs/CARTER-ACCESSORIES-REFERENCE-STUDY.md`: leitura do texto, comparação de arte oficial e fan art corretamente rotulada, pesquisa de assets 3D, painel visual no chat e aprovação explícita antes de qualquer novo download/integração.
@@ -19,6 +19,34 @@ Todo novo objeto ou espaço deve seguir [ASSET-FIRST-ROOM-BUILDING.md](ASSET-FIR
 - src/main.js direciona o olhar para o objeto examinado por E/INTERAGIR.
 - src/third-person.js suaviza aceleração, curvas, inclinação e câmera; o mesmo controlador e os mesmos assets são usados no desktop e mobile.
 - Os estudos Quaternius e o protótipo procedural anterior foram rejeitados; não fazem parte do runtime.
+
+
+## Carter — khopesh aprovado
+
+**Khopesh — Vinish.dev:** https://vinish.dev/free-3d-models/swords. O GLB do modelo escolhido é https://vinish-models.pages.dev/swords/khopesh.glb. A página do criador publica 10.868 triângulos, 297 KB, dimensões de 0,60 × 0,13 × 0,04 m e um nó `Sword` com pivot na empunhadura; a lâmina aponta para +X no arquivo original. A integração coloca esse pivot no socket Ara `WeaponR` e gira o conjunto 90° em Y para orientar a lâmina para a frente. Materiais originais são mantidos.
+
+- Autor: Vinish.dev.
+- Licença: CC BY 4.0. Crédito exigido: “Khopesh” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.
+- Função: modelo de inventário do Carter, separado dos khopeshes decorativos modelados em `src/grand-salon.js`.
+- Carregamento: GLTFLoader diretamente da URL publicada pelo autor; o khopesh procedural anterior continua como fallback local caso o CDN falhe. O GLB não está vendorizado nesta versão, portanto a disponibilidade online depende do host.
+- Compatibilidade: GLB/gltf-loader/Three.js. A verificação final da orientação e da escala no rig Ara e dos custos no celular ainda está pendente.
+
+## Carter — ações Ara e locomoção
+
+**Ara 3D Gen:** https://ara3dgen.com/docs/animations/ e https://ara3dgen.com/docs/library/. A direção escolhida preserva a malha, rosto, cabelo, rig e base aprovada do Carter. O projeto usa as animações nativas do pacote:
+
+- `sword_idle` para a postura de guarda quando o khopesh está equipado.
+- `sword_combo` para a ação de ataque do khopesh no comando F.
+- `sword_thrust` para o ataque de estocada do cajado no comando F.
+- `idle`, `walk`, `run`, `jump_start`, `jump_air` e `jump_land` continuam como base de locomoção.
+
+O controlador usa os limiares walkSpeed/runSpeed fornecidos pelo blend de locomotion da Ara quando disponíveis. Não há novo pacote externo de animação, retarget ou esqueleto paralelo nesta implementação. As teclas, botões táteis e controles da bancada encaminham para a mesma API de personagem.
+
+## Duat — redemoinho procedural B
+
+A superfície do redemoinho é escrita no próprio `src/inventory.js` com `THREE.ShaderMaterial`; 56 partículas determinísticas são produzidas por um `BufferGeometry` e `PointsMaterial`. A integração não copia shader nem textura de terceiros e não adiciona biblioteca ao bundle.
+
+Referência técnica de linguagem visual/implementação: https://threejsdemos.com/demos/shaders/portal (demonstração de portal e distorção em Three.js) e https://threejs.org/docs/#api/en/materials/ShaderMaterial. Esses links são material de estudo, não assets incorporados. O efeito de gameplay foi construído localmente e usa a mesma geometria/shader e sequência em desktop e mobile.
 
 ## Grande Salão — modelos e efeitos
 

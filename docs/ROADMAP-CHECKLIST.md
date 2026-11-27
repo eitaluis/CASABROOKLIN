@@ -112,12 +112,12 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 
 ## Setor 05 — Biblioteca subterrânea
 
-- [x] Primeira reconstrução asset-first da biblioteca: parede mural curva, nichos circulares escavados, cápsulas pneumáticas com papiro, quatro estatuetas humanas cerâmicas e mesa pétrea com bolsa de Julius.
+- [x] Reconstrução monumental asset-first: parede mural variada, 4.800 nichos circulares com cápsulas pneumáticas, estatuetas funcionais, escadaria curva caminhável e mesa pétrea de escriba.
 - [x] Painéis murais curvos com recortes circulares reais, profundidade interna e parede rochosa como substrato.
 - [x] Clareamento da tonalidade da parede.
 - [ ] Testar face interna, profundidade, cúpula, piso e distribuição dos nichos.
 - [ ] Ajustar luz ambiente e materiais para evitar aparência cinza/transparente.
-- [x] Adicionar abertura/fechamento das 16 cápsulas inferiores e inspeção das quatro estatuetas humanas e da mesa com a bolsa de Julius (E/INTERAGIR compartilhado).
+- [x] Interação de abrir/fechar em 20 cápsulas inferiores e inspeção/acionamento das quatro estatuetas humanas e da mesa de Julius (E/INTERAGIR compartilhado).
 - [x] Fixar a seed das texturas de Nut e Geb para manter a composição estável entre recarregamentos e dispositivos.
 - [ ] Criar leitura aprofundada/coleção de papiros e interações de uso dos artefatos.
 
@@ -145,9 +145,29 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [ ] Reconstruir Nut e Geb como figuras humanas pintadas; texturas atuais ainda são provisórias.
 - [ ] Revisar a escada dos três andares; sua forma helicoidal é uma interpretação, não uma exigência do romance.
 
+
+### Atualização 27/11/2026 — biblioteca monumental aprovada
+
+- [x] Ampliar a câmara para aproximadamente 31 m de diâmetro e 15,9 m do piso ao ápice da abóbada (parede cilíndrica de 10,4 m + cúpula de aproximadamente 5,5 m).
+- [x] Criar 4.800 nichos/cápsulas em padrão de colmeia (30 × 160), com abertura de aproximadamente 34 cm, geometrias e materiais instanciados.
+- [x] Fazer os furos visuais reais no mapa alpha da parede cilíndrica e alinhar túneis, fundos e cápsulas às UVs.
+- [x] Construir mural original com 192 cenas distintas e sequências hieroglíficas variadas; o texto ornamental é interpretação gráfica, não tradução do romance.
+- [x] Substituir a escada estreita antiga por 90 degraus curvos em três lances de 30, com dois patamares intermediários, áreas terminais, corrimãos e balaústres.
+- [x] Ligar o percurso de degraus ao solver walkableCurves do controlador compartilhado, usando os mesmos pontos da geometria visual.
+- [x] Habilitar 20 cápsulas inferiores para abrir/fechar e revelar o papiro.
+- [x] Criar tarefas para os pequenos servos: a figura de mãos vazias procura a versão em inglês do papiro; a figura com cajado em gancho traz a Paleta de Narmer.
+- [x] Dar movimento procedural às figuras durante as tarefas; os clips humanoides KinemIQ CC0 permanecem não importados por incompatibilidade com a malha sem rig/skinning.
+- [x] Vestir a mesa de pedra como estação de escriba: paleta, pigmentos preto/vermelho, pincéis de junco, recipiente de tinta, papiros, rolos, cordão, pano de linho e bolsa de Julius com aba interativa.
+- [x] Aumentar as superfícies de Nut e Geb para a escala ampliada e alinhar a borda da cúpula à parede.
+- [ ] Criar as pinturas figurativas finais de Geb e Nut em etapa futura (imagem explicitamente adiada).
+- [ ] Testar travessia, colisões, interações e materiais no navegador desktop.
+- [ ] Repetir QA em celular paisagem, medir FPS/memória e verificar transparência e legibilidade.
+- [ ] Confirmar visualmente as aberturas alpha, o padrão dos nichos e a leitura dos hieróglifos; não marcar como aprovado visualmente antes deste teste.
+
 ## Setor 06 — arquitetura, circulação e interiores
 
-- [ ] Implementar subida/descida física pela escada em caracol, com altura dos degraus (circulação do Grande Salão foi resolvida separadamente).
+- [x] Implementar a escadaria curva da biblioteca (90 degraus em três lances) com caminho de altura compartilhado no controlador.
+- [ ] Validar a subida/descida real de cada lance e dos patamares no navegador desktop e em celular paisagem.
 - [ ] Fazer o portal mágico funcionar como passagem física.
 - [ ] Refinar terraço, piscina, refeições e fogueira.
 - [ ] Refinar quarto do Carter, banheiro, deck e pavimentos.

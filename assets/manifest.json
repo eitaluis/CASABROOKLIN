@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.13",
+  "version": "0.4.14",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -13,7 +13,7 @@
       "id": "ara3d-js",
       "source": "https://github.com/olatunde85/3d-gen",
       "version": "0.18.1",
-      "role": "geração local no navegador da malha humana contínua, game rig, skin weights e clips de locomoção e ações cinematográficas do Carter; Ara ANIMATIONS é consultado para filtrar os IDs disponíveis; inclui o clipe throw_grenade como gesto corporal de lançamento usado por HA-DI, sem exibir granada; o HA-DI usa fight_idle + point como gesto combinado de combate/apontamento",
+      "role": "geração local no navegador da malha humana contínua, game rig, skin weights e clips de locomoção e ações cinematográficas do Carter; Ara ANIMATIONS é consultado para filtrar os IDs disponíveis; inclui o clipe throw_grenade como gesto corporal de lançamento usado por HA-DI, sem exibir granada; o HA-DI usa fight_idle + point como gesto combinado de combate/apontamento; approved native weapon clips sword_idle, sword_combo and sword_thrust support khopesh guard, khopesh F combo and staff F thrust; locomotion controller uses Ara walkSpeed/runSpeed blend thresholds when available",
       "license": "MIT-code; CC0-1.0-MakeHuman-data; CMU-motion-capture-free-commercial-use"
     },
     {
@@ -36,6 +36,13 @@
       "version": "GLB 57 KB; 496 triangles; 0.08 × 1.8 × 0.08 m",
       "role": "approved Carter quarterstaff loaded at runtime through GLTFLoader from Polyfork CDN; original wood/iron/cloth material preserved; local WeaponR grip pivot is centered by offsetting origin -0.9m on Y",
       "license": "commercial hotlink/use allowed without attribution; CC BY 4.0 if redistributing the mesh; direct CDN use is not redistribution"
+    },
+    {
+      "id": "vinish-khopesh-carter",
+      "source": "https://vinish.dev/free-3d-models/swords",
+      "version": "GLB 297 KB; 10,868 triangles; 0.60 × 0.13 × 0.04 m",
+      "role": "user-approved Carter inventory khopesh option A; original bronze blade, dark grip, gold bands and lapis details preserved; GLTFLoader runtime source at https://vinish-models.pages.dev/swords/khopesh.glb; Sword node pivot centered on grip and blade +X; wrapper rotated +90° Y for forward-facing blade; procedural fallback retained",
+      "license": "CC BY 4.0; attribution required: “Khopesh” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0; indicate changes if modified"
     }
   ],
   "localGeneratedAssets": [
@@ -60,8 +67,8 @@
     {
       "id": "egyptian-staff-and-khopesh",
       "path": "src/inventory.js",
-      "role": "procedural local fallback for the externally loaded Polyfork quarterstaff; khopesh remains the current procedural model until a replacement is approved",
-      "license": "project-original-code; primary staff asset is the Polyfork runtime GLB listed in runtimeAssets"
+      "role": "procedural local fallbacks only: quarterstaff fallback remains behind approved Polyfork GLB; khopesh fallback remains behind approved Vinish.dev GLB until its remote model loads or if its CDN fails",
+      "license": "project-original-code; primary runtime weapon models are listed separately in runtimeAssets"
     },
     {
       "id": "great-hall-sculpted-finish",
@@ -198,7 +205,7 @@
     {
       "id": "carter-cinematic-actions-and-motion",
       "path": "src/character.js + src/third-person.js",
-      "role": "integração das ações look_around, talk_gestures, wave, point e bow após consulta ao catálogo Ara; locomoção ferida com três IDs distintos: crouch idle, walk_slouch e run como endpoint de blend; hit reactions interrompíveis após 0,24 s de impacto quando o jogador se move, sem reinício por golpes repetidos; root do Carter usa apenas rotação yaw, sem inclinação nos eixos pitch/roll ao correr, mover lateralmente ou girar a câmera; rebind de locomotion em transições de cômodo; compartilhado desktop/mobile",
+      "role": "integração das ações look_around, talk_gestures, wave, point e bow após consulta ao catálogo Ara; locomoção ferida com três IDs distintos: crouch idle, walk_slouch e run como endpoint de blend; hit reactions interrompíveis após 0,24 s de impacto quando o jogador se move, sem reinício por golpes repetidos; root do Carter usa apenas rotação yaw, sem inclinação nos eixos pitch/roll ao correr, mover lateralmente ou girar a câmera; rebind de locomotion em transições de cômodo; compartilhado desktop/mobile; approved weapon-mode support: sword_idle stance while khopesh is equipped; sword_combo for khopesh F attack and sword_thrust for staff F attack; Ara walk/run locomotion speeds are read from blend controller where exposed; action lock shared desktop/mobile",
       "license": "project-original-code; os clips do personagem permanecem sujeitos aos termos de Ara/CMU descritos em openSourceReferences"
     },
     {
@@ -352,6 +359,12 @@
       "role": "Avatar dourado translúcido que envolve Carter; clone SkeletonUtils do rig Ara aprovado, ampliado e sincronizado por cópia das transformações ósseas e morph targets em cada frame; crânio, bico e olhos de falcão em geometria original, sem armadura ornamental nem asset externo",
       "license": "project-original-code; Three.js SkeletonUtils MIT",
       "runtimeImported": true
+    },
+    {
+      "id": "duat-hand-vortex",
+      "path": "src/inventory.js",
+      "role": "small hand-scale Duat retrieval/storage effect built from project-original THREE.ShaderMaterial spiral/distortion surface and 56 deterministic BufferGeometry particles; preserves chest-to-hand anchor and shared inventory transition; same implementation desktop/mobile; replaces static rings/disc",
+      "license": "project-original-code; no third-party shader, texture, model or runtime library imported"
     }
   ],
   "openSourceReferences": [
@@ -366,7 +379,7 @@
       "id": "ara3d-character-generator",
       "source": "https://github.com/olatunde85/3d-gen",
       "license": "MIT-code; CC0-1.0-MakeHuman-data; CMU-motion-capture-free-commercial-use",
-      "role": "runtime: geração da malha humana contínua, skin weights, game rig, WeaponR e clips; o catálogo ANIMATIONS filtra os clips nativos fight_idle (Fighting stance) e point para a sequência HA-DI; captura a guarda esquerda no clip de combate e mantém o apontamento direito por IK; this revision also requests native retargeted sit_down, sit_idle and stand_up; Ara generates stand_up by reversing SIT_DOWN internally clips when present in the current ANIMATIONS catalogue.",
+      "role": "runtime: geração da malha humana contínua, skin weights, game rig, WeaponR e clips; o catálogo ANIMATIONS filtra os clips nativos fight_idle (Fighting stance) e point para a sequência HA-DI; captura a guarda esquerda no clip de combate e mantém o apontamento direito por IK; this revision also requests native retargeted sit_down, sit_idle and stand_up; Ara generates stand_up by reversing SIT_DOWN internally clips when present in the current ANIMATIONS catalogue.; approved native weapon clips: sword_idle, sword_combo and sword_thrust; locomotion thresholds walkSpeed/runSpeed drive shared controller",
       "runtimeImported": true
     },
     {
@@ -822,6 +835,29 @@
       "author": "Ara 3D Gen",
       "role": "Verified upstream implementation: SIT_DOWN is created from the CMU sit_down take; CLIPS registers stand_up as reversed(SIT_DOWN, 'stand_up', 'Stand up (chair)'). This confirms stand_up is a native Ara clip ID, even though its motion is the reversed sit_down performance. Source code reference only; no separate code copied.",
       "runtimeImported": false
+    },
+    {
+      "id": "vinish-khopesh-carter",
+      "source": "https://vinish.dev/free-3d-models/swords",
+      "directDownload": "https://vinish-models.pages.dev/swords/khopesh.glb",
+      "author": "vinish.dev",
+      "license": "CC BY 4.0",
+      "format": "GLB, approximately 297 KB",
+      "dimensionsM": [
+        0.6,
+        0.13,
+        0.04
+      ],
+      "triangles": 10868,
+      "role": "Approved Carter inventory khopesh option A; Sword node pivot at grip center, blade direction +X; original materials retained; runtime GLTFLoader import; attribution required. Remote file is not vendored locally in this branch.",
+      "runtimeImported": true
+    },
+    {
+      "id": "threejs-vortex-portal-reference",
+      "source": "https://threejsdemos.com/demos/shaders/portal",
+      "license": "reference-only; no source code copied",
+      "role": "visual/technical study for swirling distortion and particles in a Three.js portal effect; CASABROOKLIN vortex shader and particles are project-original",
+      "runtimeImported": false
     }
   ],
   "features": [
@@ -890,6 +926,37 @@
         "docs/OPEN-SOURCES.md"
       ],
       "summary": "Avatar de Combate de Hórus translúcido e dourado envolve Carter; cópia ampliada do rig Ara sincronizada por frame, cabeça simplificada de falcão, tecla H e botão mobile; custo inicial de 40 de energia.",
+      "date": "2026-11-27"
+    },
+    {
+      "id": "carter-approved-vinish-khopesh-20261127",
+      "scope": "runtime",
+      "files": [
+        "src/inventory.js",
+        "src/character.js",
+        "src/main.js",
+        "character-preview.html",
+        "docs/CHARACTER-INVENTORY-DUAT.md",
+        "docs/OPEN-SOURCES.md",
+        "assets/manifest.json"
+      ],
+      "summary": "The user-approved Vinish.dev khopesh GLB loads through GLTFLoader on Ara WeaponR, using the published Sword grip pivot, original materials and a local procedural fallback; CC BY 4.0 attribution is recorded.",
+      "date": "2026-11-27"
+    },
+    {
+      "id": "carter-ara-weapons-duat-vortex-20261127",
+      "scope": "runtime",
+      "files": [
+        "src/character.js",
+        "src/third-person.js",
+        "src/inventory.js",
+        "src/main.js",
+        "character-preview.html",
+        "docs/CHARACTER-INVENTORY-DUAT.md",
+        "docs/OPEN-SOURCES.md",
+        "assets/manifest.json"
+      ],
+      "summary": "Adds native Ara sword idle/combo/thrust actions and speed-blend integration; F triggers shared desktop/mobile weapon actions. Replaces old Duat rings/disc with a small original spiral ShaderMaterial and 56 deterministic particles.",
       "date": "2026-11-27"
     }
   ]

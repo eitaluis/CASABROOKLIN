@@ -365,7 +365,13 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     const injured = character.isInjured === true;
     const running = !controlsLocked && !injured && (keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint);
     const injuryMultiplier = Number.isFinite(character.movementMultiplier) ? character.movementMultiplier : 1;
-    const speedTarget = input.moving ? (running ? 4.2 : 1.7) * input.magnitude * injuryMultiplier : 0;
+    const characterScale = (Number.isFinite(character.height) ? character.height : 1.75) / 1.78;
+    // Keep normal walking below Ara's walk/run blend threshold, so the unarmed
+    // sprint clip never bleeds into a regular walk cycle. The unarmed sprint uses
+    // Ara's natural run pace; the approved staff sprint keeps its original speed.
+    const walkSpeed = 1.5 * characterScale * 0.98;
+    const runSpeed = character.isSprintArmed === true ? 4.2 : 3.7 * characterScale;
+    const speedTarget = input.moving ? (running ? runSpeed : walkSpeed) * input.magnitude * injuryMultiplier : 0;
     const currentPosition = getPosition();
     limitToZone(currentPosition, direction, Math.max(speedTarget, 2.25) * dt * 1.35);
 

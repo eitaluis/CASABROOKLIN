@@ -352,3 +352,36 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [ ] Construir a descida canônica de três pavimentos do Grande Salão até a biblioteca.
 - [ ] Reposicionar/conectar o portal do Olho de Hórus no extremo oposto, conforme o texto-fonte.
 - [ ] Confirmar percurso completo entre Grande Salão, terraço/piscina, galerias e biblioteca.
+
+## Ala residencial — estudo asset-first e expansão da suíte (27/11/2026)
+
+### Cânone e assets
+
+- [x] Estudar o quarto de Carter em A Pirâmide Vermelha e o quarto de Sadie em O Trono de Fogo.
+- [x] Separar o programa canônico das decisões interpretativas de planta e decoração.
+- [x] Comparar camas CC0 e manter a cama autoral enquanto a alternativa adequada é validada.
+- [x] Verificar os modelos locais MIT para mobiliário, cozinha e banheiros.
+- [x] Selecionar o minibar CC0 com clips de abertura/fecho e a poltrona CC0 pelo modelo individual e licença.
+- [x] Registrar a origem, dimensões, triângulos, licença e ressalva AI-assisted no estudo residencial e manifesto.
+
+### Implementação
+
+- [x] Corrigir o headrest de marfim: peça histórica GEM 270 em escala próxima do tamanho original e sobre o travesseiro.
+- [x] Construir o segundo quarto, com cama, closet, banheiro, minibar, poltrona, dock, fones e gravador de Sadie.
+- [x] Fazer o closet revelar roupas; o isolamento acústico mágico acende as runas na divisória.
+- [x] Integrar minibar animado e fallback visual se o GLB remoto falhar.
+- [x] Adicionar ações de pia e chuveiro nos dois banheiros.
+- [x] Fazer o descanso da cama recuperar energia sem restaurar saúde.
+- [x] Conectar o corredor residencial à abertura da galeria superior e manter o caminho reversível.
+- [x] Manter o mesmo mundo, objetos, personagens e lógica para desktop e mobile.
+
+### QA pendente — não aprovar sem navegador
+
+- [ ] Testar o caminho completo Grande Salão → porta superior → corredor → Carter → Sadie → retorno, sem usar teleporte.
+- [ ] Conferir todos os colliders de paredes, closet, banheiros, camas, poltrona, minibar e portas.
+- [ ] Confirmar a animação do minibar, o fallback, as interações, prompts e estados no desktop.
+- [ ] Repetir todos os testes em celular paisagem, incluindo joysticks e botão INTERAGIR.
+- [ ] Verificar a posição/escala do headrest, armchair, closet, fixtures e snack counter com Carter ao lado.
+- [ ] Comparar texturas, luzes, transparência do deck e sombras em ângulos de jogo.
+- [ ] Medir carregamento, FPS e estabilidade com os GLBs remotos ativados.
+- [ ] Marcar separadamente implementado, testado e aprovado visualmente.

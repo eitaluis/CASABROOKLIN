@@ -219,3 +219,21 @@ As fontes externas são registradas separadamente do código de integração. S�
 - **Liverpool World Museum / Virtual Cuneiform — 3D Interactive Shabti:** https://virtualcuneiform.org/shabtiModels.html — modelo em point cloud/mesh e downloads PLY/STL em duas resoluções.
 - **Factum Foundation — Recording fragments from the Tomb of Seti I:** https://factumfoundation.org/our-projects/digitisation/the-theban-necropolis-preservation-initiative/the-tomb-of-seti-i/recording-fragments-from-the-tomb-of-seti/ — documentação fotogramétrica de dois ushabtis do túmulo de Seti I, mostrando a diferença entre faiança azul original e superfície 3D.
 - Nenhum dos modelos de Rá ou shabti acima foi adicionado ao runtime nesta iteração; os links foram registrados para escolha e verificação de escala/pose antes da integração.
+
+
+### Iteração escultórica da sala de treinamento — 27/11/2026
+
+**Shabtis para os nichos**
+
+- **Virtual Museums of Małopolska / Artheon — Ushabti figures, MAK/AS/2206 e MAK/AS/2207:** https://www.artheonmuseum.org/artwork/ushabti-figures-cf0631 — scan 3D creditado ao projeto Virtual Museums of Małopolska, CC0 (domínio público), disponibilizado via Sketchfab. Referência para forma mumiforme, posição dos braços, toucado e proporções de estatuetas funerárias.
+- **The Watt Institution — Shabti figure, cat. 1987.317:** https://sketchfab.com/3d-models/shabti-figure-8161d0bfc36348ecaa5a59fcb38e8644 — scan 3D de composição vítrea azul-esverdeada, inscrição frontal e bolsa de sementes no verso; licença CC BY. Referência secundária para pátina e detalhe de superfície.
+- **Virtual Cuneiform / World Museum Liverpool — Shabti:** https://virtualcuneiform.org/shabtiModels.html — modelo fototexturizado de um shabti histórico, com point cloud/mesh e versões PLY/STL; referência para a leitura da superfície escaneada.
+- **Smarthistory — Ushabti:** https://smarthistory.org/ushabti/ — referência de iconografia funerária, braços cruzados, ferramentas agrícolas e inscrição.
+
+**Rá / Re-Horakhty**
+
+- **The Metropolitan Museum of Art — Statuette of Re-Harakhty:** https://www.metmuseum.org/art/collection/search/551042 — figura sentada com cabeça de falcão e disco solar; referência para a relação espacial entre cabeça e disco.
+- **The Metropolitan Museum of Art — Head of an anthropomorphic falcon god:** https://www.metmuseum.org/art/collection/search/549699 — cabeça em diorito com peruca estriada; referência para volume de crânio, olhos e encaixe do ornamento solar.
+- **ArchaeoArchive — Ra-Horakhty AA-016:** https://archaeoarchive.com/view/ra-horakhty — scan fotogramétrico com versões texturizadas e sem textura. O registro indica disponibilização CC BY 4.0 após publicação; a versão STL no Wikimedia Commons tem licença CC BY-SA 4.0: https://commons.wikimedia.org/wiki/File:Statue_of_Ra-Horakhty,_3D_photogrammetry_scan_(STL).stl.
+
+**Implementação:** nesta iteração, os scans acima foram usados como referência, não distribuídos dentro do repositório. A cabeça de Rá, disco solar, aro funcional, nichos e modelos decorativos de shabti são geometrias originais implementadas no Three.js. Isso evita atribuir procedência arqueológica falsa a uma reconstrução procedural.

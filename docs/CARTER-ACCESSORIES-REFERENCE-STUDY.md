@@ -1,6 +1,6 @@
 # Carter Kane — estudo visual dos acessórios (revisão após screenshot)
 
-Status em 27/11/2026: **direção A e composição aprovadas explicitamente pelo usuário.** Integração ainda pendente porque o ambiente não conseguiu recuperar os bytes do GLB Innerscene: o download redireciona para `files.innerscene.com`, cujo arquivo não está acessível pelas ferramentas desta sessão. Nenhuma malha falsa/substituta foi integrada.
+Status em 27/11/2026: **direção A e composição aprovadas explicitamente pelo usuário.** A correção de rig e encaixe foi integrada em src/character-accessories.js usando uma geometria procedural provisória com a dimensão/silhueta-alvo. O GLB Innerscene CC0 continua como base visual aprovada, mas ainda não foi importado: o endpoint de download redireciona para files.innerscene.com, que não ficou acessível às ferramentas desta sessão. O resultado de código ainda precisa de validação visual real em navegador; não marcar como visualmente aprovado.
 
 ## 1. Diagnóstico do screenshot enviado em 27/11/2026
 
@@ -147,3 +147,35 @@ O usuário não consegue anexar o GLB Innerscene nesta conversa. Foram pesquisad
 As páginas e URLs de download foram verificadas. Entretanto, nesta sessão, os downloads externos binários não foram materializados no workspace: os links GLB de Grab3D e Vinish retornaram Cache miss/resposta binária não interpretável pelas ferramentas web; o downloader do container também não conseguiu recuperar os arquivos externos. As ferramentas GitHub disponíveis só recuperam binários alojados no próprio GitHub. Portanto, não afirmar que qualquer desses GLBs foi efetivamente baixado. A alternativa só pode ser chamada de integrada depois de obter seus bytes e inspecionar a malha.
 
 Recomendação atual: manter Innerscene como referência aprovada de direção, e levar à avaliação estética prioritária o Vinish Leather Satchel (melhor tipologia/cor, apesar da proporção muito alta) e o Grab3D Handbag (melhor corpo suave/aba, apesar de ser handbag rosa). O Meshy CC0 fica como referência adicional. Nenhum candidato substitui a direção A até aprovação explícita.
+
+
+## 11. Correção de rig e encaixe — 27/11/2026
+
+A revisão foi integrada ao runtime em três partes: src/character-accessories.js, src/character.js (cache-buster), e o import de src/character.js usado por src/main.js e por character-preview.html.
+
+### O que foi corrigido
+
+- **Coordenadas/ordem de ancoragem:** bolsa, alça e corrente são construídas primeiro no espaço local neutro de Carter. Só depois os grupos são reparentados com Object3D.attach(), que preserva a posição mundial inicial. Isso evita que os vértices authored em coordenadas do modelo sejam interpretados como coordenadas locais de Hips/Spine.
+- **Bolsa:** volume compacto, arredondado e lateral/posterior no quadril direito; dimensão-alvo provisória de 202 × 158 × 76 mm (0,88 das dimensões de corpo publicadas para o Innerscene). O pivô procura a superfície lateral do SkinnedMesh por raycast e é ancorado ao osso Hips.
+- **Alça:** largura de 22 mm, acompanhando ombro/peito/lateral e chegando ao anel traseiro da bolsa. A geometria é dividida em dois trechos contíguos: o superior acompanha Spine2/Spine1 e o inferior acompanha Hips. Os pontos são projetados sobre a malha deformada e a orientação da fita/pesponto usa as normais calculadas dos vértices deformados do triângulo atingido.
+- **Corrente e medalhão:** o desenho e a dimensão do pingente aprovado foram preservados. Os pontos da corrente são projetados sobre a superfície frontal do SkinnedMesh, o plano do medalhão acompanha a normal local obtida e o conjunto segue o osso torácico.
+- **Paridade:** src/main.js e character-preview.html usam o mesmo src/character.js; o módulo de acessórios é único e compartilhado por desktop e mobile.
+
+### Limite de asset e status real
+
+O GLB original aprovado de Innerscene ainda não está no repositório e não foi baixado. A página de origem foi verificada como CC0 e documenta o corpo de couro conhaque 230 × 86 × 180 mm, mas o botão de download redireciona para o host binário files.innerscene.com, inacessível às ferramentas desta sessão. Portanto:
+
+- A bolsa visível no runtime nesta revisão é **geometria procedural provisória**, não o GLB Innerscene.
+- Não foi possível inspecionar sua hierarquia de nodes/malhas nem remover com segurança a alça caída original do GLB.
+- A revisão do código foi integrada; **teste no navegador, validação de movimento e aprovação visual continuam pendentes**.
+- A peça escura no ombro que apareceu no screenshot anterior segue sem origem identificada no Ara share; o parâmetro carry: 'none' já está definido e não deve ser repetido como tentativa cega de remoção.
+
+### Evidência de implementação
+
+Commits de implementação em main:
+- 210f476 — reestrutura os anchors e troca o strap/necklace para pontos de fixação separados.
+- 7bc663a — alinha o ajustador de latão ao plano da alça.
+- 28a7c55 — calcula as normais de superfície a partir dos vértices deformados do SkinnedMesh.
+- f8e9055 — registra proveniência e status no manifest.
+
+O resultado esperado é bolsa sentada na lateral posterior da pelve, faixa colada à camisa e medalhão apoiado na parte superior do tórax. Esta é a intenção técnica documentada; só a inspeção real do preview pode confirmar o resultado visual.

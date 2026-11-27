@@ -1,7 +1,7 @@
 # Carter Kane — estudo de corrida, salto e locomoção
 
 Data da pesquisa: 27/11/2026  
-Status: **pesquisado e documentado; ainda não integrado ao runtime.** A prioridade imediata permanece validar visualmente a correção da bolsa e do medalhão. Depois disso, revisar corrida e salto sem alterar a base humana/rig Ara.
+Status: **pack gerado, validado e integrado ao runtime compartilhado.** A validação automatizada do Ara passou; a inspeção visual final em navegador desktop e mobile ainda está pendente.
 
 ## 1. Cânone, referência visual e interpretação
 
@@ -127,10 +127,10 @@ Os saltos desta coleção são CC0 (Universal Animation Library by Quaternius), 
 - Referência visual oficial: localizada.
 - Assets candidatos e licenças: pesquisados e documentados.
 - Compatibilidade com Ara: confirmada na documentação oficial.
-- Download/importação dos clips: **não realizada**.
-- Modificação do movimento: **não realizada**.
+- Download/importação dos clips: **concluída** em `assets/animations/carter-movement.ara-pack.json`; seis clips retargetados e validados pelo Ara.
+- Modificação do movimento: **integrada** em `src/character.js`, `src/third-person.js` e `src/inventory.js`.
 - Aprovação visual do movimento final: **pendente**.
-- Ordem do projeto: terminar e validar bolsa/medalhão primeiro; depois apresentar o preview comparativo de corrida e salto e só então integrar os clips aprovados.
+- Ordem do projeto: o usuário forneceu a aprovação direta dos seis clipes; o pack foi integrado sem alterar a base humana/rig Ara.
 
 ## 7. Checklist de QA
 - Desktop e mobile usam o mesmo rig, clips, objetos e gameplay; só controles/UI podem diferir.
@@ -142,3 +142,30 @@ Os saltos desta coleção são CC0 (Universal Animation Library by Quaternius), 
 - Blend em transições sem estalo ou pose congelada.
 - Salto com antecipação, arco contínuo e aterrissagem absorvida.
 - Testar FPS e estabilidade no celular em paisagem.
+
+
+## 8. Implementação dos seis clipes aprovados — 27/11/2026
+
+O usuário selecionou diretamente as seis referências do KinemIQ e aprovou sua integração. Os GLBs foram baixados, conferidos como GLB 2.0 com animação embutida e convertidos para o pack Ara `carter-moves`. O comando de validação do Ara aprovou o pacote com estes resultados:
+
+- `sprint_shield_loop`: 0,67 s, loop, 50 ossos.
+- `sprint_loop`: 0,67 s, loop, 50 ossos.
+- `ninjajump_double`: 0,90 s, 50 ossos.
+- `jump_land`: 1,27 s, 50 ossos.
+- `melee_combo`: 2,27 s, 50 ossos.
+- `sword_heavy_combo`: 4,33 s, 50 ossos.
+
+### Controles e sincronização
+
+- Sprint alterna entre a variante livre e a variante com objeto equipado.
+- Salto: o clip ninja segura a pose de fim até que a gravidade/colisão em `src/third-person.js` detecte contato; então o clip `jump_land` começa e só depois a locomoção volta.
+- F: combo desarmado sem item, combo pesado com cajado ou khopesh. A mesma função está disponível no inventário desktop e no botão de toque mobile.
+- A física horizontal/vertical continua no controlador original; os seis clipes foram retargetados ao rig Ara e não substituem a movimentação do root.
+
+### Proveniência
+
+Origem KinemIQ e fontes/licenças documentadas em `assets/animations/carter-movement-source-credits.json`. A licença agregada é mista (CC0-1.0, CC BY 3.0 e CC BY 4.0); não presumir que cada clipe individual é CC0. Build repetível em `scripts/build-carter-motion-pack.mjs` e workflow `.github/workflows/build-carter-motion-pack.yml`.
+
+### QA que permanece
+
+A verificação de pack e o download dos seis arquivos passaram no GitHub Actions. Ainda é necessário conferir visualmente o blending, o contato dos pés, a arma na mão, a transição de salto e a performance no navegador real em desktop e mobile; a validação automatizada do arquivo não substitui essa etapa visual.

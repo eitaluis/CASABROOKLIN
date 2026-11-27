@@ -104,7 +104,7 @@ export function createMagicSystem({
     try {
       const response = await fetch(new URL('../assets/vfx/' + filename + '.b64', import.meta.url));
       if (!response.ok) throw new Error('HTTP ' + response.status);
-      const encoded = (await response.text()).replace(/\\s/g, '');
+      const encoded = (await response.text()).replace(/\s/g, '');
       const image = new Image();
       image.src = 'data:image/png;base64,' + encoded;
       if (image.decode) await image.decode();

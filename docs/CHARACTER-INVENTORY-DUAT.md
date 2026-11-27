@@ -33,7 +33,7 @@ Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, páginas impres
 | ID | Objeto | Função / estado | Base |
 |---|---|---|---|
 | `staff` | Cajado mágico | Quarterstaff reto de madeira com ponteiras de ferro e duas faixas de tecido para empunhadura; preso à mão direita pelo eixo central | O livro estabelece a função ofensiva do cajado, mas não fixa a aparência exata do cajado de Carter; asset Polyfork aprovado pelo usuário e integrado |
-| `khopesh` | Khopesh | Arma corpo a corpo; empunhada na mão direita | Canônico; modelo procedural integrado |
+| `khopesh` | Khopesh | Arma corpo a corpo; empunhada na mão direita, com pivot no centro do cabo | Canônico como arma de Carter; asset Vinish.dev opção A aprovado e integrado no branch; GLB remoto com fallback local |
 | `wax_shabti` | Shabti de cera | Miniatura transportável; futura invocação por magia | Canônico como objeto criado em cera; primeira geometria procedural integrada |
 | `papyrus` | Papiro | Suporte para escrever/desenhar feitiços | Canônico; primeira geometria/textura procedural integrada; escrita mágica real pendente |
 | `reed_pen` | Cálamo | Ferramenta de escrita e desenho mágico | Canônico; primeira geometria procedural integrada |
@@ -78,6 +78,32 @@ Os links do British Museum são referências de estudo, não arquivos importados
 | QA | Integração de código confirmada; encaixe visual no jogo ainda precisa de inspeção em navegador |
 
 A ficha distingue o objeto canônico (cajado como ferramenta ofensiva) da forma Polyfork escolhida como asset de produção. O modelo não foi retintado, remodelado nem adornado depois da aprovação.
+
+## 3.3 Khopesh de Carter — direção A aprovada (27/11/2026)
+
+**Canon textual:** o site oficial de Rick Riordan identifica o khopesh como a espada de Carter e informa que esse tipo de arma era usado pela guarda pessoal do faraó: https://rickriordan.com/extra/meet-the-kane-family/. Em *A Pirâmide Vermelha*, Carter recupera a arma do Duat segurando o cabo de couro. O texto não fixa o desenho exato, as cores dos metais, a decoração nem o tamanho preciso da arma pessoal.
+
+**Referência histórica:** o khopesh é uma lâmina curva com a parte cortante externa e ponta em gancho. Essa forma histórica orienta a silhueta, mas não transforma o modelo de produção em artefato arqueológico específico.
+
+**Asset aprovado:** [Khopesh — Vinish.dev](https://vinish.dev/free-3d-models/swords) · [abrir visualizador 3D](https://vinish.dev/free-3d-models/swords) · [GLB usado no runtime](https://vinish-models.pages.dev/swords/khopesh.glb).
+
+| Campo | Especificação |
+|---|---|
+| Criador | Vinish.dev |
+| Arquivo | GLB, aproximadamente 297 KB |
+| Dimensões publicadas | 0,60 × 0,13 × 0,04 m |
+| Malha | 10.868 triângulos |
+| Forma/material | Lâmina de bronze com sulco, cabo escuro de ébano, faixas douradas, contas de lápis-lazúli e pomo dourado |
+| Pivot publicado | Nó `Sword` no centro da empunhadura; lâmina orientada para +X |
+| Licença | CC BY 4.0; atribuição: “Khopesh” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0 |
+| Socket | Ara `WeaponR`, centro da mão direita fechada |
+| Transformação do branch | Wrapper no pivot do cabo; rotação Y de +90° para orientar a lâmina para a frente do personagem |
+| Fallback | Khopesh procedural antigo permanece ativo até o GLB terminar de carregar; retorna em caso de erro de rede |
+| QA | Código integrado no branch; escala, orientação da lâmina e contato da mão ainda precisam de inspeção real no jogo |
+
+**Interpretação de produção:** o modelo Vinish.dev é a escolha aprovada para o inventário de Carter; não é apresentado como uma reprodução oficial da ilustração do livro nem como uma peça histórica específica. O GLB está carregado por URL externa nesta versão, portanto a disponibilidade depende da CDN do autor; a malha não foi vendorizada localmente.
+
+
 ## 4. Estados do inventário
 
 Cada item precisa ter um ID estável e um estado explícito:
@@ -99,16 +125,18 @@ Regras:
 
 ## 5. Abertura do Duat — sequência visual
 
-A sequência pretendida para retirar um objeto é:
+A sequência aprovada para retirar um objeto usa o **redemoinho B** em escala de mão:
 
-1. Carter orienta o braço e aproxima a mão de um ponto no ar.
-2. Uma superfície oval translúcida se abre no ar à frente do tórax, no ponto em que a mão direita vai alcançar, como uma membrana entre o mundo físico e o Duat.
-3. A borda recebe luz azul-dourada e sinais hieroglíficos breves; o interior apresenta profundidade e distorção, não deve parecer um menu plano.
-4. A mão atravessa a abertura.
-5. O objeto surge parcialmente na membrana, é puxado para fora e se encaixa no socket da mão direita.
-6. A abertura se fecha e os sinais desaparecem.
+1. Carter inicia o alcance com o clipe Ara `use_press`.
+2. Um pequeno vórtice azul-ciano se forma no espaço à frente do tórax, exatamente na área de alcance da mão direita.
+3. O interior gira em espiral, com distorção e filamentos luminosos; poucas partículas azuladas e alguns pontos dourados orbitam o núcleo.
+4. A mão atravessa o efeito e o item aparece parcialmente no vórtice, crescendo até encaixar no socket `WeaponR`.
+5. A energia se contrai e desaparece junto com as últimas partículas.
+6. Para guardar, o movimento acontece no sentido inverso.
 
-Para guardar, a sequência acontece ao contrário. **Já está implementado:** portal oval procedural ancorado em Spine2/Spine1/Chest/Spine; clipe Ara `use_press` de 1,65 s; transição de escala/posição sincronizada com o contato da mão por volta de 0,88 s; e retorno ao estado guardado. O controlador bloqueia movimento, salto e joystick durante a ação. **Pendente:** refinar a pose para a palma inteira atravessar a membrana (o clipe existente estende o indicador como se tocasse um ponto), ajustar a orientação e a posição real do portal após inspeção do rig e revisar o timing visual. O rig aprovado do Carter não será substituído.
+**Implementação no branch:** shader procedural próprio em `THREE.ShaderMaterial`, superfície circular de aproximadamente 36 cm e 56 pontos de partícula determinísticos. O efeito não usa pacote externo nem textura baixada. Mantém a ancoragem torácica que já alinhava o clip `use_press`, mas remove os dois aros e o disco estático antigos. A mesma implementação e os mesmos parâmetros são utilizados em desktop e mobile; a qualidade efetiva ainda depende de teste no navegador.
+
+**Canon versus interpretação:** o ato de recuperar objetos do Duat é narrativo; a geometria de um redemoinho visível, a paleta azul-ciano/dourada, os filamentos e a quantidade de partículas são uma interpretação de gameplay aprovada pelo usuário, não uma descrição visual literal do livro.
 
 ## 6. Arquitetura técnica
 
@@ -150,9 +178,16 @@ Referências:
 
 ## 8. Animação e portabilidade
 
-O Ara 3D Gen disponibiliza clipes de pegar objeto no chão, deixar objeto no chão e alcançar/pressionar com a mão direita. Esses clipes são bons pontos de partida, mas a retirada do Duat acontece no espaço do peito/mão, não no chão. A seleção final deve ser testada com o rig real; se necessário, será criado um pequeno clip próprio e empacotado para o Ara.
+A direção aprovada é manter a locomoção e as ações nativas do Ara 3D, sem substituir o Carter, rosto, corpo ou rig:
 
-Não fixar a magia a um botão ou a um tipo de dispositivo. Desktop e mobile chamam as mesmas ações lógicas; teclado, clique e controles táteis são apenas entradas diferentes.
+- `idle`, `walk` e `run` continuam como base da locomoção; `src/third-person.js` usa os limiares `walkSpeed`/`runSpeed` expostos pela locomotion Ara quando disponíveis, com fallback para os valores antigos do projeto.
+- Com khopesh equipado, o idle da locomoção passa para `sword_idle`; ao andar/correr, os clips nativos de caminhada e corrida continuam ativos.
+- F aciona `sword_combo` para khopesh e `sword_thrust` para cajado. Os controles ficam travados durante o clip e retornam quando a animação termina; um balanço procedural curto permanece apenas como fallback se a versão do pacote Ara não disponibilizar o clip.
+- A sequência de retirada/armazenamento permanece em `use_press`; a animação e o efeito visual do Duat são compartilhados pelo botão de inventário no mobile e por teclado/clique no desktop.
+
+Os IDs são filtrados pela lista pública `ANIMATIONS` do pacote Ara antes do carregamento. Referência de catálogo: https://ara3dgen.com/docs/animations/. A documentação do sistema de biblioteca descreve o blend de `idle/walk/run` e os limiares de velocidade: https://ara3dgen.com/docs/library/.
+
+Desktop e mobile usam a mesma personagem, os mesmos clips, assets, shader, partículas e sequência lógica. Somente a entrada e o perfil de renderização podem variar. A validação no rig real ainda precisa confirmar a orientação do khopesh, a guarda, o arco dos ataques e a sincronia de alcance do portal.
 
 ## 9. Critérios de QA
 
@@ -182,6 +217,8 @@ A bancada ajuda a revisar escala, orientação, clipping, posição do portal e 
 ### Estado por componente — 27/11/2026
 
 - **Cajado Polyfork:** asset aprovado; integrado na `main`; browser QA da empunhadura ainda pendente.
-- **Khopesh:** modelo procedural antigo ainda é o que aparece na `main`; candidatos e direção visual aguardam aprovação do usuário.
-- **Locomoção e comando F:** código atual ainda não executa uma postura armada convincente; opções Ara/KinemIQ serão apresentadas antes da implementação.
-- **Retirada do Duat:** efeito antigo ainda está na `main`; novas propostas visuais foram apresentadas para escolha antes de qualquer alteração.
+- **Khopesh A:** GLB Vinish.dev integrado neste branch com pivot de empunhadura; orientação e contato visual pendentes de browser QA.
+- **Locomoção e F:** clips Ara `sword_idle`, `sword_combo` e `sword_thrust` integrados como postura/ações, mantendo walk/run nativos; verificar se os IDs carregam na versão Ara publicada.
+- **Retirada do Duat B:** disco e aros antigos substituídos por shader de redemoinho e 56 partículas locais; sincronização e legibilidade na mão pendentes de browser QA.
+- **Cajado Polyfork:** permanece na `main` e também está incluído neste branch por herança; conferir encaixe e colisão em idle/walk/run.
+- **Estado geral:** alterações ainda não foram visualmente aprovadas no browser. Abrir o preview e testar desktop e celular paisagem antes de mesclar.

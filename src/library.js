@@ -364,7 +364,6 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   const capsuleLabels = instanced('etiquetas dos tubos de papiro', new THREE.PlaneGeometry(0.21, 0.07), capsuleLabelMaterial, nicheCount);
 
   const forward = new THREE.Vector3(0, 0, 1);
-  const tangentRotation = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI / 2);
   const tempMatrix = new THREE.Matrix4();
   const unitScale = new THREE.Vector3(1, 1, 1);
   const capsuleRecords = new Map();
@@ -401,10 +400,10 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
       setMatrix(nicheTunnels, index, tunnel, quaternion);
       setMatrix(nicheBacks, index, position.clone().add(inward.clone().multiplyScalar(0.455)), quaternion);
 
-      const body = capsuleMatrix(surface, 0, 0, 0.255, tangentRotation);
+      const body = capsuleMatrix(surface, 0, 0, 0.255);
       setMatrix(capsuleBodies, index, body.pos, body.q);
-      const leftCap = capsuleMatrix(surface, -0.18, 0, 0.255, tangentRotation);
-      const rightCap = capsuleMatrix(surface, 0.18, 0, 0.255, tangentRotation);
+      const leftCap = capsuleMatrix(surface, -0.18, 0, 0.255);
+      const rightCap = capsuleMatrix(surface, 0.18, 0, 0.255);
       setMatrix(capsuleLeftCaps, index, leftCap.pos, leftCap.q);
       setMatrix(capsuleRightCaps, index, rightCap.pos, rightCap.q);
 
@@ -453,7 +452,7 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
           onInteract: () => {
             record.opened = !record.opened;
             record.sheet.visible = record.opened;
-            const capPosition = capsuleMatrix(surface, record.opened ? 0.31 : 0.18, 0, 0.255, tangentRotation);
+            const capPosition = capsuleMatrix(surface, record.opened ? 0.31 : 0.18, 0, 0.255);
             setMatrix(capsuleRightCaps, index, capPosition.pos, capPosition.q);
             capsuleRightCaps.instanceMatrix.needsUpdate = true;
             return record.opened

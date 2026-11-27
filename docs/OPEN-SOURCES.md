@@ -206,3 +206,16 @@ A documentação separa elementos narrativos confirmados, referências históric
 - **Ara 3D Gen** — https://github.com/olatunde85/3d-gen — referência ao esqueleto e ao clipe Point já utilizados no personagem. A pose de ataque é composta por offsets locais originais sobre o clip.
 
 As fontes externas são registradas separadamente do código de integração. Só os cinco sprites Kenney CC0 são assets de terceiros carregados no runtime; os materiais, geometrias complementares, animação do efeito, parâmetros de fade e composição corporal são código original CASABROOKLIN.
+
+
+### Referências museológicas — sala de treinamento (26/11/2026)
+
+- **Ra-Horakhty AA-016 — ArchaeoArchive / Omar Atabany:** https://archaeoarchive.com/view/ra-horakhty — scan fotogramétrico de objeto em granodiorito fotografado no National Museum of Egyptian Civilization, 56 fotos-fonte, 46.826 faces, textura 4K; downloads GLB, STL, PLY, 3MF e OBJ. Licença declarada CC BY 4.0. A identificação histórica e proveniência seguem o registro da etiqueta de galeria; número de inventário do museu e escala real ainda não confirmados no próprio registro. **Candidato real para a efígie de Rá; não importado ainda.**
+- **Wikimedia Commons — STL do Ra-Horakhty de Tanis:** https://commons.wikimedia.org/wiki/File:Statue_of_Ra-Horakhty,_3D_photogrammetry_scan_(STL).stl — versão sem textura, CC BY-SA 4.0; usar apenas se a obrigação ShareAlike for compatível com a distribuição do projeto. Preferir o GLB AA-016 sob CC BY 4.0.
+- **The Metropolitan Museum of Art — Statuette of Re-Harakhty:** https://www.metmuseum.org/art/collection/search/551042 — faiança ptolemaica, 332–30 BCE; deus com cabeça de falcão, disco solar simples e postura sentada. Referência iconográfica/visual, não scan 3D aberto.
+- **The Metropolitan Museum of Art — Head of an anthropomorphic falcon god:** https://www.metmuseum.org/art/collection/search/549699 — diorito, New Kingdom–Late Period; cabeça, peruca estriada e encaixe superior para ornamento solar perdido. Referência específica para cabeça e escala do disco.
+- **Global Egyptian Museum — SR 341:** https://www.globalegyptianmuseum.org/record.aspx?id=14804 — Re-Horakhty sentado em trono baixo, peruca tripartida, peitoral, shendyt, mão com ankh; granodiorito/granito cinza polido. Referência para pose sentada.
+- **Kelsey Museum / University of Michigan — Ushabti Figurine 0000.00.4645:** https://diskoproject.kelsey.lsa.umich.edu/object/ushabti/ — faiança azul-esverdeada, 13,5 cm, com barba, toucado e inscrição; página fornece STL para download.
+- **Liverpool World Museum / Virtual Cuneiform — 3D Interactive Shabti:** https://virtualcuneiform.org/shabtiModels.html — modelo em point cloud/mesh e downloads PLY/STL em duas resoluções.
+- **Factum Foundation — Recording fragments from the Tomb of Seti I:** https://factumfoundation.org/our-projects/digitisation/the-theban-necropolis-preservation-initiative/the-tomb-of-seti-i/recording-fragments-from-the-tomb-of-seti/ — documentação fotogramétrica de dois ushabtis do túmulo de Seti I, mostrando a diferença entre faiança azul original e superfície 3D.
+- Nenhum dos modelos de Rá ou shabti acima foi adicionado ao runtime nesta iteração; os links foram registrados para escolha e verificação de escala/pose antes da integração.

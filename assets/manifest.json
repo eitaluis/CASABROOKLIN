@@ -29,6 +29,20 @@
       "version": "vendored-and-adapted-2026-11-26",
       "role": "view-aligned volumetric fire mesh and procedural noise shader; local WebGL2 GLSL3 adaptation",
       "license": "MIT"
+    },
+    {
+      "id": "polyfork-monk-quarterstaff",
+      "source": "https://polyfork.dev/asset/monk-s-quarterstaff-cbdadd",
+      "version": "GLB 57 KB; 496 triangles",
+      "role": "runtime GLB for Carter's staff; scaled to 2 m, reduced to 2.4 cm diameter, recoloured pale beige and translated so WeaponR grips the midpoint; GLTFLoader CDN request with procedural fallback",
+      "license": "commercial use allowed; mesh CC BY 4.0 for redistribution; creator attribution recorded in docs/OPEN-SOURCES.md"
+    },
+    {
+      "id": "vinish-khopesh",
+      "source": "https://vinish.dev/free-3d-models/swords",
+      "version": "GLB 297 KB; 10,868 triangles",
+      "role": "runtime khopesh GLB; 60 cm source asset, Sword node pivot centred in grip, blade +X; runtime removes scabbard if present, rotates into Carter's frontal upright plane and reduces thickness; procedural fallback",
+      "license": "CC BY 4.0; attribution required; modified/reoriented"
     }
   ],
   "localGeneratedAssets": [
@@ -53,8 +67,8 @@
     {
       "id": "egyptian-staff-and-khopesh",
       "path": "src/inventory.js",
-      "role": "procedural Egyptian-inspired magic staff and khopesh props attached to Carter WeaponR socket",
-      "license": "project-original-code"
+      "role": "weapon inventory fallback geometry; primary runtime props are the Polyfork quarterstaff and Vinish.dev khopesh GLBs listed in runtimeAssets",
+      "license": "project-original-code (fallback only); external runtime GLBs have separate licences in runtimeAssets"
     },
     {
       "id": "great-hall-sculpted-finish",
@@ -302,6 +316,14 @@
       "path": "src/world.js + src/papyrus-boat.js + src/waterfront-environment.js",
       "role": "compact wooden arrival dock (~10×8 game units) with individual planks, underside stringers, piles, cleats and mooring rings; short papyrus-boat gangway meets the quay; seawall opening and instanced riprap integrate the shore",
       "license": "project-original-code"
+    },
+    {
+      "id": "duat-hand-energy-sphere",
+      "path": "src/inventory.js",
+      "source": "original Three.js shader and geometry; reuses assets/vfx/kenney-magic-01.png.b64, kenney-smoke-03.png.b64 and kenney-spark-07.png.b64",
+      "author": "CASABROOKLIN project; particle textures by Kenney",
+      "license": "project-original-code; Kenney particle textures CC0-1.0",
+      "role": "3D energy shell attached to Carter's hand socket with fresnel shader, two helical energy tubes, animated particles and local point light; the hand is enclosed inside the volume"
     }
   ],
   "openSourceReferences": [
@@ -638,6 +660,21 @@
         "index.html"
       ],
       "summary": "HA-DI usa fight_idle + point, preserva a guarda esquerda, aplica uma base corporal de combate e aciona a explosão diretamente no Shabti sem projétil.",
+      "date": "2026-11-27"
+    },
+    {
+      "id": "inventory-asset-first-grip-sphere-20261127",
+      "scope": "runtime",
+      "files": [
+        "src/inventory.js",
+        "src/character.js",
+        "src/main.js",
+        "character-preview.html",
+        "docs/CHARACTER-INVENTORY-DUAT.md",
+        "docs/OPEN-SOURCES.md",
+        "docs/ASSET-FIRST-RESEARCH-STANDARD.md"
+      ],
+      "summary": "Real GLB staff and khopesh assets, midpoint hand grip, full-body Ara weapon attacks, 2-point Duat retrieval energy cost and 3D hand-enclosing energy sphere. Shared desktop/mobile runtime.",
       "date": "2026-11-27"
     }
   ]

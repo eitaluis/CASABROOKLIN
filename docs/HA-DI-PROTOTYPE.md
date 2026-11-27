@@ -124,3 +124,14 @@ A integração no GitHub confirma que o código e a documentação foram adicion
 - **Referência de animação:** https://github.com/olatunde85/3d-gen/blob/main/docs/animations.md — categoria Shooter, `Throw grenade`; clipe de 2,2 s, liberação em 0,82 s. A documentação upstream identifica a origem CMU Motion Capture e os respectivos termos de uso.
 - **Compatibilidade:** a mesma implementação atende desktop e mobile; os controles e a cena continuam compartilhados, com apenas os ajustes de resolução já existentes no mobile.
 - **Validação:** sintaxe dos módulos e estrutura do manifesto verificadas. A fluidez real, a leitura da pose no rig e o FPS ainda exigem conferência num navegador desktop e num celular em modo paisagem; não foi feita captura de gameplay nesta alteração.
+
+
+### HA-DI — postura de combate e impacto direto (27/11/2026)
+
+- **Referência de animação no próprio rig Ara:** `fight_idle` (Fighting stance, 2 s, loop) e `point` (Point, 1,4 s). A implementação oficial do Ara descreve a guarda com pé esquerdo à frente, joelhos flexionados, mãos à altura do queixo e o Point estendendo o indicador direito e mantendo o apontamento. Fontes: https://github.com/olatunde85/3d-gen/blob/main/src/core/anim/clips/combat.ts e https://github.com/olatunde85/3d-gen/blob/main/src/core/anim/clips/emotes.ts.
+- **Sequência:** Carter entra em `fight_idle`; após 0,26 s, a mão direita transita para `point`. A pose da guarda esquerda é capturada do clip `fight_idle` e mantida enquanto o braço direito aponta; a postura das pernas, pés e tronco é mantida por uma camada procedural alinhada aos ângulos do clip de combate. O gesto de dois dedos continua aplicado após o Point.
+- **Impacto:** removido o projétil dourado e a curva de deslocamento. A explosão reutilizável é acionada diretamente no Shabti a 0,82 s, depois da extensão máxima do apontamento. O efeito de impacto e as partículas instanciadas permanecem iguais.
+- **Recuperação:** o gesto Point termina no seu tempo nativo de 1,4 s, e a locomoção compartilhada é retomada ao fim da sequência. A compensação de cabeça continua a manter o olhar ereto.
+- **Seleção de assets:** não foi importado um segundo esqueleto nem animação externa para o Carter. Ara é a fonte ativa e os IDs são confirmados pelo catálogo exportado `ANIMATIONS`; KinemIQ/Quaternius foi verificado como alternativa de clips CC0, mas rejeitado para esta versão por não trazer uma vantagem sobre os dois clips já retargetados no rig do personagem.
+- **Compatibilidade:** a mesma sequência, captura da guarda, gesto e impacto são usados em desktop e mobile.
+- **Validação:** sintaxe JavaScript, IDs de animação e ausência de projétil no módulo de magia foram verificadas. A leitura visual da transição e da mão esquerda ainda requer conferência no navegador real; não foi feita captura de gameplay nesta alteração.

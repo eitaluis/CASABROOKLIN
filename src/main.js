@@ -7,7 +7,7 @@ import { buildLibrary } from './library.js?v=library-asset-first-20261127b';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-traversal-20261127b';
 import { buildTrainingRoom } from './training-room.js?v=museum-statues-board-20261127b';
 import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
-import { createMagicSystem } from './magic-system.js?v=ha-di-direct-combat-point-20261127a';
+import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
 import { createCharacter } from './character.js?v=ha-di-fighting-point-20261127a';
 import { createThirdPersonController } from './third-person.js?v=yaw-only-neutral-root-20261127a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';

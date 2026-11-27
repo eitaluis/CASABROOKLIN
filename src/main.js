@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=carter-bedroom-asset-first-20261127a';
+import { buildWorld } from './world.js?v=library-monumental-20261127b';
 import { buildExterior } from './exterior.js?v=urban-horizon-continuity-20261127a';
 import { buildWaterfrontEnvironment } from './waterfront-environment.js?v=urban-horizon-continuity-20261127a';
 import { buildInteriorDetails } from './interior-details.js?v=library-monumental-20261127a';

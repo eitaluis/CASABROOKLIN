@@ -409,3 +409,29 @@ Estes três GLBs foram adicionados à cena a partir de versões otimizadas do pr
 - Material: o material PBR opaco de calcário já utilizado no Grande Salão (mapa de cor/normal/roughness CC0 local); não usa `transparent:true`, `opacity<1` nem transmissão.
 - Colisão: colisor das folhas realinhado ao novo plano de fachada; colisor adicional para a porção alta da alvenaria.
 - Estado: integrado em `src/grand-salon.js`; a vista externa precisa de QA visual no browser.
+
+
+## Biblioteca subterrânea monumental — assets avaliados e uso em 27/11/2026
+
+A implementação aprovada foi construída com geometria e texturas originais do projeto; os candidatos abaixo foram usados como referências e estudos, não como modelos binários importados.
+
+| Fonte | Licença/formato | Uso e estado |
+|---|---|---|
+| [Tevy — Dungeon Stone Stairs](https://tevy.dev/models/dungeon-stone-stairs) | CC0-1.0, GLB, 22.170 triângulos | Referência de proporção e desgaste de degraus. Não importado: a escada final precisa seguir a curva circular e o caminho de altura próprio. |
+| [Tevy — Vault Stairs](https://tevy.dev/models/vault-stairs) | CC0-1.0, GLB, 11.698 triângulos | Referência de linguagem pétrea e arquitetura abobadada. Não importado. |
+| [KinemIQ — Free Game Animations](https://github.com/Kinemiq/free-game-animations) | CC0-1.0, GLB/FBX; 35 clips; esqueleto humanoide de 66 ossos a 30 fps | Avaliado para as tarefas dos pequenos servos. Não importado porque as estatuetas atuais são geometrias procedurais articuladas por componentes, sem skeleton/skin weights compatíveis. O movimento atual é procedural; retarget exige rigar/reconstruir as figuras. |
+| [Noto Sans Egyptian Hieroglyphs](https://github.com/notofonts/egyptian-hieroglyphs) | SIL Open Font License 1.1 | Fonte usada pelo projeto para renderizar sinais no atlas mural. O arquivo de fonte não foi copiado para assets; segue o carregamento tipográfico já existente no HTML. |
+| [The Met — Scribe's Palette and Brushes](https://www.metmuseum.org/art/collection/search/544302) | The Met Open Access / domínio público | Referência histórica para paleta de madeira, bolos de pigmento e pincéis de junco. Os objetos de runtime são geometria própria; o scan não foi importado. |
+| [Ancient Scroll Map — Sketchfab](https://sketchfab.com/3d-models/ancient-scroll-map-1fb49d10ada34e889704348b77e350b5) | CC BY | Referência de forma para papiro aberto. Não importado; as folhas e rolos da mesa foram modelados no projeto. |
+| [The Narmer Palette — Sketchfab](https://sketchfab.com/3d-models/the-narmer-palette-cdd70f3f6c0a4c8ab99db6ec9194f7da) | CC BY-NC-SA | Referência de silhueta/relief apenas. Não importado nem redistribuído; a peça de jogo é uma representação simplificada original. |
+| [Stone Altar — Sketchfab](https://sketchfab.com/3d-models/stone-altar-3d4f2edb18e4424cabb41b60aa160cb5) | CC BY | Referência de desgaste e massa pétrea. Não importado; a mesa foi construída sob medida. |
+
+### Implementação local resultante
+
+- src/library.js gera a parede mural, mapa alpha de aberturas, cavidades, cápsulas pneumáticas, escada, estatuetas, animações procedurais de tarefa e estação de escriba.
+- src/third-person.js recebe os pontos da escada pela propriedade walkableCurves, compartilhando a mesma trajetória física no desktop e no mobile.
+- src/interior-details.js conserva a cúpula de Nut e o piso de Geb redimensionados. As imagens figurativas finais foram adiadas explicitamente e não foram geradas nesta etapa.
+- Os mapas PBR de calcário já existentes no projeto são reutilizados; não foi criado hotlink ou download remoto de texturas.
+- O atlas mural contém composições originais. As sequências de hieróglifos são decoração interpretativa, não uma tradução acadêmica nem texto literal do romance.
+
+**QA:** os módulos passaram pela checagem estática de sintaxe e o manifest JSON foi validado. Ainda não houve inspeção visual em navegador real no desktop ou em celular paisagem.

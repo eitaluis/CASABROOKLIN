@@ -91,8 +91,8 @@ export function buildResidentialWing({
   // Corredor físico: o eixo oeste continua diretamente a partir da sala lateral
   // da galeria superior. A geometria exata do corredor é interpretação espacial.
   addFloor('Piso do corredor residencial', 20.25, 0, 4.7, 18.0);
-  box('Rodapé de calcário do corredor norte', 20.25, FLOOR_Y + 0.18, -8.98, 4.7, 0.36, 0.22, stoneMat, true);
-  box('Rodapé de calcário do corredor sul', 20.25, FLOOR_Y + 0.18, 8.98, 4.7, 0.36, 0.22, stoneMat, true);
+  box('Rodapé de calcário do corredor norte', 20.25, FLOOR_Y + 0.09, -8.98, 4.7, 0.18, 0.22, stoneMat, true);
+  box('Rodapé de calcário do corredor sul', 20.25, FLOOR_Y + 0.09, 8.98, 4.7, 0.18, 0.22, stoneMat, true);
   box('Parede lateral norte do corredor', 20.25, FLOOR_Y + 1.75, -9.05, 4.7, 3.5, 0.24, wallMat, true);
   box('Parede lateral sul do corredor', 20.25, FLOOR_Y + 1.75, 9.05, 4.7, 3.5, 0.24, wallMat, true);
 
@@ -452,6 +452,29 @@ export function buildResidentialWing({
   box('Embalagem de chocolate', -0.12, 0.12, 0.08, 0.42, 0.1, 0.18, new THREE.MeshStandardMaterial({ color: 0x7c3a2a, roughness: 0.64 }), false, snacks);
   box('Embalagem de balas', -0.12, 0.25, -0.16, 0.36, 0.09, 0.16, new THREE.MeshStandardMaterial({ color: 0x8c304d, roughness: 0.58 }), false, snacks);
 
+  const waterMaterial = new THREE.MeshStandardMaterial({
+    color:0x76b5c1, emissive:0x123844, emissiveIntensity:0.28,
+    transparent:true, opacity:0.55, roughness:0.18
+  });
+  const sinkWaterStream = new THREE.Mesh(new THREE.CylinderGeometry(0.014,0.028,0.22,12), waterMaterial);
+  sinkWaterStream.position.set(31.4, FLOOR_Y + 0.73, -5.76);
+  sinkWaterStream.visible = false;
+  roomGroup.add(sinkWaterStream);
+
+  const showerWater = new THREE.Group();
+  showerWater.position.set(33.35, FLOOR_Y, -7.0);
+  showerWater.visible = false;
+  for(let i=0;i<7;i++) {
+    const drop = new THREE.Mesh(new THREE.CylinderGeometry(0.009,0.015,0.78,7), waterMaterial);
+    drop.position.set(-0.25 + i*0.08,1.05,(i%3-1)*0.07);
+    showerWater.add(drop);
+  }
+  roomGroup.add(showerWater);
+
+  const fridgeGlow = new THREE.PointLight(0xa7d8df,0,1.8);
+  fridgeGlow.position.set(26.0,FLOOR_Y+1.0,-7.2);
+  roomGroup.add(fridgeGlow);
+
   // Pequenos colliders físicos dos móveis: não cobrem corredores nem portas.
   addCollider(28.9, FLOOR_Y + 0.52, -2.75, 2.05, 1.05, 2.15);
   addCollider(27.55, FLOOR_Y + 0.34, -2.75, 0.52, 0.7, 0.46);
@@ -521,21 +544,31 @@ export function buildResidentialWing({
     'A kitchenette tem bebidas e doces. Entre os itens descritos no livro estão ginger ale, Twix e Skittles.',
     26.3, -7.25, 2.0, () => {
       fridgeOpen = !fridgeOpen;
+      fridgeGlow.intensity = fridgeOpen ? 0.55 : 0;
       return fridgeOpen ? 'Você abriu o refrigerador: ginger ale gelada e alguns doces.' : 'Você fechou o refrigerador.';
     });
+  let snacksCollected = false;
   addInspect('Bancada com snacks', 'Ginger ale, Twix e Skittles',
-    'Pequenos itens de lanche descritos no quarto de Carter.', 24.5, -7.25, 1.7);
+    'Pequenos itens de lanche descritos no quarto de Carter.', 24.5, -7.25, 1.7, () => {
+      if(snacksCollected) return 'Você já guardou os lanches na bolsa.';
+      snacksCollected = true;
+      snacks.visible = false;
+      return 'Você guardou ginger ale, Twix e Skittles para levar.';
+    });
 
-  let waterRunning = false;
+  let sinkRunning = false;
+  let showerRunning = false;
   addInspect('Lavatório do banheiro', 'Lavatório',
     'Bancada e lavatório de porcelana com metais de acabamento escovado.', 31.4, -5.9, 1.8, () => {
-      waterRunning = !waterRunning;
-      return waterRunning ? 'A água da pia começou a correr.' : 'A água da pia foi fechada.';
+      sinkRunning = !sinkRunning;
+      sinkWaterStream.visible = sinkRunning;
+      return sinkRunning ? 'A água da pia começou a correr.' : 'A água da pia foi fechada.';
     });
   addInspect('Box do banheiro', 'Chuveiro',
     'Box envidraçado e área molhada revestida em pedra clara.', 33.35, -7.0, 1.8, () => {
-      waterRunning = !waterRunning;
-      return waterRunning ? 'O chuveiro foi aberto.' : 'O chuveiro foi fechado.';
+      showerRunning = !showerRunning;
+      showerWater.visible = showerRunning;
+      return showerRunning ? 'O chuveiro foi aberto.' : 'O chuveiro foi fechado.';
     });
   addInspect('Espelho do banheiro', 'Espelho',
     'Espelho acima do lavatório.', 31.4, -5.2, 1.4);

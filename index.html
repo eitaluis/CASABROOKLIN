@@ -187,6 +187,7 @@
  #mobile [data-action="run"],#mobile #inventoryMobileToggle{display:none!important}
  #mobile #interactButton[hidden],#mobile #haDiButton[hidden]{display:none!important}
  #mobile #interactButton:not([hidden]){display:grid;place-items:center}
+ #mobile #inventoryMobileToggle{display:grid!important}
  #mobile #inventoryMobileUse{font-size:0}
  #mobile #inventoryMobileUse:after{content:"⚔";font:19px Cinzel,serif;color:#e8d4aa}
  #mobile [data-action="jump"]{font-size:0}
@@ -303,7 +304,7 @@
       enter.textContent = 'Preparando a Brooklyn House…';
       document.getElementById('loading').classList.remove('done');
       try {
-        await import('./src/main.js?v=portrait-mobile-hud-20261127a');
+        await import('./src/main.js?v=portrait-mobile-hud-20261127b');
       } catch (error) {
         console.error('[Brooklyn House] Falha ao carregar o jogo:', error);
         const panel = document.getElementById('loading');

@@ -83,6 +83,7 @@ Não reutilizar os modelos mumiformes anteriores como substitutos destas estatue
 - Mesa central de pedra substituindo a mesa de madeira, com bolsa de trabalho de Julius Kane.
 - Remoção da colisão invisível das antigas estantes e inclusão de colisores para a parede circular, a mesa e as estatuetas.
 - Módulo único src/library.js chamado pelo src/main.js; a mesma geometria e interação são usadas no desktop e no mobile.
+- Atlas de pintura mural e etiqueta de cápsula compartilhados entre todos os painéis/recipientes, evitando clonar a mesma textura por objeto e reduzindo o uso de memória de GPU no mobile.
 
 ## 5. Validação ainda pendente
 

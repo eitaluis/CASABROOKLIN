@@ -1,3 +1,5 @@
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
 // Inventário diegético do Carter: os objetos ficam no Duat até serem retirados.
 // O fluxo de portal e os IDs dos itens são genéricos para reutilização por outros magos.
 export function createInventory({
@@ -5,6 +7,10 @@ export function createInventory({
   character,
   onUse = () => {},
   setControlsLocked = () => {},
+  canSpendEnergy = () => true,
+  spendEnergy = () => true,
+  onInsufficientEnergy = () => {},
+  retrievalCost = 2,
   handBoneCandidates = ['weaponr', 'righthand', 'mixamorigrighthand', 'handr', 'righthandindex1'],
   fallbackSocketPosition = [0.4, 0.94, 0.04]
 }) {
@@ -83,76 +89,75 @@ export function createInventory({
   function buildStaff() {
     const group = new THREE.Group();
 
-    // Cajado simples de madeira: haste reta e ponta superior discretamente mais larga.
-    // A silhueta evita metais, discos, gemas, halos ou motivos zoomórficos.
-    // Escala-alvo: 2,00 m, acima da altura de referência do Carter (1,75 m no rig Ara).
+    // Fallback: haste clara, reta e fina. A mão fica no centro do cajado de 2 m.
     const profile = [
       new THREE.Vector2(0, 0),
-      new THREE.Vector2(0.039, 0),
-      new THREE.Vector2(0.043, 0.04),
-      new THREE.Vector2(0.043, 1.68),
-      new THREE.Vector2(0.046, 1.74),
-      new THREE.Vector2(0.058, 1.78),
-      new THREE.Vector2(0.071, 1.84),
-      new THREE.Vector2(0.074, 1.92),
-      new THREE.Vector2(0.068, 1.97),
-      new THREE.Vector2(0.045, 2.0),
-      new THREE.Vector2(0, 2.0)
+      new THREE.Vector2(0.0115, 0),
+      new THREE.Vector2(0.012, 0.035),
+      new THREE.Vector2(0.012, 1.965),
+      new THREE.Vector2(0.0115, 2),
+      new THREE.Vector2(0, 2)
     ];
-    const geometry = new THREE.LatheGeometry(profile, 16);
+    const geometry = new THREE.LatheGeometry(profile, 20);
     geometry.computeVertexNormals();
-
-    const staffWood = new THREE.MeshStandardMaterial({
-      color: 0x30221b,
-      roughness: 0.88,
-      metalness: 0
+    const staffMaterial = new THREE.MeshStandardMaterial({
+      color: 0xd8c49c, roughness: 0.88, metalness: 0.02
     });
-    const staff = new THREE.Mesh(geometry, staffWood);
-    staff.name = 'PlainDarkWoodStaff';
+    const staff = new THREE.Mesh(geometry, staffMaterial);
+    staff.name = 'PaleBeigeStaffFallback';
     staff.castShadow = true;
     staff.receiveShadow = true;
     group.add(staff);
 
-    return registerItem('staff', group, 'weapon', 'Cajado reto de madeira escura com ponta superior discretamente alargada');
+    return registerItem('staff', group, 'weapon', 'Cajado reto, fino e bege-claro, com empunhadura no meio; escala de arte de 2 m');
   }
 
   function buildKhopesh() {
     const group = new THREE.Group();
-    const pommel = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 8), brass);
-    pommel.position.y = -0.28;
-    group.add(pommel);
-    const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.05, 0.34, 10), darkGrip);
-    grip.position.y = -0.08;
+    // Fallback de 60 cm: lâmina estreita e perfil compacto. O GLB CC BY 4.0
+    // é carregado logo depois e possui o pivô real no centro do punho.
+    const grip = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.011, 0.012, 0.112, 12),
+      darkGrip
+    );
+    grip.position.y = -0.015;
     group.add(grip);
-    for (const y of [-0.2, 0.04]) metalBand(group, y, 0.06);
-    const guard = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.075, 0.12), brass);
-    guard.position.y = 0.13;
+
+    const pommel = new THREE.Mesh(new THREE.SphereGeometry(0.015, 12, 8), brass);
+    pommel.position.y = -0.075;
+    group.add(pommel);
+
+    const guard = new THREE.Mesh(new THREE.BoxGeometry(0.105, 0.012, 0.018), brass);
+    guard.position.y = 0.045;
     group.add(guard);
 
     const bladeShape = new THREE.Shape();
-    bladeShape.moveTo(-0.055, 0.16);
-    bladeShape.lineTo(0.055, 0.16);
-    bladeShape.lineTo(0.12, 0.74);
-    bladeShape.quadraticCurveTo(0.18, 1.08, 0.48, 1.26);
-    bladeShape.quadraticCurveTo(0.72, 1.41, 0.79, 1.16);
-    bladeShape.quadraticCurveTo(0.7, 0.94, 0.51, 0.91);
-    bladeShape.quadraticCurveTo(0.32, 0.87, 0.27, 0.68);
-    bladeShape.lineTo(0.15, 0.16);
+    bladeShape.moveTo(-0.012, 0.045);
+    bladeShape.lineTo(0.012, 0.045);
+    bladeShape.lineTo(0.025, 0.24);
+    bladeShape.quadraticCurveTo(0.052, 0.39, 0.19, 0.49);
+    bladeShape.quadraticCurveTo(0.29, 0.57, 0.32, 0.44);
+    bladeShape.quadraticCurveTo(0.27, 0.34, 0.19, 0.35);
+    bladeShape.quadraticCurveTo(0.10, 0.35, 0.085, 0.22);
+    bladeShape.lineTo(0.04, 0.045);
     bladeShape.closePath();
-    const bladeGeo = new THREE.ExtrudeGeometry(bladeShape, {
-      depth: 0.055, bevelEnabled: true, bevelSegments: 3,
-      steps: 1, bevelSize: 0.018, bevelThickness: 0.018, curveSegments: 12
-    });
-    const blade = new THREE.Mesh(bladeGeo, bladeMat);
-    blade.name = 'KhopeshCurvedBlade';
-    blade.position.z = -0.0275;
-    blade.castShadow = true;
+    const blade = new THREE.Mesh(
+      new THREE.ExtrudeGeometry(bladeShape, {
+        depth: 0.012, bevelEnabled: true, bevelSegments: 2,
+        steps: 1, bevelSize: 0.003, bevelThickness: 0.002, curveSegments: 14
+      }),
+      bladeMat
+    );
+    blade.position.z = -0.006;
+    blade.name = 'KhopeshFallbackBlade';
     group.add(blade);
-    const ridge = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.78, 0.018), brass);
-    ridge.position.set(0.14, 0.58, 0.035);
-    group.add(ridge);
-    group.traverse(obj => { if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; } });
-    return registerItem('khopesh', group, 'weapon', 'Khopesh egípcio');
+
+    group.traverse(node => {
+      if (!node.isMesh) return;
+      node.castShadow = true;
+      node.receiveShadow = true;
+    });
+    return registerItem('khopesh', group, 'weapon', 'Khopesh curvo compacto, lâmina fina de aproximadamente 60 cm');
   }
 
   function addRod(parent, start, end, radius, material, name) {
@@ -570,71 +575,249 @@ export function createInventory({
   buildBrownTwine();
   buildEbonyCat();
 
-  // The portal stays in chest space while the right hand reaches through it.
-  // Ara's use_press clip places the right-hand contact at (-0.20, -0.16, 0.46)
-  // in chest-space coordinates for a 1.8 m reference character.
-  const chestBoneCandidates = ['spine2', 'mixamorigspine2', 'spine1', 'mixamorigspine1', 'chest', 'spine'];
-  const chestBones = new Map();
-  const chestBoneNames = new Set(chestBoneCandidates);
-  character.model.traverse((node) => {
-    if (!node.isBone) return;
-    const name = String(node.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-    if (chestBoneNames.has(name) && !chestBones.has(name)) chestBones.set(name, node);
-  });
-  const chestBone = chestBoneCandidates.map(name => chestBones.get(name)).find(Boolean) || null;
-  const duatUnit = (character.height || character.ara?.height || 1.75) / 1.8;
-  const portalAnchor = new THREE.Group();
-  portalAnchor.name = 'DuatChestSpaceAnchor';
-  if (chestBone) {
-    chestBone.add(portalAnchor);
-    portalAnchor.position.set(-0.20 * duatUnit, -0.16 * duatUnit, 0.46 * duatUnit);
-  } else {
-    const characterVisualRoot = character.ara?.scene || character.model;
-    characterVisualRoot.add(portalAnchor);
-    portalAnchor.position.set(-0.20 * duatUnit, 0.78 * (character.height || 1.75), 0.46 * duatUnit);
+  // Assets 3D reais, carregados com GLTFLoader. As geometrias locais acima
+  // continuam como fallback se a CDN estiver indisponível ou sem CORS.
+  const weaponLoader = new GLTFLoader();
+  function applyWeaponShadows(root) {
+    root.traverse(node => {
+      if (!node.isMesh) return;
+      node.castShadow = true;
+      node.receiveShadow = true;
+      if (Array.isArray(node.material)) {
+        node.material = node.material.map(material => material.clone());
+      } else if (node.material) {
+        node.material = node.material.clone();
+      }
+    });
+  }
+  function replaceFallback(itemId, modelRoot) {
+    const item = items.get(itemId);
+    if (!item || !modelRoot) return;
+    item.children.forEach(child => { child.visible = false; });
+    item.add(modelRoot);
+  }
+  weaponLoader.load(
+    'https://polyfork.dev/cdn/monk-s-quarterstaff-cbdadd.glb',
+    (gltf) => {
+      const model = gltf.scene;
+      model.name = 'PolyforkMonkQuarterstaff';
+      model.scale.set(0.30, 1.11, 0.30);
+      model.position.set(0, -0.999, 0); // centro geométrico = centro da empunhadura
+      model.traverse(node => {
+        if (!node.isMesh) return;
+        node.castShadow = true;
+        node.receiveShadow = true;
+        const materials = Array.isArray(node.material) ? node.material : [node.material];
+        materials.forEach(material => {
+          if (!material) return;
+          material.color?.setHex(0xd8c49c);
+          material.vertexColors = false;
+          material.roughness = 0.88;
+          material.metalness = 0.02;
+          material.needsUpdate = true;
+        });
+      });
+      replaceFallback('staff', model);
+    },
+    undefined,
+    error => console.warn('CASABROOKLIN: cajado GLB indisponível; usando fallback claro.', error)
+  );
+  weaponLoader.load(
+    'https://vinish-models.pages.dev/swords/khopesh.glb',
+    (gltf) => {
+      const modelRoot = gltf.scene;
+      let sword = modelRoot.getObjectByName('Sword') || modelRoot;
+      if (sword !== modelRoot) sword.parent?.remove(sword);
+      modelRoot.traverse(node => {
+        if (node !== sword && /scabbard|sheath/i.test(node.name || '')) node.visible = false;
+      });
+      const model = new THREE.Group();
+      model.name = 'VinishKhopeshHandModel';
+      sword.name = 'VinishKhopeshSword';
+      sword.rotation.z = Math.PI / 2; // lâmina em pé, no plano frontal do personagem
+      sword.scale.set(0.95, 0.95, 0.42); // preserva 60 cm e reduz a espessura aparente
+      applyWeaponShadows(sword);
+      model.add(sword);
+      replaceFallback('khopesh', model);
+    },
+    undefined,
+    error => console.warn('CASABROOKLIN: khopesh GLB indisponível; usando fallback compacto.', error)
+  );
+
+
+  // Retirada do Duat: uma esfera volumétrica envolve a mão inteira.
+  // As partículas originais Kenney (CC0) dão textura ao volume; não usamos um disco plano.
+  function fallbackEnergyTexture(kind) {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 128;
+    const context = canvas.getContext('2d');
+    const gradient = context.createRadialGradient(64, 64, 2, 64, 64, 62);
+    if (kind === 'smoke') {
+      gradient.addColorStop(0, 'rgba(208,245,235,0.42)');
+      gradient.addColorStop(0.45, 'rgba(76,190,188,0.20)');
+      gradient.addColorStop(1, 'rgba(40,110,122,0)');
+    } else {
+      gradient.addColorStop(0, 'rgba(255,255,245,1)');
+      gradient.addColorStop(0.2, 'rgba(167,248,237,0.95)');
+      gradient.addColorStop(0.55, 'rgba(68,202,198,0.42)');
+      gradient.addColorStop(1, 'rgba(255,190,92,0)');
+    }
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, 128, 128);
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    return texture;
+  }
+  const energyTextures = {
+    magic: fallbackEnergyTexture('magic'),
+    smoke: fallbackEnergyTexture('smoke'),
+    spark: fallbackEnergyTexture('magic')
+  };
+  const energySpriteConsumers = { magic: [], smoke: [], spark: [] };
+  function loadEnergySprite(key, filename) {
+    fetch(new URL('../assets/vfx/' + filename + '.b64', import.meta.url))
+      .then(response => {
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        return response.text();
+      })
+      .then(encoded => new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+        image.src = 'data:image/png;base64,' + encoded.replace(/\s/g, '');
+        if (image.decode) image.decode().then(() => resolve(image)).catch(() => {});
+      }))
+      .then(image => {
+        const texture = new THREE.Texture(image);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.anisotropy = 2;
+        texture.needsUpdate = true;
+        const previous = energyTextures[key];
+        energyTextures[key] = texture;
+        energySpriteConsumers[key].forEach(material => {
+          material.map = texture;
+          material.needsUpdate = true;
+        });
+        previous?.dispose?.();
+      })
+      .catch(error => console.warn('CASABROOKLIN: partícula Kenney indisponível; usando textura de reserva.', error));
+  }
+  loadEnergySprite('magic', 'kenney-magic-01.png');
+  loadEnergySprite('smoke', 'kenney-smoke-03.png');
+  loadEnergySprite('spark', 'kenney-spark-07.png');
+
+  function makeEnergySprite(key, color, size) {
+    const material = new THREE.SpriteMaterial({
+      map: energyTextures[key], color, transparent: true, opacity: 0,
+      blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
+    });
+    energySpriteConsumers[key].push(material);
+    const sprite = new THREE.Sprite(material);
+    sprite.scale.set(size, size, 1);
+    return sprite;
   }
 
   const portal = new THREE.Group();
-  portal.name = 'DuatHandPortal';
-  portal.position.set(0, 0, 0);
-  const portalGold = new THREE.MeshStandardMaterial({
-    color: 0xd5ad62, emissive: 0x8b5a1d, emissiveIntensity: 1.15,
-    metalness: 0.48, roughness: 0.38, transparent: true, opacity: 0
-  });
-  const portalBlue = new THREE.MeshStandardMaterial({
-    color: 0x5ac6d1, emissive: 0x1b7e9a, emissiveIntensity: 1.5,
-    metalness: 0.12, roughness: 0.3, transparent: true, opacity: 0
-  });
-  const portalCoreMaterial = new THREE.MeshBasicMaterial({
-    color: 0x287c8b, transparent: true, opacity: 0,
-    side: THREE.DoubleSide, depthWrite: false
-  });
-  const portalCore = new THREE.Mesh(new THREE.CircleGeometry(0.17, 48), portalCoreMaterial);
-  portalCore.scale.set(0.72, 1.18, 1);
-  portalCore.position.z = -0.012;
-  portal.add(portalCore);
-
-  const outerRing = new THREE.Mesh(new THREE.TorusGeometry(0.205, 0.013, 10, 48), portalGold);
-  outerRing.scale.set(0.76, 1.2, 1);
-  portal.add(outerRing);
-  const innerRing = new THREE.Mesh(new THREE.TorusGeometry(0.156, 0.006, 8, 40), portalBlue);
-  innerRing.scale.set(0.74, 1.16, 1);
-  innerRing.position.z = 0.009;
-  portal.add(innerRing);
-
-  const portalArc = new THREE.Mesh(new THREE.TorusGeometry(0.235, 0.003, 6, 42, Math.PI * 1.12), portalGold);
-  portalArc.scale.set(0.7, 1.16, 1);
-  portalArc.position.z = 0.014;
-  portal.add(portalArc);
+  portal.name = 'DuatHandEnergySphere';
+  portal.position.set(0, 0.015, 0.025);
   portal.visible = false;
-  portalAnchor.add(portal);
+  socket.add(portal);
+
+  const shellMaterial = new THREE.ShaderMaterial({
+    uniforms: { uOpacity: { value: 0 } },
+    transparent: true,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+    blending: THREE.AdditiveBlending,
+    vertexShader: `
+      varying vec3 vNormalView;
+      varying vec3 vViewDirection;
+      void main() {
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        vNormalView = normalize(normalMatrix * normal);
+        vViewDirection = normalize(-mvPosition.xyz);
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      uniform float uOpacity;
+      varying vec3 vNormalView;
+      varying vec3 vViewDirection;
+      void main() {
+        float fresnel = pow(1.0 - max(dot(normalize(vNormalView), normalize(vViewDirection)), 0.0), 2.15);
+        float latitude = 0.5 + 0.5 * sin(vNormalView.y * 12.0);
+        vec3 teal = vec3(0.12, 0.82, 0.84);
+        vec3 warm = vec3(1.0, 0.69, 0.28);
+        vec3 energy = mix(teal, warm, smoothstep(0.58, 0.98, latitude));
+        float alpha = (0.10 + fresnel * 0.72) * uOpacity;
+        gl_FragColor = vec4(energy, alpha);
+      }
+    `
+  });
+  const energyShell = new THREE.Mesh(new THREE.SphereGeometry(0.285, 36, 28), shellMaterial);
+  energyShell.scale.set(1, 1.12, 0.98);
+  portal.add(energyShell);
+
+  const innerGlowMaterial = new THREE.MeshBasicMaterial({
+    color: 0x9eece5, transparent: true, opacity: 0,
+    blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
+  });
+  const innerGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(0.17, 24, 18),
+    innerGlowMaterial
+  );
+  innerGlow.scale.set(1.0, 1.12, 0.86);
+  portal.add(innerGlow);
+
+  const arcMaterials = [
+    new THREE.MeshBasicMaterial({ color: 0x7de7de, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }),
+    new THREE.MeshBasicMaterial({ color: 0xf5c16d, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })
+  ];
+  function makeHelix(phase) {
+    const points = [];
+    for (let i = 0; i <= 96; i++) {
+      const t = i / 96;
+      const y = (t * 2 - 1) * 0.235;
+      const ring = Math.sqrt(Math.max(0, 1 - (y / 0.25) ** 2));
+      const angle = t * Math.PI * 3.5 + phase;
+      points.push(new THREE.Vector3(
+        Math.cos(angle) * ring * 0.235,
+        y,
+        Math.sin(angle) * ring * 0.235
+      ));
+    }
+    const curve = new THREE.CatmullRomCurve3(points);
+    return new THREE.Mesh(new THREE.TubeGeometry(curve, 112, 0.0055, 7, false), arcMaterials[phase > 0 ? 1 : 0]);
+  }
+  portal.add(makeHelix(0));
+  portal.add(makeHelix(Math.PI));
+
+  const energyParticles = [];
+  for (let i = 0; i < 22; i++) {
+    const key = i % 5 === 0 ? 'smoke' : (i % 3 === 0 ? 'spark' : 'magic');
+    const color = i % 4 === 0 ? 0xffd58a : 0x9df5e9;
+    const sprite = makeEnergySprite(key, color, i % 4 === 0 ? 0.075 : 0.048);
+    const y = 0.24 * (1 - 2 * ((i + 0.5) / 22));
+    const radial = Math.sqrt(Math.max(0, 1 - (y / 0.25) ** 2));
+    const angle = i * 2.399963229728653;
+    sprite.position.set(
+      Math.cos(angle) * radial * 0.245,
+      y,
+      Math.sin(angle) * radial * 0.245
+    );
+    sprite.userData.seed = i * 1.731;
+    sprite.userData.basePosition = sprite.position.clone();
+    portal.add(sprite);
+    energyParticles.push(sprite);
+  }
+  const portalLight = new THREE.PointLight(0x85e9df, 0, 1.8, 2);
+  portal.add(portalLight);
 
   let activeItem = null;
   let transition = null;
   let queuedItem = null;
   let attackRemaining = 0;
   let attackDuration = 0.44;
-  const restRotation = socket.rotation.clone();
   const panel = document.getElementById('inventoryPanel');
   const status = document.getElementById('inventoryStatus');
 
@@ -686,26 +869,37 @@ export function createInventory({
 
   function beginDuatReach() {
     attackRemaining = 0;
-    socket.rotation.copy(restRotation);
-    // The interaction is locked for the full body clip on desktop and mobile.
+    // A action use_press desloca o braço; como a esfera está presa à mão,
+    // o volume acompanha o gesto e envolve a palma durante a retirada.
     setControlsLocked(true);
-    character.playAction?.('use_press', { fade: 0.18 });
+    character.playAction?.('use_press', { fade: 0.18, interruptOnMovement: false });
     portal.visible = true;
-    portal.scale.setScalar(0.2);
-    portalGold.opacity = 0;
-    portalBlue.opacity = 0;
-    portalCoreMaterial.opacity = 0;
+    portal.scale.setScalar(0.72);
+    shellMaterial.uniforms.uOpacity.value = 0;
+    innerGlowMaterial.opacity = 0;
+    arcMaterials.forEach(material => { material.opacity = 0; });
+    energyParticles.forEach(sprite => { sprite.material.opacity = 0; });
+    portalLight.intensity = 0;
   }
 
   function beginRetrieve(name) {
     const group = items.get(name);
-    if (!group || transition) return;
+    if (!group || transition) return false;
+    if (!canSpendEnergy(retrievalCost) || !spendEnergy(retrievalCost)) {
+      queuedItem = null;
+      setControlsLocked(false);
+      if (status) status.textContent = 'ENERGIA INSUFICIENTE PARA RETIRAR DO DUAT';
+      onInsufficientEnergy(retrievalCost);
+      refresh();
+      return false;
+    }
     beginDuatReach();
     group.visible = true;
     group.scale.setScalar(0.025);
     group.position.copy(group.userData.restPosition).add(new THREE.Vector3(0, 0, 0.19));
     transition = { name, mode: 'retrieve', elapsed: 0, duration: 1.65 };
     refresh();
+    return true;
   }
 
   function beginStore() {
@@ -739,14 +933,25 @@ export function createInventory({
   };
 
   const use = () => {
-    if (transition) return;
+    if (transition || attackRemaining > 0) return;
     if (activeItem !== 'staff' && activeItem !== 'khopesh') {
       if (status) status.textContent = 'RETIRE UM CAJADO OU KHOPESH PARA USAR';
       return;
     }
-    attackDuration = activeItem === 'khopesh' ? 0.4 : 0.52;
+    const accepted = onUse(activeItem);
+    if (accepted === false) return;
+
+    const action = activeItem === 'khopesh' ? 'sword_combo' : 'sword_thrust';
+    const started = character.playAction?.(action, {
+      fade: 0.14,
+      interruptOnMovement: false
+    });
+    if (started === false) {
+      if (status) status.textContent = 'ANIMAÇÃO DE COMBATE INDISPONÍVEL';
+      return;
+    }
+    attackDuration = activeItem === 'khopesh' ? 2.1 : 1.1;
     attackRemaining = attackDuration;
-    onUse(activeItem);
   };
 
   document.getElementById('inventoryToggle')?.addEventListener('click', () => toggle());
@@ -781,18 +986,33 @@ export function createInventory({
         const portalStrength = opening * closing;
         const item = items.get(transition.name);
 
-        portal.scale.set(0.62 + opening * 0.38, 0.76 + opening * 0.24, 1);
-        portal.rotation.z += dt * (transition.mode === 'retrieve' ? 0.72 : -0.62);
-        portalGold.opacity = portalStrength * 0.92;
-        portalBlue.opacity = portalStrength * 0.78;
-        portalCoreMaterial.opacity = portalStrength * 0.3;
+        portal.scale.setScalar(0.72 + opening * 0.28);
+        portal.rotation.y += dt * 0.42;
+        portal.rotation.z += dt * 0.19;
+        shellMaterial.uniforms.uOpacity.value = portalStrength * 0.96;
+        innerGlowMaterial.opacity = portalStrength * 0.25;
+        arcMaterials[0].opacity = portalStrength * 0.9;
+        arcMaterials[1].opacity = portalStrength * 0.78;
+        portalLight.intensity = portalStrength * 1.45;
+
+        energyParticles.forEach(sprite => {
+          const seed = sprite.userData.seed;
+          const base = sprite.userData.basePosition;
+          const drift = Math.sin(transition.elapsed * 4.2 + seed) * 0.014;
+          sprite.position.set(
+            base.x + Math.cos(transition.elapsed * 1.2 + seed) * drift,
+            base.y + Math.sin(transition.elapsed * 2.1 + seed) * 0.018,
+            base.z + Math.sin(transition.elapsed * 1.2 + seed) * drift
+          );
+          sprite.material.opacity = portalStrength * (0.48 + 0.34 * (0.5 + 0.5 * Math.sin(transition.elapsed * 7 + seed)));
+          sprite.material.rotation += dt * (seed % 2 === 0 ? 1.2 : -1.4);
+        });
 
         if (item) {
           const itemProgress = smoothstep(0.52, 0.94, progress);
           const from = transition.mode === 'retrieve' ? 0.025 : 1;
           const to = transition.mode === 'retrieve' ? 1 : 0.025;
-          const itemEase = transition.mode === 'retrieve' ? itemProgress : itemProgress;
-          item.scale.setScalar(THREE.MathUtils.lerp(from, to, itemEase));
+          item.scale.setScalar(THREE.MathUtils.lerp(from, to, itemProgress));
           const rest = item.userData.restPosition;
           const offset = transition.mode === 'retrieve' ? (1 - itemProgress) * 0.19 : itemProgress * 0.19;
           item.position.copy(rest).add(new THREE.Vector3(0, 0, offset));
@@ -817,13 +1037,15 @@ export function createInventory({
           }
           transition = null;
           portal.visible = false;
-          portal.scale.setScalar(0);
-          portalGold.opacity = 0;
-          portalBlue.opacity = 0;
-          portalCoreMaterial.opacity = 0;
-          socket.rotation.copy(restRotation);
+          portal.scale.setScalar(1);
+          portal.rotation.set(0, 0, 0);
+          shellMaterial.uniforms.uOpacity.value = 0;
+          innerGlowMaterial.opacity = 0;
+          arcMaterials.forEach(material => { material.opacity = 0; });
+          energyParticles.forEach(sprite => { sprite.material.opacity = 0; });
+          portalLight.intensity = 0;
+
           if (finished.mode === 'retrieve' && queuedItem && queuedItem !== activeItem) {
-            // Finish the current retrieval, then store that item before fetching the queued one.
             beginStore();
           } else if (finished.mode === 'store' && queuedItem) {
             const next = queuedItem;
@@ -839,15 +1061,6 @@ export function createInventory({
 
       if (attackRemaining > 0 && !transition) {
         attackRemaining = Math.max(0, attackRemaining - dt);
-        const progress = 1 - attackRemaining / attackDuration;
-        const swing = Math.sin(progress * Math.PI);
-        if (activeItem === 'khopesh') {
-          socket.rotation.set(restRotation.x + 0.05 * swing, restRotation.y, restRotation.z + 1.08 * swing);
-        } else if (activeItem === 'staff') {
-          socket.rotation.set(restRotation.x + 0.48 * swing, restRotation.y, restRotation.z + 0.24 * swing);
-        }
-      } else if (socket.rotation.x !== restRotation.x || socket.rotation.y !== restRotation.y || socket.rotation.z !== restRotation.z) {
-        socket.rotation.copy(restRotation);
       }
     },
     get equipped() {

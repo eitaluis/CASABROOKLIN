@@ -22,3 +22,7 @@ The HA-DI spell uses five sprites from the **Kenney Particle Pack**:
 The PNG binaries are stored as Base64 text to keep the asset ingestion path compatible with the repository file connector. At runtime, `src/magic-system.js` fetches the text from the same origin, decodes it into a data URL and creates a Three.js `Texture`. No CDN or third-party runtime package is required. If a sprite cannot load, the spell falls back to generated Canvas textures and remains functional.
 
 The VFX composition, timing, particle motion, materials, ring geometry, rays and integration with the Shabti impact are original CASABROOKLIN code. The Kenney sprites are the only third-party images imported by this iteration.
+
+## Organic impact masks — 27 November 2026
+
+The impact materials in `src/magic-system.js` apply an additional procedural GLSL alpha mask to the Kenney sprites. The mask uses animated FBM noise for the energy core and smoke, an annular cut for the ground sigil, and tapered ribbon masks for sparks and slash. It discards the outer portions of the underlying quads, so the square billboard boundaries are no longer visible even when a texture or fallback is used. This is original CASABROOKLIN shader code; the ThreeJS VFX MIT project is recorded as a technical reference only. No third-party shader code or runtime dependency was imported.

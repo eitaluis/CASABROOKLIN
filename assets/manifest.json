@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.14",
+  "version": "0.4.15",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -53,8 +53,8 @@
     },
     {
       "id": "library-nut-geb-environment",
-      "path": "src/interior-details.js",
-      "role": "star-painted Nut dome and Geb floor cartography with deterministic seeded canvas textures; 48 papyrus niches, 16 openable/closable lower-tier scrolls, four cardinal shabti guardians and central reading-table inspection; shared E/INTERAGIR interactions",
+      "path": "src/interior-details.js + src/library.js + src/world.js + src/third-person.js + src/main.js",
+      "role": "Expanded underground chamber (~31m diameter; ~15.9m total floor-to-dome apex) with custom deterministic Nut/Geb surface maps still awaiting final generated figurative paintings; original varied Egyptian mural atlas; 4,800 instanced hand-sized papyrus niches (30 rows x 160 staggered columns) with 20 lower-row open/close capsule interactions; four human ceramic statuettes; task actions for English papyrus retrieval and Narmer Palette; stone scribal worktable with Julius Kane's satchel, reed brushes, black/red pigments, ink bowl and papyri; 90 curved stone treads across three flights, landings and shared physical walk-path; desktop/mobile share the same geometry, interactions and simulation.",
       "license": "project-original-code"
     },
     {
@@ -358,6 +358,12 @@
       "path": "src/grand-salon.js",
       "role": "Opaque full-height limestone masonry panel placed behind the locked double Eye of Horus doors at the Great Hall front portal; closes the otherwise exposed gap between the split front facade wings and the upper wall above the doors; includes upper masonry collision volume. Original project Three.js geometry, opaque MeshStandardMaterial from the local limestone PBR material.",
       "license": "project-original-code; local surface maps CC0-1.0"
+    },
+    {
+      "id": "library-monumental-archive-stair-and-scribe-table",
+      "path": "src/library.js + src/third-person.js",
+      "role": "Original Three.js geometry for the three-flight curved stone stair and the instanced circular archive: 4,800 cut-out niche openings and pneumatic papyrus capsules; procedural walk-path sampling feeds the shared controller; statue tasks move the human ceramic figures and reveal the retrieved English papyrus/Narmer Palette; central scribal table includes palette, black/red ink cakes, reed brushes, open/rolled papyri, linen, and Julius Kane's satchel.",
+      "license": "project-original-code; local limestone PBR maps CC0-1.0; hieroglyph font remains under Noto SIL OFL 1.1"
     }
   ],
   "openSourceReferences": [
@@ -828,6 +834,40 @@
       "author": "Ara 3D Gen",
       "role": "Verified upstream implementation: SIT_DOWN is created from the CMU sit_down take; CLIPS registers stand_up as reversed(SIT_DOWN, 'stand_up', 'Stand up (chair)'). This confirms stand_up is a native Ara clip ID, even though its motion is the reversed sit_down performance. Source code reference only; no separate code copied.",
       "runtimeImported": false
+    },
+    {
+      "id": "tevy-dungeon-stone-stairs-library-study",
+      "source": "https://tevy.dev/models/dungeon-stone-stairs",
+      "author": "Tevy",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "trianglesLOD0": 22170,
+      "role": "Reviewed and user-approved reference for stone stair tread proportions and material treatment. Not imported: library's circular route, floor-to-ceiling rise, landings and controller path are project-specific.",
+      "runtimeImported": false
+    },
+    {
+      "id": "tevy-vault-stairs-library-study",
+      "source": "https://tevy.dev/models/vault-stairs",
+      "author": "Tevy",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "trianglesLOD0": 11698,
+      "role": "Reviewed and user-approved reference for stone stair silhouette and vault-like architecture. Not imported: the library stair geometry was authored to match its 3-flight circular path.",
+      "runtimeImported": false
+    },
+    {
+      "id": "met-scribes-palette-brushes-library-study",
+      "source": "https://www.metmuseum.org/art/collection/search/544302",
+      "license": "Public Domain / The Met Open Access",
+      "role": "Historical reference for a scribal palette, reed brushes, pigments and writing accessories. Runtime objects are original project geometry, not a downloaded museum model.",
+      "runtimeImported": false
+    },
+    {
+      "id": "sketchfab-narmer-palette-noncommercial-reference",
+      "source": "https://sketchfab.com/3d-models/the-narmer-palette-cdd70f3f6c0a4c8ab99db6ec9194f7da",
+      "license": "CC BY-NC-SA",
+      "role": "Visual reference only for the silhouette and relief arrangement of the Narmer Palette. Not imported or redistributed because the license is non-commercial/share-alike; the in-game pickup is a simplified original silhouette pending visual QA.",
+      "runtimeImported": false
     }
   ],
   "features": [
@@ -910,6 +950,24 @@
         "docs/ROADMAP-CHECKLIST.md"
       ],
       "summary": "Restored a full-height opaque limestone backing behind the locked double Eye of Horus doors, aligned the door assembly to the facade plane and added a continuous upper-wall collider, removing the direct exterior sightline through the portal wall.",
+      "date": "2026-11-27"
+    },
+    {
+      "id": "library-monumental-archives-curved-stair-shabti-tasks-20261127",
+      "scope": "runtime",
+      "files": [
+        "src/library.js",
+        "src/world.js",
+        "src/third-person.js",
+        "src/interior-details.js",
+        "src/main.js",
+        "assets/manifest.json",
+        "docs/BIBLIOTECA-STUDY.md",
+        "docs/ROADMAP-CHECKLIST.md",
+        "docs/OPEN-SOURCES.md",
+        "docs/INTERIORES-E-LOOKDEV.md"
+      ],
+      "summary": "User-approved underground library implementation: ~31m chamber with ~15.9m total height to Nut dome apex; 4,800 instanced hand-sized circular niches and pneumatic capsules; original varied painted wall atlas and hieroglyph sequences; 90 walkable curved stone treads in three flights with landings, connected to the shared controller; empty-handed shabti retrieves the English papyrus and hooked-staff shabti retrieves a simplified Narmer Palette; central stone table is dressed as a scribal workstation. Shared desktop/mobile runtime. Final figurative Geb/Nut images explicitly deferred; browser visual QA remains pending.",
       "date": "2026-11-27"
     }
   ]

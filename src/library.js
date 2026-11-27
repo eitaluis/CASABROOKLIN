@@ -59,14 +59,12 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   const nicheStone = new THREE.MeshStandardMaterial({ color: 0x655844, roughness: 0.95 });
   const brass = new THREE.MeshStandardMaterial({ color: 0x98764a, metalness: 0.52, roughness: 0.48 });
   const darkBrass = new THREE.MeshStandardMaterial({ color: 0x463624, metalness: 0.45, roughness: 0.58 });
-  const polymer = new THREE.MeshPhysicalMaterial({
+  const polymer = new THREE.MeshStandardMaterial({
     color: 0xe8eee8,
     roughness: 0.2,
     metalness: 0.03,
-    transmission: 0.5,
-    thickness: 0.12,
     transparent: true,
-    opacity: 0.62,
+    opacity: 0.42,
     depthWrite: false,
     side: THREE.DoubleSide
   });
@@ -539,6 +537,14 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   }
   makeRail(-stairWidth * 0.5 + 0.06, 0.94);
   makeRail(stairWidth * 0.5 - 0.06, 0.94);
+  for (const [landingAngle, landingY] of [[0, wallTop], [totalAngle, floorY]]) {
+    const pad = new THREE.Mesh(new THREE.BoxGeometry(3.35, 0.2, 3.1), stairStone);
+    pad.name = 'patamar de entrada da escadaria da biblioteca';
+    pad.position.set(Math.cos(landingAngle) * stairRadius, landingY - 0.1, Math.sin(landingAngle) * stairRadius + centerZ);
+    pad.rotation.y = landingAngle + Math.PI / 2;
+    pad.receiveShadow = true;
+    scene.add(pad);
+  }
 
   // Quatro estatuetas humanas de cerâmica. O pedestal permanece imóvel;
   // o corpo articulado pode descer, procurar um objeto e regressar.
@@ -548,7 +554,7 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   const kohl = new THREE.MeshStandardMaterial({ color: 0x151514, roughness: 0.78 });
   const directions = ['norte', 'leste', 'sul', 'oeste'];
   const statueDescriptions = [
-    'Uma pequena estatueta humana de cerâmica, com kilt, sandálias, cabelo preto angular e olhos delineados.',
+    'A estatueta segura um estilete de escrita e um pequeno rolo de papiro, além de usar kilt, sandálias e cabelo preto angular.',
     'Uma estatueta de cerâmica segura uma pequena caixa de trabalho.',
     'Uma estatueta humana segura um cajado curto terminado em gancho.',
     'Uma estatueta humana de mãos vazias. O pequeno servo pode procurar um papiro específico nos nichos.'
@@ -795,11 +801,11 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
     const brush = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.012, 0.78, 7), reed);
     brush.name = 'pincel de junco do escriba';
     brush.position.set(-0.65 + i * 0.11, tableTopY + 0.19, 0.63 + (i % 2) * 0.08);
-    brush.rotation.z = 0.025 + i * 0.035;
+    brush.rotation.z = Math.PI / 2 + i * 0.035;
     table.add(brush);
     const darkTip = new THREE.Mesh(new THREE.ConeGeometry(0.022, 0.11, 7), darkBrass);
-    darkTip.position.set(brush.position.x, brush.position.y - 0.42, brush.position.z);
-    darkTip.rotation.z = brush.rotation.z;
+    darkTip.position.set(brush.position.x + 0.38, brush.position.y, brush.position.z);
+    darkTip.rotation.z = 0;
     table.add(darkTip);
   }
 

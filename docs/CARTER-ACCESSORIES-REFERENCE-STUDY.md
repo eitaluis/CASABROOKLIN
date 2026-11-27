@@ -77,9 +77,9 @@ O screenshot atual mostra:
 - Identificar a peça preta no ombro percorrendo os filhos do modelo Ara e nomes de mesh/material do share original.
 - Verificar eixos frontais, rotação do root e transformações dos ossos reais Hips/Spine/Chest/Clavicle/Neck.
 - Não inferir o eixo de profundidade apenas pelas coordenadas do modelo; medir pontos/offsets na pose neutra do Carter e validar a superfície em frente, perfil e 3/4.
-- Criar um preview isolado com o corpo da bolsa e a alça proposta, mostrando frente, costas, perfil e 3/4.
+- Criar um preview isolado com o corpo GLB real e a alça proposta, mostrando frente, costas, perfil e 3/4.
 - Confirmar contato sem clipping em idle, walk, run, curva, salto, ataques, reações e estado ferido.
-- Só integrar depois da aprovação visual do usuário. Desktop e mobile devem receber a mesma malha, materiais, rig e lógica.
+- A aprovação visual de direção e composição já foi recebida em 27/11/2026. A integração depende agora da inspeção do GLB original e da validação técnica de encaixe. Desktop e mobile devem receber a mesma malha, materiais, rig e lógica.
 
 ## 7. Confirmação da referência oficial — 27/11/2026
 

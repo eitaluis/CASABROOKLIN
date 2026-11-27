@@ -229,3 +229,35 @@ A construção do entorno segue a mesma ordem usada para os interiores: pesquisa
 - [x] Adicionar gradiente de céu e nuvens suaves sem depender de imagens externas.
 - [x] Reduzir a névoa para preservar a leitura da cidade ao longe.
 - [ ] Validar a composição em 360° e o desempenho em mobile.
+
+## Quarto de Carter — asset-first — 27/11/2026
+
+| Elemento | Fonte / licença / decisão | Integração |
+|---|---|---|
+| Cama king-size | Tevy Double Bed v1, CC0-1.0, GLB | LOD1 desktop / LOD2 mobile; fallback local |
+| Criado-mudo | Tevy Nightstand v2, CC0-1.0, GLB | LOD1 / LOD2; fallback local |
+| TV e console | Tevy TV Stand v2, CC0-1.0, GLB | Tela separada recebe canvas interativo; fallback local |
+| Computador | Tevy Office Desk v2, CC0-1.0, GLB | Monitor, teclado, mouse e luminária; fallback local |
+| Kitchenette | Tevy Kitchen Sink Base Unit v1 e Drawers v1, CC0-1.0 | Módulos independentes; lanches com rótulos próprios |
+| Geladeira | Innerscene Undercounter Fridge, CC0, GLB 452 KB, 0,598 × 0,548 × 0,820 m | URL direta tentada; CORS não validado; fallback proporcional |
+| Banheiro | Tevy Bathroom Vanity v1, Bathtub v1 e Toilet v1, CC0-1.0 | Assets GLB com versão fixada e fallbacks locais |
+| Sistema de som | Duas instâncias Tevy Bookshelf Speaker v1, CC0-1.0 | LOD1 / LOD2; fallback local |
+| Apoio de cabeça | Geometria original em src/bedroom.js; referência histórica GEM #270 | Marfim, leões, Shu central e apoio curvo; Shu é interpretação histórica, não texto explícito do romance |
+| Portas panorâmicas e deck | Geometria original Three.js | Portas deslizantes, estado trancado/aberto, deck com vidro e bronze |
+| Porta de comunicação com Sadie | Geometria original Three.js | Fechada e trancada, com inspeção contextual |
+
+### Carregamento
+
+Tevy fornece GLB com geometria Meshopt e texturas KTX2. O carregador usa GLTFLoader, MeshoptDecoder e KTX2Loader do Three.js r165.0. URLs Tevy permanecem fixados em v1/v2 e usam LOD1 no desktop e LOD2 no mobile. Os modelos permanecem nos provedores originais; não foram copiados para o repositório. Fallbacks locais evitam que a suíte dependa de um único download remoto.
+
+### QA
+
+- [x] Remover blockout residencial e ligar src/bedroom.js.
+- [x] Remover a parede central que obstruía a visão.
+- [x] Acrescentar teto e acabamento arquitetônico.
+- [x] Colocar o apoio de cabeça no colchão.
+- [x] Adicionar kitchenette, tecnologia, som, banheiro e deck.
+- [x] Adicionar interações compartilhadas desktop/mobile.
+- [ ] Inspecionar GLBs, materiais e encaixes em navegador desktop.
+- [ ] Inspecionar paridade, toque, FPS e carregamento em celular paisagem.
+- [ ] Confirmar a vista para Manhattan e a Estátua da Liberdade no enquadramento real.

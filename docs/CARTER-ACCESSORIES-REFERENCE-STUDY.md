@@ -196,7 +196,7 @@ A hierarquia interna do GLB foi inspecionada antes da integração:
 
 Os materiais separados são `Cognac smooth leather`, `Brushed brass hardware` e `Cream stitching`. O GLB tem eixo Z-up e declara a frente em -Y; o loader gira -90° no eixo X para o sistema Y-up do Three.js, aplica escala 0,88 e posiciona o corpo no pivô de quadril. A fita própria de 22 mm continua ajustada à superfície skinned da camisa, com segmentos vinculados aos pivôs do peito e quadril.
 
-O loader mantém uma geometria procedural de fallback caso o GLB não carregue. Assim, a ausência do recurso remoto não retira a bolsa do personagem. A origem é carregada do GitHub Pages/CDN a partir do asset CC0 versionado no próprio repositório.
+O loader mantém uma geometria procedural de fallback caso o GLB não carregue. Assim, a ausência do recurso remoto não retira a bolsa do personagem. A origem é carregada do mesmo domínio do projeto a partir do asset CC0 versionado no repositório.
 
 ### Colar
 

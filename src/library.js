@@ -25,10 +25,6 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   ]);
   scene.traverse((object) => {
     const name = object.name || '';
-    if (name === 'parede lisa antiga da biblioteca') {
-      object.scale.x = 1.02;
-      object.scale.z = 1.02;
-    }
     if (legacyNames.has(name)) object.visible = false;
     if (
       name === 'estante curva' ||

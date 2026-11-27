@@ -675,7 +675,11 @@ export function createInventory({
 
       for (const fallback of [...approvedKhopeshItem.children]) {
         approvedKhopeshItem.remove(fallback);
-        disposeFallbackTree(fallback);
+        // The procedural placeholder reuses shared brass materials; dispose only
+        // its geometries so other inventory props are not invalidated.
+        fallback.traverse((node) => {
+          if (node.isMesh) node.geometry?.dispose?.();
+        });
       }
       approvedKhopeshItem.add(weaponPivot);
       approvedKhopeshItem.userData.assetState = 'loaded';
@@ -957,7 +961,7 @@ export function createInventory({
         const portalStrength = opening * closing;
         const item = items.get(transition.name);
 
-        portal.scale.setScalar(0.78 + opening * 0.22);
+        portal.scale.setScalar(0.08 + opening * 0.92);
         vortexMaterial.uniforms.uTime.value += dt * (transition.mode === 'retrieve' ? 1 : -1);
         vortexMaterial.uniforms.uStrength.value = portalStrength;
         vortexParticleMaterial.opacity = portalStrength * 0.92;

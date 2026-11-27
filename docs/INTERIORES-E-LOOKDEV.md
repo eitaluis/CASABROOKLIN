@@ -315,3 +315,9 @@ A leitura canônica permanece: câmara circular escavada na rocha; descida de tr
 
 - O runtime desktop/mobile é compartilhado: `mobile.html` redireciona para `index.html`; geometria, lógica, personagem e assets são idênticos.
 - Estado: código implementado e imports/cache atualizados; QA real de browser ainda pendente. Não marcar visualmente aprovado até testar os clipes Ara, assento, altura da pelve, alinhamento dos pés, saída, escada e colisores em desktop e celular paisagem.
+
+## Quarto — correção da planta aberta (27/11/2026)
+
+- Removida a parede divisória central que atravessava o bloco residencial e obstruía a visão entre as áreas do quarto. Permanecem as paredes perimetrais e os limites externos do ambiente.
+- Nenhum colisor específico estava associado à divisória removida; portanto, não foi necessário alterar a navegação ou os limites de colisão.
+- A alteração fica no módulo compartilhado `src/world.js` e mantém a mesma geometria no desktop e no mobile.

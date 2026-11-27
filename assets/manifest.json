@@ -354,7 +354,7 @@
       "id": "ara3d-character-generator",
       "source": "https://github.com/olatunde85/3d-gen",
       "license": "MIT-code; CC0-1.0-MakeHuman-data; CMU-motion-capture-free-commercial-use",
-      "role": "runtime: geração da malha humana contínua, skin weights, game rig, WeaponR e clips; o catálogo ANIMATIONS filtra os clips nativos fight_idle (Fighting stance) e point para a sequência HA-DI; captura a guarda esquerda no clip de combate e mantém o apontamento direito por IK",
+      "role": "runtime: geração da malha humana contínua, skin weights, game rig, WeaponR e clips; o catálogo ANIMATIONS filtra os clips nativos fight_idle (Fighting stance) e point para a sequência HA-DI; captura a guarda esquerda no clip de combate e mantém o apontamento direito por IK; approved native weapon clips: sword_idle, sword_combo and sword_thrust; locomotion thresholds walkSpeed/runSpeed drive the shared controller",
       "runtimeImported": true
     },
     {

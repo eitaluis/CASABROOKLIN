@@ -144,6 +144,27 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     onZoneChange?.(name, zone);
   }
 
+  // Place Carter at a precise interaction anchor (for example, a bench) without
+  // changing rooms or rebuilding the approved Ara rig.
+  function placeAt(target, facingTarget = null) {
+    if (!target || !Number.isFinite(target.x) || !Number.isFinite(target.y) || !Number.isFinite(target.z)) return false;
+    character.model.position.set(target.x,target.y,target.z);
+    character.model.rotation.x=0;
+    character.model.rotation.z=0;
+    if(facingTarget) {
+      const direction=facingTarget.clone().sub(target).setY(0);
+      if(direction.lengthSq()>.0001) {
+        direction.normalize();
+        cameraYaw=Math.atan2(-direction.x,-direction.z);
+        character.faceTarget?.(facingTarget);
+      }
+    }
+    airborne=false;verticalVelocity=0;jumpFloorHeight=target.y;
+    smoothVelocity.set(0,0,0);fallbackSpeed=0;cameraCue=null;
+    cameraShakeRemaining=0;firstCameraFrame=true;
+    return true;
+  }
+
   function capturePointer() {
     if (document.pointerLockElement !== canvas && canvas.requestPointerLock) {
       try { canvas.requestPointerLock(); } catch (error) { console.warn('Pointer lock indisponível:', error); }
@@ -514,6 +535,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   return {
     update,
     teleport,
+    placeAt,
     setLocked,
     capturePointer,
     getPosition,

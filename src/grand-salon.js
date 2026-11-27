@@ -1851,7 +1851,7 @@ function addThothBaseSeating(scene,stone,marble,wood,brass,colliders,interactabl
     name:'Base monumental de Thoth',kind:'inspect',
     label:'Base integrada da estátua',
     description:'O pedestal circular de calcário se integra aos dois bancos curvos de couro e nogueira, abertos no eixo de circulação.',
-    position:new THREE.Vector3(0,13.55,-.5),radius:2.7
+    position:new THREE.Vector3(0,13.55,-.5),radius:1.0
   });
 }
 

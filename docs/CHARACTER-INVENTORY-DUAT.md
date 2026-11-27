@@ -1,7 +1,7 @@
 # Carter — inventário, objetos do Duat e preparação para magia
 
 Data: 26/11/2026
-Status: **doze objetos, portal no espaço do tórax, clipe use_press e bloqueio de movimento integrados; cajado simplificado; empunhadura e QA visual pendentes**
+Status (27/11/2026): **12 objetos; quarterstaff Polyfork aprovado e integrado no runtime principal via GLTFLoader/WeaponR; fallback local; khopesh, locomoção armada, ataques F e efeito do Duat aguardam aprovação visual e QA**
 
 ## 1. Princípio de desenvolvimento
 
@@ -32,7 +32,7 @@ Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, páginas impres
 
 | ID | Objeto | Função / estado | Base |
 |---|---|---|---|
-| `staff` | Cajado mágico | Haste reta de madeira escura, com ponta superior discretamente mais grossa; ferramenta mágica e arma empunhada na mão direita | Canônico como ferramenta; desenho visual simplificado por decisão de direção de arte; modelo procedural integrado |
+| `staff` | Cajado mágico | Quarterstaff reto de madeira com ponteiras de ferro e duas faixas de tecido para empunhadura; preso à mão direita pelo eixo central | O livro estabelece a função ofensiva do cajado, mas não fixa a aparência exata do cajado de Carter; asset Polyfork aprovado pelo usuário e integrado |
 | `khopesh` | Khopesh | Arma corpo a corpo; empunhada na mão direita | Canônico; modelo procedural integrado |
 | `wax_shabti` | Shabti de cera | Miniatura transportável; futura invocação por magia | Canônico como objeto criado em cera; primeira geometria procedural integrada |
 | `papyrus` | Papiro | Suporte para escrever/desenhar feitiços | Canônico; primeira geometria/textura procedural integrada; escrita mágica real pendente |
@@ -53,8 +53,31 @@ Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, páginas impres
 
 Os links do British Museum são referências de estudo, não arquivos importados. Nenhum GLB externo foi incorporado nesta primeira rodada: caixa, papiro, cálamo, tinta, amuleto, shabti, cera, paleta, cordão e gato foram montados como geometria procedural em Three.js. A forma atual é uma primeira versão técnica; escala, acabamento e leitura precisam de QA visual antes de aprovação.
 
-O cajado foi redesenhado como uma haste reta de madeira escura, com a ponta superior apenas um pouco mais grossa e arredondada. A escala técnica foi ajustada para 2,00 m, acima da altura de referência de Carter no rig Ara (1,75 m), para que ultrapasse a cabeça do personagem. A medida de dois metros aparece explicitamente na descrição de cajados de Zia/Sadie nos romances; não é apresentada como medida textual específica do cajado pessoal de Carter. Não possui cabeça de leão, anéis metálicos, disco dourado, pedra, halo ou outros adornos. Essa é uma decisão visual para o modelo de Carter, não uma afirmação de que essa aparência seja uma descrição textual canônica.\n\nOs doze itens acima já têm IDs estáveis e modelos 3D iniciais no catálogo de `src/inventory.js`. A primeira rodada é procedural e ainda precisa de inspeção no navegador para aprovar escala, orientação, leitura de material e encaixe na mão. O papiro usa marcas gráficas abstratas, não hieróglifos nem palavras mágicas definitivas; a caixa ainda não abre e o amuleto não possui efeito mágico.
+**Cajado de Carter — direção aprovada:** foi selecionado o modelo **Monk's Quarterstaff**, de Polyfork / Lucas Martinic. A página do autor descreve um bastão de madeira de 1,8 m, ponteiras de ferro e duas faixas de tecido enroladas na empunhadura; 496 triângulos, 1 material, GLB de 57 KB. O usuário aprovou esta aparência. O asset é preservado sem retintura ou alteração de silhueta.
 
+**Canon textual e limite:** em *A Pirâmide Vermelha*, Zia entrega a Carter um novo cajado e explica a função ofensiva do bastão; o texto não determina a cor, a madeira, as ponteiras, as faixas ou a medida exata do cajado pessoal de Carter. A forma Polyfork é, portanto, uma direção de arte escolhida e aprovada, não uma descrição literal do romance. O texto oficial de Rick Riordan descreve o khopesh de Carter como arma usada pela guarda pessoal do faraó: https://rickriordan.com/extra/meet-the-kane-family/
+
+**Integração no runtime (27/11/2026):** o GLB é carregado pelo `GLTFLoader` diretamente da CDN oficial do autor. O modelo mantém 1,8 m e os materiais originais. O Ara Rigging define o osso `WeaponR` no centro da mão fechada; o eixo `+Y` sai do topo do punho. Como o GLB nasce no chão e é vertical, a malha recebe deslocamento local de `Y = -0.9 m`, colocando a mão no centro do bastão e alinhando seu comprimento ao socket. A integração é compartilhada por jogo e preview desktop/mobile.
+
+**Fallback:** se a CDN falhar, o inventário mantém uma haste local com ponteiras metálicas e duas faixas de tecido na região de pega. O fallback protege a funcionalidade, mas não substitui visualmente o GLB aprovado. O asset externo permanece uma dependência de rede; a página Polyfork permite hotlink comercial sem atribuição para uso direto.
+
+## 3.2 Cajado Polyfork — ficha de integração aprovada (27/11/2026)
+
+| Campo | Especificação |
+|---|---|
+| Asset | [Monk's Quarterstaff — Polyfork](https://polyfork.dev/asset/monk-s-quarterstaff-cbdadd) |
+| Criador | Lucas Martinic / Polyfork |
+| Arquivo | [GLB runtime](https://polyfork.dev/cdn/monk-s-quarterstaff-cbdadd.glb) |
+| Medidas publicadas | 0,08 × 1,8 × 0,08 m; origem no chão; eixo longitudinal vertical |
+| Malha | 496 triângulos; 1 material; 57 KB |
+| Forma | Haste longa de madeira, ponteiras de ferro e duas faixas de tecido para empunhadura |
+| Licença | Uso comercial e hotlink permitidos sem atribuição; CC BY 4.0 para redistribuição do mesh com crédito |
+| Socket | Ara `WeaponR`, centro da mão fechada, eixo `+Y` do punho |
+| Transformação | Escala original preservada; posição local `(0, -0.9, 0)` para centrar o modelo de 1,8 m no socket; rotação original preservada |
+| Fallback | Haste de madeira, ponteiras metálicas e faixas de tecido criadas localmente |
+| QA | Integração de código confirmada; encaixe visual no jogo ainda precisa de inspeção em navegador |
+
+A ficha distingue o objeto canônico (cajado como ferramenta ofensiva) da forma Polyfork escolhida como asset de produção. O modelo não foi retintado, remodelado nem adornado depois da aprovação.
 ## 4. Estados do inventário
 
 Cada item precisa ter um ID estável e um estado explícito:
@@ -134,7 +157,7 @@ Não fixar a magia a um botão ou a um tipo de dispositivo. Desktop e mobile cha
 ## 9. Critérios de QA
 
 - [ ] Cada um dos doze objetos tem escala, orientação, origem e ponto de pega revisados no rig real.
-- [ ] Cajado simples de madeira e khopesh mantêm empunhadura coerente durante idle, walk, run, turn e stop.\n- [ ] Cajado: 2,00 m (acima dos 1,75 m de referência do rig Ara), haste reta, ponta superior discretamente alargada e sem ornamentos; validar leitura visual em close e à distância.
+- [ ] GLB Polyfork permanece centrado na mão via `WeaponR` durante idle, walk, run, turn, ataque e retorno ao repouso.\n- [ ] Cajado: 2,00 m (acima dos 1,75 m de referência do rig Ara), haste reta, ponta superior discretamente alargada e sem ornamentos; validar leitura visual em close e à distância.
 - [ ] Objetos pequenos, planos e compridos usam poses de pega adequadas, sem parecerem presos à ponta dos dedos.
 - [ ] Dedos e polegar fecham de forma convincente por clip de mão compatível com o rig.
 - [ ] O objeto não atravessa mão, braço, tronco, pernas ou cenário durante a locomoção.
@@ -155,3 +178,10 @@ Status de validação: implementação de código não equivale a aprovação vi
 
 A bancada ajuda a revisar escala, orientação, clipping, posição do portal e transição de mão. Ela não substitui o teste no mundo completo: colisões, iluminação real da casa, desempenho mobile e enquadramento em terceira pessoa ainda exigem inspeção no jogo.
 
+
+### Estado por componente — 27/11/2026
+
+- **Cajado Polyfork:** asset aprovado; integrado na `main`; browser QA da empunhadura ainda pendente.
+- **Khopesh:** modelo procedural antigo ainda é o que aparece na `main`; candidatos e direção visual aguardam aprovação do usuário.
+- **Locomoção e comando F:** código atual ainda não executa uma postura armada convincente; opções Ara/KinemIQ serão apresentadas antes da implementação.
+- **Retirada do Duat:** efeito antigo ainda está na `main`; novas propostas visuais foram apresentadas para escolha antes de qualquer alteração.

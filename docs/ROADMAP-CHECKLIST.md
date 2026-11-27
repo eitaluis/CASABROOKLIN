@@ -416,3 +416,14 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [x] Retirar o botão HÓRUS do grupo de ações comuns e posicioná-lo como controle independente acima deles nos aparelhos touch.
 - [ ] Testar H com pointer lock ativo e verificar invocação/desativação no jogo real.
 - [ ] Testar botão HÓRUS em celular paisagem e confirmar energia/feedback.
+
+
+## Grande Salão — parede frontal do portal do Olho de Hórus (27/11/2026)
+
+- [x] Diagnosticar o vão da fachada frontal: as duas metades da parede deixavam o centro sem pano opaco atrás das portas e sem fechamento até a cobertura.
+- [x] Reposicionar a montagem das portas do Olho de Hórus para o plano da fachada.
+- [x] Construir painel central contínuo de calcário opaco atrás das folhas, da moldura até próximo ao teto.
+- [x] Alinhar o colisor da porta e fechar a colisão da alvenaria superior.
+- [x] Aproximar o ponto de inspeção/interação da porta.
+- [ ] Confirmar no navegador que a vista para o rio desapareceu em todos os ângulos e níveis.
+- [ ] Validar parede, material e colisores em desktop e celular paisagem.

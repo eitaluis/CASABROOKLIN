@@ -396,3 +396,14 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [x] Atualizar cache-busters dos módulos compartilhados e da entrada index.html.
 - [ ] Revisão visual real do Grande Salão após reload sem cache.
 - [ ] QA de desempenho, carregamento de assets e paridade visual em desktop e mobile.
+
+
+## Avatar de Combate de Hórus — 27/11/2026
+
+- [x] Preservar Carter no centro; criar uma cópia ampliada do rig Ara ao redor dele.
+- [x] Sincronizar ossos e morph targets do avatar com Carter em cada frame.
+- [x] Aplicar material dourado translúcido e cabeça de falcão simples, sem armadura ornamental.
+- [x] Adicionar invocação por H e botão mobile; custo inicial de 40 pontos de energia e desativação pelo mesmo comando.
+- [ ] Verificar Carter centralizado dentro da silhueta em idle, walk, run, jump, socos e reações.
+- [ ] Ajustar escala e cabeça de falcão após teste no navegador desktop e celular paisagem.
+- [ ] Conferir transparência, bloom, ordenação de profundidade e FPS no mobile.

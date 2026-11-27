@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.12",
+  "version": "0.4.13",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -345,6 +345,13 @@
       "path": "src/character.js + src/third-person.js + src/main.js + src/grand-salon.js",
       "role": "Shared desktop/mobile bench interaction with Ara-native retargeted sit_down, sit_idle and stand_up clip IDs. Ara builds stand_up by reversing SIT_DOWN internally; the runtime plays the native stand_up clip. The interaction locks movement while seated, returns Carter to a safe exit anchor, and restores locomotion. Thoth inspection triggers look_around.",
       "license": "project-original-code; Ara 3D Gen API/runtime and upstream Ara/CMU animation data follow the terms recorded under runtimeAssets/openSourceReferences"
+    },
+    {
+      "id": "horus-combat-avatar",
+      "path": "src/character.js",
+      "role": "Avatar dourado translúcido que envolve Carter; clone SkeletonUtils do rig Ara aprovado, ampliado e sincronizado por cópia das transformações ósseas e morph targets em cada frame; crânio, bico e olhos de falcão em geometria original, sem armadura ornamental nem asset externo",
+      "license": "project-original-code; Three.js SkeletonUtils MIT",
+      "runtimeImported": true
     }
   ],
   "openSourceReferences": [
@@ -870,6 +877,19 @@
         "docs/ROADMAP-CHECKLIST.md"
       ],
       "summary": "Refined the existing canonical 9.1m black-marble Thoth ibis sculpture; replaced segmented ring benches with two continuous curved limestone/leather seating crescents; adapted Museum Grand Stair architectural features into supported stair flights; added shared Ara sit_down/sit_idle/stand_up interactions, Thoth look_around inspection, safe seat exit anchors and desktop/mobile parity. External GLBs remain reference-only, not imported.",
+      "date": "2026-11-27"
+    },
+    {
+      "id": "horus-combat-avatar-sync-20261127",
+      "scope": "runtime",
+      "files": [
+        "src/character.js",
+        "src/main.js",
+        "index.html",
+        "docs/HORUS-COMBAT-AVATAR.md",
+        "docs/OPEN-SOURCES.md"
+      ],
+      "summary": "Avatar de Combate de Hórus translúcido e dourado envolve Carter; cópia ampliada do rig Ara sincronizada por frame, cabeça simplificada de falcão, tecla H e botão mobile; custo inicial de 40 de energia.",
       "date": "2026-11-27"
     }
   ]

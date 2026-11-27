@@ -8,7 +8,7 @@ import { buildGrandSalon } from './grand-salon.js?v=great-hall-curves-20261127e'
 import { buildTrainingRoom } from './training-room.js?v=museum-statues-board-20261127b';
 import { createInventory } from './inventory.js?v=inventory-polyfork-quarterstaff-20261127a';
 import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
-import { createCharacter } from './character.js?v=great-hall-curves-20261127e';
+import { createCharacter } from './character.js?v=horus-avatar-sync-20261127a';
 import { createThirdPersonController } from './third-person.js?v=great-hall-curves-20261127e';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -337,6 +337,28 @@ haDiButton?.addEventListener('click', event => {
   castHaDi();
 });
 
+
+const HORUS_AVATAR_COST = 40;
+const horusAvatarButton = document.getElementById('horusAvatarButton');
+function toggleHorusAvatar() {
+  if (character.isHorusAvatarActive) {
+    character.setHorusAvatarActive(false);
+    toast('A manifestação dourada de Hórus se desfaz ao redor de Carter.');
+    return;
+  }
+  if (playerVitals.energy < HORUS_AVATAR_COST) {
+    toast('Energia insuficiente para invocar o Avatar de Hórus. São necessários 40 pontos.');
+    return;
+  }
+  playerVitals.energy = Math.max(0, playerVitals.energy - HORUS_AVATAR_COST);
+  character.setHorusAvatarActive(true);
+  toast('O Avatar de Combate de Hórus envolve Carter. Seus movimentos são compartilhados.');
+}
+horusAvatarButton?.addEventListener('click', event => {
+  event.preventDefault();
+  toggleHorusAvatar();
+});
+
 const inventory = createInventory({
   THREE, character,
   setControlsLocked: controller.setLocked,
@@ -443,6 +465,10 @@ window.addEventListener('keydown', event => {
   }
   if (event.code === 'KeyG' && !event.repeat && document.getElementById('startscreen').classList.contains('hidden')) {
     if (controller.zone === 'training') castHaDi();
+  }
+  if (event.code === 'KeyH' && !event.repeat && document.getElementById('startscreen').classList.contains('hidden') &&
+      !document.activeElement?.matches('input,textarea,[contenteditable="true"]')) {
+    toggleHorusAvatar();
   }
 });
 document.getElementById('interactButton')?.addEventListener('click', interactWithNearby);
@@ -561,6 +587,16 @@ function animate() {
     haDiButton.title = haDiButton.disabled
       ? (playerVitals.energy < 30 ? 'Energia insuficiente: HA-DI custa 30 pontos.' : 'Fique de frente para um Shabti desperto, entre 3,5 e 12,5 metros.')
       : 'Conjurar HA-DI · custo 30 de energia';
+  }
+  if (horusAvatarButton) {
+    const avatarActive = character.isHorusAvatarActive;
+    horusAvatarButton.textContent = avatarActive ? 'RETIRAR' : 'HÓRUS';
+    horusAvatarButton.setAttribute('aria-pressed', avatarActive ? 'true' : 'false');
+    horusAvatarButton.setAttribute('aria-label', avatarActive ? 'Desativar Avatar de Hórus' : 'Invocar Avatar de Hórus');
+    horusAvatarButton.disabled = !avatarActive && playerVitals.energy < HORUS_AVATAR_COST;
+    horusAvatarButton.title = avatarActive
+      ? 'Desativar o Avatar de Hórus'
+      : 'Invocar Avatar de Hórus · custo 40 de energia';
   }
   const showTrainingHud = controller.zone === 'training'
     && (trainingStatus.challengeActive || trainingStatus.targetPracticeActive);

@@ -389,3 +389,15 @@ Estes três GLBs foram adicionados à cena a partir de versões otimizadas do pr
 - **Implementado em código:** anatomia refinada de Thoth, dois bancos curvos contínuos, escadaria apoiada e detalhada, interação de assento/saída e inspeção da estátua.
 - **Referência aprovada, mas GLB não importado:** Innerscene Curved Modular Seating e Tevy Museum Grand Stair. As geometrias de runtime são originais e não cópias binárias dos modelos.
 - **QA pendente:** testar os clips no carregamento Ara real; conferir assento/altura/raiz, pose, alinhamento de pés e saída; subir e descer cada lance; verificar colisões, materiais, desempenho e paridade visual no navegador desktop e em celular paisagem.
+
+
+## Avatar de Combate de Hórus — 27/11/2026
+
+- **Fonte canônica:** Rick Riordan, The Red Pyramid, capítulo 38, “The House Is in the House”. No combate contra Set, Carter e Hórus agem em uníssono; o Avatar de Combate se forma ao redor de Carter, eleva-o do chão e o envolve em energia dourada; o guerreiro com cabeça de falcão imita seus movimentos. Referência textual digital consultada: https://www.jkmedina.com/uploads/1/3/2/3/13236122/rick_riordan_-_kane_chronicles_1_-_the_red_pyramid.pdf (a paginação varia por edição).
+- **Referência de forma:** Gor Game Ready — https://www.renderhub.com/andryuha1981/gor-game-ready-1. Usado apenas como referência visual de proporção humanoide/falconídea. Não comprado, baixado nem importado; a armadura ornamentada não foi reproduzida.
+- **Base de animação:** Ara 3D Gen já aprovado para Carter — https://github.com/olatunde85/3d-gen. O Avatar usa SkeletonUtils.clone(hero.scene) da malha aprovada e recebe a transformação local de cada osso e morph target de Carter a cada frame. Não há mixer independente nem segundo conjunto de animações; caminhada, corrida, salto, socos e reações acompanham a mesma pose.
+- **Cabeça de falcão:** geometria original do projeto (crânio, bico, olhos e penas curtas da nuca), vinculada ao osso Head da cópia do rig. É uma interpretação visual inspirada na iconografia de Hórus, não um scan arqueológico.
+- **Material:** MeshStandardMaterial dourado com emissão e transparência aditiva; Carter permanece no centro, visível através do avatar. Não há armadura detalhada, asas ou textura externa importada.
+- **Controle:** H no desktop e botão HÓRUS no mobile; 40 pontos de energia para invocar e o mesmo comando para desfazer. Custo e toggle são adaptações de gameplay, não regras canônicas.
+- **Compatibilidade:** a mesma geometria, cópia do rig e lógica são compartilhadas por desktop e mobile; apenas o acionamento difere.
+- **QA:** sintaxe e JSON validados; leitura da cabeça, escala, transparência e sincronização ainda precisam ser inspecionadas no navegador desktop e em celular paisagem.

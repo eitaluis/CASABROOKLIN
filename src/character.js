@@ -1,6 +1,7 @@
 import * as THREE from 'three';
+import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { createCharacter as createAraCharacter, ANIMATIONS } from 'ara3d';
-import { createCarterAccessories } from './character-accessories.js?v=carter-accessories-rig-fit-20261127b';
+import { createCarterAccessories } from './character-accessories.js?v=carter-accessories-rig-fit-20261127a';
 
 // Link compartilhado do Carter aprovado no Ara 3D Gen.
 // A malha humana, o rosto, o cabelo e as proporções permanecem preservados.
@@ -32,8 +33,7 @@ const CINEMATIC_ANIMATIONS = [
   'point',
   'bow',
   'sit_down',
-  'sit_idle',
-  'stand_up'
+  'sit_idle'
 ];
 
 const ARA_ANIMATION_IDS = new Set(ANIMATIONS.map((animation) => animation.id));
@@ -117,6 +117,182 @@ export async function createCharacter({
     });
     return found;
   }
+
+  // Avatar de Combate de Hórus: uma segunda pele dourada que envolve Carter.
+  // A cópia usa o mesmo rig Ara e recebe a pose dos ossos originais a cada frame.
+  const horusAvatarRoot = new THREE.Group();
+  horusAvatarRoot.name = 'Avatar de Combate de Hórus · energia dourada';
+  horusAvatarRoot.visible = false;
+  root.add(horusAvatarRoot);
+  const horusAvatarScene = cloneSkeleton(hero.scene);
+  horusAvatarScene.name = 'Silhueta sincronizada do guerreiro-falcão';
+  horusAvatarRoot.add(horusAvatarScene);
+
+  const horusAvatarBodyMaterial = new THREE.MeshStandardMaterial({
+    color: 0xe6ad45, emissive: 0xffa51e, emissiveIntensity: 1.15,
+    roughness: 0.34, metalness: 0.08, transparent: true, opacity: 0,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+    side: THREE.DoubleSide, toneMapped: false
+  });
+  const horusAvatarHeadMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffd071, emissive: 0xffad34, emissiveIntensity: 1.55,
+    roughness: 0.3, metalness: 0.04, transparent: true, opacity: 0,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+    side: THREE.DoubleSide, toneMapped: false
+  });
+  const horusAvatarEyeMaterial = new THREE.MeshBasicMaterial({
+    color: 0xfff0ba, transparent: true, opacity: 0,
+    blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
+  });
+  horusAvatarScene.traverse((object) => {
+    if (!object.isMesh) return;
+    object.material = horusAvatarBodyMaterial;
+    object.castShadow = false;
+    object.receiveShadow = false;
+    object.frustumCulled = false;
+  });
+
+  const horusAvatarBoneLookup = new Map();
+  horusAvatarScene.traverse((object) => {
+    if (!object.isBone) return;
+    const key = normalizedBoneName(object.name);
+    if (key && !horusAvatarBoneLookup.has(key)) horusAvatarBoneLookup.set(key, object);
+  });
+  const horusAvatarBonePairs = [];
+  hero.scene.traverse((object) => {
+    if (!object.isBone) return;
+    const clone = horusAvatarBoneLookup.get(normalizedBoneName(object.name));
+    if (clone) horusAvatarBonePairs.push({ source: object, clone });
+  });
+
+  const horusAvatarMeshLookup = new Map();
+  horusAvatarScene.traverse((object) => {
+    if (object.isMesh && object.name && !horusAvatarMeshLookup.has(object.name)) {
+      horusAvatarMeshLookup.set(object.name, object);
+    }
+  });
+  const horusAvatarMorphPairs = [];
+  hero.scene.traverse((object) => {
+    if (!object.isMesh || !object.morphTargetInfluences) return;
+    const clone = horusAvatarMeshLookup.get(object.name);
+    if (clone?.morphTargetInfluences) horusAvatarMorphPairs.push({ source: object, clone });
+  });
+
+  // Cabeça de falcão simplificada: crânio, bico, olhos e penas curtas na nuca.
+  const horusHeadBone = horusAvatarBoneLookup.get('head') || horusAvatarBoneLookup.get('mixamorighead');
+  function addHorusHeadPiece(name, geometry, material, position, scale, rotation = null) {
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.name = name;
+    mesh.position.copy(position);
+    if (scale) mesh.scale.copy(scale);
+    if (rotation) mesh.rotation.copy(rotation);
+    mesh.castShadow = false;
+    mesh.receiveShadow = false;
+    horusHeadBone?.add(mesh);
+    return mesh;
+  }
+  const horusHeadUnit = Math.max(0.7, hero.height || 1.75) / 1.75;
+  if (horusHeadBone) {
+    addHorusHeadPiece(
+      'Crânio translúcido de falcão',
+      new THREE.SphereGeometry(0.145 * horusHeadUnit, 24, 18),
+      horusAvatarHeadMaterial,
+      new THREE.Vector3(0, 0.028 * horusHeadUnit, 0.035 * horusHeadUnit),
+      new THREE.Vector3(0.98, 1.14, 1.12)
+    );
+    const beakRotation = new THREE.Euler(Math.PI / 2, 0, 0);
+    addHorusHeadPiece(
+      'Bico superior do avatar',
+      new THREE.ConeGeometry(0.082 * horusHeadUnit, 0.245 * horusHeadUnit, 8, 1),
+      horusAvatarHeadMaterial,
+      new THREE.Vector3(0, 0.01 * horusHeadUnit, 0.162 * horusHeadUnit),
+      new THREE.Vector3(1, 1, 1), beakRotation
+    );
+    addHorusHeadPiece(
+      'Bico inferior do avatar',
+      new THREE.ConeGeometry(0.048 * horusHeadUnit, 0.145 * horusHeadUnit, 8, 1),
+      horusAvatarHeadMaterial,
+      new THREE.Vector3(0, -0.055 * horusHeadUnit, 0.158 * horusHeadUnit),
+      new THREE.Vector3(1, 1, 1), beakRotation
+    );
+    for (const side of [-1, 1]) {
+      addHorusHeadPiece(
+        'Olho luminoso do falcão',
+        new THREE.SphereGeometry(0.018 * horusHeadUnit, 12, 10),
+        horusAvatarEyeMaterial,
+        new THREE.Vector3(side * 0.112 * horusHeadUnit, 0.045 * horusHeadUnit, 0.118 * horusHeadUnit),
+        new THREE.Vector3(1, 1, 0.72)
+      );
+    }
+    for (const index of [-1, 0, 1]) {
+      const feather = addHorusHeadPiece(
+        'Pena curta da nuca',
+        new THREE.ConeGeometry(0.026 * horusHeadUnit, 0.135 * horusHeadUnit, 6, 1),
+        horusAvatarHeadMaterial,
+        new THREE.Vector3(index * 0.045 * horusHeadUnit, 0.162 * horusHeadUnit, -0.055 * horusHeadUnit),
+        new THREE.Vector3(1, 1, 1)
+      );
+      feather.rotation.z = -index * 0.22;
+      feather.rotation.x = -0.12;
+    }
+  } else {
+    console.warn('Avatar de Hórus: osso Head não encontrado; usando cabeça do rig Ara.');
+  }
+
+  let horusAvatarActive = false;
+  let horusAvatarWeight = 0;
+  let horusAvatarElapsed = 0;
+  const horusAvatarBasePositionY = hero.scene.position.y;
+  const horusAvatarScale = new THREE.Vector3(1.52, 1.48, 1.46);
+
+  function setHorusAvatarActive(enabled) {
+    horusAvatarActive = Boolean(enabled);
+    if (horusAvatarActive) horusAvatarRoot.visible = true;
+    return horusAvatarActive;
+  }
+
+  function updateHorusAvatar(dt) {
+    horusAvatarElapsed += dt;
+    horusAvatarWeight = THREE.MathUtils.damp(
+      horusAvatarWeight, horusAvatarActive ? 1 : 0,
+      horusAvatarActive ? 5.4 : 7.2, dt
+    );
+    const hover = (0.12 + Math.sin(horusAvatarElapsed * 2.65) * 0.018) * horusAvatarWeight;
+    hero.scene.position.y = horusAvatarBasePositionY + hover;
+    horusAvatarScene.position.copy(hero.scene.position);
+    horusAvatarScene.quaternion.copy(hero.scene.quaternion);
+    horusAvatarScene.scale.copy(hero.scene.scale);
+    for (const pair of horusAvatarBonePairs) {
+      pair.clone.position.copy(pair.source.position);
+      pair.clone.quaternion.copy(pair.source.quaternion);
+      pair.clone.scale.copy(pair.source.scale);
+    }
+    for (const pair of horusAvatarMorphPairs) {
+      const sourceWeights = pair.source.morphTargetInfluences;
+      const cloneWeights = pair.clone.morphTargetInfluences;
+      for (let i = 0; i < Math.min(sourceWeights.length, cloneWeights.length); i++) {
+        cloneWeights[i] = sourceWeights[i];
+      }
+    }
+    const weight = horusAvatarWeight;
+    horusAvatarRoot.scale.set(
+      THREE.MathUtils.lerp(1, horusAvatarScale.x, weight),
+      THREE.MathUtils.lerp(1, horusAvatarScale.y, weight),
+      THREE.MathUtils.lerp(1, horusAvatarScale.z, weight)
+    );
+    const pulse = 0.94 + Math.sin(horusAvatarElapsed * 4.8) * 0.06;
+    horusAvatarBodyMaterial.opacity = 0.265 * weight * pulse;
+    horusAvatarHeadMaterial.opacity = 0.52 * weight * pulse;
+    horusAvatarEyeMaterial.opacity = 0.88 * weight;
+    horusAvatarRoot.visible = horusAvatarActive || weight > 0.006;
+    horusAvatarScene.updateMatrixWorld(true);
+    horusAvatarRoot.updateMatrixWorld(true);
+    if (!horusAvatarActive && weight < 0.001) {
+      horusAvatarRoot.visible = false;
+      hero.scene.position.y = horusAvatarBasePositionY;
+    }
+  }
+
   const headBones = [
     findRigBone(['Neck', 'mixamorigNeck']),
     findRigBone(['Head', 'mixamorigHead'])
@@ -198,10 +374,27 @@ export async function createCharacter({
     actionInterruptOnMovement = options.interruptOnMovement !== false;
     actionInterruptDelay = Number.isFinite(options.interruptDelay) ? Math.max(0, options.interruptDelay) : 0;
     actionElapsed = 0;
-    actionSequence = hero.playSequence(mixer, id, {
-      repeat: options.loop === true,
-      fade: Number.isFinite(options.fade) ? options.fade : 0.38
-    });
+    if (options.reverse === true) {
+      // Ara defines Stand up as Sit down played in reverse; start at the clip's
+      // final timestamp and let the same grounded motion return to standing.
+      const reverseAction = mixer.clipAction(clip);
+      reverseAction.reset();
+      reverseAction.enabled = true;
+      reverseAction.setLoop(THREE.LoopOnce, 1);
+      reverseAction.clampWhenFinished = true;
+      reverseAction.time = clip.duration;
+      reverseAction.setEffectiveTimeScale(-1);
+      reverseAction.setEffectiveWeight(1);
+      const fade = Number.isFinite(options.fade) ? options.fade : 0.38;
+      if (fade > 0) reverseAction.fadeIn(fade);
+      reverseAction.play();
+      actionSequence = { stop: () => reverseAction.stop() };
+    } else {
+      actionSequence = hero.playSequence(mixer, id, {
+        repeat: options.loop === true,
+        fade: Number.isFinite(options.fade) ? options.fade : 0.38
+      });
+    }
     onActionChange(id);
 
     if (options.loop !== true) {
@@ -346,8 +539,7 @@ export async function createCharacter({
   function sitDown() {
     if (disposed || jumping || sitting) return false;
     if (!AVAILABLE_ACTION_ANIMATIONS.includes('sit_down') ||
-        !AVAILABLE_ACTION_ANIMATIONS.includes('sit_idle') ||
-        !AVAILABLE_ACTION_ANIMATIONS.includes('stand_up')) {
+        !AVAILABLE_ACTION_ANIMATIONS.includes('sit_idle')) {
       console.warn('As animações de sentar/levantar não estão disponíveis no rig Ara carregado.');
       return false;
     }
@@ -372,7 +564,8 @@ export async function createCharacter({
   function standFromSeat(onComplete) {
     if (disposed || jumping || !sitting) return false;
     sitting = false;
-    const started = playAction('stand_up', {
+    const started = playAction('sit_down', {
+      reverse: true,
       fade: 0.22,
       interruptOnMovement: false,
       onFinish: () => { onComplete?.(); }
@@ -438,6 +631,8 @@ export async function createCharacter({
       // authored reaction clip is longer than the player's invulnerability gap.
       return playAction(id, { fade: 0.08, interruptOnMovement: true, interruptDelay: 0.24 });
     },
+    setHorusAvatarActive,
+    get isHorusAvatarActive() { return horusAvatarActive; },
     setInjured(value) {
       const next = Boolean(value);
       if (next === injured) return;
@@ -512,6 +707,7 @@ export async function createCharacter({
       updateCastingBodyPose(dt);
       if (castingHandPose) applyCastingHandPose();
       accessories?.update(dt, movementSpeed);
+      updateHorusAvatar(dt);
     },
     resetFallback() {
       if (disposed) return;
@@ -537,6 +733,11 @@ export async function createCharacter({
       castingHandPose = false;
       castingBodyPose = false;
       setCastingGuardPose(false);
+      setHorusAvatarActive(false);
+      horusAvatarRoot.visible = false;
+      horusAvatarBodyMaterial.dispose();
+      horusAvatarHeadMaterial.dispose();
+      horusAvatarEyeMaterial.dispose();
       removeCastingBodyOffsets();
       clearJumpListener();
       clearActionListener();

@@ -33,7 +33,7 @@ The game currently creates lightweight procedural geometry in `src/character-acc
 
 The current runtime attaches the bag and strap roots to Hips and the necklace root to an upper-chest bone. The older Blender generator still contains separate bag/strap/necklace anchors and must be reconciled after the user approves a new visual direction. Do not assume the old Spine2 strap anchor matches the runtime.
 
-Before creating a replacement .blend, first follow the project-wide `SKILL.md` approval gate and the research board at `docs/CARTER-ACCESSORIES-REFERENCE-STUDY.md`. No bag asset or new strap geometry should be downloaded or integrated until explicit approval.
+The visual direction and composition for the Innerscene satchel body + newly rebuilt strap were explicitly approved on 27/11/2026. The actual GLB bytes are not available in the current working session because the provider's download redirects to an inaccessible file host. Do not substitute the procedural prototype or guess the imported mesh hierarchy. Once `crossbody-bag.glb` is supplied locally, inspect its nodes, meshes, transforms and materials before removing only its original loose strap and creating the Carter-fitted strap.
 
 Do not export the body or replace the approved Ara character from this script.
 

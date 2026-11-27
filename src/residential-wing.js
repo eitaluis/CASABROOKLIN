@@ -582,6 +582,9 @@ export function buildResidentialWing({
       const expression = open ? /open/i : /close/i;
       const clip = sadieMinibar.animations.find(item => expression.test(item.name));
       if (!clip) return;
+      sadieMinibar.animations.forEach(other => {
+        if (other !== clip) sadieMinibar.mixer.existingAction(other)?.stop();
+      });
       const action = sadieMinibar.mixer.clipAction(clip);
       action.reset();
       action.setLoop(THREE.LoopOnce, 1);
@@ -615,7 +618,7 @@ export function buildResidentialWing({
         minibarFallbackHinge.add(leaf);
         sadieMinibar = { model: cabinet, mixer: null, animations: [] };
       }
-      if (loaded && sadieMinibarOpen) playMinibarClip(true);
+      if (sadieMinibarOpen) playMinibarClip(true);
     }
   );
   addCollider(33.42, FLOOR_Y + 0.45, 4.65, 0.68, 0.9, 0.64);
@@ -761,7 +764,7 @@ export function buildResidentialWing({
   roomGroup.add(fridgeGlow);
 
   const sadieSnacks = new THREE.Group();
-  sadieSnacks.position.set(32.55, FLOOR_Y + 0.78, 4.65);
+  sadieSnacks.position.set(32.55, FLOOR_Y + 0.70, 4.65);
   roomGroup.add(sadieSnacks);
   const ribenaBottle = new THREE.Mesh(
     new THREE.CylinderGeometry(0.055, 0.062, 0.24, 20),

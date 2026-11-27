@@ -244,3 +244,13 @@ A avaliação visual e a escolha entre (A) shabtis em nichos e (B) relevos arqui
 - Os modelos são carregados com GLTFLoader de um mirror público com versão fixada por commit. As licenças e créditos são registradas em `docs/OPEN-SOURCES.md`. Se o CDN não responder, as formas procedurais de fallback mantêm a cena funcional.
 - A correção não altera a bola de basquete.
 - QA estático de sintaxe passou; ainda é necessária inspeção visual no navegador para verificar orientação, escala final e disponibilidade do CDN durante o carregamento.
+
+
+### Diversificação das estátuas laterais com scans (27/11/2026)
+
+- A sequência de cinco expositores foi diversificada para evitar repetições visuais: estatueta de chacal, Hórus em bronze, Thoth como babuíno, Hórus como falcão em pedra e esfinge com cabeça de falcão.
+- As peças são scans de objetos de museu ou modelos diretamente associados aos objetos de coleção, e não esculturas procedurais feitas com cilindros. Os nichos de calcário continuam sendo molduras arquitetônicas próprias do cenário.
+- O objeto de chacal é identificado apenas como **estatueta de chacal**: o registro do Art Institute of Chicago aponta associação possível a Anúbis ou Wepwawet, sem fixar uma identificação única.
+- A posição de um expositor foi deslocada para longe do portal lateral; nenhum nicho deve ocupar o vão de entrada.
+- O loader agora configura MeshoptDecoder, necessário para variantes GLB que usam compressão Meshopt.
+- O conjunto mantém cinco expositores; os quatro shabtis da quadra continuam independentes e interativos.

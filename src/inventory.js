@@ -1,3 +1,5 @@
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
 // Inventário diegético do Carter: os objetos ficam no Duat até serem retirados.
 // O fluxo de portal e os IDs dos itens são genéricos para reutilização por outros magos.
 export function createInventory({
@@ -83,37 +85,57 @@ export function createInventory({
   function buildStaff() {
     const group = new THREE.Group();
 
-    // Cajado simples de madeira: haste reta e ponta superior discretamente mais larga.
-    // A silhueta evita metais, discos, gemas, halos ou motivos zoomórficos.
-    // Escala-alvo: 2,00 m, acima da altura de referência do Carter (1,75 m no rig Ara).
-    const profile = [
-      new THREE.Vector2(0, 0),
-      new THREE.Vector2(0.039, 0),
-      new THREE.Vector2(0.043, 0.04),
-      new THREE.Vector2(0.043, 1.68),
-      new THREE.Vector2(0.046, 1.74),
-      new THREE.Vector2(0.058, 1.78),
-      new THREE.Vector2(0.071, 1.84),
-      new THREE.Vector2(0.074, 1.92),
-      new THREE.Vector2(0.068, 1.97),
-      new THREE.Vector2(0.045, 2.0),
-      new THREE.Vector2(0, 2.0)
-    ];
-    const geometry = new THREE.LatheGeometry(profile, 16);
-    geometry.computeVertexNormals();
-
-    const staffWood = new THREE.MeshStandardMaterial({
-      color: 0x30221b,
-      roughness: 0.88,
-      metalness: 0
+    // Fallback de proporção/material próximo ao asset aprovado da Polyfork.
+    // O asset principal é carregado abaixo: 1,8 m, madeira, ponteiras de ferro
+    // e duas faixas de tecido na região de empunhadura.
+    const fallbackWood = new THREE.MeshStandardMaterial({
+      color: 0x805735, roughness: 0.78, metalness: 0.02
     });
-    const staff = new THREE.Mesh(geometry, staffWood);
-    staff.name = 'PlainDarkWoodStaff';
-    staff.castShadow = true;
-    staff.receiveShadow = true;
-    group.add(staff);
+    const fallbackIron = new THREE.MeshStandardMaterial({
+      color: 0x6b6d69, roughness: 0.5, metalness: 0.72
+    });
+    const fallbackCloth = new THREE.MeshStandardMaterial({
+      color: 0xb9a27b, roughness: 0.96, metalness: 0
+    });
 
-    return registerItem('staff', group, 'weapon', 'Cajado reto de madeira escura com ponta superior discretamente alargada');
+    const shaft = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.04, 0.04, 1.8, 16, 1),
+      fallbackWood
+    );
+    shaft.name = 'PolyforkQuarterstaffFallbackShaft';
+    shaft.castShadow = true;
+    shaft.receiveShadow = true;
+    group.add(shaft);
+
+    for (const y of [-0.88, 0.88]) {
+      const cap = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.0405, 0.0405, 0.04, 16),
+        fallbackIron
+      );
+      cap.position.y = y;
+      cap.castShadow = true;
+      group.add(cap);
+    }
+
+    for (const y of [-0.11, 0.11]) {
+      const wrap = new THREE.Mesh(
+        new THREE.TorusGeometry(0.0405, 0.0045, 8, 28),
+        fallbackCloth
+      );
+      wrap.rotation.x = Math.PI / 2;
+      wrap.position.y = y;
+      wrap.castShadow = true;
+      group.add(wrap);
+    }
+
+    const item = registerItem(
+      'staff',
+      group,
+      'weapon',
+      "Monk's Quarterstaff da Polyfork: haste de madeira de 1,8 m, ponteiras de ferro e duas faixas de tecido"
+    );
+    item.userData.assetState = 'loading-approved-polyfork-glb';
+    return item;
   }
 
   function buildKhopesh() {
@@ -569,6 +591,55 @@ export function createInventory({
   buildScribePalette();
   buildBrownTwine();
   buildEbonyCat();
+
+  // Asset aprovado por Luis: Monk's Quarterstaff — Polyfork / Lucas Martinic.
+  // O rig Ara define WeaponR no centro da mão fechada; +Y sai do topo do punho.
+  // O GLB tem 1,8 m, +Y vertical e origem no chão, portanto deslocamos 0,9 m
+  // para baixo e deixamos o eixo do bastão coincidir com o eixo de WeaponR.
+  // A aparência original (madeira, ponteiras de ferro e faixas de tecido) é preservada.
+  const approvedStaffLoader = new GLTFLoader();
+  const approvedStaffUrl = 'https://polyfork.dev/cdn/monk-s-quarterstaff-cbdadd.glb';
+  const approvedStaffItem = items.get('staff');
+
+  function disposeFallbackTree(root) {
+    root.traverse((node) => {
+      if (!node.isMesh) return;
+      node.geometry?.dispose?.();
+      const materials = Array.isArray(node.material) ? node.material : [node.material];
+      materials.forEach((material) => material?.dispose?.());
+    });
+  }
+
+  approvedStaffLoader.load(
+    approvedStaffUrl,
+    (gltf) => {
+      const model = gltf.scene;
+      model.name = 'PolyforkMonksQuarterstaff';
+      model.position.set(0, -0.9, 0);
+      model.scale.setScalar(1);
+      model.traverse((node) => {
+        if (!node.isMesh) return;
+        node.castShadow = true;
+        node.receiveShadow = true;
+      });
+
+      // Remove apenas o fallback: o GLB aprovado passa a ser o único cajado equipado.
+      for (const fallback of [...approvedStaffItem.children]) {
+        approvedStaffItem.remove(fallback);
+        disposeFallbackTree(fallback);
+      }
+      approvedStaffItem.add(model);
+      approvedStaffItem.userData.assetState = 'loaded';
+      approvedStaffItem.userData.assetSource = approvedStaffUrl;
+      approvedStaffItem.userData.description =
+        "Monk's Quarterstaff da Polyfork, 1,8 m, madeira, ponteiras de ferro e duas faixas de tecido; mão no centro da empunhadura";
+    },
+    undefined,
+    (error) => {
+      approvedStaffItem.userData.assetState = 'fallback';
+      console.warn('CASABROOKLIN: não foi possível carregar o GLB aprovado da Polyfork; mantendo o fallback local.', error);
+    }
+  );
 
   // The portal stays in chest space while the right hand reaches through it.
   // Ara's use_press clip places the right-hand contact at (-0.20, -0.16, 0.46)

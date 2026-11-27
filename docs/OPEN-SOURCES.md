@@ -313,3 +313,8 @@ Estes três GLBs foram adicionados à cena a partir de versões otimizadas do pr
 - Repositório de origem, commit fixado: https://github.com/never-nude/atrium.earth/tree/28aefba9209eab48535ee7a193bea310fde10f47/public/models/previews/egyptian
 - Base URL no runtime: `https://cdn.jsdelivr.net/gh/never-nude/atrium.earth@28aefba9209eab48535ee7a193bea310fde10f47/public/models/previews/egyptian/`
 - Os modelos permanecem hospedados no repositório-fonte e são carregados via CDN; não foram copiados para `assets/models/` nesta atualização.
+
+### Referência GLSL para silhuetas sem contorno quadrado — HA-DI (27/11/2026)
+
+- **ThreeJS VFX — https://github.com/majidmanzarpour/threejs-vfx — MIT.** O sistema de partículas do projeto usa silhuetas proceduralmente recortadas em GLSL (soft, smoke, streak, chip, ring), em vez de depender exclusivamente do alpha de sprites. Referência técnica para a máscara orgânica implementada em src/magic-system.js; nenhum código foi copiado e nenhuma dependência foi adicionada.
+- No CASABROOKLIN, máscaras originais com ruído FBM são injetadas em map_fragment via Material.onBeforeCompile: núcleo/fumaça orgânicos, faíscas e corte afilados e sigilo anelar. As texturas Kenney CC0 continuam como detalhes internos e são protegidas pela máscara adicional.

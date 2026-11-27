@@ -320,6 +320,24 @@
       "path": "SKILL.md + AGENTS.md",
       "role": "mandatory project-wide process: read book passages and separate canon from interpretation; inspect official author/publisher/illustrator imagery plus historical and fan-art references with proper attribution; search real open 3D/code/texture assets and verify license, dimensions, hierarchy, rig, formats, Three.js/mobile fit; present actual visual references/previews/comparison in chat; wait for explicit user approval before download, new modeling, replacement or integration; preserve desktop/mobile parity and run visual QA",
       "license": "project-original-documentation"
+    },
+    {
+      "id": "residential-wing-original-mit-furniture",
+      "path": "assets/models/residential/*.glb",
+      "role": "Local GLB copies of original Blender-authored MIT furniture: nightstands, desk, desk chair, table/floor lamps, kitchenette counter, refrigerator, shower enclosure, sink, toilet, mirror, towel rail, TV, TV console and wardrobes. All contain embedded PBR materials. The upstream bed.glb is not present as a usable local asset; both king beds are original Three.js geometry until a valid bed GLB is imported and visually approved.",
+      "license": "MIT; original geometry/materials from https://github.com/jamesEmerson112/NVIDIA-Crusoe-The-Recursive-Agents-Hackathon; source license preserved at assets/models/residential/LICENSE-MIT.txt"
+    },
+    {
+      "id": "residential-egyptian-headrest-scrying-bowl",
+      "path": "src/residential-wing.js",
+      "role": "Original game geometry for the ivory headrest with lions and Shu based on Grand Egyptian Museum GEM 270. The headrest is placed on the bed as a pillow-scale object (~29 cm), not a headboard or nightstand ornament; the low bronze scrying bowl on a stone pedestal is also original game geometry.",
+      "license": "project-original-code; historical reference: https://gem.eg/en/collection/artefacts/lions-headrest"
+    },
+    {
+      "id": "residential-wing-layout-and-interactions",
+      "path": "src/residential-wing.js + src/grand-salon.js + src/main.js + src/world.js",
+      "role": "Interpretive third-floor corridor and adjoining Carter/Sadie suites. The upper east gallery rear wall has a physical opening into the corridor; zone thresholds are reversible. Includes hinged room/bathroom/closet doors with dynamic colliders, Sadie's private suite, animated minibar, CC0 armchair, kitchenette, modern devices, shared E/mobile interactions, rest-to-energy recovery, magical acoustic runes and blocked deck glazing.",
+      "license": "project-original-code; canon-vs-interpretation and object-level asset decisions in docs/RESIDENTIAL-WING-STUDY.md"
     }
   ],
   "openSourceReferences": [
@@ -666,6 +684,13 @@
       "license": "official public planning reference",
       "role": "visual-resource context for East River, Williamsburg waterfront, bridge, industrial skyline and distant Manhattan; no image or geometry imported",
       "runtimeImported": false
+    },
+    {
+      "id": "3dassetsdev-residential-minibar-and-armchair",
+      "source": "https://3dassets.dev/assets/hotel-and-resort-operations-minibar-cabinet-601f19a1; https://3dassets.dev/assets/hotel-and-resort-operations-guest-armchair-bb3c4e37",
+      "license": "CC0-1.0",
+      "role": "Runtime direct CDN GLBs: minibar cabinet (0.64 x 0.89 x 0.591 m, 960 triangles, open/close clips) and guest armchair (0.745 x 0.83 x 0.72 m, 2,320 triangles). Both loaded via GLTFLoader; provider declares CORS-enabled immutable URLs, embedded WebP textures and no Draco/Meshopt/KTX2 requirement. AI-assisted authoring disclosed on the asset pages.",
+      "runtimeImported": true
     }
   ],
   "features": [

@@ -6,7 +6,7 @@ import { buildInteriorDetails } from './interior-details.js?v=great-hall-travers
 import { buildLibrary } from './library.js?v=library-asset-first-20261127b';
 import { buildGrandSalon } from './grand-salon.js?v=residential-wing-20261127a';
 import { buildTrainingRoom } from './training-room.js?v=ra-shabti-niches-20261127b';
-import { buildResidentialWing } from './residential-wing.js?v=residential-asset-first-20261127a';
+import { buildResidentialWing } from './residential-wing.js?v=residential-suite-interactives-20261127b';
 import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
 import { createMagicSystem } from './magic-system.js?v=ha-di-energy-cast-20261126a';
 import { createCharacter } from './character.js?v=carter-room-locomotion-20261127a';
@@ -116,7 +116,9 @@ const grandSalon = buildGrandSalon({
 const fireLight = grandSalon.fireLight;
 const residentialWing = buildResidentialWing({
   THREE, scene:magicalInteriorGroup, colliders, groundSurfaces, interactables, isTouchDevice,
-  materials:{ stone, plaster, wood:woodMat, cedar:cedarMat }
+  materials:{ stone, plaster, wood:woodMat, cedar:cedarMat },
+  // Descansar na cama recupera a energia usada nas conjurações; não restaura vida.
+  onRest: () => { playerVitals.energy = playerVitals.maxEnergy; }
 });
 
 // Estado de jogo global: a vida persiste entre ambientes e a energia recarrega em tempo real.

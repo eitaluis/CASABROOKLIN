@@ -318,3 +318,41 @@ Estes três GLBs foram adicionados à cena a partir de versões otimizadas do pr
 
 - **ThreeJS VFX — https://github.com/majidmanzarpour/threejs-vfx — MIT.** O sistema de partículas do projeto usa silhuetas proceduralmente recortadas em GLSL (soft, smoke, streak, chip, ring), em vez de depender exclusivamente do alpha de sprites. Referência técnica para a máscara orgânica implementada em src/magic-system.js; nenhum código foi copiado e nenhuma dependência foi adicionada.
 - No CASABROOKLIN, máscaras originais com ruído FBM são injetadas em map_fragment via Material.onBeforeCompile: núcleo/fumaça orgânicos, faíscas e corte afilados e sigilo anelar. As texturas Kenney CC0 continuam como detalhes internos e são protegidas pela máscara adicional.
+
+## Inventário de Carter — assets, animações e efeito do Duat (27/11/2026)
+
+### Cajado — asset real
+- **Polyfork — Monk's Quarterstaff**, criado por Lucas Martinic: https://polyfork.dev/asset/monk-s-quarterstaff-cbdadd
+- GLB runtime: https://polyfork.dev/cdn/monk-s-quarterstaff-cbdadd.glb
+- 496 triângulos, 1 material, 57 KB, dimensões nativas 0,08 × 1,8 × 0,08 m; origem nativa ao nível do chão.
+- Compatibilidade: a página fornece exemplo explícito de carregamento em Three.js com `GLTFLoader`; sem dependência de textura externa. Licença: uso comercial indicado como permitido; a página diz que CC BY 4.0 se aplica à redistribuição do mesh e dispensa atribuição para uso/hotlink normal. Crédito preventivo: “Monk's Quarterstaff” by Lucas Martinic / Polyfork.
+- Adaptação em `src/inventory.js`: GLB carregado por URL; X/Z × 0,30 para aprox. 2,4 cm de diâmetro aparente; Y × 1,11 para aprox. 2,00 m; translação de Y −0,999 m para centro de empunhadura no meio do comprimento; materiais retintados para bege-claro. Fallback procedural de haste fina caso CDN/CORS falhe.
+- O modelo original tem duas faixas de empunhadura e terminais metálicos; a cor foi unificada para reduzir a leitura medieval e aproximar a direção visual pedida. A cor e o comprimento final são interpretação de produção, não canon de Carter.
+
+### Khopesh — asset real
+- **Khopesh**, página de espadas livres de Vinish.dev: https://vinish.dev/free-3d-models/swords
+- GLB runtime: https://vinish-models.pages.dev/swords/khopesh.glb
+- 10.868 triângulos, 297 KB, dimensão declarada 0,60 × 0,13 × 0,04 m. A página descreve bronze, groove, hook, cabo de ébano, faixas douradas e contas de lápis-lazúli.
+- Licença: CC BY 4.0, uso comercial e modificação permitidos com crédito. Crédito: “Khopesh” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0; asset recolorido/reorientado e afinado.
+- A página indica nó `Sword`, pivot no centro do punho, lâmina no eixo +X, fio no +Z; compatível com GLTFLoader/Three.js. O runtime remove scabbard se existir, aplica rotação Z de 90° para posicionar a lâmina em pé no plano frontal e escala Z × 0,42 para reduzir espessura aparente. O comprimento fica próximo de 57 cm.
+- Fallback procedural compacto continua disponível se a URL falhar.
+
+### Khopesh histórico e imagem de referência
+- **JSSEA 31 (2004), item E1530 — Khepesh-scimitar:** https://ssea2020.thessea.org/images/SSEA_assets/journals/JSSEA_31.pdf
+- Exemplar de bronze do Novo Império, c. 1300 a.C., comprimento 57,79 cm, largura 1,9 cm, espessura 1 cm. É referência arqueológica, não o khopesh canônico de Carter.
+- Referência editorial: Read Riordan, “The Kane Chronicles: Carter and Zia’s Valentine’s Day Dates” (13/02/2026): https://www.readriordan.com/2026/02/13/kc-vday/ — conteúdo oficial suplementar; a imagem que mostra Carter com khopesh é usada apenas como referência visual, nunca como malha de runtime.
+
+### Ataques com o rig Ara
+- Documentação do catálogo: https://ara3dgen.com/docs/animations/
+- Clipes carregados: `sword_thrust` para o cajado e `sword_combo` para o khopesh; o segundo contém três cortes e ambos pertencem à família de ações de combate do rig.
+- Ação completa é executada pelo personagem; o objeto acompanha o osso/socket da mão. Não há rotação artificial independente do cajado/khopesh.
+- Compatibilidade: mesmos clips Ara já carregados no jogo via `ANIMATIONS` e mesmo rig; nenhum asset de animação externo é adicionado.
+
+### Esfera de energia do Duat
+- **Kenney Particle Pack**: https://kenney.nl/assets/particle-pack — 80 texturas de 512 × 512, CC0.
+- Texturas já presentes em `assets/vfx/` e agora reutilizadas pela retirada: `kenney-magic-01.png.b64`, `kenney-smoke-03.png.b64`, `kenney-spark-07.png.b64`.
+- O efeito volumétrico (sphere shader/fresnel, tubos helicoidais 3D, sprite placement na superfície e luz local) é código original Three.js em `src/inventory.js`. As texturas Kenney são assets 2D usados em partículas dentro do volume; não são apresentadas como uma esfera 3D pronta.
+
+### Fontes e padrão geral
+- O processo de canon → arte editorial → pesquisa histórica → licença/formato/pivô → implementação/fallback → QA desktop/mobile está especificado em `docs/ASSET-FIRST-RESEARCH-STANDARD.md`.
+- Candidatos não importados devem permanecer marcados como `runtimeImported: false`; não confundir imagem de referência com arquivo carregado.

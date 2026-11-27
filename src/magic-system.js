@@ -99,6 +99,86 @@ export function createMagicSystem({
     material.map = spriteTextures[key];
     spriteConsumers[key].push(material);
   }
+  const organicMaskMaterials = [];
+
+  // Procedural GLSL masks keep billboard textures from exposing rectangular quad boundaries.
+  function applyOrganicAlphaMask(material, shape) {
+    const clock = { value: 0 };
+    const previousCompile = material.onBeforeCompile;
+    material.onBeforeCompile = (shader, renderer) => {
+      if (typeof previousCompile === 'function') previousCompile(shader, renderer);
+      shader.uniforms.uHaDiTime = clock;
+      const noiseFunctions = [
+        'uniform float uHaDiTime;',
+        'float haDiHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }',
+        'float haDiNoise(vec2 p) {',
+        '  vec2 i = floor(p); vec2 f = fract(p); f = f * f * (3.0 - 2.0 * f);',
+        '  float a = haDiHash(i); float b = haDiHash(i + vec2(1.0, 0.0));',
+        '  float c = haDiHash(i + vec2(0.0, 1.0)); float d = haDiHash(i + vec2(1.0, 1.0));',
+        '  return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);',
+        '}',
+        'float haDiFbm(vec2 p) {',
+        '  float value = 0.0; float amplitude = 0.5;',
+        '  for (int octave = 0; octave < 4; octave++) {',
+        '    value += amplitude * haDiNoise(p); p = p * 2.03 + vec2(13.7, 7.1); amplitude *= 0.5;',
+        '  } return value;',
+        '}'
+      ].join('\n');
+      shader.fragmentShader = shader.fragmentShader.replace('void main() {', noiseFunctions + '\nvoid main() {');
+      const shapeMasks = {
+        smoke: [
+          'float haDiLobes = sin(haDiAngle * 7.0 + uHaDiTime * 0.32) * 0.045 + sin(haDiAngle * 11.0 - uHaDiTime * 0.21) * 0.025;',
+          'float haDiEdge = 0.78 + (haDiNoiseValue - 0.5) * 0.24 + haDiLobes;',
+          'haDiMask = (1.0 - smoothstep(haDiEdge - 0.24, haDiEdge + 0.035, haDiRadius)) * (0.68 + haDiNoiseValue * 0.32);'
+        ].join('\n'),
+        slash: [
+          'float haDiCurve = 0.14 * sin(haDiP.x * 2.5 + uHaDiTime * 0.35) + 0.045 * haDiP.x;',
+          'float haDiWidth = mix(0.19, 0.035, smoothstep(0.02, 0.95, abs(haDiP.x)));',
+          'float haDiDistance = abs(haDiP.y - haDiCurve);',
+          'haDiMask = (1.0 - smoothstep(haDiWidth * 0.42, haDiWidth, haDiDistance)) * (1.0 - smoothstep(0.72, 0.99, abs(haDiP.x)));'
+        ].join('\n'),
+        spark: [
+          'float haDiCurve = 0.035 * sin(haDiP.x * 5.0 + uHaDiTime);',
+          'float haDiWidth = mix(0.16, 0.018, smoothstep(0.0, 0.94, abs(haDiP.x)));',
+          'float haDiDistance = abs(haDiP.y - haDiCurve);',
+          'haDiMask = (1.0 - smoothstep(haDiWidth * 0.36, haDiWidth, haDiDistance)) * (1.0 - smoothstep(0.76, 0.99, abs(haDiP.x)));'
+        ].join('\n'),
+        ring: [
+          'float haDiRingRadius = 0.62 + (haDiNoiseValue - 0.5) * 0.035;',
+          'float haDiRingDistance = abs(haDiRadius - haDiRingRadius);',
+          'haDiMask = 1.0 - smoothstep(0.035, 0.13, haDiRingDistance);'
+        ].join('\n'),
+        core: [
+          'float haDiEdge = 0.82 + (haDiNoiseValue - 0.5) * 0.15 + sin(haDiAngle * 9.0 + uHaDiTime * 0.28) * 0.025;',
+          'haDiMask = 1.0 - smoothstep(haDiEdge - 0.23, haDiEdge + 0.025, haDiRadius);'
+        ].join('\n')
+      };
+      const maskBlock = [
+        '#include <map_fragment>',
+        'vec2 haDiP = vMapUv * 2.0 - 1.0;',
+        'float haDiRadius = length(haDiP);',
+        'float haDiAngle = atan(haDiP.y, haDiP.x);',
+        'float haDiNoiseValue = haDiFbm(haDiP * 4.3 + vec2(uHaDiTime * 0.11, -uHaDiTime * 0.07));',
+        'float haDiMask = 0.0;',
+        shapeMasks[shape],
+        'diffuseColor.a *= clamp(haDiMask, 0.0, 1.0);',
+        'if (diffuseColor.a < 0.003) discard;'
+      ].join('\n');
+      shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', maskBlock);
+      material.userData.haDiCompiledShader = shader;
+    };
+    material.customProgramCacheKey = () => 'ha-di-organic-mask-' + shape + '-20261127a';
+    material.userData.haDiClock = clock;
+    organicMaskMaterials.push(material);
+    material.needsUpdate = true;
+  }
+
+  function updateOrganicMaskTime(time) {
+    for (const material of organicMaskMaterials) {
+      const shader = material.userData.haDiCompiledShader;
+      if (shader && shader.uniforms.uHaDiTime) shader.uniforms.uHaDiTime.value = time;
+    }
+  }
 
   async function loadKenneySprite(key, filename) {
     try {
@@ -171,6 +251,7 @@ export function createMagicSystem({
     blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
   });
   useSprite('magic', impactCoreMaterial);
+  applyOrganicAlphaMask(impactCoreMaterial, 'core');
   const impactCoreSprite = new THREE.Sprite(impactCoreMaterial);
   impactCoreSprite.scale.set(0.9, 0.9, 1);
   impactGroup.add(impactCoreSprite);
@@ -181,6 +262,7 @@ export function createMagicSystem({
     side: THREE.DoubleSide, toneMapped: false
   });
   useSprite('circle', floorSigilMaterial);
+  applyOrganicAlphaMask(floorSigilMaterial, 'ring');
   const floorSigil = new THREE.Mesh(new THREE.PlaneGeometry(1.75, 1.75), floorSigilMaterial);
   floorSigil.rotation.x = -Math.PI / 2;
   impactGroup.add(floorSigil);
@@ -209,6 +291,7 @@ export function createMagicSystem({
     blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
   });
   useSprite('slash', slashMaterial);
+  applyOrganicAlphaMask(slashMaterial, 'slash');
   const slash = new THREE.Sprite(slashMaterial);
   slash.scale.set(1.9, 1.15, 1);
   slash.material.rotation = -0.35;
@@ -234,6 +317,7 @@ export function createMagicSystem({
     side: THREE.DoubleSide, toneMapped: false
   });
   useSprite('spark', sparkMaterial);
+  applyOrganicAlphaMask(sparkMaterial, 'spark');
   const sparkInstances = new THREE.InstancedMesh(
     new THREE.PlaneGeometry(1, 1), sparkMaterial, impactSparkCount
   );
@@ -246,6 +330,7 @@ export function createMagicSystem({
     side: THREE.DoubleSide, toneMapped: false
   });
   useSprite('smoke', smokeMaterial);
+  applyOrganicAlphaMask(smokeMaterial, 'smoke');
   const smokeInstances = new THREE.InstancedMesh(
     new THREE.PlaneGeometry(1, 1), smokeMaterial, impactSmokeCount
   );
@@ -346,6 +431,7 @@ export function createMagicSystem({
   function updateImpact(dt) {
     if (!impactActive) return;
     impactAge += dt;
+    updateOrganicMaskTime(impactAge);
     const t = Math.min(1, impactAge / 1.42);
     const fade = 1 - t;
 

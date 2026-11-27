@@ -220,3 +220,27 @@ A avaliação visual e a escolha entre (A) shabtis em nichos e (B) relevos arqui
 - Os cinco nichos de shabti foram compactados para corresponder à escala de uma estatueta mumiforme, com moldura de calcário, fundo escurecido, ombreiras, arco superior e plinto. As figuras foram ampliadas ligeiramente dentro dos nichos para manter legibilidade sem se tornarem estátuas humanas.
 - As cinco figuras de nicho continuam decorativas e sem colisão. Os quatro shabtis do centro da quadra mantêm a mecânica de despertar e combate.
 - A cena usa a mesma implementação em desktop e mobile. Cache do módulo de treinamento atualizado para `ra-shabti-niches-20261127b`.
+
+
+### Revisão de fidelidade: estátuas divinas, shabtis e quadro da aula (27/11/2026)
+
+**Separação correta dos elementos do romance**
+
+- A descrição da sala em *The Throne of Fire* menciona estátuas de deuses ao longo das paredes e, nas paredes de fundo da quadra, figuras de Rá com cabeça de falcão; os discos solares vazados formam as cestas.
+- Carter retira quatro estatuetas shabti de sua bolsa e as posiciona em diferentes cantos da sala. São estas quatro peças que crescem e se tornam guerreiros de cerâmica vitrificada armados com espadas e escudos.
+- Portanto, as miniaturas shabti não pertencem aos nichos das paredes. Os cinco nichos laterais agora são expositores de esculturas divinas digitalizadas; as quatro miniaturas no piso da quadra são os shabtis usados na aula.
+- O scan do Shabti de Ramose (Fitzwilliam Museum) é usado apenas na forma de estatueta. Durante o despertar/combate, uma forma procedural independente mantém a transformação e os movimentos de guerreiro já implementados.
+
+**Quadro e alvos**
+
+- O romance estabelece a aula “Magic Problem-Solving 101”, apelidada pelos alunos de “Whatever Works”, e descreve os exercícios com os quatro shabtis. Não descreve literalmente um quadro-negro, bandeja de giz ou três alvos circulares fixos.
+- O quadro-negro com moldura, superfície verde, bandeja, giz e apagador é uma adaptação cenográfica para tornar a interação da aula visível e acessível. O painel de treino de magia também é uma adaptação de gameplay.
+- O quadro foi reposicionado e reconstruído com a placa de madeira orientada paralelamente à parede; a dimensão de profundidade foi corrigida para não atravessar a sala nem bloquear o texto.
+
+**Assets ativos**
+
+- Esculturas laterais: scans GLB do Hórus em bronze (The Hunt Museum), falcão de Hórus (Minneapolis Institute of Art) e Thoth como babuíno (The Hunt Museum).
+- Shabtis: scan GLB do Shabti de Ramose (Fitzwilliam Museum), aplicado às miniaturas; a forma de guerreiro procedural continua em uso para combate.
+- Os modelos são carregados com GLTFLoader de um mirror público com versão fixada por commit. As licenças e créditos são registradas em `docs/OPEN-SOURCES.md`. Se o CDN não responder, as formas procedurais de fallback mantêm a cena funcional.
+- A correção não altera a bola de basquete.
+- QA estático de sintaxe passou; ainda é necessária inspeção visual no navegador para verificar orientação, escala final e disponibilidade do CDN durante o carregamento.

@@ -319,6 +319,41 @@ export function buildTrainingRoom({
   addBox('parede oeste da sala de treinamento', [westWallX, wallBottom + wallHeight / 2, centerZ], [0.5, wallHeight, roomLength], wallMat, true, false);
   addBox('parede de fundo norte em calcário quente', [centerX, wallBottom + wallHeight / 2, room.minZ + 0.22], [roomWidth, wallHeight, 0.5], endWallMat, true, false);
   addBox('parede de fundo sul em calcário quente', [centerX, wallBottom + wallHeight / 2, room.maxZ - 0.22], [roomWidth, wallHeight, 0.5], endWallMat, true, false);
+
+  // Face interna maciça e explicitamente opaca nas duas paredes atrás das efígies.
+  // A placa independente evita que superfícies de ocultação da mansão ou faces invertidas
+  // deixem o calcário com aparência transparente/cinza quando a câmera olha de dentro.
+  const endWallFaceMap = wallMaps.map.clone();
+  endWallFaceMap.wrapS = endWallFaceMap.wrapT = THREE.RepeatWrapping;
+  endWallFaceMap.repeat.set(2.8, 1.5);
+  endWallFaceMap.needsUpdate = true;
+  const endWallFaceMat = new THREE.MeshStandardMaterial({
+    map: endWallFaceMap,
+    color: 0xffe4b7,
+    roughness: 0.93,
+    metalness: 0,
+    side: THREE.DoubleSide,
+    transparent: false,
+    opacity: 1,
+    depthWrite: true,
+    depthTest: true
+  });
+  const endWallFaces = [
+    { name: 'face interna opaca da parede norte — calcário', z: room.minZ + 0.22 + 0.26, rotationY: 0 },
+    { name: 'face interna opaca da parede sul — calcário', z: room.maxZ - 0.22 - 0.26, rotationY: Math.PI }
+  ];
+  for (const wallFace of endWallFaces) {
+    const face = new THREE.Mesh(
+      new THREE.PlaneGeometry(roomWidth - 0.08, wallHeight - 0.06),
+      endWallFaceMat
+    );
+    face.name = wallFace.name;
+    face.position.set(centerX, wallBottom + wallHeight / 2, wallFace.z);
+    face.rotation.y = wallFace.rotationY;
+    face.castShadow = false;
+    face.receiveShadow = true;
+    scene.add(face);
+  }
   // A parede leste é seccionada para deixar o portal aberto.
   const openingWidth = 4.5;
   const openingHalf = openingWidth / 2;

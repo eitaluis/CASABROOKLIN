@@ -98,3 +98,52 @@ Para prosseguir com o asset escolhido sem substituí-lo por geometria aproximada
 https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2
 
 Após obter os bytes: inspecionar meshes/nodes e materiais; remover apenas a alça caída original; aplicar escala-alvo de 0,88; ajustar orientação lateral/posterior no quadril direito; construir a nova alça adaptada à superfície real do Carter e aos ossos do rig; preservar o medalhão aprovado e corrigir seu contato com a camisa; validar vistas frontal, posterior, perfil e 3/4 em idle, walk, run, turn, jump e hit. Até lá, o código runtime atual permanece explicitamente marcado como protótipo procedural não aprovado visualmente.
+
+## 10. Alternativas de asset após limite de upload do usuário — 27/11/2026
+
+O usuário não consegue anexar o GLB Innerscene nesta conversa. Foram pesquisadas alternativas com download público direto, priorizando licença clara e silhueta de satchel.
+
+### Candidato B — Vinish.dev Leather Satchel (CC BY 4.0; download sem conta)
+
+- Página e visualizador: https://vinish.dev/free-3d-models/bags-and-backpacks
+- Download GLB direto: https://vinish-models.pages.dev/bags-and-backpacks/leather-satchel.glb
+- Formato e peso: GLB, 317 KB; 8.320 triângulos.
+- Dimensões listadas: 0.41 × 0.13 × 0.64 m (largura × profundidade × altura).
+- Linguagem: couro tan, aba marrom-escura, duas fivelas douradas, alça superior enrolada e alça longa de ombro em anéis dourados.
+- Hierarquia descrita: uma única malha/node LeatherSatchel_Mesh; não há confirmação de peças separadas para alça, topo ou ferragens.
+- Licença: CC BY 4.0; autoria Vinish.dev; exige crédito e indicação das modificações.
+- Adequação: tipologia e cor de couro mais próximas do Carter do que a handbag rosa; porém é muito alta (64 cm) e exigiria reconstrução proporcional importante. A malha única dificulta remover alça e handle sem edição de faces/retopologia.
+- Status: candidato de pesquisa; não aprovado e não baixado.
+
+### Candidato C — Grab3D Handbag (CC0; download sem conta)
+
+- Página: https://grab3d.com/models/props/handbag/
+- Download GLB direto: https://grab3d.com/dl/handbag/handbag.glb
+- Formato e peso: GLB, 597 KB; 8.348 triângulos; texturas PBR 2K.
+- Dimensões anunciadas: 0.30 × 0.14 × 0.38 m (incluindo o handle).
+- Linguagem: corpo de couro rosa, aba marrom, fecho giratório dourado, vivo lateral creme, base com quatro pés e handle superior em couro marrom.
+- Licença: CC0 1.0 / domínio público; uso comercial e sem atribuição.
+- Adequação: corpo macio e arredondado, com aba/ferragem que pode ser reaproveitada; não é uma satchel transversal. Exige recoloração para conhaque, remoção do handle e dos pés se a leitura ficar excessivamente handbag, achatamento de profundidade/altura e nova alça.
+- Status: candidato de pesquisa; não aprovado e não baixado.
+
+### Candidato D — Meshy Vintage Leather Satchel / Illustros (CC0)
+
+- Página: https://www.meshy.ai/3d-models/Vintage-Leather-Satchel-v2-0195ba14-468c-73fb-a0f3-37f288a60227
+- Imagem/preview encontrado: https://cdn.meshy.ai/uploads/prod/c43523eec3b2029182db9a5dcc3aef98d72159540d2fd5e225fe42f27f6abdac/publish/cover-square/0195ba17-d9cd-727c-b613-333af69d9cd3.jpg
+- Licença: CC0 de acordo com a ficha do modelo.
+- Visual: couro marrom, aba frontal larga, duas fivelas e ferragens prateadas decoradas, relevo floral ao centro, handle superior e laterais em fole.
+- Formatos anunciados na ficha da plataforma: GLB, FBX, OBJ, USDZ e STL. A plataforma informa que é necessária conta gratuita para baixar os arquivos.
+- Adequação: material e tipologia são fortes; relevo ornamental e alça superior não correspondem exatamente ao visual do Carter. Não há dimensões, topologia ou estrutura de nodes verificadas.
+- Status: referência visual/candidato; não aprovado, sem download.
+
+### Candidatos rejeitados nesta rodada
+
+- Polyfork Leather Belt Satchel: corpo 0.21 × 0.22 × 0.12 m, 675 triângulos e aspecto rígido de estojo; contradiz o pedido de bolsa macia e não parecer rádio.
+- 3DAssets.dev Messenger Bag: CC0 e download/CDN direto, mas 0.435 × 0.724 × 0.163 m, 660 triângulos, estilo low-poly survival/tático e forma alta; não serve para a silhueta de Carter.
+- Meshy sacoche / gd84.lab: 1.982 faces, juta/saco rústico; leitura de pouch, sem semelhança suficiente com satchel de couro.
+
+### Limite técnico do ambiente de trabalho
+
+As páginas e URLs de download foram verificadas. Entretanto, nesta sessão, os downloads externos binários não foram materializados no workspace: os links GLB de Grab3D e Vinish retornaram Cache miss/resposta binária não interpretável pelas ferramentas web; o downloader do container também não conseguiu recuperar os arquivos externos. As ferramentas GitHub disponíveis só recuperam binários alojados no próprio GitHub. Portanto, não afirmar que qualquer desses GLBs foi efetivamente baixado. A alternativa só pode ser chamada de integrada depois de obter seus bytes e inspecionar a malha.
+
+Recomendação atual: manter Innerscene como referência aprovada de direção, e levar à avaliação estética prioritária o Vinish Leather Satchel (melhor tipologia/cor, apesar da proporção muito alta) e o Grab3D Handbag (melhor corpo suave/aba, apesar de ser handbag rosa). O Meshy CC0 fica como referência adicional. Nenhum candidato substitui a direção A até aprovação explícita.

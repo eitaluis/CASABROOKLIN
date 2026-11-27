@@ -144,3 +144,12 @@ O print de gameplay mostrou que a composição anterior concentrava os edifício
 **Referências de composição:** o relatório de recursos visuais da prefeitura identifica East River, waterfronts, Williamsburg Bridge e skyline de Manhattan como um conjunto de vistas importantes; fotografias do waterfront mostram chaminés e galpões de tijolo diante de edifícios altos ao fundo. O romance não fornece uma planta exata para este horizonte; a disposição das quadras é composição interpretativa para dar continuidade espacial.
 
 **QA:** código compartilhado entre desktop/mobile; verificar no navegador o horizonte central a partir do spawn, a transição para os bairros laterais, o carregamento dos GLBs, o céu em 360° e o custo de renderização no celular.
+
+ 
+## Portal de entrada — bloqueio acompanha a porta — 27/11/2026
+
+A inspeção do controlador encontrou uma falha de interação: a transição automática dock → hall era acionada ao cruzar o limiar do portal, mas a folha de madeira não tinha colisor. Assim, a mudança de ambiente podia ocorrer sem Carter executar o gesto de abertura.
+
+**Correção técnica:** world.js registra um volume de colisão com as dimensões da folha (4,08 × 5,28 × 0,34 unidades). exterior.js atualiza os limites verticais desse volume a cada passo da animação, acompanhando a subida da porta. Como a verificação de colisão já é compartilhada pelo controlador, o comportamento é o mesmo em desktop e mobile. A porta, o portal, a escada e a fachada não foram redesenhados; nenhum asset visual foi baixado ou substituído.
+
+**Validação realizada:** comparação estática entre o volume, a posição da folha e a cápsula do personagem; conferência dos pontos de integração em buildWorld, buildExterior e no controlador compartilhado. **Não testado em navegador:** ainda falta percorrer o portal em runtime desktop e mobile, conferir abertura total, travessia e retorno ao cais.

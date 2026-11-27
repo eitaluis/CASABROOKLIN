@@ -6,7 +6,7 @@ const ZONE = 'bedroom';
 
 export function buildResidentialWing({
   THREE, scene, colliders, groundSurfaces, interactables,
-  materials = {}, isTouchDevice = false
+  materials = {}, isTouchDevice = false, onRest = () => {}
 }) {
   const textureLoader = new THREE.TextureLoader();
   const makeLocalPbr = (folder, tint, repeatX, repeatY, roughness) => {
@@ -316,10 +316,11 @@ export function buildResidentialWing({
   // base alongada, leões nas extremidades e Shu sustentando a curva central.
   const headrest = new THREE.Group();
   headrest.name = 'Apoio de cabeça de marfim com leões — referência GEM 270';
-  box('Suporte de nogueira para o apoio de cabeça', 31.6, FLOOR_Y + 0.36, -3.45, 0.82, 0.72, 0.55, woodMat, true);
-  box('Filete de bronze do suporte do headrest', 31.6, FLOOR_Y + 0.70, -3.45, 0.84, 0.035, 0.56, bronzeLight, false);
-  headrest.position.set(31.6, FLOOR_Y + 0.79, -3.45);
-  headrest.scale.setScalar(0.32);
+  // No romance, o ivory headrest é um apoio de cabeça usado como travesseiro,
+  // não uma cabeceira nem um objeto sobre a mesa lateral. A escala segue a peça
+  // histórica GEM 270 (aprox. 29,5 cm de comprimento).
+  headrest.position.set(28.9, FLOOR_Y + 0.89, -3.45);
+  headrest.scale.setScalar(0.15);
   roomGroup.add(headrest);
   const plinth = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.18, 0.5), darkWood);
   plinth.position.y = -0.13;
@@ -380,10 +381,12 @@ export function buildResidentialWing({
     name: 'Apoio de cabeça de marfim com leões', kind: 'inspect', zone: ZONE,
     label: 'Apoio de cabeça de marfim',
     description: 'Peça reconstruída a partir da referência histórica GEM 270: dois leões guardiões, Shu sustentando a curva e acabamento de marfim pigmentado. O arranjo é uma adaptação visual ao objeto mencionado no romance.',
-    position: new THREE.Vector3(31.6, FLOOR_Y + 1.0, -2.65), radius: 2.1
+    position: new THREE.Vector3(28.9, FLOOR_Y + 0.98, -3.45), radius: 1.8
   });
 
   const loader = new GLTFLoader();
+  const remoteMixers = [];
+  let lastMixerUpdate = 0;
   const fridgeDoorMeshes = [];
   const assetRoot = '../assets/models/residential/';
   const loadModel = (file, position, scale = [1, 1, 1], rotation = 0, name = file) => {
@@ -403,6 +406,32 @@ export function buildResidentialWing({
       });
       roomGroup.add(model);
     }, undefined, error => console.warn('Asset residencial não carregou:', file, error));
+  };
+
+  // GLBs CC0 remotos são usados somente quando a página do modelo confirma
+  // CORS, licença e compatibilidade GLTFLoader. O modelo também recebe collider
+  // próprio neste módulo; GLB não fornece navegação ou colisão automaticamente.
+  const loadRemoteModel = (url, position, scale = [1, 1, 1], rotation = 0, name = 'Modelo CC0', onLoaded = null) => {
+    loader.load(url, gltf => {
+      const model = gltf.scene;
+      model.name = name;
+      model.position.set(position[0], position[1], position[2]);
+      model.scale.set(scale[0], scale[1], scale[2]);
+      model.rotation.y = rotation;
+      model.traverse(obj => {
+        if (!obj.isMesh) return;
+        obj.castShadow = true;
+        obj.receiveShadow = true;
+        obj.frustumCulled = true;
+      });
+      roomGroup.add(model);
+      const mixer = gltf.animations?.length ? new THREE.AnimationMixer(model) : null;
+      if (mixer) remoteMixers.push(mixer);
+      onLoaded?.({ model, mixer, animations: gltf.animations || [] });
+    }, undefined, error => {
+      console.warn('Asset CC0 remoto não carregou:', name, url, error);
+      onLoaded?.(null);
+    });
   };
 
   // Cama king-size original do projeto. A malha GLB da fonte MIT não pôde ser
@@ -500,6 +529,18 @@ export function buildResidentialWing({
   ));
   addCollider(28.9,FLOOR_Y+0.52,-2.75,2.05,1.05,2.15);
 
+  // O quarto de Sadie recebe uma cama irmã com a mesma escala e acabamento de
+  // Carter, para manter unidade visual sem inventar um segundo estilo de mobiliário.
+  const sadieBed = bedRoot.clone(true);
+  sadieBed.name = 'Cama ampla de Sadie Kane';
+  sadieBed.position.set(28.15, FLOOR_Y, 2.55);
+  roomGroup.add(sadieBed);
+  addCollider(28.15, FLOOR_Y + 0.52, 2.55, 2.05, 1.05, 2.15);
+  const sadieHeadrest = headrest.clone(true);
+  sadieHeadrest.name = 'Apoio de cabeça de marfim do quarto de Sadie';
+  sadieHeadrest.position.set(28.15, FLOOR_Y + 0.89, 1.85);
+  roomGroup.add(sadieHeadrest);
+
   // Mobiliário PBR local, com origem e dimensões reais do catálogo de origem.
   loadModel('nightstand.glb', [27.55, FLOOR_Y, -2.75], [1, 1, 1], Math.PI, 'Mesa de cabeceira oeste');
   loadModel('nightstand.glb', [30.25, FLOOR_Y, -2.75], [1, 1, 1], Math.PI, 'Mesa de cabeceira leste');
@@ -518,6 +559,51 @@ export function buildResidentialWing({
   loadModel('mirror.glb', [31.4, FLOOR_Y + 1.42, -5.16], [1.25, 1.25, 1], 0, 'Espelho do banheiro');
   loadModel('towel-rail.glb', [33.65, FLOOR_Y + 1.15, -5.17], [1.1, 1, 1], 0, 'Toalheiro do banheiro');
   loadModel('floor-lamp.glb', [32.9, FLOOR_Y, -1.25], [1, 1, 1], -Math.PI / 2, 'Luminária de piso do quarto');
+
+  // A mobília de apoio do quarto de Sadie reutiliza os mesmos GLBs MIT locais,
+  // mantendo materiais, escala e linguagem visual consistentes nos dois quartos.
+  loadModel('nightstand.glb', [26.8, FLOOR_Y, 2.55], [1, 1, 1], Math.PI, 'Mesa de cabeceira de Sadie');
+  loadModel('table-lamp.glb', [26.8, FLOOR_Y + 0.55, 2.55], [1, 1, 1], 0, 'Luminária de cabeceira de Sadie');
+  loadModel('wardrobe.glb', [23.9, FLOOR_Y, 8.35], [0.96, 1, 1], Math.PI, 'Armário do closet de Sadie');
+
+  // O minibar tem GLB CC0 próprio e dois clips (open/close). A origem e a licença
+  // foram verificadas na ficha pública do asset; não depende de um modelo embutido
+  // no pacote inteiro de hotel.
+  let sadieMinibar = null;
+  let sadieMinibarOpen = false;
+  const sadieMinibarLight = new THREE.PointLight(0xa7d8df, 0, 2.1);
+  sadieMinibarLight.position.set(33.18, FLOOR_Y + 0.62, 4.65);
+  roomGroup.add(sadieMinibarLight);
+  const playMinibarClip = (open) => {
+    if (!sadieMinibar?.mixer) return;
+    const expression = open ? /open/i : /close/i;
+    const clip = sadieMinibar.animations.find(item => expression.test(item.name));
+    if (!clip) return;
+    const action = sadieMinibar.mixer.clipAction(clip);
+    action.reset();
+    action.setLoop(THREE.LoopOnce, 1);
+    action.clampWhenFinished = true;
+    action.play();
+  };
+  loadRemoteModel(
+    'https://cdn.3dassets.dev/assets/25760/v1/model.glb',
+    [33.42, FLOOR_Y, 4.65], [1, 1, 1], -Math.PI / 2,
+    'Minibar CC0 do quarto de Sadie',
+    loaded => {
+      sadieMinibar = loaded;
+      if (loaded && sadieMinibarOpen) playMinibarClip(true);
+    }
+  );
+  addCollider(33.42, FLOOR_Y + 0.45, 4.65, 0.68, 0.9, 0.64);
+
+  // Poltrona de leitura CC0 da suíte; a malha é leve (2,3k triângulos) e o
+  // posicionamento mantém uma passagem livre entre cama, minibar e banheiro.
+  loadRemoteModel(
+    'https://cdn.3dassets.dev/assets/25752/v1/model.glb',
+    [31.45, FLOOR_Y, 2.2], [1, 1, 1], -Math.PI / 2,
+    'Poltrona CC0 do quarto de Sadie'
+  );
+  addCollider(31.45, FLOOR_Y + 0.4, 2.2, 0.82, 0.9, 0.82);
 
   // Computador e aparelho de som: peças autorais interativas, sem depender de GLBs
   // de terceiros com licença ou estilo duvidosos.
@@ -551,6 +637,68 @@ export function buildResidentialWing({
   const stereoLight = new THREE.PointLight(0xd6a45c, 0, 1.8);
   stereoLight.position.set(0, 0.28, 0.1);
   stereo.add(stereoLight);
+
+  // Dock do iPod e gravador cassete de Sadie. São pequenos objetos autorais,
+  // não reproduzem áudio protegido; as interações mudam telas, indicadores e luz.
+  const sadieDock = new THREE.Group();
+  sadieDock.position.set(30.65, FLOOR_Y + 0.78, 4.55);
+  roomGroup.add(sadieDock);
+  box('Base de nogueira do dock de Sadie', 0, 0.02, 0, 0.52, 0.08, 0.28, darkWood, false, sadieDock);
+  box('Corpo metálico do dock de Sadie', 0, 0.19, -0.035, 0.34, 0.25, 0.16, bronze, false, sadieDock);
+  const dockScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.23, 0.13), screenOff);
+  dockScreen.position.set(0, 0.2, 0.051);
+  sadieDock.add(dockScreen);
+  const dockStand = box('Suporte do iPod de Sadie', 0, 0.32, -0.035, 0.07, 0.14, 0.06, bronzeLight, false, sadieDock);
+  const dockLight = new THREE.PointLight(0xa3cedb, 0, 1.7);
+  dockLight.position.set(0, 0.42, 0.08);
+  sadieDock.add(dockLight);
+
+  const headphones = new THREE.Group();
+  headphones.position.set(0.34, 0.11, 0.02);
+  sadieDock.add(headphones);
+  const headphoneArc = new THREE.Mesh(
+    new THREE.TorusGeometry(0.105, 0.018, 10, 32, Math.PI),
+    darkWood
+  );
+  headphoneArc.rotation.z = Math.PI;
+  headphones.add(headphoneArc);
+  for (const side of [-1, 1]) {
+    const cup = new THREE.Mesh(new THREE.CapsuleGeometry(0.035, 0.07, 4, 8), darkWood);
+    cup.position.set(side * 0.103, -0.02, 0);
+    headphones.add(cup);
+  }
+
+  const cassetteRecorder = new THREE.Group();
+  cassetteRecorder.position.set(31.15, FLOOR_Y + 0.86, 4.05);
+  roomGroup.add(cassetteRecorder);
+  box('Corpo do gravador cassete antigo', 0, 0, 0, 0.28, 0.11, 0.19, darkWood, false, cassetteRecorder);
+  box('Janela do cassete', 0, 0.01, 0.101, 0.12, 0.055, 0.008, screenOff, false, cassetteRecorder);
+  for (const x of [-0.075, 0.075]) {
+    const reel = new THREE.Mesh(new THREE.CircleGeometry(0.022, 16), bronzeLight);
+    reel.position.set(x, 0.012, 0.107);
+    cassetteRecorder.add(reel);
+  }
+  const cassetteLed = new THREE.PointLight(0xe3b269, 0, 0.9);
+  cassetteLed.position.set(0, 0.14, 0.08);
+  cassetteRecorder.add(cassetteLed);
+
+  // A divisória entre as suítes recebe um filete rúnico quase invisível.
+  // A luz só aparece quando Sadie ativa o isolamento acústico mágico.
+  const soundproofRunes = new THREE.Group();
+  soundproofRunes.name = 'Runas de isolamento acústico de Sadie';
+  roomGroup.add(soundproofRunes);
+  const runeMaterial = new THREE.MeshStandardMaterial({
+    color: 0x79aeb5, emissive: 0x2b8e9d, emissiveIntensity: 0,
+    metalness: 0.35, roughness: 0.42
+  });
+  for (let i = 0; i < 7; i++) {
+    const rune = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.009, 6, 18), runeMaterial);
+    rune.position.set(26.25 + i * 0.85, FLOOR_Y + 1.8 + (i % 2) * 0.12, 0.13);
+    soundproofRunes.add(rune);
+  }
+  const soundproofHalo = new THREE.PointLight(0x4ba8b5, 0, 4.5);
+  soundproofHalo.position.set(28.8, FLOOR_Y + 1.65, 0.38);
+  roomGroup.add(soundproofHalo);
 
   // Snacks e garrafas: modelos autorais pequenos, reconhecíveis e inspecionáveis.
   const snacks = new THREE.Group();
@@ -588,6 +736,71 @@ export function buildResidentialWing({
   fridgeGlow.position.set(26.0,FLOOR_Y+1.0,-7.2);
   roomGroup.add(fridgeGlow);
 
+  const sadieSnacks = new THREE.Group();
+  sadieSnacks.position.set(33.42, FLOOR_Y + 0.94, 4.65);
+  roomGroup.add(sadieSnacks);
+  const ribenaBottle = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.055, 0.062, 0.24, 20),
+    new THREE.MeshStandardMaterial({ color: 0x6d2d59, roughness: 0.32 })
+  );
+  ribenaBottle.position.set(0.15, 0.16, 0.02);
+  sadieSnacks.add(ribenaBottle);
+  const ribenaCap = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.035, 16), bronzeLight);
+  ribenaCap.position.set(0.15, 0.3, 0.02);
+  sadieSnacks.add(ribenaCap);
+  const chocolate = new THREE.Mesh(new RoundedBoxGeometry(0.19, 0.055, 0.11, 4, 0.02), new THREE.MeshStandardMaterial({ color: 0x5b3024, roughness: 0.55 }));
+  chocolate.position.set(-0.13, 0.07, 0.04);
+  sadieSnacks.add(chocolate);
+
+  // O closet e o banheiro privativo de Sadie são recintos próprios; a planta
+  // exata é interpretação, pois o romance não fornece medidas ou posição cotada.
+  wallZ(6.05, 22.55, 25.45, [[23.62, 24.82]]);
+  wallX(25.45, 6.05, 9.0, []);
+  box('Piso em nogueira do closet de Sadie', 23.98, FLOOR_Y + 0.015, 7.5, 2.84, 0.025, 2.9, woodMat, false);
+  makeDoorOnZ({
+    name: 'Porta do closet de Sadie', x: 24.22, z: 6.05, width: 1.2,
+    prompt: 'E / INTERAGIR · abrir o closet de Sadie',
+    openedText: 'O closet de Sadie está aberto.',
+    closedText: 'O closet de Sadie está fechado.'
+  });
+  // Arara discreta, cabides e peças de roupa que surgem por magia.
+  const outfitRail = new THREE.Group();
+  outfitRail.position.set(24.7, FLOOR_Y + 1.55, 8.45);
+  roomGroup.add(outfitRail);
+  const rail = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.3, 16), bronze);
+  rail.rotation.z = Math.PI / 2;
+  outfitRail.add(rail);
+  const outfitMaterials = [
+    new THREE.MeshStandardMaterial({ color: 0x6a6d82, roughness: 0.92 }),
+    new THREE.MeshStandardMaterial({ color: 0x7a4058, roughness: 0.92 }),
+    new THREE.MeshStandardMaterial({ color: 0x9a8b65, roughness: 0.92 })
+  ];
+  for (let i = 0; i < 3; i++) {
+    const hanger = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.008, 6, 16, Math.PI), bronzeLight);
+    hanger.position.set(-0.4 + i * 0.4, -0.12, 0);
+    outfitRail.add(hanger);
+    const garment = new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.72, 0.055, 5, 0.025), outfitMaterials[i]);
+    garment.position.set(-0.4 + i * 0.4, -0.55, 0);
+    outfitRail.add(garment);
+  }
+
+  wallZ(6.05, 29.25, 34.65, [[30.05, 31.55]]);
+  wallX(29.25, 6.05, 9.0, []);
+  box('Piso de travertino do banheiro de Sadie', 31.95, FLOOR_Y + 0.015, 7.5, 5.3, 0.025, 2.9, stoneMat, false);
+  loadModel('shower.glb', [33.65, FLOOR_Y, 8.08], [0.95, 0.95, 0.95], Math.PI, 'Box do banheiro de Sadie');
+  loadModel('sink.glb', [32.15, FLOOR_Y, 8.45], [0.88, 0.88, 0.88], Math.PI, 'Lavatório do banheiro de Sadie');
+  loadModel('toilet.glb', [30.65, FLOOR_Y, 8.15], [0.92, 0.92, 0.92], Math.PI / 2, 'Vaso sanitário do banheiro de Sadie');
+  loadModel('mirror.glb', [32.15, FLOOR_Y + 1.35, 8.78], [1, 1, 1], Math.PI, 'Espelho do banheiro de Sadie');
+  makeDoorOnZ({
+    name: 'Porta do banheiro de Sadie', x: 30.8, z: 6.05, width: 1.5,
+    prompt: 'E / INTERAGIR · abrir o banheiro de Sadie',
+    openedText: 'O banheiro de Sadie está aberto.',
+    closedText: 'O banheiro de Sadie está fechado.'
+  });
+  addCollider(33.65, FLOOR_Y + 0.95, 8.08, 0.95, 1.95, 0.95);
+  addCollider(32.15, FLOOR_Y + 0.4, 8.45, 0.82, 0.82, 0.55);
+  addCollider(30.65, FLOOR_Y + 0.38, 8.15, 0.45, 0.78, 0.7);
+
   // Pequenos colliders físicos dos móveis: não cobrem corredores nem portas.
   addCollider(27.55, FLOOR_Y + 0.34, -2.75, 0.52, 0.7, 0.46);
   addCollider(30.25, FLOOR_Y + 0.34, -2.75, 0.52, 0.7, 0.46);
@@ -602,16 +815,20 @@ export function buildResidentialWing({
   addCollider(37.2, FLOOR_Y + 0.42, -3.05, 0.74, 0.84, 0.74);
 
   // Objetos e ações: a busca de proximidade é compartilhada com biblioteca e treinamento.
-  const addInspect = (name, label, description, x, z, radius = 2.2, onInteract = null) => {
+  const addInspect = (name, label, description, x, z, radius = 2.2, onInteract = null, prompt = null) => {
     interactables.push({
       name, kind: 'inspect', zone: ZONE, label, description,
+      prompt: prompt || 'E / INTERAGIR · ' + label,
       position: new THREE.Vector3(x, FLOOR_Y + 0.9, z),
       radius, onInteract
     });
   };
   addInspect('Cama king-size de Carter', 'Cama king-size',
-    'Cama ampla com estrutura de madeira e roupa de cama de linho; a escala foi ajustada para aproximar uma cama king-size.',
-    28.9, -2.75, 2.5);
+    'Cama ampla com estrutura de nogueira, linho e enxoval claro. Carter pode descansar aqui para recuperar energia.',
+    28.9, -2.75, 2.5, () => {
+      onRest();
+      return 'Carter descansou na cama. A energia foi recuperada.';
+    }, 'E / INTERAGIR · descansar e recuperar energia');
   addInspect('Luminárias das mesas de cabeceira', 'Luminária de cabeceira',
     'Ligue ou desligue a iluminação de leitura junto à cama.', 27.55, -2.75, 1.5, () => {
       bedsideLights.forEach(light => { light.visible = !light.visible; light.intensity = light.visible ? 0.68 : 0; });
@@ -685,9 +902,77 @@ export function buildResidentialWing({
   addInspect('Espelho do banheiro', 'Espelho',
     'Espelho acima do lavatório.', 31.4, -5.2, 1.4);
   addInspect('Apoio de cabeça de marfim com leões', 'Apoio de cabeça egípcio',
-    'Reconstrução original baseada na peça histórica GEM 270: leões guardiões e Shu sustentando a curva. O objeto histórico é referência visual; a adaptação para o quarto é autoral.',
-    31.6, -2.65, 2.3);
+    'Apoio de cabeça usado como travesseiro, não como cabeceira. Reconstrução autoral baseada na peça histórica GEM 270, com dois leões guardiões e Shu sustentando a curva.',
+    28.9, -3.45, 1.8);
 
+  // Quarto de Sadie: objetos, rotinas e efeitos próprios, sem duplicar o quarto de Carter.
+  addInspect('Cama de Sadie Kane', 'Cama de Sadie',
+    'Cama ampla e confortável da suíte contígua. A roupa de cama e o apoio de cabeça seguem a mesma família visual do quarto de Carter.',
+    28.15, 2.55, 2.5, () => {
+      onRest();
+      return 'Sadie deixou a cama preparada. Carter recuperou energia ao descansar.';
+    }, 'E / INTERAGIR · descansar');
+  addInspect('Minibar de Sadie', 'Frigobar embutido',
+    'Cômoda com refrigerador embutido, como descrita no quarto de Sadie em O Trono de Fogo.',
+    33.42, 4.65, 1.7, () => {
+      sadieMinibarOpen = !sadieMinibarOpen;
+      sadieMinibarLight.intensity = sadieMinibarOpen ? 0.62 : 0;
+      playMinibarClip(sadieMinibarOpen);
+      return sadieMinibarOpen
+        ? 'O frigobar abriu: Ribena gelada e chocolates estão disponíveis.'
+        : 'O frigobar de Sadie foi fechado.';
+    }, 'E / INTERAGIR · abrir o frigobar');
+  let sadieSnacksTaken = false;
+  addInspect('Ribena e chocolates', 'Bebidas e chocolates',
+    'As bebidas Ribena e os chocolates ficam no refrigerador embutido da cômoda de Sadie.',
+    33.42, 4.65, 1.25, () => {
+      if (!sadieMinibarOpen) return 'Abra primeiro o frigobar para alcançar os lanches.';
+      if (sadieSnacksTaken) return 'Você já guardou os lanches de Sadie na bolsa.';
+      sadieSnacksTaken = true;
+      sadieSnacks.visible = false;
+      return 'Você guardou uma Ribena e alguns chocolates.';
+    }, 'E / INTERAGIR · pegar os lanches');
+  let sadieDockOn = false;
+  addInspect('Dock do iPod de Sadie', 'Dock de música',
+    'Dock moderno para iPod com fones de ouvido. A interação acende o visor e os indicadores, sem reproduzir áudio comercial.',
+    30.65, 4.55, 1.8, () => {
+      sadieDockOn = !sadieDockOn;
+      dockScreen.material = sadieDockOn ? screenOn : screenOff;
+      dockLight.intensity = sadieDockOn ? 0.48 : 0;
+      return sadieDockOn ? 'O dock de Sadie foi ligado.' : 'O dock de Sadie foi desligado.';
+    }, 'E / INTERAGIR · ligar o dock');
+  let cassetteRunning = false;
+  addInspect('Gravador cassete de Sadie', 'Gravador antigo',
+    'Gravador que Sadie trouxe de Londres, lembrança das gravações que fez com Carter. O botão apenas anima o indicador visual.',
+    31.15, 4.05, 1.6, () => {
+      cassetteRunning = !cassetteRunning;
+      cassetteLed.intensity = cassetteRunning ? 0.42 : 0;
+      return cassetteRunning ? 'O gravador cassete acendeu.' : 'O gravador cassete foi desligado.';
+    }, 'E / INTERAGIR · examinar o gravador');
+  let soundproofOn = false;
+  addInspect('Paredes mágicas de Sadie', 'Isolamento acústico mágico',
+    'As paredes encantadas de Sadie isolam o som do quarto vizinho. As runas ficam visíveis quando o feitiço é ativado.',
+    28.7, 0.8, 2.1, () => {
+      soundproofOn = !soundproofOn;
+      runeMaterial.emissiveIntensity = soundproofOn ? 1.25 : 0;
+      soundproofHalo.intensity = soundproofOn ? 0.58 : 0;
+      return soundproofOn
+        ? 'O isolamento mágico foi ativado. As runas absorvem o som do quarto.'
+        : 'O isolamento mágico foi desativado.';
+    }, 'E / INTERAGIR · ativar isolamento mágico');
+  addInspect('Closet de Sadie', 'Closet mágico',
+    'O closet de Sadie guarda roupas que aparecem limpas e prontas por magia. A arara mostra algumas peças da seleção.',
+    24.7, 7.5, 1.8, () => {
+      outfitRail.visible = !outfitRail.visible;
+      return outfitRail.visible ? 'As roupas de Sadie apareceram na arara.' : 'As roupas foram recolhidas pelo encanto do closet.';
+    }, 'E / INTERAGIR · revelar roupas');
+  addInspect('Poltrona de Sadie', 'Poltrona de leitura',
+    'Poltrona compacta junto à cama, para ouvir música ou descansar.',
+    31.45, 2.2, 1.6);
+  addInspect('Banheiro de Sadie', 'Banheiro privativo',
+    'Suíte com banheiro próprio, box de vidro, lavatório, espelho e metais contemporâneos.',
+    32.1, 7.3, 1.9);
+  
   // A bacia está no deck fechado pela barreira invisível; pode ser inspecionada
   // do interior, mas não atravessada até que o selo seja removido numa etapa narrativa.
   return {
@@ -698,6 +983,9 @@ export function buildResidentialWing({
       { minX: 34.65, maxX: 39.45, minZ: -5.55, maxZ: -0.55, height: FLOOR_Y }
     ],
     update(time) {
+      const dt = lastMixerUpdate > 0 ? Math.min(0.05, Math.max(0, time - lastMixerUpdate)) : 0;
+      lastMixerUpdate = time;
+      remoteMixers.forEach(mixer => mixer.update(dt));
       ripple.scale.setScalar(0.86 + 0.12 * Math.sin(time * 1.45));
       oil.material.roughness = 0.12 + 0.025 * (0.5 + 0.5 * Math.sin(time * 0.7));
     }

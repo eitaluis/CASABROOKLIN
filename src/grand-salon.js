@@ -2598,10 +2598,11 @@ export function buildGrandSalon({
   interactables.push({
     name:'Estátua de Thoth',
     kind:'inspect',
+    action:'look_around',
     label:'Thoth, deus da escrita',
-    description:'Estátua monumental de Thoth em mármore negro, com cabeça de íbis, kilt, faixa, colar, estilete de escriba e papiro aberto com o sinal Per Ankh. A superfície preserva reflexos profundos e veios minerais.',
+    description:'Carter observa a escultura monumental de Thoth: mármore negro, cabeça e pescoço longos de íbis, bico curvo, kilt, faixa, colar, estilete de escriba e papiro aberto com o sinal Per Ankh.',
     position:new T.Vector3(0,15.0,-.5),
-    radius:2.6
+    radius:4.8
   });
 
   const sideLight=new T.PointLight(0xffbe78,.9,12,1.8);

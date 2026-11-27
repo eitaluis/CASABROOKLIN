@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=urban-horizon-continuity-20261127a';
-import { buildExterior } from './exterior.js?v=urban-horizon-continuity-20261127a';
+import { buildWorld } from './world.js?v=entry-door-collision-20261127a';
+import { buildExterior } from './exterior.js?v=entry-door-collision-20261127a';
 import { buildWaterfrontEnvironment } from './waterfront-environment.js?v=urban-horizon-continuity-20261127a';
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-traversal-20261127b';
 import { buildLibrary } from './library.js?v=library-asset-first-20261127b';

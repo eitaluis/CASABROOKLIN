@@ -1,6 +1,6 @@
 # Carter Kane — modelo, movimento e refinamento
 
-Status: **locomoção/combate e recursos integrados; acessórios do Carter em revisão porque o screenshot de 27/11/2026 mostra bolsa, alça e colar flutuando. A nova direção visual depende de aprovação explícita antes da implementação.**
+Status: **correção estrutural da bolsa/alça/medalhão integrada ao módulo compartilhado em 27/11/2026. O encaixe usa os transforms reais do SkinnedMesh e ossos Ara em runtime; a validação visual final ainda depende de abrir o preview/jogo em navegador. O GLB Innerscene aprovado não foi baixado/importado nesta sessão; a silhueta/dimensões atuais são uma implementação procedural provisória, identificada como tal.**
 
 ## Decisões confirmadas
 
@@ -30,13 +30,15 @@ O portal está ancorado ao tórax (prioridade Spine2, depois Spine1/Chest/Spine)
 
 Módulo: src/character-accessories.js.
 
-- O módulo `src/character-accessories.js` atual é um protótipo procedural, não uma versão aprovada. O screenshot de 27/11/2026 confirma: bolsa com leitura de estojo grande/afastado, alça sem aderência ao tronco e colar fora da superfície da camisa.
-- A bolsa atual permanece somente como placeholder técnico; não assumir que a forma atual, proporções ou attachment points estão aprovados.
-- A peça preta no ombro vista no screenshot não é criada pelo módulo de acessórios. Sua origem ainda precisa ser identificada na hierarquia do share Ara; não remover sem confirmação.
-- A mochila embutida no share Ara continua desativada por `carry: 'none'`; isso não garante que todos os elementos visíveis no ombro pertençam ao acessório antigo.
-- O desenho do medalhão permanece aprovado e deve ser preservado. O que precisa ser revisto é o contato da corrente e do pingente com a camisa/torso.
-- O estudo de referências, imagens e candidato 3D fica em `docs/CARTER-ACCESSORIES-REFERENCE-STUDY.md`. O candidato Innerscene Crossbody Bag é CC0 e tem corpo 230 × 86 × 180 mm, mas sua alça de chão não serve para o Carter; ainda não foi baixado nem integrado.
-- Nenhuma nova geometria/asset de bolsa, alça ou colar será integrada antes de o usuário avaliar o painel visual e aprovar a direção.
+- `src/character-accessories.js` foi refeito para corrigir a ordem de montagem: a geometria é criada em coordenadas locais do Carter e somente depois os grupos são anexados aos ossos com `Object3D.attach()`, preservando a pose neutra.
+- Bolsa: pivô lateral/posterior direito projetado por raycast na superfície do corpo e ancorado a `Hips`; dimensão-alvo provisória de 202 × 158 × 76 mm, equivalente à redução aprovada de 0,88 do corpo Innerscene.
+- Alça: faixa de couro de 22 mm projetada sobre os vértices já deformados do `SkinnedMesh`; o trecho superior acompanha `Spine2`/`Spine1` e o trecho inferior acompanha `Hips`, com junção na lateral do tronco. As normais são calculadas a partir dos vértices deformados, para orientar a faixa e o pesponto sobre a camisa.
+- Medalhão: desenho e dimensões aprovados preservados. Corrente e pingente são projetados sobre a superfície real da camisa e o conjunto acompanha o osso torácico.
+- **Limite de proveniência:** o GLB Innerscene Crossbody Bag continua como referência CC0 aprovada, mas não foi importado. A tentativa de download redirecionou para `files.innerscene.com`, host que não ficou acessível às ferramentas desta sessão. Portanto, o corpo da bolsa no runtime é geometria procedural provisória com a silhueta/dimensões-alvo, não o GLB original.
+- A peça preta no ombro vista no screenshot anterior não é criada por `src/character-accessories.js`; sua origem ainda precisa ser identificada na hierarquia do share Ara. Não remover por aproximação.
+- A mochila embutida no share Ara permanece desativada por `carry: 'none'`.
+- O mesmo módulo é usado pelo jogo e pelo preview, portanto a geometria e a lógica são idênticas em desktop e mobile; apenas a camada de controles muda.
+- A revisão está integrada no código, mas **não está marcada como visualmente testada/aprovada** até inspeção real do Carter em navegador.
 
 O gerador Blender continua sendo apenas uma fonte de lookdev e não foi aberto/validado sobre o Carter Ara. A forma atual não deve ser tratada como referência final.
 

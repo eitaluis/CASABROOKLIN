@@ -448,3 +448,20 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [x] Aproximar o ponto de inspeção/interação da porta.
 - [ ] Confirmar no navegador que a vista para o rio desapareceu em todos os ângulos e níveis.
 - [ ] Validar parede, material e colisores em desktop e celular paisagem.
+
+## Quarto de Carter — primeira integração asset-first — 27/11/2026
+
+- [x] Conferir a descrição canônica do quarto e separar detalhes interpretativos.
+- [x] Pesquisar modelos modulares CC0 e referência histórica para o apoio de cabeça.
+- [x] Remover a parede central que atrapalhava a visão e retirar o blockout antigo.
+- [x] Construir suíte no terceiro pavimento com teto, paredes externas e planta aberta.
+- [x] Adicionar apoio de cabeça independente com leões e hieróglifos sobre o colchão.
+- [x] Adicionar kitchenette, lanches, TV, computador e sistema de som.
+- [x] Adicionar banheiro em canto translúcido.
+- [x] Adicionar deck panorâmico sobre o East River e portas que começam trancadas.
+- [x] Adicionar porta de comunicação trancada para o quarto adjacente de Sadie.
+- [x] Integrar prompts de interação ao runtime desktop/mobile.
+- [x] Registrar fornecedores, licenças e versões dos GLBs.
+- [ ] Testar o carregamento de GLBs e KTX2 no GitHub Pages.
+- [ ] Validar escala, orientação, encaixes, colisões e vista do deck em desktop.
+- [ ] Validar toque, paridade visual e desempenho em celular paisagem.

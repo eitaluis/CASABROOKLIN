@@ -517,7 +517,7 @@ export function buildTrainingRoom({
     { side: 'west', z: -6.2, asset: 'bronzeHorus', title: 'Hórus — bronze' },
     { side: 'west', z: 3.0, asset: 'thothBaboon', title: 'Thoth — babuíno' },
     { side: 'east', z: -9.2, asset: 'horusFalcon', title: 'Hórus — falcão' },
-    { side: 'east', z: -1.0, asset: 'thothBaboon', title: 'Thoth — babuíno' },
+    { side: 'east', z: 4.2, asset: 'thothBaboon', title: 'Thoth — babuíno' },
     { side: 'east', z: 7.6, asset: 'bronzeHorus', title: 'Hórus — bronze' }
   ];
 

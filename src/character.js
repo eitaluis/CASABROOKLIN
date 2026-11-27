@@ -30,7 +30,10 @@ const CINEMATIC_ANIMATIONS = [
   'wave',
   'fight_idle',
   'point',
-  'bow'
+  'bow',
+  'sit_down',
+  'sit_idle',
+  'stand_up'
 ];
 
 const ARA_ANIMATION_IDS = new Set(ANIMATIONS.map((animation) => animation.id));
@@ -66,6 +69,7 @@ export async function createCharacter({
 
   const mixer = new THREE.AnimationMixer(hero.scene);
   let injured = false;
+  let sitting = false;
   let actionInterruptOnMovement = true;
   let actionInterruptDelay = 0;
   let actionElapsed = 0;
@@ -208,7 +212,8 @@ export async function createCharacter({
         actionSequence = null;
         currentAction = null;
         onActionChange(null);
-        restoreLocomotion();
+        const handled = typeof options.onFinish === 'function' ? options.onFinish() : undefined;
+        if (handled !== false) restoreLocomotion();
       };
       mixer.addEventListener('finished', finishAction);
     }
@@ -338,8 +343,50 @@ export async function createCharacter({
       || null;
   }
 
+  function sitDown() {
+    if (disposed || jumping || sitting) return false;
+    if (!AVAILABLE_ACTION_ANIMATIONS.includes('sit_down') ||
+        !AVAILABLE_ACTION_ANIMATIONS.includes('sit_idle') ||
+        !AVAILABLE_ACTION_ANIMATIONS.includes('stand_up')) {
+      console.warn('As animações de sentar/levantar não estão disponíveis no rig Ara carregado.');
+      return false;
+    }
+    sitting = true;
+    const started = playAction('sit_down', {
+      fade: 0.24,
+      interruptOnMovement: false,
+      onFinish: () => {
+        if (!sitting) return true;
+        const loopStarted = playAction('sit_idle', {
+          loop: true, fade: 0.2, interruptOnMovement: false
+        });
+        if (loopStarted) return false;
+        sitting = false;
+        return true;
+      }
+    });
+    if (!started) sitting = false;
+    return started;
+  }
+
+  function standFromSeat(onComplete) {
+    if (disposed || jumping || !sitting) return false;
+    sitting = false;
+    const started = playAction('stand_up', {
+      fade: 0.22,
+      interruptOnMovement: false,
+      onFinish: () => { onComplete?.(); }
+    });
+    if (!started) {
+      restoreLocomotion();
+      onComplete?.();
+      return false;
+    }
+    return true;
+  }
+
   function jump() {
-    if (disposed || jumping) return false;
+    if (disposed || jumping || sitting) return false;
     if (!hero.clip('jump_start') || !hero.clip('jump_air') || !hero.clip('jump_land')) {
       console.warn('O conjunto de animações de salto não está completo.');
       return false;
@@ -374,6 +421,9 @@ export async function createCharacter({
     locomotion,
     jump,
     playAction,
+    sitDown,
+    standFromSeat,
+    get isSitting() { return sitting; },
     stopAction,
     resumeLocomotion() {
       if (disposed || jumping) return false;

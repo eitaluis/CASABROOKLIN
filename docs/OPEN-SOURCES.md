@@ -255,3 +255,36 @@ As fontes externas são registradas separadamente do código de integração. S�
 - **Composição:** captura local dos ossos do braço esquerdo durante `fight_idle`; transição de ação para `point` mantém a guarda esquerda enquanto a camada de corpo reconstrói a base de combate no rig do Carter. A sequência usa o mesmo game rig Ara; nenhum novo rig ou dependência é carregado.
 - **Alternativa externa verificada:** https://github.com/Kinemiq/free-game-animations — 35 clips humanoides CC0 1.0 (GLB/FBX), derivados da Universal Animation Library de Quaternius. Não importada porque o Ara já oferece os movimentos necessários no próprio esqueleto.
 - **HA-DI:** o projétil foi removido. O método `trainingRoom.applyHaDi` e a explosão são disparados diretamente no Shabti aos 0,82 s, sincronizados com a extensão do Point.
+
+
+### Scans arqueológicos integrados à sala de treinamento — 27/11/2026
+
+Os seguintes modelos foram integrados no runtime por GLTFLoader, com URL do mirror fixada ao commit `502f84adbc9a71d1434e7cc5ab61422bfd92c781` do projeto público `storystage/backstage-assets`. Os arquivos desse mirror são cópias preparadas/otimizadas, não os downloads originais sem alteração. O README do mirror registra o autor, a página de origem, a licença e a redução de polígonos. A CASABROOKLIN mantém a atribuição abaixo e não reivindica autoria dos scans.
+
+| Asset no runtime | Objeto / instituição | Licença | Uso |
+|---|---|---|---|
+| `bronze-horus.glb` | Bronze Statue of the god Horus — The Hunt Museum, Sketchfab por The Hunt Museum; modelo original de 230.817 reduzido a 7.997 triângulos | CC0 | Estátua divina em nicho lateral |
+| `horus-falcon.glb` | Horus, c. 2000–1570 BCE — Minneapolis Institute of Art, Sketchfab por artsmia; 64.556 reduzido a 8.000 triângulos | CC0 | Estátua/figura divina em nicho lateral |
+| `thoth-baboon.glb` | Limestone Statue of god Thoth as a Baboon — The Hunt Museum, Sketchfab por The Hunt Museum; 178.180 reduzido a 7.863 triângulos | CC0 | Estátua divina em nicho lateral |
+| `shabti-of-ramose.glb` | Shabti of Ramose — Fitzwilliam Museum, Sketchfab por Fitzwilliam Museum; 180.000 reduzido a 7.998 triângulos | CC BY 4.0 | Forma de estatueta dos quatro shabtis interativos |
+
+**Páginas de origem e proveniência**
+- Bronze Horus: https://sketchfab.com/3d-models/bronze-statue-of-the-god-horus-84542ab14ce84929b44266f1c98fae07 — The Hunt Museum, CC0.
+- Horus falcon: https://sketchfab.com/3d-models/horus-c-2000-1570-bce-839a29d2f176467991d6f5f2ccb6a410 — Minneapolis Institute of Art, CC0.
+- Thoth baboon: https://sketchfab.com/3d-models/limestone-statue-of-god-thoth-as-a-baboon-ea511ed3b3b343da892b64656d0d5c21 — The Hunt Museum, CC0.
+- Shabti of Ramose: https://sketchfab.com/3d-models/shabti-of-ramose-37128a12fc4d4c5e842a872f4085664d — Fitzwilliam Museum, CC BY 4.0.
+
+**Mirror técnico**
+- Repositório: https://github.com/storystage/backstage-assets/tree/502f84adbc9a71d1434e7cc5ab61422bfd92c781/models/sketchfab-history/Prop
+- Auditoria de créditos/licenças: https://github.com/storystage/backstage-assets/blob/502f84adbc9a71d1434e7cc5ab61422bfd92c781/originals/sketchfab-history/README.md
+- Base URL usada pelo GLTFLoader: `https://cdn.jsdelivr.net/gh/storystage/backstage-assets@502f84adbc9a71d1434e7cc5ab61422bfd92c781/models/sketchfab-history/Prop/`
+- Os GLBs não foram copiados para o repositório CASABROOKLIN; carregam sob demanda pelo CDN. A cena mantém fallback procedural se uma requisição falhar.
+
+**Referências de fidelidade adicionais**
+- The Met, Statue of Horus as a falcon protecting King Nectanebo II (360–343 BCE), metagraywacke, 72 cm, Open Access/Public Domain: https://www.metmuseum.org/art/collection/search/544887. É uma referência museológica de altíssima relevância para escala monumental e para o tratamento escultórico do falcão; não foi importada para o runtime nesta iteração.
+- The Met, nota pública de 26/02/2026 sobre mais de 100 modelos 3D em alta resolução e licença CC0 para a maioria: https://www.metmuseum.org/press-releases/3-d-models-announcement-2026.
+- Artheon, índice de 358 scans egípcios sob licenças abertas, útil para futuras substituições por estátuas específicas de Ísis, Sekhmet e outras divindades: https://www.artheonmuseum.org/3d/culture/egyptian. Artheon é uma plataforma independente e credita as instituições de origem.
+
+**Limites e notas**
+- O scan de Shabti of Ramose é de madeira pintada e não de faiança azul; a referência direta à história descreve os guerreiros como cerâmica vitrificada. O scan fornece forma e detalhes escultóricos à miniatura, mas a superfície visual pode ser ajustada para sugerir o esmalte azulado da ficção sem alterar o scan-base, caso a leitura no jogo exija isso.
+- Os scans de Horus/Thoth são peças de museu em pequena escala. O jogo normaliza os modelos para a composição da parede; a escala de exibição é uma decisão artística do cenário e não a escala arqueológica original.

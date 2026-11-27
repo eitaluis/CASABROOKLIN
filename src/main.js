@@ -543,6 +543,10 @@ document.getElementById('enter').addEventListener('click', () => {
   document.getElementById('startscreen').classList.add('hidden');
   controller.capturePointer();
 });
+if (window.__brooklynStartRequested) {
+  document.getElementById('startscreen').classList.add('hidden');
+  controller.capturePointer();
+}
 canvas.addEventListener('click', () => {
   if (document.getElementById('startscreen').classList.contains('hidden')) controller.capturePointer();
 });

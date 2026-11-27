@@ -9,7 +9,7 @@ import { buildTrainingRoom } from './training-room.js?v=training-room-opaque-end
 import { buildBedroom } from './bedroom.js?v=carter-bedroom-asset-first-20261127a';
 import { createInventory } from './inventory.js?v=carter-combat-inputs-20261127a';
 import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
-import { createCharacter } from './character.js?v=carter-kinemiq-accessories-20261127b';
+import { createCharacter } from './character.js?v=carter-kinemiq-accessories-20261127c';
 import { createThirdPersonController } from './third-person.js?v=carter-physical-jump-sync-20261127a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';

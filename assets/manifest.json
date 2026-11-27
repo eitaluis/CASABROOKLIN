@@ -362,7 +362,7 @@
     {
       "id": "library-monumental-archive-stair-and-scribe-table",
       "path": "src/library.js + src/third-person.js",
-      "role": "Original Three.js geometry for the three-flight curved stone stair and the instanced circular archive: 4,800 cut-out niche openings and pneumatic papyrus capsules; procedural walk-path sampling feeds the shared controller; statue tasks move the human ceramic figures and reveal the retrieved English papyrus/Narmer Palette; central scribal table includes palette, black/red ink cakes, reed brushes, open/rolled papyri, linen, and Julius Kane's satchel.",
+      "role": "Original Three.js geometry for the three-flight curved stone stair and the instanced circular archive: 4,800 cut-out niche openings and pneumatic papyrus capsules; procedural walk-path sampling feeds the shared controller; statue tasks move the human ceramic figures and reveal the retrieved English papyrus/Narmer Palette; central scribal table includes palette, black/red ink cakes, reed brushes, open/rolled papyri, linen, and Julius Kane's satchel. During each task return, the empty-handed figure visibly carries a small scroll and the hooked-staff figure carries a miniature Narmer palette before the recovered item appears on the worktable.",
       "license": "project-original-code; local limestone PBR maps CC0-1.0; hieroglyph font remains under Noto SIL OFL 1.1"
     }
   ],
@@ -967,7 +967,7 @@
         "docs/OPEN-SOURCES.md",
         "docs/INTERIORES-E-LOOKDEV.md"
       ],
-      "summary": "User-approved underground library implementation: ~31m chamber with ~15.9m total height to Nut dome apex; 4,800 instanced hand-sized circular niches and pneumatic capsules; original varied painted wall atlas and hieroglyph sequences; 90 walkable curved stone treads in three flights with landings, connected to the shared controller; empty-handed shabti retrieves the English papyrus and hooked-staff shabti retrieves a simplified Narmer Palette; central stone table is dressed as a scribal workstation. Shared desktop/mobile runtime. Final figurative Geb/Nut images explicitly deferred; browser visual QA remains pending.",
+      "summary": "User-approved underground library implementation: ~31m chamber with ~15.9m total height to Nut dome apex; 4,800 instanced hand-sized circular niches and pneumatic capsules; original varied painted wall atlas and hieroglyph sequences; 90 walkable curved stone treads in three flights with landings, connected to the shared controller; empty-handed shabti retrieves the English papyrus and hooked-staff shabti retrieves a simplified Narmer Palette; central stone table is dressed as a scribal workstation. Shared desktop/mobile runtime. Final figurative Geb/Nut images explicitly deferred; browser visual QA remains pending. The returning statuettes visibly carry miniature papyrus/Narmer-palette props; the task motion remains procedural rather than a retargeted walk cycle.",
       "date": "2026-11-27"
     }
   ]

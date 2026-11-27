@@ -330,16 +330,21 @@ export function buildTrainingRoom({
   endWallFaceMap.wrapS = endWallFaceMap.wrapT = THREE.RepeatWrapping;
   endWallFaceMap.repeat.set(2.8, 1.5);
   endWallFaceMap.needsUpdate = true;
-  const endWallFaceMat = new THREE.MeshStandardMaterial({
+  // Faces de contenção usam MeshBasicMaterial: a parede não depende da luz, tone mapping
+  // ou shader PBR para ocultar o exterior. A textura apenas colore a pedra; não tem alpha.
+  const endWallFaceMat = new THREE.MeshBasicMaterial({
     map: endWallFaceMap,
-    color: 0xffe4b7,
-    roughness: 0.93,
-    metalness: 0,
+    color: 0xffffff,
     side: THREE.DoubleSide,
     transparent: false,
     opacity: 1,
+    alphaTest: 0,
     depthWrite: true,
-    depthTest: true
+    depthTest: true,
+    toneMapped: false,
+    polygonOffset: true,
+    polygonOffsetFactor: -1,
+    polygonOffsetUnits: -1
   });
   const endWallFaces = [
     { name: 'face interna opaca da parede norte — calcário', z: room.minZ + 0.22 + 0.26, rotationY: 0 },
@@ -373,15 +378,19 @@ export function buildTrainingRoom({
   const endGableGeometry = new THREE.ExtrudeGeometry(endGableShape, {
     depth: 0.5, bevelEnabled: false, steps: 1, curveSegments: 72
   });
-  const endGableMaterial = endWallMat.clone();
-  endGableMaterial.side = THREE.DoubleSide;
-  endGableMaterial.transparent = false;
-  endGableMaterial.opacity = 1;
-  endGableMaterial.depthWrite = true;
-  endGableMaterial.needsUpdate = true;
+  const endGableMaterial = new THREE.MeshBasicMaterial({
+    map: endWallFaceMap,
+    color: 0xffffff,
+    side: THREE.DoubleSide,
+    transparent: false,
+    opacity: 1,
+    depthWrite: true,
+    depthTest: true,
+    toneMapped: false
+  });
   const endGables = [
-    { name: 'frontão opaco norte em calcário — fechamento da abóbada', z: room.minZ - 0.03 },
-    { name: 'frontão opaco sul em calcário — fechamento da abóbada', z: room.maxZ - 0.47 }
+    { name: 'frontão opaco norte em calcário — fechamento da abóbada', z: room.minZ - 0.03, sealZ: room.minZ + 0.22 + 0.25 + 0.02, rotationY: 0 },
+    { name: 'frontão opaco sul em calcário — fechamento da abóbada', z: room.maxZ - 0.47, sealZ: room.maxZ - 0.22 - 0.25 - 0.02, rotationY: Math.PI }
   ];
   for (const endGable of endGables) {
     const gable = new THREE.Mesh(endGableGeometry, endGableMaterial);
@@ -391,6 +400,17 @@ export function buildTrainingRoom({
     gable.receiveShadow = true;
     gable.renderOrder = 2;
     scene.add(gable);
+
+    // Face interna contínua e opaca do frontão, independente do volume extrudado.
+    // É ligeiramente deslocada para dentro da sala para evitar face coplanar/z-fighting.
+    const seal = new THREE.Mesh(new THREE.ShapeGeometry(endGableShape), endWallFaceMat);
+    seal.name = endGable.name + ' — face interna selada';
+    seal.position.set(centerX, springY, endGable.sealZ);
+    seal.rotation.y = endGable.rotationY;
+    seal.renderOrder = 4;
+    seal.castShadow = false;
+    seal.receiveShadow = true;
+    scene.add(seal);
   }
   // A parede leste é seccionada para deixar o portal aberto.
   const openingWidth = 4.5;

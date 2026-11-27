@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const root = process.cwd();
 const buildDir = path.join(root, 'assets/animations/_carter-motion-build');
-const generatedPack = path.join(root, 'assets/animations/_carter-motion-build.ara-pack.json');
+const generatedPack = path.join(root, 'assets/animations/carter-moves.ara-pack.json');
 const finalPack = path.join(root, 'assets/animations/carter-movement.ara-pack.json');
 const finalCredits = path.join(root, 'assets/animations/carter-movement-source-credits.json');
 

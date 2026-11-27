@@ -361,8 +361,30 @@ const inventory = createInventory({
 });
 
 let lookingAtInspectedObject = false;
+let activeSeat = null;
 
 function interactWithNearby() {
+  // While seated, the same interaction command plays Stand up and returns Carter
+  // to the clear floor outside the curved bench.
+  if (activeSeat) {
+    const seat = activeSeat;
+    const started = character.standFromSeat?.(() => {
+      controller.placeAt(seat.exitPosition, seat.exitFacing);
+      controller.setLocked(false);
+      activeSeat = null;
+      toast('Carter se levanta do banco.');
+    });
+    if (!started) {
+      controller.placeAt(seat.exitPosition, seat.exitFacing);
+      controller.setLocked(false);
+      activeSeat = null;
+      toast('Carter voltou a ficar de pé.');
+    } else {
+      toast('Carter está se levantando. Aguarde a animação terminar.');
+    }
+    return;
+  }
+
   const p = controller.getPosition();
   let nearest = null;
   let nearestDistance = Infinity;
@@ -373,18 +395,38 @@ function interactWithNearby() {
       nearestDistance = distance;
     }
   }
-  if (nearest) {
-    // O pescoço e a cabeça acompanham o objeto examinado; hero.update() aplica o easing.
-    character.lookAt?.(nearest.position, { amount: 0.82, smoothing: 0.42 });
-    lookingAtInspectedObject = true;
-    const result = typeof nearest.onInteract === 'function' ? nearest.onInteract() : null;
-    toast(result || nearest.description || nearest.label || nearest.name);
-  } else {
+  if (!nearest) {
     character.lookAt?.(null);
     lookingAtInspectedObject = false;
     toast('Não há nenhum objeto próximo para examinar.');
+    return;
   }
+
+  if (nearest.kind === 'seat') {
+    const placed = controller.placeAt(nearest.sitPosition, nearest.sitFacing);
+    const started = placed && character.sitDown?.();
+    if (!started) {
+      toast('As animações de sentar não estão disponíveis neste carregamento do Carter.');
+      return;
+    }
+    activeSeat = nearest;
+    controller.setLocked(true);
+    character.lookAt?.(nearest.sitFacing, { amount: 0.58, smoothing: 0.34 });
+    lookingAtInspectedObject = false;
+    toast('Carter se acomoda no banco. Pressione E ou INTERAGIR novamente para levantar.');
+    return;
+  }
+
+  // The same Ara rig plays a short contextual gesture while looking at Thoth.
+  character.lookAt?.(nearest.position, { amount: 0.82, smoothing: 0.42 });
+  lookingAtInspectedObject = true;
+  if (nearest.action) {
+    character.playAction?.(nearest.action, { fade: 0.22, interruptOnMovement: true });
+  }
+  const result = typeof nearest.onInteract === 'function' ? nearest.onInteract() : null;
+  toast(result || nearest.description || nearest.label || nearest.name);
 }
+
 window.addEventListener('keydown', event => {
   // Atalho 2: entra no Grande Salão a partir de qualquer ambiente e sempre
   // reposiciona Carter na zona livre em frente ao conjunto de assentos de Thoth.

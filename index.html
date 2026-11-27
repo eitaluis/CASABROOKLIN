@@ -152,6 +152,64 @@
  #mobile .actions{display:grid;grid-template-columns:repeat(2,54px);gap:6px;max-width:116px}
  #mobile .actions button{width:54px;height:46px;font-size:8px}
 }
+
+/* Brooklyn House · experiência mobile em retrato */
+#mobileWorldMenu,#mobileMapToggle{display:none}
+@media (max-width:900px) and (pointer:coarse) and (orientation:portrait){
+ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none}
+ #rotateNotice{display:none!important}
+ #topbar{padding:calc(8px + env(safe-area-inset-top)) 14px 6px;align-items:center}
+ .brand{gap:8px}
+ .brand-mark{width:28px;height:28px;font-size:12px}
+ .brand .eyebrow,.brand p{display:none}
+ .brand h1{font-size:11px;letter-spacing:.07em;margin:0}
+ #coordinates{font-size:7px;line-height:1.2}
+ #coordinates strong{font-size:10px;margin:0 0 2px}
+ #leftpanel{display:none;top:calc(54px + env(safe-area-inset-top));left:12px;bottom:auto;width:min(232px,calc(100vw - 24px));z-index:18}
+ #leftpanel.portrait-open{display:block}
+ #leftpanel .panel-label{font-size:8px;margin-bottom:6px}
+ #leftpanel .nav{padding:6px;background:rgba(11,18,19,.94)}
+ #leftpanel .nav button{padding:10px 9px;font-size:10px}
+ #leftpanel .nav small{font-size:8px}
+ #minimap{display:none;right:12px;top:calc(54px + env(safe-area-inset-top));width:132px;padding:7px;z-index:18;background:rgba(11,18,19,.94)}
+ #minimap.portrait-open{display:block}
+ #minimap canvas{width:116px;height:94px}
+ #bottom,#crosshair{display:none!important}
+ #mobileWorldMenu,#mobileMapToggle{display:grid;place-items:center;position:fixed;top:calc(9px + env(safe-area-inset-top));z-index:6;width:34px;height:34px;border:1px solid rgba(208,173,105,.58);border-radius:50%;background:rgba(10,17,19,.72);color:#e7d2a5;font:16px Cinzel,serif;backdrop-filter:blur(8px);touch-action:manipulation}
+ #mobileWorldMenu{right:58px}
+ #mobileMapToggle{right:14px}
+ #mobile{display:flex;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));justify-content:space-between;align-items:flex-end;gap:8px;z-index:9;pointer-events:none}
+ #mobile .joystick{width:92px;height:92px;flex:none;pointer-events:auto}
+ #mobile .joystick-ring{width:86px;height:86px;background:radial-gradient(circle,rgba(25,34,35,.36),rgba(8,14,15,.62));border-color:rgba(226,194,133,.48)}
+ #mobile .joystick-knob{width:38px;height:38px;background:linear-gradient(145deg,rgba(211,177,112,.82),rgba(103,76,43,.82))}
+ #mobile .actions{width:auto;max-width:166px;display:flex;flex-wrap:wrap;justify-content:flex-end;align-content:flex-end;gap:7px;margin:0 0 3px;pointer-events:auto}
+ #mobile .actions button{width:46px;height:46px;border-radius:50%;font-size:7px;letter-spacing:0;background:rgba(10,17,19,.76);border-color:rgba(208,173,105,.55);box-shadow:0 3px 12px #0005}
+ #mobile [data-action="run"],#mobile #inventoryMobileToggle{display:none!important}
+ #mobile #interactButton[hidden],#mobile #haDiButton[hidden]{display:none!important}
+ #mobile #interactButton:not([hidden]){display:grid;place-items:center}
+ #mobile #inventoryMobileUse{font-size:0}
+ #mobile #inventoryMobileUse:after{content:"⚔";font:19px Cinzel,serif;color:#e8d4aa}
+ #mobile [data-action="jump"]{font-size:0}
+ #mobile [data-action="jump"]:after{content:"↑";font:22px "DM Sans",sans-serif;color:#f0d7a0}
+ #inventoryMobileToggle{display:grid!important;place-items:center;position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));z-index:10;width:42px;height:42px;padding:0;border:1px solid rgba(208,173,105,.58);border-radius:50%;background:rgba(10,17,19,.8);color:#e7d2a5;transform:translateX(-50%);font-size:0;pointer-events:auto}
+ #inventoryMobileToggle:after{content:"𓂀";font:18px Cinzel,serif}
+ #horusAvatarButton{right:15px;bottom:calc(112px + env(safe-area-inset-bottom));min-width:44px;width:44px;height:44px;padding:0;font-size:0;border-radius:50%}
+ #horusAvatarButton:after{content:"𓅃";font:19px Cinzel,serif}
+ #horusAvatarButton[aria-pressed="true"]:after{content:"✓";font:16px "DM Sans",sans-serif}
+ #playerVitalsHud{top:calc(48px + env(safe-area-inset-top))!important;left:50%!important;right:auto!important;width:min(230px,calc(100vw - 32px))!important;transform:translateX(-50%);padding:5px 7px!important;gap:4px!important}
+ #playerVitalsHud span{font-size:7px!important}
+ #interactionPrompt{bottom:calc(112px + env(safe-area-inset-bottom))!important;max-width:calc(100vw - 36px)!important;padding:7px 10px!important;font-size:8px!important}
+ #toast{bottom:calc(112px + env(safe-area-inset-bottom));max-width:calc(100vw - 32px);text-align:center}
+ #inventoryPanel{left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));width:auto;max-height:64dvh;padding:12px}
+ #startscreen{visibility:visible!important;overflow-y:auto;align-items:center;padding:calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom))}
+ .startcard{width:100%;max-width:440px;padding:24px 21px}
+ .startcard h2{font-size:clamp(25px,7vw,34px);margin-bottom:8px}
+ .startcard p{font-size:11px;line-height:1.55;margin:8px 0}
+ .kicker{font-size:7px;margin-bottom:9px}
+ .startmeta{margin:12px 0;gap:9px;font-size:7px}
+ #enter{width:100%;padding:13px 12px;font-size:9px}
+}
+
 </style>
 </head>
 <body>
@@ -172,6 +230,7 @@
   </nav>
 </aside>
 <aside id="minimap"><div class="maptitle">PLANTA DE EXPLORAÇÃO</div><canvas id="map" width="264" height="216"></canvas><div class="mapfoot">NAVEGAÇÃO · ACESSO RÁPIDO</div></aside>
+<button id="mobileWorldMenu" type="button" aria-label="Abrir ambientes" title="Ambientes">𓂀</button><button id="mobileMapToggle" type="button" aria-label="Abrir mapa" title="Mapa">⌖</button>
 <div id="crosshair"></div>
 <div id="bottom"><div id="hint"><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> mover &nbsp; <span class="key">Mouse</span> orbitar câmera<br><span class="key">Shift</span> correr &nbsp; <span class="key">Espaço</span> saltar &nbsp; <span class="key">E</span> interagir &nbsp; <span class="key">I</span> inventário &nbsp; <span class="key">F</span> atacar &nbsp; <span class="key">G</span> HA-DI (Shabti) &nbsp; <span class="key">H</span> Avatar de Hórus</div><div id="status">TERCEIRA PESSOA<br>WASD · MOUSE · SHIFT</div></div>
 <div id="toast"></div>
@@ -244,7 +303,7 @@
       enter.textContent = 'Preparando a Brooklyn House…';
       document.getElementById('loading').classList.remove('done');
       try {
-        await import('./src/main.js?v=deferred-game-boot-20261127a');
+        await import('./src/main.js?v=portrait-mobile-hud-20261127a');
       } catch (error) {
         console.error('[Brooklyn House] Falha ao carregar o jogo:', error);
         const panel = document.getElementById('loading');

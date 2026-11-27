@@ -166,7 +166,7 @@ export function createInventory({
       steps: 1, bevelSize: 0.018, bevelThickness: 0.018, curveSegments: 12
     });
     const blade = new THREE.Mesh(bladeGeo, bladeMat);
-    blade.name = 'KhopeshCurvedBlade';
+    blade.name = 'KhopeshCurvedBladeFallback';
     blade.position.z = -0.0275;
     blade.castShadow = true;
     group.add(blade);
@@ -174,7 +174,9 @@ export function createInventory({
     ridge.position.set(0.14, 0.58, 0.035);
     group.add(ridge);
     group.traverse(obj => { if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; } });
-    return registerItem('khopesh', group, 'weapon', 'Khopesh egípcio');
+    const item = registerItem('khopesh', group, 'weapon', 'Khopesh egípcio — fallback até carregar o GLB aprovado');
+    item.userData.assetState = 'loading-approved-vinish-glb';
+    return item;
   }
 
   function addRod(parent, start, end, radius, material, name) {
@@ -641,9 +643,59 @@ export function createInventory({
     }
   );
 
-  // The portal stays in chest space while the right hand reaches through it.
-  // Ara's use_press clip places the right-hand contact at (-0.20, -0.16, 0.46)
-  // in chest-space coordinates for a 1.8 m reference character.
+  // Khopesh A aprovado: GLB original de Vinish.dev, preservando materiais.
+  // Licença CC BY 4.0: crédito e detalhes de proveniência ficam nos documentos do projeto.
+  const approvedKhopeshLoader = new GLTFLoader();
+  const approvedKhopeshUrl = 'https://vinish-models.pages.dev/swords/khopesh.glb';
+  const approvedKhopeshItem = items.get('khopesh');
+  approvedKhopeshLoader.load(
+    approvedKhopeshUrl,
+    (gltf) => {
+      const model = gltf.scene;
+      model.name = 'VinishApprovedKhopeshModel';
+      model.scale.setScalar(1);
+      model.updateMatrixWorld(true);
+
+      // O autor publica o nó Sword com pivot no centro da empunhadura e lâmina em +X.
+      // Centralizamos esse pivot no socket e orientamos a lâmina para a frente do Carter (-Z).
+      const gripPivot = model.getObjectByName('Sword');
+      if (gripPivot) {
+        const gripOrigin = gripPivot.getWorldPosition(new THREE.Vector3());
+        model.position.sub(gripOrigin);
+      }
+      const weaponPivot = new THREE.Group();
+      weaponPivot.name = 'VinishKhopeshGripPivot';
+      weaponPivot.rotation.y = Math.PI / 2;
+      model.traverse((node) => {
+        if (!node.isMesh) return;
+        node.castShadow = true;
+        node.receiveShadow = true;
+      });
+      weaponPivot.add(model);
+
+      for (const fallback of [...approvedKhopeshItem.children]) {
+        approvedKhopeshItem.remove(fallback);
+        // The procedural placeholder reuses shared brass materials; dispose only
+        // its geometries so other inventory props are not invalidated.
+        fallback.traverse((node) => {
+          if (node.isMesh) node.geometry?.dispose?.();
+        });
+      }
+      approvedKhopeshItem.add(weaponPivot);
+      approvedKhopeshItem.userData.assetState = 'loaded';
+      approvedKhopeshItem.userData.assetSource = approvedKhopeshUrl;
+      approvedKhopeshItem.userData.description =
+        'Khopesh Vinish.dev de bronze, cabo escuro e detalhes dourados; GLB original com pivot na empunhadura';
+    },
+    undefined,
+    (error) => {
+      approvedKhopeshItem.userData.assetState = 'fallback';
+      console.warn('CASABROOKLIN: não foi possível carregar o GLB aprovado do khopesh; mantendo o fallback local.', error);
+    }
+  );
+
+  // A fenda é mantida no mesmo ponto de alcance do clip Ara use_press.
+  // A abertura agora é um pequeno vórtice procedural, sem aro/disco permanente.
   const chestBoneCandidates = ['spine2', 'mixamorigspine2', 'spine1', 'mixamorigspine1', 'chest', 'spine'];
   const chestBones = new Map();
   const chestBoneNames = new Set(chestBoneCandidates);
@@ -666,37 +718,81 @@ export function createInventory({
   }
 
   const portal = new THREE.Group();
-  portal.name = 'DuatHandPortal';
-  portal.position.set(0, 0, 0);
-  const portalGold = new THREE.MeshStandardMaterial({
-    color: 0xd5ad62, emissive: 0x8b5a1d, emissiveIntensity: 1.15,
-    metalness: 0.48, roughness: 0.38, transparent: true, opacity: 0
+  portal.name = 'DuatHandVortex';
+  const vortexMaterial = new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 }, uStrength: { value: 0 } },
+    transparent: true,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+    blending: THREE.AdditiveBlending,
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      uniform float uStrength;
+      varying vec2 vUv;
+      void main() {
+        vec2 p = (vUv - 0.5) * 2.0;
+        float r = length(p);
+        float a = atan(p.y, p.x);
+        float edge = 1.0 - smoothstep(0.82, 1.0, r);
+        float twist = a * 5.4 - r * 28.0 + uTime * 2.7
+          + sin(a * 3.0 + uTime * 1.4) * 0.72;
+        float bands = 0.5 + 0.5 * sin(twist);
+        float filaments = pow(max(0.0, bands), 5.0);
+        float innerFlow = 1.0 - smoothstep(0.04, 0.72, r);
+        float outerFlow = smoothstep(0.26, 0.78, r) * (1.0 - smoothstep(0.82, 0.98, r));
+        float goldFlecks = pow(max(0.0, sin(a * 9.0 - uTime * 2.0 + r * 18.0)), 12.0) * outerFlow;
+        vec3 deepBlue = vec3(0.025, 0.16, 0.25);
+        vec3 cyan = vec3(0.16, 0.78, 0.83);
+        vec3 pale = vec3(0.55, 0.91, 0.88);
+        vec3 gold = vec3(0.88, 0.62, 0.28);
+        vec3 color = mix(deepBlue, cyan, bands * 0.72 + 0.12);
+        color = mix(color, pale, filaments * 0.62 + innerFlow * 0.18);
+        color += gold * goldFlecks * 0.46;
+        float alpha = (0.10 + filaments * 0.48 + innerFlow * 0.18 + goldFlecks * 0.3) * edge * uStrength;
+        gl_FragColor = vec4(color, alpha);
+      }
+    `
   });
-  const portalBlue = new THREE.MeshStandardMaterial({
-    color: 0x5ac6d1, emissive: 0x1b7e9a, emissiveIntensity: 1.5,
-    metalness: 0.12, roughness: 0.3, transparent: true, opacity: 0
-  });
-  const portalCoreMaterial = new THREE.MeshBasicMaterial({
-    color: 0x287c8b, transparent: true, opacity: 0,
-    side: THREE.DoubleSide, depthWrite: false
-  });
-  const portalCore = new THREE.Mesh(new THREE.CircleGeometry(0.17, 48), portalCoreMaterial);
-  portalCore.scale.set(0.72, 1.18, 1);
-  portalCore.position.z = -0.012;
-  portal.add(portalCore);
+  const vortexSurface = new THREE.Mesh(new THREE.CircleGeometry(0.18, 64), vortexMaterial);
+  vortexSurface.name = 'DuatVortexShaderSurface';
+  vortexSurface.position.z = -0.012;
+  portal.add(vortexSurface);
 
-  const outerRing = new THREE.Mesh(new THREE.TorusGeometry(0.205, 0.013, 10, 48), portalGold);
-  outerRing.scale.set(0.76, 1.2, 1);
-  portal.add(outerRing);
-  const innerRing = new THREE.Mesh(new THREE.TorusGeometry(0.156, 0.006, 8, 40), portalBlue);
-  innerRing.scale.set(0.74, 1.16, 1);
-  innerRing.position.z = 0.009;
-  portal.add(innerRing);
+  const vortexParticleCount = 56;
+  const vortexParticlePositions = new Float32Array(vortexParticleCount * 3);
+  const vortexParticlePhases = new Float32Array(vortexParticleCount);
+  const vortexParticleRadii = new Float32Array(vortexParticleCount);
+  const vortexParticleDepths = new Float32Array(vortexParticleCount);
+  const vortexParticleColors = new Float32Array(vortexParticleCount * 3);
+  const vortexCyan = new THREE.Color(0x8ee8ec);
+  const vortexGold = new THREE.Color(0xd6b16c);
+  for (let i = 0; i < vortexParticleCount; i++) {
+    vortexParticlePhases[i] = i * 2.399963229728653;
+    vortexParticleRadii[i] = 0.035 + ((i * 7) % 19) / 19 * 0.125;
+    vortexParticleDepths[i] = 0.006 + (i % 5) * 0.004;
+    const color = i % 7 === 0 ? vortexGold : vortexCyan;
+    vortexParticleColors[i * 3] = color.r;
+    vortexParticleColors[i * 3 + 1] = color.g;
+    vortexParticleColors[i * 3 + 2] = color.b;
+  }
+  const vortexParticleGeometry = new THREE.BufferGeometry();
+  vortexParticleGeometry.setAttribute('position', new THREE.BufferAttribute(vortexParticlePositions, 3));
+  vortexParticleGeometry.setAttribute('color', new THREE.BufferAttribute(vortexParticleColors, 3));
+  const vortexParticleMaterial = new THREE.PointsMaterial({
+    color: 0xffffff, vertexColors: true, size: 0.018, sizeAttenuation: true,
+    transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending
+  });
+  const vortexParticles = new THREE.Points(vortexParticleGeometry, vortexParticleMaterial);
+  vortexParticles.name = 'DuatVortexParticles';
+  portal.add(vortexParticles);
 
-  const portalArc = new THREE.Mesh(new THREE.TorusGeometry(0.235, 0.003, 6, 42, Math.PI * 1.12), portalGold);
-  portalArc.scale.set(0.7, 1.16, 1);
-  portalArc.position.z = 0.014;
-  portal.add(portalArc);
   portal.visible = false;
   portalAnchor.add(portal);
 
@@ -758,14 +854,13 @@ export function createInventory({
   function beginDuatReach() {
     attackRemaining = 0;
     socket.rotation.copy(restRotation);
-    // The interaction is locked for the full body clip on desktop and mobile.
-    setControlsLocked(true);
+    // Play the same Ara reach on desktop and mobile, locking both controllers.
     character.playAction?.('use_press', { fade: 0.18 });
+    setControlsLocked(true);
     portal.visible = true;
     portal.scale.setScalar(0.2);
-    portalGold.opacity = 0;
-    portalBlue.opacity = 0;
-    portalCoreMaterial.opacity = 0;
+    vortexMaterial.uniforms.uStrength.value = 0;
+    vortexParticleMaterial.opacity = 0;
   }
 
   function beginRetrieve(name) {
@@ -815,8 +910,22 @@ export function createInventory({
       if (status) status.textContent = 'RETIRE UM CAJADO OU KHOPESH PARA USAR';
       return;
     }
-    attackDuration = activeItem === 'khopesh' ? 0.4 : 0.52;
-    attackRemaining = attackDuration;
+    const actionId = activeItem === 'khopesh' ? 'sword_combo' : 'sword_thrust';
+    const animationStarted = character.playAction?.(actionId, {
+      fade: 0.16,
+      interruptOnMovement: false,
+      onFinish: () => { setControlsLocked(false); },
+      onCancel: () => { setControlsLocked(false); }
+    }) === true;
+
+    if (animationStarted) {
+      attackRemaining = 0;
+      setControlsLocked(true);
+    } else {
+      // Retain a brief prop-swing fallback if the active Ara package omits the clip.
+      attackDuration = activeItem === 'khopesh' ? 0.4 : 0.52;
+      attackRemaining = attackDuration;
+    }
     onUse(activeItem);
   };
 
@@ -852,11 +961,23 @@ export function createInventory({
         const portalStrength = opening * closing;
         const item = items.get(transition.name);
 
-        portal.scale.set(0.62 + opening * 0.38, 0.76 + opening * 0.24, 1);
-        portal.rotation.z += dt * (transition.mode === 'retrieve' ? 0.72 : -0.62);
-        portalGold.opacity = portalStrength * 0.92;
-        portalBlue.opacity = portalStrength * 0.78;
-        portalCoreMaterial.opacity = portalStrength * 0.3;
+        portal.scale.setScalar(0.08 + opening * 0.92);
+        vortexMaterial.uniforms.uTime.value += dt * (transition.mode === 'retrieve' ? 1 : -1);
+        vortexMaterial.uniforms.uStrength.value = portalStrength;
+        vortexParticleMaterial.opacity = portalStrength * 0.92;
+        const particlePosition = vortexParticleGeometry.attributes.position;
+        const vortexTime = vortexMaterial.uniforms.uTime.value;
+        for (let i = 0; i < vortexParticleCount; i++) {
+          const angle = vortexParticlePhases[i] + vortexTime * (0.8 + (i % 4) * 0.12);
+          const radius = vortexParticleRadii[i] * (0.76 + 0.24 * Math.sin(vortexTime * 1.7 + i * 0.61));
+          particlePosition.setXYZ(
+            i,
+            Math.cos(angle) * radius,
+            Math.sin(angle) * radius,
+            vortexParticleDepths[i] + Math.sin(angle * 2.0 + vortexTime) * 0.004
+          );
+        }
+        particlePosition.needsUpdate = true;
 
         if (item) {
           const itemProgress = smoothstep(0.52, 0.94, progress);
@@ -879,8 +1000,10 @@ export function createInventory({
               item.position.copy(item.userData.restPosition);
             }
             activeItem = null;
+            character.setWeaponMode?.(null);
           } else {
             activeItem = finished.name;
+            character.setWeaponMode?.(activeItem);
             if (item) {
               item.scale.copy(item.userData.baseScale);
               item.position.copy(item.userData.restPosition);
@@ -889,9 +1012,8 @@ export function createInventory({
           transition = null;
           portal.visible = false;
           portal.scale.setScalar(0);
-          portalGold.opacity = 0;
-          portalBlue.opacity = 0;
-          portalCoreMaterial.opacity = 0;
+          vortexMaterial.uniforms.uStrength.value = 0;
+          vortexParticleMaterial.opacity = 0;
           socket.rotation.copy(restRotation);
           if (finished.mode === 'retrieve' && queuedItem && queuedItem !== activeItem) {
             // Finish the current retrieval, then store that item before fetching the queued one.

@@ -1,10 +1,11 @@
-import { mkdir, readFile, rm, writeFile, copyFile } from 'node:fs/promises';
+import { mkdir, rm, writeFile, copyFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = process.cwd();
 const buildDir = path.join(root, 'assets/animations/_carter-motion-build');
 const generatedPack = path.join(root, 'assets/animations/_carter-motion-build.ara-pack.json');
 const finalPack = path.join(root, 'assets/animations/carter-movement.ara-pack.json');
+const finalCredits = path.join(root, 'assets/animations/carter-movement-source-credits.json');
 
 const selectedClips = [
   { slug: 'sprint_shield_loop', id: 'sprint_shield_loop', name: 'Corrida com cajado', category: 'Locomotion', loop: true },
@@ -94,6 +95,7 @@ async function prepare() {
 
 async function publish() {
   await copyFile(generatedPack, finalPack);
+  await copyFile(path.join(buildDir, 'source-credits.json'), finalCredits);
   await rm(buildDir, { recursive: true, force: true });
   await rm(generatedPack, { force: true });
   console.log('Pack pronto em assets/animations/carter-movement.ara-pack.json');

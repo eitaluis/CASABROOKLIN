@@ -739,6 +739,51 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
     }
 
     addStatueObject(figure, index);
+    let carriedItem = null;
+    if (index === 3) {
+      carriedItem = new THREE.Group();
+      carriedItem.name = 'papiro carregado pelo pequeno servo';
+      const carriedRoll = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.045, 0.045, 0.28, 14),
+        parchment
+      );
+      carriedRoll.rotation.z = Math.PI / 2;
+      carriedRoll.position.set(0.29, 0.66, 0.22);
+      carriedItem.add(carriedRoll);
+      for (const end of [-1, 1]) {
+        const endCap = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.048, 0.048, 0.025, 12),
+          reed
+        );
+        endCap.rotation.z = Math.PI / 2;
+        endCap.position.set(0.29 + end * 0.15, 0.66, 0.22);
+        carriedItem.add(endCap);
+      }
+      carriedItem.visible = false;
+      figure.add(carriedItem);
+    } else if (index === 2) {
+      carriedItem = new THREE.Group();
+      carriedItem.name = 'miniatura da Paleta de Narmer carregada pelo servo';
+      const paletteShape = new THREE.Shape();
+      paletteShape.moveTo(-0.065, -0.09);
+      paletteShape.lineTo(-0.065, 0.11);
+      paletteShape.quadraticCurveTo(-0.06, 0.17, 0, 0.18);
+      paletteShape.quadraticCurveTo(0.06, 0.17, 0.065, 0.11);
+      paletteShape.lineTo(0.065, -0.09);
+      paletteShape.quadraticCurveTo(0.04, -0.13, 0, -0.13);
+      paletteShape.quadraticCurveTo(-0.04, -0.13, -0.065, -0.09);
+      const handPalette = new THREE.Mesh(
+        new THREE.ShapeGeometry(paletteShape),
+        new THREE.MeshStandardMaterial({ color: 0x75806b, roughness: 0.9, side: THREE.DoubleSide })
+      );
+      handPalette.position.set(0.3, 0.69, 0.22);
+      carriedItem.add(handPalette);
+      const eyeRelief = new THREE.Mesh(new THREE.TorusGeometry(0.027, 0.005, 5, 12), darkStone);
+      eyeRelief.position.set(0.3, 0.72, 0.226);
+      carriedItem.add(eyeRelief);
+      carriedItem.visible = false;
+      figure.add(carriedItem);
+    }
     statue.traverse((object) => {
       if (object.isMesh) {
         object.castShadow = true;
@@ -746,7 +791,7 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
       }
     });
     scene.add(statue);
-    statueRoots.push({ statue, figure, index, x, z });
+    statueRoots.push({ statue, figure, carriedItem, index, x, z });
 
     if (colliders) {
       colliders.push({
@@ -965,6 +1010,7 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
     activeTask = {
       index,
       figure: statueEntry.figure,
+      carriedItem: statueEntry.carriedItem,
       targetLocal: delta,
       elapsed: 0,
       duration: 6.2,
@@ -1046,12 +1092,16 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
     const outboundFacing = activeTask.index === 3 ? Math.PI : 0;
     const returnTurn = progress < 0.56 ? 0 : THREE.MathUtils.smoothstep((progress - 0.56) / 0.44, 0, 1);
     activeTask.figure.rotation.y = outboundFacing * (1 - returnTurn);
+    if (activeTask.carriedItem) {
+      activeTask.carriedItem.visible = progress >= 0.56 && progress < 1;
+    }
     activeTask.figure.rotation.z = Math.sin(time * 9.5) * 0.035 * (progress > 0.04 && progress < 0.96 ? 1 : 0);
     activeTask.figure.rotation.x = Math.cos(time * 9.5) * 0.025 * (progress > 0.04 && progress < 0.96 ? 1 : 0);
 
     if (progress >= 1) {
       activeTask.figure.position.set(0, 0, 0);
       activeTask.figure.rotation.set(0, 0, 0);
+      if (activeTask.carriedItem) activeTask.carriedItem.visible = false;
       activeTask.result.visible = true;
       if (activeTask.capsule) activeTask.capsule.sheet.visible = false;
       const message = activeTask.index === 3

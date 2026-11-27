@@ -522,14 +522,15 @@ export function buildTrainingRoom({
     { side: 'east', z: 4.2, asset: 'falconSphinx', title: 'Esfinge com cabeça de falcão' }
   ];
 
-  // Efígies de Rá: cabeças de falcão, discos solares vazados e redes de aro.
+  // Efígies de Rá nas paredes de fundo, elevadas dez pés acima do piso.
   const hoops = [];
   function addRaHoop(baselineZ, facing, name) {
-    const group=new THREE.Group();group.name='estátua sentada de Rá em diorito polido';
-    group.position.set(centerX,floorY,baselineZ);group.rotation.y=facing;
-    const bevelMat=raBasaltLight;
-    const pedestal=new THREE.Mesh(new THREE.BoxGeometry(1.95,.34,1.72),raBasalt);pedestal.position.set(0,.17,-.05);group.add(pedestal);
-    const pedestalTop=new THREE.Mesh(new THREE.BoxGeometry(1.78,.12,1.55),raGold);pedestalTop.position.set(0,.39,-.05);group.add(pedestalTop);
+    const group=new THREE.Group();group.name='efígie mural de Rá em diorito polido';
+    const statueScale=.78;
+    const mountHeight=3.05;
+    group.position.set(centerX,floorY+mountHeight,baselineZ);
+    group.rotation.y=facing;
+    group.scale.setScalar(statueScale);
     const seat=new THREE.Mesh(new THREE.BoxGeometry(1.18,.48,.94),raBasaltLight);seat.position.set(0,.72,-.08);group.add(seat);
     const seatCushion=new THREE.Mesh(new THREE.BoxGeometry(1.15,.12,.9),raGold);seatCushion.position.set(0,1.02,-.08);group.add(seatCushion);
 
@@ -539,6 +540,17 @@ export function buildTrainingRoom({
     const backPanel=new THREE.Mesh(new THREE.ExtrudeGeometry(backShape,{depth:.22,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.035,bevelThickness:.035}),raBasalt);
     backPanel.name='pilar dorsal esculpido do trono de Rá';backPanel.position.set(0,.86,-.57);group.add(backPanel);
     const backInset=new THREE.Mesh(new THREE.ShapeGeometry(backShape),raBasaltLight);backInset.position.set(0,.86,-.345);group.add(backInset);
+    // Fixações de bronze prendem o painel dorsal à parede; a escultura não toca o piso.
+    for(const side of [-1,1]){
+      const wallSocket=new THREE.Mesh(new THREE.CylinderGeometry(.075,.09,.10,20),raGold);
+      wallSocket.name='fixação de bronze da efígie mural';
+      wallSocket.rotation.x=Math.PI/2;
+      wallSocket.position.set(side*.53,1.18,-.43);
+      group.add(wallSocket);
+      const wallBolt=new THREE.Mesh(new THREE.SphereGeometry(.035,14,10),raGoldLight);
+      wallBolt.position.set(side*.53,1.18,-.49);
+      group.add(wallBolt);
+    }
     for(const side of [-1,1]){
       const upright=new THREE.Mesh(new THREE.BoxGeometry(.13,1.72,.13),raGold);upright.position.set(side*.61,1.63,-.36);group.add(upright);
       for(let y=1.02;y<2.45;y+=.28){const stud=new THREE.Mesh(new THREE.SphereGeometry(.032,10,8),raGoldLight);stud.position.set(side*.61,y,-.27);group.add(stud);}
@@ -606,10 +618,14 @@ export function buildTrainingRoom({
 
     // Cabeça de falcão refeita como volume escuro alongado, com olhos amendoados,
     // bico curvo de pedra e linhas de plumagem. O disco solar não atravessa mais a cabeça.
-    const falconHead=new THREE.Mesh(new THREE.SphereGeometry(.39,56,40),raBasalt);
-    falconHead.name='cabeça de falcão esculpida de Rá';
-    falconHead.position.set(0,2.67,.035);
-    falconHead.scale.set(.84,1.08,1.18);
+    const falconHeadProfile=[
+      new THREE.Vector2(.16,0),new THREE.Vector2(.25,.08),new THREE.Vector2(.31,.23),
+      new THREE.Vector2(.34,.42),new THREE.Vector2(.32,.57),new THREE.Vector2(.25,.70),
+      new THREE.Vector2(.14,.82)
+    ];
+    const falconHead=new THREE.Mesh(new THREE.LatheGeometry(falconHeadProfile,56),raBasalt);
+    falconHead.name='crânio alongado de falcão esculpido em diorito';
+    falconHead.position.set(0,2.27,.035);
     group.add(falconHead);
 
     const beakShape=new THREE.Shape();
@@ -657,7 +673,7 @@ export function buildTrainingRoom({
     }
 
     // Nemes de pedra escura: a faixa é gravada na peça, não uma peruca azul brilhante.
-    const nemesCap=new THREE.Mesh(new THREE.SphereGeometry(.53,48,32,0,Math.PI*2,0,Math.PI*.62),raBasaltLight);
+    const nemesCap=new THREE.Mesh(new THREE.SphereGeometry(.53,48,32,0,Math.PI*2,0,Math.PI*.62),raLapis);
     nemesCap.name='coroa nemes de diorito de Rá';
     nemesCap.position.set(0,2.91,-.08);
     nemesCap.scale.set(1.03,.78,.9);
@@ -672,7 +688,7 @@ export function buildTrainingRoom({
       flapShape.closePath();
       const flap=new THREE.Mesh(
         new THREE.ExtrudeGeometry(flapShape,{depth:.085,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.022,bevelThickness:.02}),
-        raBasaltLight
+        raLapis
       );
       flap.name='aba de nemes esculpida de Rá';
       flap.position.set(side*.27,2.78,.05);
@@ -686,61 +702,60 @@ export function buildTrainingRoom({
       }
     }
 
-    // Uraeus frontal e disco solar maciço acima da coroa, como nas referências museológicas.
-    addTube('corpo erguido da cobra uraeus de Rá',[
-      [0,3.18,.16],[0,3.27,.2],[0,3.37,.21],[0,3.43,.17]
-    ],.026,raGold,group,24);
-    const uraeusHood=new THREE.Mesh(new THREE.SphereGeometry(.075,24,16),raGold);
-    uraeusHood.name='capelo da cobra uraeus';
-    uraeusHood.position.set(0,3.39,.22);
-    uraeusHood.scale.set(1.05,1.2,.42);
-    group.add(uraeusHood);
-    const solarDisk=new THREE.Mesh(new THREE.CircleGeometry(.43,80),raSolarStone);
-    solarDisk.name='disco solar maciço de Rá';
-    solarDisk.position.set(0,3.78,.105);
-    group.add(solarDisk);
-    const solarRim=new THREE.Mesh(new THREE.TorusGeometry(.43,.042,12,80),raGold);
-    solarRim.name='borda entalhada do disco solar';
-    solarRim.position.set(0,3.78,.115);
-    group.add(solarRim);
-    const solarEngraving=new THREE.Mesh(new THREE.TorusGeometry(.33,.009,8,72),raGoldLight);
-    solarEngraving.name='filete interno gravado do disco solar';
-    solarEngraving.position.set(0,3.78,.132);
-    group.add(solarEngraving);
-
-    // A cesta é um aro de basquete separado do símbolo solar e projetado à frente do corpo.
-    const basketCenter=new THREE.Vector3(0,2.761,1.28);
-    for(const side of [-1,1]){
-      addTube('suporte lateral do aro de basquete de Rá',[
-        [side*.42,2.98,.34],[side*.39,2.86,.78],[side*.29,basketCenter.y, basketCenter.z]
-      ],.037,raGold,group,24);
-    }
-    const rim=new THREE.Mesh(new THREE.TorusGeometry(.257,.024,12,72),darkBronze);
-    rim.name='aro funcional da cesta de Rá';
-    rim.position.copy(basketCenter);
-    group.add(rim);
-    const rimHighlight=new THREE.Mesh(new THREE.TorusGeometry(.242,.008,8,72),raGoldLight);
-    rimHighlight.position.set(0,basketCenter.y,basketCenter.z+.01);
+    // O disco solar é vazado: sua abertura central é a própria cesta descrita no romance.
+    // O aro interno deixa 45 cm de vão livre depois da escala final; não há tabela nem rede.
+    const solarCenter=new THREE.Vector3(0,3.78,.105);
+    const solarFrame=new THREE.Mesh(new THREE.TorusGeometry(.50,.06,16,96),raGold);
+    solarFrame.name='moldura externa do disco solar de Rá';
+    solarFrame.position.copy(solarCenter);
+    group.add(solarFrame);
+    const solarInlay=new THREE.Mesh(new THREE.TorusGeometry(.455,.012,10,96),raGoldLight);
+    solarInlay.name='filete de ouro do disco solar vazado';
+    solarInlay.position.set(0,3.78,.145);
+    group.add(solarInlay);
+    const solarOpening=new THREE.Mesh(new THREE.TorusGeometry(.33,.041,16,96),darkBronze);
+    solarOpening.name='aro de basquete integrado à abertura do disco solar';
+    solarOpening.position.set(0,3.78,.16);
+    group.add(solarOpening);
+    const rimHighlight=new THREE.Mesh(new THREE.TorusGeometry(.33,.009,10,96),raGoldLight);
+    rimHighlight.name='filete interno do aro solar';
+    rimHighlight.position.set(0,3.78,.205);
     group.add(rimHighlight);
-    const netRing=new THREE.Mesh(new THREE.TorusGeometry(.15,.018,8,48),raGold);
-    netRing.position.set(0,basketCenter.y-.36,basketCenter.z);
-    group.add(netRing);
-    for(let i=0;i<14;i++){
-      const a=i/14*Math.PI*2;
-      addTube('corda da rede da cesta de Rá',[
-        [Math.cos(a)*.257,basketCenter.y+Math.sin(a)*.257,basketCenter.z],
-        [Math.cos(a+.08)*.19,basketCenter.y-.17+Math.sin(a+.08)*.19,basketCenter.z],
-        [Math.cos(a+.15)*.15,basketCenter.y-.36+Math.sin(a+.15)*.15,basketCenter.z]
-      ],.009,raGoldLight,group,12);
+    // Os pinos decorativos ocupam somente a moldura externa, nunca atravessam a abertura.
+    for(let i=0;i<16;i++){
+      const a=i/16*Math.PI*2;
+      const marker=new THREE.Mesh(new THREE.SphereGeometry(.018,12,10),raGoldLight);
+      marker.name='marcador gravado na moldura solar';
+      marker.position.set(Math.cos(a)*.50,3.78+Math.sin(a)*.50,.17);
+      group.add(marker);
     }
-    const plaque=new THREE.Mesh(new THREE.BoxGeometry(.74,.28,.06),raBasalt);plaque.position.set(0,.47,.62);group.add(plaque);
-    group.traverse(obj=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;}});scene.add(group);
-    const hoopPosition=new THREE.Vector3(centerX,floorY+basketCenter.y,baselineZ+(facing===0?basketCenter.z:-basketCenter.z));
-    hoops.push({position:hoopPosition,label:name,approachDirection:facing===0?-1:1});
-    addInteractable({name,label:'Rá — disco solar / cesta',description:'Estátua sentada de Re-Harakhty em diorito escuro, com cabeça de falcão, nemes esculpido e disco solar maciço elevado. A cesta funcional é uma peça separada diante do trono.',prompt:'CESTA DE RÁ · E para examinar · arremesse a bola pelo disco solar',position:group.position,radius:2.7});
-  }
-  addRaHoop(nearZ + 1.35, 0, 'Rá — cesta norte');
-  addRaHoop(farZ - 1.35, Math.PI, 'Rá — cesta sul');
+    // A uraeus acompanha o topo da moldura sem obstruir o vão funcional.
+    addTube('cobra uraeus sobre a moldura solar de Rá',[
+      [-.045,4.20,.17],[-.025,4.27,.20],[0,4.32,.22],[.025,4.27,.20]
+    ],.025,raGold,group,24);
+    const uraeusHood=new THREE.Mesh(new THREE.SphereGeometry(.065,24,16),raGold);
+    uraeusHood.name='capelo da cobra uraeus sobre o disco';
+    uraeusHood.position.set(0,4.30,.22);
+    uraeusHood.scale.set(1.1,1.05,.5);
+    group.add(uraeusHood);
+
+    group.traverse(obj=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;}});
+    scene.add(group);
+    const hoopPosition=new THREE.Vector3(
+      centerX,
+      group.position.y+solarCenter.y*statueScale,
+      baselineZ+(facing===0?solarCenter.z:-solarCenter.z)*statueScale
+    );
+    hoops.push({position:hoopPosition,label:name,approachDirection:facing===0?-1:1,clearRadius:.105});
+    addInteractable({
+      name,label:'Rá — disco solar / cesta',
+      description:'Efígie monumental de Rá em diorito, projetada da parede da linha de fundo. A abertura vazada do disco solar, no alto da coroa, funciona como cesta de basquete.',
+      prompt:'DISCO SOLAR DE RÁ · E para examinar · arremesse a bola pela abertura da coroa',
+      position:new THREE.Vector3(centerX,floorY+mountHeight+1.8,baselineZ),radius:5.2
+    });
+  }  // As esculturas ficam rente às paredes de fundo; o painel dorsal encosta no calcário.
+  addRaHoop(room.minZ + 1.09, 0, 'Rá — cesta norte');
+  addRaHoop(room.maxZ - 1.09, Math.PI, 'Rá — cesta sul');
 
   // Painel de pontuação em papiro, atualizado quando a bola ou os projéteis acertam.
   const scoreCanvas = document.createElement('canvas');
@@ -1673,14 +1688,14 @@ export function buildTrainingRoom({
           ballHitShabti=true;ballVelocity.multiplyScalar(-.18);ballVelocity.y=Math.max(1.4,Math.abs(ballVelocity.y)*.35);break;
         }
       }
-      // O disco solar fica vertical, voltado para a quadra. A bola precisa cruzar seu plano em Z,
-      // com o centro dentro da abertura circular no plano X/Y (45 cm livres menos o raio da bola).
+      // O disco solar vazado fica vertical e voltado para a quadra. A bola deve atravessar
+      // o plano do aro e passar pelo círculo livre de 45 cm, descontando seu próprio raio.
       for (const hoop of hoops) {
         const crossedPlane=hoop.approachDirection<0
           ? previousZ>hoop.position.z&&ball.position.z<=hoop.position.z&&ballVelocity.z<0
           : previousZ<hoop.position.z&&ball.position.z>=hoop.position.z&&ballVelocity.z>0;
         const radialDistance=Math.hypot(ball.position.x-hoop.position.x,ball.position.y-hoop.position.y);
-        if(!ballHitShabti&&crossedPlane&&radialDistance<0.105){
+        if(!ballHitShabti&&crossedPlane&&radialDistance<(hoop.clearRadius||0.105)){
           baskets += 1; drawScoreboard(baskets, targetHits, targetPracticeActive);
           message = 'Cesta! A bola atravessou o disco solar de Rá. Total: ' + baskets + '.';
           ballVelocity.multiplyScalar(0.28);

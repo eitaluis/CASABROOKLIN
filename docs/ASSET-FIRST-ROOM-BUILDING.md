@@ -225,3 +225,12 @@ A construção do entorno segue a mesma ordem usada para os interiores: pesquisa
 - [x] Adicionar gradiente de céu e nuvens suaves sem depender de imagens externas.
 - [x] Reduzir a névoa para preservar a leitura da cidade ao longe.
 - [ ] Validar a composição em 360° e o desempenho em mobile.
+
+ 
+## Portal externo — interação e colisão sincronizadas — 27/11/2026
+
+A folha do portal já era animada verticalmente pelo módulo exterior e compartilhada entre desktop/mobile. A revisão técnica acrescentou um colisor dinâmico registrado no mundo: seus limites verticais acompanham a posição da porta em cada atualização da animação. Isso elimina a passagem física pelo vão enquanto a folha está fechada, sem criar uma segunda lógica de colisão por dispositivo e sem alterar o visual aprovado.
+
+| Elemento | Mudança técnica | Asset/licença | Estado |
+|---|---|---|---|
+| Folha do portal | Colisor 4,08 × 5,28 × 0,34 acompanha a folha; a passagem fica liberada quando a subida remove a sobreposição com a cápsula do personagem | Geometria e lógica originais do projeto; nenhum asset externo adicionado | Implementado no código; teste real de abertura, travessia e retorno em desktop/mobile pendente |

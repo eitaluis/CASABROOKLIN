@@ -455,3 +455,6 @@ A implementação aprovada foi construída com geometria e texturas originais do
 | [Tevy asset documentation](https://tevy.dev/docs) | Documentação técnica do fornecedor | HTTPS, CORS aberto, GLB Meshopt + KTX2, loaders requeridos e versões fixadas |
 
 **Nota de entrega:** os GLBs Tevy permanecem hospedados nas URLs de origem e não foram copiados para assets/models. A implementação usa URLs versionadas e fallbacks locais. As fontes e licenças estão registradas em assets/manifest.json; a inspeção de rede e carregamento ainda depende de teste no navegador.
+
+
+**Amplificador/receiver estéreo:** geometria original de projeto em src/bedroom.js, CC0 não aplicável; o objeto é inteiramente modelado proceduralmente e completa as duas caixas acústicas Tevy CC0. O romance confirma o aparelho de som, sem especificar o design do receiver.

@@ -365,7 +365,11 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     const injured = character.isInjured === true;
     const running = !controlsLocked && !injured && (keys.has('ShiftLeft') || keys.has('ShiftRight') || touch.sprint);
     const injuryMultiplier = Number.isFinite(character.movementMultiplier) ? character.movementMultiplier : 1;
-    const speedTarget = input.moving ? (running ? 4.2 : 1.7) * input.magnitude * injuryMultiplier : 0;
+    // Match world displacement to Ara's native locomotion blend thresholds.
+    // Ara scales these values to character height; retain project speeds for older builds.
+    const walkSpeed = Number.isFinite(character.locomotion?.walkSpeed) ? character.locomotion.walkSpeed : 1.7;
+    const runSpeed = Number.isFinite(character.locomotion?.runSpeed) ? character.locomotion.runSpeed : 4.2;
+    const speedTarget = input.moving ? (running ? runSpeed : walkSpeed) * input.magnitude * injuryMultiplier : 0;
     const currentPosition = getPosition();
     limitToZone(currentPosition, direction, Math.max(speedTarget, 2.25) * dt * 1.35);
 

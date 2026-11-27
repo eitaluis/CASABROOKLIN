@@ -195,9 +195,25 @@ export function buildInteriorDetails({ THREE, scene, interactables = [] }) {
     const lampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 0.12, 12), brass);
     lampBase.position.set(0, 1.02, 0);
     table.add(lampBase);
-    const lampShade = new THREE.Mesh(new THREE.ConeGeometry(0.24, 0.42, 12, 1, true), warmGlass);
+    const lampShade = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.19, 0.19, 0.42, 32, 1, false),
+      warmGlass
+    );
+    lampShade.name = 'difusor cilíndrico opalino da luminária lateral';
     lampShade.position.set(0, 1.3, 0);
     table.add(lampShade);
+    for (const y of [1.09, 1.51]) {
+      const shadeRim = new THREE.Mesh(new THREE.TorusGeometry(0.195, 0.018, 8, 32), brass);
+      shadeRim.rotation.x = Math.PI / 2;
+      shadeRim.position.set(0, y, 0);
+      table.add(shadeRim);
+    }
+    for (let i = 0; i < 8; i++) {
+      const angle = i * Math.PI / 4;
+      const rib = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.34, 8), darkBrass);
+      rib.position.set(Math.cos(angle) * 0.19, 1.3, Math.sin(angle) * 0.19);
+      table.add(rib);
+    }
     const glow = new THREE.PointLight(0xffc783, 0.3, 4);
     glow.position.set(0, 1.35, 0);
     table.add(glow);

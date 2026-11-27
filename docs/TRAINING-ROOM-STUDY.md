@@ -187,3 +187,17 @@ O manequim arcano será uma **interpretação de gameplay**, não um objeto conf
 A sala de treinamento serve para demonstrar os efeitos, mas a magia não ficará restrita a ela. Qualquer alvo no Grande Salão, biblioteca, exterior ou outra área poderá reagir quando declarar a capacidade correspondente.
 
 O catálogo inicial e a separação entre feitiços canônicos, exemplos narrativos e adaptações de gameplay estão em [docs/MAGIC-SPELLS-STUDY.md](MAGIC-SPELLS-STUDY.md). A implementação de conjuração ainda não começou; a prioridade permanece validar os objetos do Duat antes de programar os feitiços.
+
+
+### Correção das paredes atrás das efígies e revisão de assets (26/11/2026)
+
+- As duas paredes de fundo receberam faces internas próprias em calcário, com material explicitamente opaco, dupla face e escrita de profundidade. A textura é clonada para não alterar o mapa usado nas outras paredes. Isso evita que as faces vistas da quadra fiquem cinzas ou pareçam transparentes.
+- O ajuste foi aplicado em `src/training-room.js`; desktop e mobile continuam usando a mesma cena.
+- A bola de basquete não foi modificada.
+- A substituição dos cinco relevos laterais e das duas efígies de Rá permanece pendente da escolha visual. A implementação atual usa relevos procedurais interpretativos; não são scans arqueológicos nem shabtis autênticos. Não importar um modelo com licença/pose inadequada antes da escolha.
+
+**Candidatos para Rá:** o scan fotogramétrico Ra-Horakhty AA-016, em granodiorito, está disponível em GLB/STL/PLY/3MF/OBJ sob CC BY 4.0: https://archaeoarchive.com/view/ra-horakhty. A pose do scan é em pé, portanto a substituição pode exigir reescalar e reorientar o objeto; não é a mesma pose sentada atual. Para a versão sentada, usar como referência iconográfica a estatueta de Re-Harakhty do Metropolitan Museum e a descrição da estátua SR 341 do Global Egyptian Museum.
+
+**Candidatos para shabtis:** o Kelsey Museum oferece um STL de ushabti de faiança azul-esverdeada (13,5 cm) com corpo mumiforme, barba, toucado e inscrição; o projeto de Liverpool oferece um modelo interativo em point cloud/mesh; a Factum Foundation publicou digitalizações de dois ushabtis do túmulo de Seti I. Estes são objetos funerários pequenos, não estátuas monumentais de parede.
+
+A avaliação visual e a escolha entre (A) shabtis em nichos e (B) relevos arquitetônicos egípcios devem acontecer antes de remover os relevos existentes.

@@ -1,7 +1,7 @@
 # Carter — inventário, objetos do Duat e preparação para magia
 
 Data: 26/11/2026
-Status: **doze objetos, portal no espaço do tórax, clipe use_press e bloqueio de movimento integrados; cajado simplificado; empunhadura e QA visual pendentes**
+Status (27/11/2026): **doze objetos; cajado e khopesh com GLBs abertos carregados via GLTFLoader e fallbacks locais; empunhadura centrada; esfera de energia 3D presa à mão; custo de 2 pontos por retirada; ataques com clipes de corpo inteiro; QA visual real ainda pendente**
 
 ## 1. Princípio de desenvolvimento
 
@@ -32,8 +32,8 @@ Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, páginas impres
 
 | ID | Objeto | Função / estado | Base |
 |---|---|---|---|
-| `staff` | Cajado mágico | Haste reta de madeira escura, com ponta superior discretamente mais grossa; ferramenta mágica e arma empunhada na mão direita | Canônico como ferramenta; desenho visual simplificado por decisão de direção de arte; modelo procedural integrado |
-| `khopesh` | Khopesh | Arma corpo a corpo; empunhada na mão direita | Canônico; modelo procedural integrado |
+| `staff` | Cajado mágico | Haste reta, muito fina, bege-clara, com a mão no meio; ferramenta mágica e arma empunhada na mão direita | Canônico como ferramenta; cor, silhueta exata e 2,00 m são direção de arte, não medidas literais de Carter; GLB Polyfork recolorido + fallback |
+| `khopesh` | Khopesh | Espada curva egípcia compacta, empunhada na mão direita, em plano frontal e com a lâmina erguida | Arma canônica; GLB Vinish.dev CC BY 4.0 adaptado; 57 cm como direção de escala apoiada por exemplar histórico, não por medida do Carter no romance |
 | `wax_shabti` | Shabti de cera | Miniatura transportável; futura invocação por magia | Canônico como objeto criado em cera; primeira geometria procedural integrada |
 | `papyrus` | Papiro | Suporte para escrever/desenhar feitiços | Canônico; primeira geometria/textura procedural integrada; escrita mágica real pendente |
 | `reed_pen` | Cálamo | Ferramenta de escrita e desenho mágico | Canônico; primeira geometria procedural integrada |
@@ -53,7 +53,13 @@ Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, páginas impres
 
 Os links do British Museum são referências de estudo, não arquivos importados. Nenhum GLB externo foi incorporado nesta primeira rodada: caixa, papiro, cálamo, tinta, amuleto, shabti, cera, paleta, cordão e gato foram montados como geometria procedural em Three.js. A forma atual é uma primeira versão técnica; escala, acabamento e leitura precisam de QA visual antes de aprovação.
 
-O cajado foi redesenhado como uma haste reta de madeira escura, com a ponta superior apenas um pouco mais grossa e arredondada. A escala técnica foi ajustada para 2,00 m, acima da altura de referência de Carter no rig Ara (1,75 m), para que ultrapasse a cabeça do personagem. A medida de dois metros aparece explicitamente na descrição de cajados de Zia/Sadie nos romances; não é apresentada como medida textual específica do cajado pessoal de Carter. Não possui cabeça de leão, anéis metálicos, disco dourado, pedra, halo ou outros adornos. Essa é uma decisão visual para o modelo de Carter, não uma afirmação de que essa aparência seja uma descrição textual canônica.\n\nOs doze itens acima já têm IDs estáveis e modelos 3D iniciais no catálogo de `src/inventory.js`. A primeira rodada é procedural e ainda precisa de inspeção no navegador para aprovar escala, orientação, leitura de material e encaixe na mão. O papiro usa marcas gráficas abstratas, não hieróglifos nem palavras mágicas definitivas; a caixa ainda não abre e o amuleto não possui efeito mágico.
+**Cajado:** não foi localizada uma descrição textual completa nem uma ilustração editorial confirmada do cajado pessoal de Carter que fixe cor ou diâmetro. A decisão atual é uma haste reta, bege-clara, fina (aprox. 2,4 cm de diâmetro após retintura/escala), com 2,00 m de comprimento de arte. A mão fica no ponto médio geométrico. Isso é uma direção visual aprovada para este protótipo, não canon do livro. O asset-base é o GLB “Monk's Quarterstaff”, de Polyfork/Lucas Martinic (496 triângulos, 0,08 × 1,8 × 0,08 m); o modelo é escalado no eixo longitudinal, retintado e posicionado com origem de empunhadura no centro. Os detalhes de ferro/tecido do asset ficam discretos sob o acabamento bege.
+
+**Khopesh:** o romance estabelece a arma como uma espada curva egípcia, mas não dá a medida do khopesh pessoal de Carter. Como referência arqueológica, o exemplar E1530 da *Journal of the Society for the Study of Egyptian Antiquities* mede 57,79 cm. O modelo GLB de Vinish.dev tem 60 cm, 10.868 triângulos e pivot no centro do punho; foi reduzido para aproximadamente 57 cm, afinado no eixo de espessura e girado para manter a lâmina erguida no plano frontal. A proporção de 57 cm é uma escolha de gameplay/art direction coerente com o exemplar histórico, não uma medida escrita de Carter.
+
+**Referência editorial:** a página oficial Read Riordan publica arte suplementar de Carter e Zia; a imagem de Carter empunhando o khopesh orienta a leitura da arma. A arte é referência visual, não malha 3D nem arquivo de runtime. O cajado bege de Carter permanece uma adaptação de arte, sem imagem oficial conclusiva identificada.
+
+Os outros dez itens mantêm os seus modelos procedurais por enquanto. O papiro usa marcas gráficas abstratas, não hieróglifos ou palavras mágicas definitivas; a caixa ainda não abre e o amuleto não possui efeito mágico.
 
 ## 4. Estados do inventário
 
@@ -74,23 +80,26 @@ Regras:
 5. A aparência, escala e ponto de fixação são definidos por item; o fluxo de guardar/retirar é compartilhado.
 6. A interface apenas seleciona o objeto. A ação diegética é feita no mundo 3D: abertura do portal, aproximação da mão e passagem do objeto.
 
-## 5. Abertura do Duat — sequência visual
+## 5. Retirada do Duat — sequência visual
 
-A sequência pretendida para retirar um objeto é:
+A sequência continua diegética: a interface apenas seleciona; o gesto acontece no corpo 3D.
 
-1. Carter orienta o braço e aproxima a mão de um ponto no ar.
-2. Uma superfície oval translúcida se abre no ar à frente do tórax, no ponto em que a mão direita vai alcançar, como uma membrana entre o mundo físico e o Duat.
-3. A borda recebe luz azul-dourada e sinais hieroglíficos breves; o interior apresenta profundidade e distorção, não deve parecer um menu plano.
-4. A mão atravessa a abertura.
-5. O objeto surge parcialmente na membrana, é puxado para fora e se encaixa no socket da mão direita.
-6. A abertura se fecha e os sinais desaparecem.
+1. Carter leva a mão direita ao ponto de contato junto ao tórax com o clipe Ara `use_press`.
+2. Uma esfera translúcida e volumétrica aparece **na própria mão**, não como círculo plano à frente do braço.
+3. A energia envolve a palma e os dedos por uma casca esférica com fresnel, duas correntes helicoidais em 3D, partículas Kenney e luz local.
+4. O objeto sai do centro da esfera, cresce até a escala de uso e fica preso ao socket da mão.
+5. A esfera some e Carter retoma a locomoção.
 
-Para guardar, a sequência acontece ao contrário. **Já está implementado:** portal oval procedural ancorado em Spine2/Spine1/Chest/Spine; clipe Ara `use_press` de 1,65 s; transição de escala/posição sincronizada com o contato da mão por volta de 0,88 s; e retorno ao estado guardado. O controlador bloqueia movimento, salto e joystick durante a ação. **Pendente:** refinar a pose para a palma inteira atravessar a membrana (o clipe existente estende o indicador como se tocasse um ponto), ajustar a orientação e a posição real do portal após inspeção do rig e revisar o timing visual. O rig aprovado do Carter não será substituído.
+Guardar repete a lógica em sentido inverso. O efeito é filho do socket da mão direita, para acompanhar o gesto e permanecer sincronizado em desktop e mobile. A esfera é uma adaptação visual de gameplay; o livro descreve o acesso ao Duat, mas não estabelece esse shader ou uma esfera de energia como representação literal.
+
+**Energia:** cada retirada do Duat custa 2 pontos da barra compartilhada de 100. Guardar um item não custa energia. Se a energia for insuficiente, a ação não começa e o inventário permanece no estado anterior.
+
+**Implementação nesta branch:** clipe `use_press` de corpo inteiro; esfera 3D que envolve a mão; texturas de partículas `kenney-magic-01`, `kenney-smoke-03` e `kenney-spark-07` (CC0); custo conectado ao `playerVitals.energy`. A malha do Carter não é substituída. O ajuste exato de posição/escala no rig real ainda precisa de inspeção no navegador.
 
 ## 6. Arquitetura técnica
 
 - `src/inventory.js`: catálogo e estados dos itens, sockets configuráveis por `handBoneCandidates`/`fallbackSocketPosition`, retirada/armazenamento e efeito visual do portal.
-- `src/character.js`: fornece rig, sockets e API de ações; não deve conter regras específicas de cada feitiço.
+- `src/character.js`: fornece rig, sockets e API de ações; carrega `sword_thrust` e `sword_combo` do Ara para ataques de corpo inteiro, sem girar a arma isoladamente.
 - `src/magic-system.js` (etapa futura): catálogo de feitiços, requisitos, animação, gesto, hieróglifo, custo/limite e efeito.
 - `src/training-room.js` (etapa futura): expõe alvos/objetos com capacidades de reação, sem codificar os feitiços dentro de cada objeto.
 - `src/main.js`: conecta entrada, personagem, inventário, magia, alvos e mensagens.
@@ -127,14 +136,19 @@ Referências:
 
 ## 8. Animação e portabilidade
 
-O Ara 3D Gen disponibiliza clipes de pegar objeto no chão, deixar objeto no chão e alcançar/pressionar com a mão direita. Esses clipes são bons pontos de partida, mas a retirada do Duat acontece no espaço do peito/mão, não no chão. A seleção final deve ser testada com o rig real; se necessário, será criado um pequeno clip próprio e empacotado para o Ara.
+O Ara 3D Gen fornece `use_press` para alcançar o Duat e os clipes `sword_idle`, `sword_combo` e `sword_thrust` para combate. F aciona `sword_thrust` com o cajado e `sword_combo` com o khopesh; como a arma está presa ao osso/socket da mão, o objeto acompanha braço e tronco animados pelo mesmo clip. O movimento é de corpo inteiro, não uma rotação aplicada ao objeto.
 
 Não fixar a magia a um botão ou a um tipo de dispositivo. Desktop e mobile chamam as mesmas ações lógicas; teclado, clique e controles táteis são apenas entradas diferentes.
 
 ## 9. Critérios de QA
 
 - [ ] Cada um dos doze objetos tem escala, orientação, origem e ponto de pega revisados no rig real.
-- [ ] Cajado simples de madeira e khopesh mantêm empunhadura coerente durante idle, walk, run, turn e stop.\n- [ ] Cajado: 2,00 m (acima dos 1,75 m de referência do rig Ara), haste reta, ponta superior discretamente alargada e sem ornamentos; validar leitura visual em close e à distância.
+- [ ] Cajado bege-claro e fino (aprox. 2,00 m de direção de arte) fica preso exatamente pelo meio do comprimento; validar a mão no centro em frente, perfil e costas.
+- [ ] Khopesh proporcional (aprox. 57 cm), lâmina fina, erguida e orientada no plano frontal do Carter; validar em frente, perfil e 3/4.
+- [ ] Ao pressionar F com cajado, o corpo inteiro executa `sword_thrust`; com khopesh, executa `sword_combo`; a arma acompanha o osso da mão e não se move isoladamente.
+- [ ] Cada retirada custa exatamente 2 pontos; guardar não consome energia; energia insuficiente cancela sem deixar controle bloqueado.
+- [ ] A esfera de energia contém visualmente a mão e os dedos; não pode virar um anel/disco frontal; as partículas percorrem o volume 3D.
+- [ ] GLBs externos carregam sem bloquear a inicialização; em falha de rede/CORS, os fallbacks mantêm os itens visíveis e funcionais.
 - [ ] Objetos pequenos, planos e compridos usam poses de pega adequadas, sem parecerem presos à ponta dos dedos.
 - [ ] Dedos e polegar fecham de forma convincente por clip de mão compatível com o rig.
 - [ ] O objeto não atravessa mão, braço, tronco, pernas ou cenário durante a locomoção.
@@ -155,3 +169,34 @@ Status de validação: implementação de código não equivale a aprovação vi
 
 A bancada ajuda a revisar escala, orientação, clipping, posição do portal e transição de mão. Ela não substitui o teste no mundo completo: colisões, iluminação real da casa, desempenho mobile e enquadramento em terceira pessoa ainda exigem inspeção no jogo.
 
+
+
+## 11. Assets e créditos — 27/11/2026
+
+### Cajado
+- Asset: [Monk's Quarterstaff — Polyfork](https://polyfork.dev/asset/monk-s-quarterstaff-cbdadd), de Lucas Martinic.
+- Arquivo realmente carregado: [GLB](https://polyfork.dev/cdn/monk-s-quarterstaff-cbdadd.glb), 496 triângulos, 57 KB, dimensões nativas 0,08 × 1,8 × 0,08 m.
+- Licença: uso comercial permitido; a página indica CC BY 4.0 para redistribuição do mesh e dispensa atribuição para o simples uso/hotlink. Crédito preventivo mantido em `docs/OPEN-SOURCES.md`.
+- Adaptação: largura/espessura reduzidas a 30%, comprimento ajustado a 2,00 m, materiais retintados para bege-claro e origem deslocada para que a mão segure o ponto médio. Fallback procedural fino permanece ativo se a CDN falhar.
+
+### Khopesh
+- Asset: [Khopesh — Vinish.dev](https://vinish.dev/free-3d-models/swords), GLB 297 KB, 10.868 triângulos, dimensões nativas 0,60 × 0,13 × 0,04 m.
+- Arquivo realmente carregado: [GLB](https://vinish-models.pages.dev/swords/khopesh.glb).
+- Licença: CC BY 4.0; crédito obrigatório, mantido em `docs/OPEN-SOURCES.md`.
+- A página documenta o nó `Sword` com pivô no meio do punho e lâmina ao longo do eixo +X. A adaptação gira a lâmina para ficar erguida no plano frontal, mantém cerca de 57 cm de comprimento e reduz a espessura. Fallback procedural compacto permanece para falha de rede.
+
+### Energia do Duat
+- Texturas de partículas realmente usadas: Kenney Particle Pack — `kenney-magic-01`, `kenney-smoke-03` e `kenney-spark-07`; pacote oficial CC0, já armazenado em `assets/vfx/`.
+- Esfera, shader fresnel, tubos helicoidais, distribuição de sprites e animação são implementação original do projeto em Three.js. O pacote CC0 fornece as texturas, não a malha volumétrica.
+
+### Animações de ataque
+- Ara 3D Gen: `sword_thrust` (avanço/estocada) para o cajado e `sword_combo` (três cortes) para o khopesh; carregados pelo catálogo filtrado `ANIMATIONS`.
+- A documentação Ara informa que `sword_combo` e `sword_thrust` começam e terminam em `sword_idle`; os clipes são de corpo inteiro e compatíveis com o pipeline Three.js do projeto.
+
+### Canon versus direção de arte
+- Canon: cajado usado como ferramenta mágica e arma; khopesh é espada curva; Carter usa khopesh em combate.
+- Histórico: um exemplar E1530 de khopesh da época do Novo Império mede 57,79 cm.
+- Não canon: cor bege do cajado, sua medida exata de 2,00 m, diâmetro de 2,4 cm, esfera de energia, 2 pontos de energia, rotação do GLB e escolha dos modelos comerciais livres. São opções de direção de arte e mecânica do jogo.
+
+### Validação pendente
+A branch contém a integração e fallbacks, mas a aprovação final depende de executar o preview e o jogo real em navegador. Conferir mão no centro do cajado, tamanho do khopesh, plano da lâmina, sincronização F/arma, esfera envolvendo os dedos e custo de energia em desktop e mobile.

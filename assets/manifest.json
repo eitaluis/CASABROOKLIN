@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -665,6 +665,21 @@
       "source": "https://www.nyc.gov/assets/planning/download/pdf/applicants/env-review/domino_sugar/09_feis.pdf",
       "license": "official public planning reference",
       "role": "visual-resource context for East River, Williamsburg waterfront, bridge, industrial skyline and distant Manhattan; no image or geometry imported",
+      "runtimeImported": false
+    },
+    {
+      "id": "innerscene-carter-crossbody-satchel-approved",
+      "source": "https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2",
+      "author": "Innerscene (original model)",
+      "license": "CC0-1.0 / public domain dedication (as declared on the source page)",
+      "format": "GLB, 3.5 MB",
+      "nominalBodyDimensionsMm": [
+        230,
+        86,
+        180
+      ],
+      "status": "user-approved direction A on 2026-11-27; awaiting binary access and hierarchy inspection",
+      "role": "Approved as the source body for Carter's compact cognac crossbody satchel. Use the leather body/flap/hardware as the base; discard the original loose ground-loop strap and build a new fitted strap for Carter's left shoulder, torso/flank and anatomical right posterior hip. Target 0.88 scale (about 202 x 76 x 158 mm body). Not downloaded, not locally stored and not imported; the download redirect to files.innerscene.com was inaccessible during this session. Do not substitute procedural geometry for this approved GLB.",
       "runtimeImported": false
     }
   ],

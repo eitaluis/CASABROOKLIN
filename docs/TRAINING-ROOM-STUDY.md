@@ -1,8 +1,8 @@
 # Sala de Treinamento — estudo, reconstrução e interações
 
-Data: 26/11/2026  
+Data: 27/11/2026  
 Projeto: CASABROOKLIN  
-Status: **passe de refinamento asset-first integrado; aprovação visual e QA em navegador desktop/mobile ainda pendentes**
+Status: **correção de implantação e cesta integrada no código; inspeção visual e QA em navegador desktop/mobile ainda pendentes**
 
 ## 1. Evidência narrativa e grau de certeza
 
@@ -20,8 +20,8 @@ A Disney também lista oficialmente *The Throne of Fire: The Graphic Novel* como
 - Piso de madeira.
 - Teto abobadado com pinturas do Egito Antigo.
 - Estátuas de divindades nas paredes.
-- Estátuas de Rá com cabeça de falcão nas linhas de fundo.
-- Discos solares ocos funcionando como cestas.
+- Estátuas de Rá com cabeça de falcão projetando-se das paredes das linhas de fundo, posicionadas cerca de dez pés acima do piso.
+- Coroas em forma de disco solar vazadas para funcionar como cestas.
 - Espaço usado para basquete e para treinamento dos magos.
 - Exercício de resolução de problemas mágicos com guerreiro shabti de barro.
 
@@ -30,7 +30,7 @@ A Disney também lista oficialmente *The Throne of Fire: The Graphic Novel* como
 - A localização como ala a oeste do Grande Salão, o portal e a passarela de conexão são escolhas de level design para a planta 3D atual, não uma planta oficial publicada.
 - O programa exato dos afrescos, nervuras de bronze, frisos, arandelas e acabamento de pedra foi criado para completar a arquitetura sem afirmar que cada motivo é descrito no romance.
 - A seleção de bustos — Anúbis, Sekhmet, Hórus, Ísis e Bastet — é uma escolha artística, não uma lista confirmada de estátuas do livro.
-- A representação de Rá como figura humana sentada com cabeça de falcão, nemes e disco solar é uma reconstrução iconográfica; a forma da escultura, trono, estela arqueada e o aro esportivo adaptado são escolhas de modelagem.
+- A descrição textual confirma a cabeça de falcão, a implantação mural elevada e o disco solar oco usado como cesta. O corpo antropomórfico sentado, o nemes, o trono dorsal, os detalhes de bronze e o diâmetro jogável do vão são decisões de reconstrução iconográfica, apoiadas em referências históricas e de produção.
 - O hieróglifo SA-PER (errar) e a solução da bola contra a cabeça do shabti são soluções narrativas do romance; os comandos, colisões, distâncias, tempos, vitalidade e efeitos de gameplay são adaptações interativas.
 - O quadro de treino de precisão, os três alvos circulares e os projéteis mágicos são complementos autorais, inspirados na formação dos iniciados.
 - A aparência em faiança azul-esverdeada dos shabtis usa referência histórica de ushabtis vitrificados; a escala inicial de cerca de 19 cm e o corpo articulado em runtime são decisões de reconstrução.
@@ -41,13 +41,12 @@ A Disney também lista oficialmente *The Throne of Fire: The Graphic Novel* como
 - Sala: aproximadamente **20,4 × 32,3 m** de piso.
 - Quadra marcada: **15 × 28 m**, de acordo com a dimensão de jogo indicada no Artigo 2 das Official Basketball Rules 2026 da FIBA.
 - A FIBA 2026 indica ainda uma faixa desobstruída de pelo menos 2 m ao redor da área de jogo, produzindo um piso mínimo de 19 × 32 m. A sala construída deixa margens um pouco maiores em parte do perímetro para circulação e para os elementos decorativos.
-- Altura da borda superior do aro solar: **3,05 m acima do piso**. A abertura interna é de 45 cm; o disco está num plano vertical voltado para dentro da quadra e a pontuação verifica a travessia desse plano.
+- Implantação das efígies: a base de cada conjunto mural fica a **3,05 m acima do piso**, interpretando a indicação narrativa de dez pés. O disco solar vazado fica no topo da escultura; com a escala atual do modelo (0,78), o centro da abertura está a aproximadamente **6,00 m acima do piso**. O vão livre tem 45 cm de diâmetro como adaptação de gameplay para a bola de 24 cm — não é uma medida fornecida pelo romance.
 - Piso da sala: nível 16,875 m no sistema vertical atual do modelo.
 - Ligação: passagem física a partir da primeira galeria do Grande Salão, com passarela, portal de portas duplas e troca de zona ao cruzar o vão.
 
 Referências técnicas:
 - FIBA — Official Basketball Rules 2026, Artigo 2 (quadra e faixa livre): https://www.nz.basketball/wp-content/uploads/2026/07/documents-corporate-fiba-official-rules-2026-v1-1.pdf
-- FIBA — Official Basketball Rules 2026, Basketball Equipment (altura do aro a 3.050 mm): https://www.nz.basketball/wp-content/uploads/2026/07/documents-corporate-fiba-official-rules-2026-equipment-v1-0.pdf
 - FIBA — confirmação de entrada em vigor das regras 2026 em 1º de outubro: https://about.fiba.basketball/en/news/fiba-official-basketball-rules-2026-to-take-effect-october-1
 - Página oficial de downloads da FIBA: https://about.fiba.basketball/en/services/resource-hub/downloads
 
@@ -63,7 +62,7 @@ O módulo `src/training-room.js` cria a sala como um passe independente do mundo
 | Paredes e frisos | Reboco mineral bege-creme PBR, paredes de fundo em calcário quente, cornijas e relevos afastados das faces para evitar superfícies coplanares | Corrigida a geometria sobreposta; QA visual pendente |
 | Arandelas | Suporte de bronze, aplique de lótus, taça de óleo, pavio, chama animada e luz quente | Refinado no código |
 | Relevos de divindades | Alto-relevos em placas arqueadas, com anatomia humana, cabeças animais específicas, nemes, shendyt, pigmentos e molduras; seleção artística não canônica | Reposicionados para fora da espessura das paredes |
-| Efígies de Rá | Escultura sentada em perfil contínuo de diorito escuro, pernas, braços, kilt, colar, cabeça falconiforme, nemes e disco solar vertical vazado | Reconstruídas e afastadas das paredes; QA visual pendente |
+| Efígies de Rá | Escultura antropomórfica sentada em diorito escuro, cabeça falconiforme, nemes azul e dourado, trono dorsal e disco solar vazado integrado à cesta | Fixadas às paredes de fundo a 3,05 m do piso; abertura funcional e pontuação alinhadas ao disco; QA visual pendente |
 | Bola de basquete | Esfera de couro com 24 cm de diâmetro, canais, gravidade, quique, assistência de mira para cestas e shabtis | Redimensionada e integrada |
 | Placar | Textura de canvas atualizada por pontuação | Implementado |
 | Quatro shabtis | Miniaturas mumiiformes de faiança azul-esverdeada com textura mineral, rosto estreito, barba postiça, nemes estriado, uraeus, braços cruzados, pilar dorsal e inscrição; ao despertar abrem os braços e revelam pernas, khopesh e escudo | Reconstruídos; movimento limitado à área útil da quadra; QA visual/combate pendente |
@@ -79,7 +78,7 @@ As peças tridimensionais principais continuam como geometria original sob medid
 - A cintilação vinha de superfícies arquitetônicas sobrepostas: a fachada da mansão e a lateral do Grande Salão eram recortadas/reconstruídas para a passagem da sala, mas permaneciam visíveis ou ganhavam um segundo conjunto de caixas. As fachadas que atravessavam o volume da sala agora são ocultadas e a parede leste é reconstruída uma única vez, com o vão do portal.
 - As paredes norte/sul usam um material de calcário quente separado do restante do reboco. Frisos, rodapés, cornijas, placas e letreiros foram afastados dos planos da alvenaria para reduzir z-fighting.
 - As placas de divindades foram movidas para dentro do ambiente, fora da espessura física dos muros.
-- As efígies de Rá foram remodeladas como esculturas sentadas de diorito escuro: tronco contínuo em perfil, pernas, kilt, braços, colar, cabeça de falcão, nemes e disco solar vertical. O aro esportivo está no mesmo plano vertical do disco e voltado para a quadra.
+- Na revisão de 26/11, as efígies foram remodeladas como esculturas sentadas de diorito escuro. A implantação antiga, com pedestal no piso e aro separado, foi substituída pela revisão de 27/11 descrita na seção 3B.
 - Os shabtis agora começam como estatuetas mumiiformes de faiança, com rosto, barba postiça, nemes estriado, uraeus, braços cruzados, pilar dorsal e inscrição. Ao despertar, os braços se abrem e as pernas aparecem, deixando espada curva e escudo em postura de combate.
 - A IA usa uma área segura central e colisores proporcionais à forma desperta. As faixas de decoração junto às paredes e às efígies de Rá não fazem parte do percurso de perseguição.
 - A bola de basquete não foi alterada nesta revisão, conforme a avaliação do usuário.
@@ -254,3 +253,44 @@ A avaliação visual e a escolha entre (A) shabtis em nichos e (B) relevos arqui
 - A posição de um expositor foi deslocada para longe do portal lateral; nenhum nicho deve ocupar o vão de entrada.
 - O loader agora configura MeshoptDecoder, necessário para variantes GLB que usam compressão Meshopt.
 - O conjunto mantém cinco expositores; os quatro shabtis da quadra continuam independentes e interativos.
+
+ 
+## 3B. Revisão das efígies de Rá e da cesta solar (27/11/2026)
+
+### Fonte narrativa e canon
+
+Em The Throne of Fire, Carter descreve as efígies de Rá nas paredes das linhas de fundo: as estátuas têm cabeça de falcão, projetam-se da parede e ficam elevadas cerca de dez pés. As coroas em disco solar foram escavadas para que os próprios discos funcionassem como cestas de basquete. A narrativa não descreve um aro separado, uma tabela, uma rede ou um pedestal apoiado no piso; esses elementos não devem ser adicionados à reconstrução como se fossem canônicos.
+
+### Referências históricas consultadas
+
+- The Metropolitan Museum of Art — [Head of an anthropomorphic falcon god](https://www.metmuseum.org/art/collection/search/549699). Cabeça em diorito com peruca estriada; a ficha aponta que o encaixe superior pode ter sustentado um disco solar e identifica a figura como Re ou Re-Harakhty. Referência para a anatomia da cabeça, olho, bico, textura de pedra e encaixe do disco.
+- RISD Museum — [Temple god / Seated Horus](https://risdmuseum.org/art-design/collection/temple-god-38207). Figura sentada de Horus em bronze escurecido, sobre trono de bloco. Referência complementar para pose frontal sentada e relação entre cabeça animal, tronco humano e trono; não é apresentada como uma escultura de Rá.
+- A iconografia do nemes, do uraeus e do disco solar foi usada como referência histórica para completar detalhes não especificados na passagem da sala de treinamento. Esses detalhes continuam classificados como interpretação de produção.
+
+### Busca de assets 3D e decisão
+
+Foi avaliado o modelo [God Ra Art — Tomb Chaser 1](https://models.codelove.in/models/tomb-chaser-1-god-ra-art/), disponível também em [ToxSam/cc0-models-Polygonal-Mind](https://github.com/ToxSam/cc0-models-Polygonal-Mind/tree/main/projects/tomb-chaser-1). A ficha declara GLB/glTF 2.0, CC0 1.0, 34 KB, 1.650 triângulos, 1.365 vértices, 2 materiais, 3 texturas, altura de 2,68 m e malha estática sem rig. O preview apresenta olhos verdes, disco laranja e linguagem low-poly de personagem de jogo. **Rejeitado para integração** por incompatibilidade estética com a escultura monumental de diorito e por não fornecer a cesta oca integrada ao disco. O GLB não foi copiado para o projeto.
+
+Decisão: preservar a geometria procedural original em src/training-room.js, usando perfis esculpidos, materiais de diorito, detalhes de lápis-lazúli e bronze. Isso mantém a compatibilidade com Three.js e evita acrescentar uma dependência externa ou um personagem low-poly à cena.
+
+### Implementação
+
+- Removidos o pedestal apoiado no piso e o aro separado com suportes laterais, aro suspenso e rede decorativa.
+- As duas efígies foram reposicionadas nas paredes norte e sul, com painel dorsal encostado ao calcário e fixações de bronze. A base do conjunto fica a 3,05 m do piso, como interpretação da indicação narrativa de dez pés.
+- O crânio foi refeito com perfil alongado de falcão; o nemes recebeu superfície azul-lápis com estrias douradas. A composição mantém o tronco humano sentado, o kilt, os braços, o colar e o trono dorsal como interpretação iconográfica.
+- O disco agora é formado por moldura anelar aberta. O aro funcional está integrado à abertura; não há face preenchida no centro, tabela ou rede convencional.
+- A abertura útil tem 45 cm de diâmetro após a escala de 0,78. Como a bola de gameplay mede 24 cm, o teste aceita a passagem do centro dentro do raio livre restante (aprox. 10,5 cm).
+- A referência de pontuação usa o centro real do disco solar transformado para coordenadas globais. A bola precisa cruzar o plano vertical da abertura na direção correta e passar dentro do vão livre. A assistência de arremesso continua mirando a mesma posição.
+- Desktop e mobile continuam usando o mesmo módulo, geometria, transformações e lógica. Nenhuma bifurcação visual por dispositivo foi introduzida.
+
+### QA pendente
+
+- [x] Código atualizado no repositório.
+- [x] Abertura da cesta e posição de pontuação derivadas do mesmo centro geométrico.
+- [x] Duas efígies posicionadas simetricamente nas paredes de fundo.
+- [ ] Abrir a sala em navegador desktop e confirmar que as estátuas estão visivelmente fixadas às paredes, sem atravessar o calcário.
+- [ ] Conferir altura, enquadramento da câmera, escala e leitura da cabeça de falcão e do nemes.
+- [ ] Testar arremesso nas duas direções, acerto pelo centro do disco e falha ao tocar a moldura.
+- [ ] Repetir a validação no celular em paisagem e medir o impacto de desempenho.
+
+**Não marcar como visualmente aprovado ou browser-tested até executar essas verificações no runtime real.**

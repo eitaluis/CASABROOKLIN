@@ -4,12 +4,12 @@ import { buildExterior } from './exterior.js?v=urban-horizon-continuity-20261127
 import { buildWaterfrontEnvironment } from './waterfront-environment.js?v=urban-horizon-continuity-20261127a';
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-traversal-20261127b';
 import { buildLibrary } from './library.js?v=library-asset-first-20261127b';
-import { buildGrandSalon } from './grand-salon.js?v=great-hall-curves-20261127d';
+import { buildGrandSalon } from './grand-salon.js?v=great-hall-curves-20261127e';
 import { buildTrainingRoom } from './training-room.js?v=museum-statues-board-20261127b';
 import { createInventory } from './inventory.js?v=inventory-polyfork-quarterstaff-20261127a';
 import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
-import { createCharacter } from './character.js?v=carter-accessories-rig-fit-20261127b';
-import { createThirdPersonController } from './third-person.js?v=great-hall-curves-20261127d';
+import { createCharacter } from './character.js?v=great-hall-curves-20261127e';
+import { createThirdPersonController } from './third-person.js?v=great-hall-curves-20261127e';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';

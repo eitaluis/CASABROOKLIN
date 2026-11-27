@@ -72,3 +72,13 @@ O mundo utiliza metros e eixo Y para cima. O personagem tem escala aproximada de
 - A mesma cena, malha de personagem e lógica de movimento são compartilhadas por desktop e mobile.
 
 A casa está no lado do Brooklyn. Manhattan é a margem oposta e o skyline distante, não uma segunda área explorável. A escada que contorna o armazém é canônica; sua planta helicoidal exata é interpretativa. Consulte docs/BROOKLYN-HOUSE-EXTERIOR.md para a pesquisa, a sequência textual, as fichas e o estado de QA.
+
+## Quarto de Carter
+
+- src/bedroom.js: módulo compartilhado que constrói a suíte asset-first de Carter, o apoio de cabeça egípcio, kitchenette, mobiliário, tecnologia, banheiro, deck e interações.
+- src/world.js: define a zona do quarto no terceiro pavimento, remove o blockout antigo e mantém a planta principal aberta.
+- src/main.js: instancia o módulo dentro de magicalInteriorGroup, passa renderer/colisores/superfícies/interactables, chama a atualização por frame e permite prompts quando o jogador está no quarto.
+- src/bedroom.js carrega GLBs CC0 em URLs fixadas usando GLTFLoader, KTX2Loader e MeshoptDecoder. A mesma cena e objetos são usados em desktop e mobile; o perfil de LOD se adapta.
+- Fallbacks locais mantêm objetos básicos visíveis caso a rede ou o provedor externo falhe. Os modelos permanecem hospedados na origem e ainda precisam de QA de navegador.
+
+Consulte docs/CARTER-BEDROOM-STUDY.md para estudo canônico, referências, modelos e estado de validação.

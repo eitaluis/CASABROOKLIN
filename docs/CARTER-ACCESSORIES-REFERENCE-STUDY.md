@@ -6,13 +6,13 @@ Status em 27/11/2026: **direção A aprovada e asset Innerscene CC0 baixado, ins
 
 ## 1. Diagnóstico do screenshot enviado em 27/11/2026
 
-O screenshot atual mostra:
+O screenshot enviado na rodada anterior mostrava:
 
 - **Bolsa:** corpo muito grande/espesso para a leitura desejada, com forma de estojo rígido, afastado da pelve e com a parte traseira/fechos a parecerem uma extensão separada.
 - **Alça:** a faixa visual parece passar à frente do tórax, mas não acompanha a superfície da camisa; na região inferior forma um arco frouxo, sem caminho físico claro até a bolsa.
 - **Colar:** corrente/medalhão não assentam sobre a camisa. A profundidade do pendant não acompanha a superfície do tórax e a corrente parece rígida/descolada.
 - **Peça escura no ombro:** não existe geometria preta com esse nome/material em `src/character-accessories.js`. A origem ainda não está confirmada. Pode pertencer ao share/modelo Ara ou a uma peça anexa de outro módulo; não remover até localizar o objeto na hierarquia do modelo-base.
-- **A imagem mostra o runtime atual como visualmente não aprovado.** A documentação anterior dizia que o fit ainda precisava de QA; este screenshot confirma a falha e substitui qualquer descrição presumida de que os acessórios já estariam encaixados.
+- **Naquela captura, o runtime estava visualmente não aprovado.** A imagem documenta o ponto de partida da correção, não o estado posterior à integração descrita na seção 12.
 
 ## 2. O que é canônico e o que não é
 

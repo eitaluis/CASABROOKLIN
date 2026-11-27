@@ -291,6 +291,23 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   wall.castShadow = true;
   scene.add(wall);
 
+  // Luzes discretas de leitura e lavagem mural para a câmara mais alta.
+  for (let i = 0; i < 4; i++) {
+    const angle = i * Math.PI / 2 + Math.PI / 4;
+    const wash = new THREE.PointLight(0xffd39b, 0.72, 15, 1.7);
+    wash.name = 'luz de leitura da biblioteca';
+    wash.position.set(Math.sin(angle) * 10.8, -9.2, Math.cos(angle) * 10.8 + centerZ);
+    scene.add(wash);
+  }
+  const floorFill = new THREE.PointLight(0x9bb9b5, 0.5, 20, 1.6);
+  floorFill.name = 'luz suave do piso de Geb';
+  floorFill.position.set(0, floorY + 2.4, centerZ);
+  scene.add(floorFill);
+  const upperFill = new THREE.PointLight(0x9cbac0, 0.42, 18, 1.7);
+  upperFill.name = 'luz de preenchimento sob a cúpula de Nut';
+  upperFill.position.set(0, wallTop - 1.2, centerZ);
+  scene.add(upperFill);
+
   // Nichos e cápsulas instanciados: 4.800 unidades com poucas draw calls.
   const nicheRingGeometry = new THREE.TorusGeometry(nicheRadius * 1.02, 0.014, 7, 16);
   const nicheTunnelGeometry = new THREE.CylinderGeometry(nicheRadius, nicheRadius, 0.46, 12, 1, true);

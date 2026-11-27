@@ -445,6 +445,7 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
 
     // Portal de entrada: a porta de madeira sobe sem maçaneta ou fechadura.
   const door = scene.getObjectByName('porta de madeira sem maçaneta');
+  const portalDoorCollider = world.portalDoorCollider;
   let doorProgress = 0;
   let doorTarget = 0;
   const closedDoorY = door ? door.position.y : 15.9;
@@ -466,6 +467,11 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
       if (door) {
         doorProgress += (doorTarget - doorProgress) * Math.min(1, dt * 2.0);
         door.position.y = closedDoorY + doorProgress * 5.9;
+        // O volume de bloqueio sobe junto com a folha e libera o vão.
+        if (portalDoorCollider) {
+          portalDoorCollider.minY = door.position.y - 2.64;
+          portalDoorCollider.maxY = door.position.y + 2.64;
+        }
       }
       if(revelation.active){
         revelation.elapsed=Math.min(revelation.duration,revelation.elapsed+dt);

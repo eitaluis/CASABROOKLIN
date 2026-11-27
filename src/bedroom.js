@@ -133,7 +133,22 @@ export function buildBedroom({
   groundSurfaces.push(floor);
 
   addWall('parede norte em reboco mineral', 25, wallY, -6.7, 13.2, 4.2, 0.34);
-  addWall('parede sul com painel egípcio', 25, wallY, 5.7, 13.2, 4.2, 0.34);
+  // The south wall includes the locked connecting door to Sadie's adjoining room.
+  addWall('parede sul com painel egípcio — trecho oeste', 19.4875, wallY, 5.7, 2.175, 4.2, 0.34);
+  addWall('parede sul com painel egípcio — trecho leste', 26.7625, wallY, 5.7, 9.675, 4.2, 0.34);
+  addBox('ombreira oeste da porta de Sadie', [20.575, floorY + 1.42, 5.7],
+    [0.13, 2.84, 0.38], mat.brass);
+  addBox('ombreira leste da porta de Sadie', [21.925, floorY + 1.42, 5.7],
+    [0.13, 2.84, 0.38], mat.brass);
+  addBox('verga de calcário da porta de Sadie', [21.25, floorY + 3.36, 5.7],
+    [1.55, 0.92, 0.38], mat.warmWall);
+  const sadieDoor = addBox('porta de madeira para o quarto adjacente de Sadie',
+    [21.25, floorY + 1.18, 5.7], [1.28, 2.34, 0.12], mat.walnut);
+  addBox('filete vertical de bronze na porta de Sadie', [21.25, floorY + 1.18, 5.625],
+    [0.055, 2.08, 0.025], mat.brass);
+  addBox('maçaneta de bronze da porta de Sadie', [21.72, floorY + 1.18, 5.59],
+    [0.055, 0.14, 0.055], mat.brass);
+  const sadieDoorCollider = addCollider(21.25, floorY + 1.18, 5.7, 1.28, 2.34, 0.18);
 
   // The west side remains an open passage to the residential corridor.
   addWall('parede oeste antes da passagem', 18.4, wallY, -4.35, 0.34, 4.2, 4.7);
@@ -583,6 +598,14 @@ export function buildBedroom({
 
   // Interaction points use the same shared E / INTERAGIR flow on desktop/mobile.
   interactables.push({
+    name: 'Porta do quarto de Sadie',
+    label: 'Porta para o quarto de Sadie',
+    prompt: 'E / INTERAGIR · Tentar abrir a porta do quarto de Sadie',
+    position: new THREE.Vector3(21.25, floorY + 1.08, 5.25),
+    radius: 1.9,
+    onInteract: () => 'A porta dá para o quarto contíguo de Sadie. Está trancada.'
+  });
+  interactables.push({
     name: 'Portas panorâmicas do deck',
     label: 'Portas do deck',
     prompt: 'E / INTERAGIR · Destrancar ou abrir as portas do deck',
@@ -658,7 +681,7 @@ export function buildBedroom({
   });
 
   // Brass and limestone detailing helps the room read as an Egyptian-modern suite.
-  for (const x of [20.0, 22.0, 24.0, 26.0, 28.0, 30.0]) {
+  for (const x of [23.5, 25.5, 27.5, 29.5, 30.8]) {
     addBox('filete vertical de latão no painel sul', [x, floorY + 2.1, 5.49],
       [0.025, 2.7, 0.035], mat.brass, root, false);
   }

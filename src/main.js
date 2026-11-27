@@ -20,41 +20,47 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 
 const canvas=document.getElementById('scene');
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
 const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 820;
-renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,isTouchDevice?1.15:1.45));
+// iPhones/iPads have a tighter GPU memory budget than desktop browsers.
+// Render the same scene directly on touch devices, at a capped resolution,
+// without allocating the full-screen post-processing render targets.
+const renderer=new THREE.WebGLRenderer({
+  canvas,
+  antialias:!isTouchDevice,
+  powerPreference:isTouchDevice?'low-power':'high-performance',
+  precision:'mediump'
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,isTouchDevice?0.85:1.45));
 renderer.setSize(window.innerWidth,window.innerHeight);
-renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.shadowMap.enabled=!isTouchDevice;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.18;
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x83949a);scene.fog=new THREE.FogExp2(0x87979a,.0048);
 const camera=new THREE.PerspectiveCamera(58,window.innerWidth/window.innerHeight,.1,1200);
 
 camera.rotation.order='YXZ';
 
-// Pós-processamento cinematográfico compartilhado. No mobile, o AO é omitido
-// e o bloom trabalha com pixel ratio menor para proteger o desempenho.
-const composer = new EffectComposer(renderer);
-composer.setPixelRatio(isTouchDevice ? 0.72 : Math.min(window.devicePixelRatio || 1, 1.12));
-composer.setSize(window.innerWidth, window.innerHeight);
-composer.addPass(new RenderPass(scene, camera));
-let ssaoPass = null;
+// Desktop keeps the cinematic post-processing stack. Mobile renders directly
+// to the canvas to avoid multiple full-resolution GPU render targets.
+let composer = null;
 if (!isTouchDevice) {
-  ssaoPass = new SSAOPass(scene, camera, window.innerWidth, window.innerHeight);
+  composer = new EffectComposer(renderer);
+  composer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.12));
+  composer.setSize(window.innerWidth, window.innerHeight);
+  composer.addPass(new RenderPass(scene, camera));
+  const ssaoPass = new SSAOPass(scene, camera, window.innerWidth, window.innerHeight);
   ssaoPass.kernelRadius = 8;
   ssaoPass.minDistance = 0.004;
   ssaoPass.maxDistance = 0.075;
   composer.addPass(ssaoPass);
+  const bloomPass = new UnrealBloomPass(
+    new THREE.Vector2(window.innerWidth, window.innerHeight), 0.24, 0.28, 0.84
+  );
+  composer.addPass(bloomPass);
+  composer.addPass(new OutputPass());
 }
-const bloomPass = new UnrealBloomPass(
-  new THREE.Vector2(window.innerWidth, window.innerHeight),
-  isTouchDevice ? 0.13 : 0.24,
-  0.28,
-  isTouchDevice ? 0.9 : 0.84
-);
-composer.addPass(bloomPass);
-composer.addPass(new OutputPass());
 const hemi=new THREE.HemisphereLight(0xd2e0e1,0x4a382b,1.8);scene.add(hemi);
-const sun=new THREE.DirectionalLight(0xffd7a0,2.35);sun.position.set(-42,58,35);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-90;sun.shadow.camera.right=90;sun.shadow.camera.top=90;sun.shadow.camera.bottom=-90;sun.shadow.bias=-.00025;scene.add(sun);
+const sun=new THREE.DirectionalLight(0xffd7a0,2.35);sun.position.set(-42,58,35);sun.castShadow=!isTouchDevice;sun.shadow.mapSize.set(isTouchDevice?512:2048,isTouchDevice?512:2048);sun.shadow.camera.left=-90;sun.shadow.camera.right=90;sun.shadow.camera.top=90;sun.shadow.camera.bottom=-90;sun.shadow.bias=-.00025;scene.add(sun);
 const fill=new THREE.DirectionalLight(0x9dbbc7,.78);fill.position.set(50,24,-40);scene.add(fill);
 const clock=new THREE.Clock();
 const colliders=[];const animated=[];const clickable=[];const interactables=[];
@@ -627,16 +633,19 @@ function animate() {
   inventory.update(dt);
   exterior.update(dt, time);
   drawMap();
-  composer.render();
+  if (composer) composer.render();
+  else renderer.render(scene, camera);
 }
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isTouchDevice ? 1.15 : 1.45));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isTouchDevice ? 0.85 : 1.45));
   renderer.setSize(window.innerWidth, window.innerHeight);
-  composer.setPixelRatio(isTouchDevice ? 0.72 : Math.min(window.devicePixelRatio || 1, 1.12));
-  composer.setSize(window.innerWidth, window.innerHeight);
+  if (composer) {
+    composer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.12));
+    composer.setSize(window.innerWidth, window.innerHeight);
+  }
 });
 
 try {

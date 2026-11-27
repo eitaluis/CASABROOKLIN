@@ -332,7 +332,7 @@ for(let z of [-4.35,4.35])box('parede lateral do quarto',[18.4,19,z],[.35,4.2,3.
 box('lintel da passagem do quarto',[18.4,20.55,-.5],[.35,.5,5.0],plaster,false);
 box('parede lateral externa do quarto',[31.6,19,-.5],[.35,4.2,12.5],plaster,false);
 for(let z of [-2.6,2.6])box('ombreira de calcário da ala',[19.25,18.7,z],[.55,3.6,.5],stone,false);
-box('parede divisória do quarto',[25,19,-.5],[.25,4.2,12.5],plaster,false);
+// Planta aberta do quarto: a divisória central foi removida para manter a linha de visão livre.
 box('cama de madeira',[21.8,17.85,-1.2],[4.3,.7,5.4],cedarMat,false);box('colchão',[21.8,18.35,-1.2],[4.1,.45,5.1],new THREE.MeshStandardMaterial({color:0xd1c5ae,roughness:1}),false);for(let x of [20.6,23.0])box('travesseiro',[x,18.65,-3.0],[1.0,.25,1.2],new THREE.MeshStandardMaterial({color:0xebe4d5}),false);
 box('mesa de estudo',[28.2,18.0,-3.8],[3.2,.22,1.5],woodMat,false);for(let x of [27.0,29.4])box('pé da mesa',[x,17.3,-3.8],[.13,1.25,.13],cedarMat,false);
 box('cômoda',[28.5,18.0,3.2],[2.5,1.6,1.0],cedarMat,false);for(let y of [17.7,18.2,18.7])box('gaveta',[28.5,y,3.73],[2.2,.35,.05],gold,false);

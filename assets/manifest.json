@@ -13,7 +13,7 @@
       "id": "ara3d-js",
       "source": "https://github.com/olatunde85/3d-gen",
       "version": "0.18.1",
-      "role": "geração local no navegador da malha humana contínua, game rig, skin weights e clips de locomoção e ações cinematográficas do Carter; Ara ANIMATIONS é consultado para filtrar os IDs disponíveis",
+      "role": "geração local no navegador da malha humana contínua, game rig, skin weights e clips de locomoção e ações cinematográficas do Carter; Ara ANIMATIONS é consultado para filtrar os IDs disponíveis; inclui o clipe throw_grenade como gesto corporal de lançamento usado por HA-DI, sem exibir granada",
       "license": "MIT-code; CC0-1.0-MakeHuman-data; CMU-motion-capture-free-commercial-use"
     },
     {
@@ -290,6 +290,12 @@
       "path": "src/main.js + src/training-room.js + src/magic-system.js + src/third-person.js",
       "role": "persistent shared player vitalidade and energia HUD; Shabti hits lower vitalidade and trigger Ara hit reaction, decaying camera shake and red peripheral damage vignette; below 50% vitality Carter uses crouch/slouch locomotion and cannot sprint; HA-DI spends 30 energy, training staff orbs spend 12, and energy regenerates at 8 points per second; desktop/mobile share the same runtime",
       "license": "project-original-code; Ara animation clips remain under their upstream terms in runtimeAssets and openSourceReferences"
+    },
+    {
+      "id": "ha-di-pooled-vfx-and-throw-cast",
+      "path": "src/magic-system.js + src/character.js + src/main.js",
+      "role": "HA-DI com projétil e explosão pré-alocados; 18 raios, 46 faíscas e 9 puffs agrupados em InstancedMesh; shaders pré-compilados antes de liberar os controles; gesto Ara throw_grenade (2,2 s / liberação em 0,82 s); hieróglifo ḥḏ luminoso sem halo ou anéis externos; lógica compartilhada desktop/mobile",
+      "license": "project-original-code; Ara/CMU animation data follows upstream terms"
     }
   ],
   "openSourceReferences": [
@@ -304,7 +310,7 @@
       "id": "ara3d-character-generator",
       "source": "https://github.com/olatunde85/3d-gen",
       "license": "MIT-code; CC0-1.0-MakeHuman-data; CMU-motion-capture-free-commercial-use",
-      "role": "runtime: geração de malha humana contínua, skin weights, game rig, WeaponR, clips de locomoção/salto e ações cinematográficas; o clipe Point é usado como base corporal da conjuração HA-DI, com adaptação original dos dedos em src/character.js",
+      "role": "runtime: geração da malha humana contínua, skin weights, game rig, WeaponR e clips; catálogo ANIMATIONS filtra Point e throw_grenade para a conjuração HA-DI, com liberação do pulso em 0,82 s",
       "runtimeImported": true
     },
     {

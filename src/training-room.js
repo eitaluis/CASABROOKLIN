@@ -1,3 +1,4 @@
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // Brooklyn House — Sala de Treinamento
 // Reconstrução 3D jogável: quadra de madeira, abóbada pintada, efígies de Rá/cestas,
 // guerreiros shabti e prática de magia. Layout e vários acabamentos são interpretativos.
@@ -510,12 +511,14 @@ export function buildTrainingRoom({
 
   // As figuras laterais deixam de ser bustos procedurais e passam a ser shabtis
   // mumiformes em nichos de calcário, conforme a referência arqueológica escolhida.
-  const wallShabtiNichePlacements = [
-    { side: 'west', z: -9.4, facing: Math.PI / 2, title: 'Shabti do lado norte' },
-    { side: 'west', z: -1.0, facing: Math.PI / 2, title: 'Shabti central oeste' },
-    { side: 'west', z: 7.8, facing: Math.PI / 2, title: 'Shabti do lado sul' },
-    { side: 'east', z: -9.4, facing: -Math.PI / 2, title: 'Shabti do lado norte' },
-    { side: 'east', z: 7.8, facing: -Math.PI / 2, title: 'Shabti do lado sul' }
+  // A descrição do romance fala em estátuas de deuses nas paredes, não em shabtis.
+  // Os expositores abaixo recebem scans de peças arqueológicas reais (ver OPEN-SOURCES.md).
+  const wallGodStatuePlacements = [
+    { side: 'west', z: -6.2, asset: 'bronzeHorus', title: 'Hórus — bronze' },
+    { side: 'west', z: 3.0, asset: 'thothBaboon', title: 'Thoth — babuíno' },
+    { side: 'east', z: -9.2, asset: 'horusFalcon', title: 'Hórus — falcão' },
+    { side: 'east', z: -1.0, asset: 'thothBaboon', title: 'Thoth — babuíno' },
+    { side: 'east', z: 7.6, asset: 'bronzeHorus', title: 'Hórus — bronze' }
   ];
 
   // Efígies de Rá: cabeças de falcão, discos solares vazados e redes de aro.
@@ -845,22 +848,54 @@ export function buildTrainingRoom({
     }
   });
 
-  // Alvos de prática: interpretação lúdica para a atividade de mira mencionada no Manual.
+  // Alvos de magia opcionais: painéis de madeira com círculos pintados.
+  // A forma agora comunica claramente um alvo físico, não uma luminária circular.
   const targets = [];
   function addTarget(z, index) {
     const group = new THREE.Group();
-    group.position.set(westWallX + 0.4, floorY + 2.35, z);
+    group.name = 'painel alvo de magia ' + index;
+    group.position.set(westWallX + 0.36, floorY + 2.35, z);
     group.rotation.y = Math.PI / 2;
-    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.13, 2.2, 20), darkBronze);
-    post.position.set(0, -0.95, 0); group.add(post);
-    const outer = new THREE.Mesh(new THREE.TorusGeometry(0.74, 0.105, 14, 56), bronze);
-    outer.position.z = 0.08; group.add(outer);
-    const middle = new THREE.Mesh(new THREE.TorusGeometry(0.49, 0.07, 12, 48), turquoise);
-    middle.position.z = 0.1; group.add(middle);
-    const inner = new THREE.Mesh(new THREE.TorusGeometry(0.23, 0.055, 10, 40), clayLight);
-    inner.position.z = 0.12; group.add(inner);
-    const center = new THREE.Mesh(new THREE.CircleGeometry(0.12, 32), warmEmissive);
-    center.position.z = 0.14; group.add(center);
+    const backing = new THREE.Mesh(new THREE.BoxGeometry(1.9, 1.9, 0.16), woodDark);
+    backing.name = 'placa quadrada de madeira do alvo';
+    group.add(backing);
+
+    const targetCanvas = document.createElement('canvas');
+    targetCanvas.width = 512; targetCanvas.height = 512;
+    const tc = targetCanvas.getContext('2d');
+    tc.fillStyle = '#c5a878'; tc.fillRect(0, 0, 512, 512);
+    tc.fillStyle = '#2e2921'; tc.font = 'bold 27px Georgia'; tc.textAlign = 'center';
+    tc.fillText('ALVO DE MAGIA', 256, 44);
+    const cx = 256, cy = 278;
+    const rings = [
+      {r:174,color:'#ead9b7',w:13},
+      {r:139,color:'#8b4c32',w:17},
+      {r:103,color:'#e4c89a',w:15},
+      {r:68,color:'#355f61',w:16},
+      {r:34,color:'#8b3e2c',w:12}
+    ];
+    for(const ring of rings){
+      tc.beginPath();tc.arc(cx,cy,ring.r,0,Math.PI*2);
+      tc.strokeStyle=ring.color;tc.lineWidth=ring.w;tc.stroke();
+    }
+    tc.strokeStyle='rgba(53,42,29,.7)';tc.lineWidth=2;
+    tc.beginPath();tc.moveTo(cx-188,cy);tc.lineTo(cx+188,cy);tc.moveTo(cx,cy-188);tc.lineTo(cx,cy+188);tc.stroke();
+    const targetTexture = new THREE.CanvasTexture(targetCanvas);
+    targetTexture.colorSpace = THREE.SRGBColorSpace;
+    const face = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.72, 1.72),
+      new THREE.MeshBasicMaterial({ map: targetTexture, toneMapped: false })
+    );
+    face.name = 'superfície pintada do alvo';
+    face.position.z = 0.086;
+    group.add(face);
+    const center = new THREE.Mesh(
+      new THREE.CircleGeometry(0.105, 32),
+      new THREE.MeshStandardMaterial({ color: 0x8b3e2c, roughness: 0.76 })
+    );
+    center.name = 'centro reativo do alvo';
+    center.position.z = 0.091;
+    group.add(center);
     group.traverse(obj => { if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; } });
     scene.add(group);
     targets.push({ group, position: group.position.clone(), glow: center, hitUntil: 0, index });
@@ -1006,77 +1041,141 @@ export function buildTrainingRoom({
   // Nichos funerários em calcário com shabtis de faiança mumiformes.
   // Os modelos são clones decorativos da mesma família visual dos quatro shabtis interativos,
   // sem armas, sem selo mágico aceso e sem colisão para preservar o espaço de combate.
-  function addWallShabtiNiche({side,z,facing,title}){
-    const x=side==='west'?westWallX+.45:eastWallX-.625;
-    const niche=new THREE.Group();
-    niche.name='nicho de calcário com shabti funerário';
-    niche.position.set(x,floorY,z);
-    niche.rotation.y=facing;
+  // Reagrupa o shabti procedural como forma de guerreiro animável e reserva
+  // uma camada separada para a miniatura digitalizada de museu.
+  const shabtiWarriorForm = new THREE.Group();
+  shabtiWarriorForm.name = 'shabti-warrior-form';
+  for (const child of [...shabtiTemplate.children]) shabtiWarriorForm.add(child);
+  shabtiTemplate.add(shabtiWarriorForm);
+  shabtiWarriorForm.visible = false;
+  const shabtiMuseumScanRoot = new THREE.Group();
+  shabtiMuseumScanRoot.name = 'shabti-museum-scan';
+  shabtiTemplate.add(shabtiMuseumScanRoot);
+  shabtiMuseumScanRoot.visible = true;
 
-    // Nicho compacto, dimensionado para a escala da estatueta, não para uma estátua humana.
-    const backing=new THREE.Mesh(new THREE.BoxGeometry(1.28,1.66,.16),reliefStone);
-    backing.name='moldura profunda de pedra do nicho';
-    backing.position.set(0,1.03,-.12);
-    niche.add(backing);
-    const recess=new THREE.Mesh(new THREE.BoxGeometry(1.02,1.38,.026),nicheShadow);
-    recess.name='fundo sombreado do nicho';
-    recess.position.set(0,1.04,-.025);
-    niche.add(recess);
+  // Scans glTF/GLB em repositório público, com versões otimizadas e licenças auditadas.
+  // O commit fixo evita que um update externo altere silenciosamente os modelos usados no jogo.
+  const museumAssetBase = 'https://cdn.jsdelivr.net/gh/storystage/backstage-assets@502f84adbc9a71d1434e7cc5ab61422bfd92c781/models/sketchfab-history/Prop/';
+  const museumAssetUrls = {
+    shabtiRamose: museumAssetBase + 'shabti-of-ramose.glb',
+    bronzeHorus: museumAssetBase + 'bronze-horus.glb',
+    horusFalcon: museumAssetBase + 'horus-falcon.glb',
+    thothBaboon: museumAssetBase + 'thoth-baboon.glb'
+  };
+  const gltfLoader = new GLTFLoader();
+  const museumModelPromises = new Map();
+  function loadMuseumModel(key) {
+    if (!museumModelPromises.has(key)) {
+      const url = museumAssetUrls[key];
+      museumModelPromises.set(key, gltfLoader.loadAsync(url)
+        .then(result => result.scene)
+        .catch(error => {
+          console.warn('Não foi possível carregar o scan arqueológico ' + key, error);
+          return null;
+        }));
+    }
+    return museumModelPromises.get(key);
+  }
+  function fitMuseumModel(source, targetHeight) {
+    const model = source.clone(true);
+    model.updateMatrixWorld(true);
+    let bounds = new THREE.Box3().setFromObject(model);
+    const size = bounds.getSize(new THREE.Vector3());
+    if (size.y > 0.0001) model.scale.multiplyScalar(targetHeight / size.y);
+    model.updateMatrixWorld(true);
+    bounds = new THREE.Box3().setFromObject(model);
+    model.position.x -= (bounds.min.x + bounds.max.x) * 0.5;
+    model.position.z -= (bounds.min.z + bounds.max.z) * 0.5;
+    model.position.y -= bounds.min.y;
+    model.traverse(object => {
+      if (!object.isMesh) return;
+      object.castShadow = true;
+      object.receiveShadow = true;
+    });
+    model.updateMatrixWorld(true);
+    return model;
+  }
 
-    const base=new THREE.Mesh(new THREE.BoxGeometry(1.2,.16,.42),limestoneShade);
-    base.name='base de exposição do shabti';
-    base.position.set(0,.22,.16);
-    niche.add(base);
-    const baseInlay=new THREE.Mesh(new THREE.BoxGeometry(1.0,.032,.035),raGold);
-    baseInlay.position.set(0,.305,.38);
-    niche.add(baseInlay);
+  // Nichos profundos, como expositores embutidos na parede, agora contêm esculturas
+  // divinas digitalizadas: Hórus e Thoth. Não são figuras genéricas nem miniaturas shabti.
+  function addWallGodStatue(placement) {
+    const west = placement.side === 'west';
+    const group = new THREE.Group();
+    group.name = 'nicho de parede com estátua de ' + placement.title;
+    group.position.set(west ? westWallX + 0.34 : eastWallX - 0.34, floorY, placement.z);
+    group.rotation.y = west ? Math.PI / 2 : -Math.PI / 2;
 
-    for(const sx of [-1,1]){
-      const pier=new THREE.Mesh(new THREE.BoxGeometry(.14,1.33,.29),limestone);
-      pier.name='ombreira de calcário do nicho';
-      pier.position.set(sx*.57,.99,.11);
-      niche.add(pier);
-      const pierCap=new THREE.Mesh(new THREE.BoxGeometry(.19,.13,.34),limestoneShade);
-      pierCap.position.set(sx*.57,1.68,.11);
-      niche.add(pierCap);
-      for(let groove=0;groove<3;groove++){
-        const gx=sx*.57+(groove-1)*.032;
-        addTube('estria vertical gravada na ombreira',[[gx,.39,.265],[gx,.98,.266],[gx,1.56,.265]],.0055,raGold,niche,16);
+    const backing = new THREE.Mesh(new THREE.BoxGeometry(2.02, 2.52, 0.2), reliefStone);
+    backing.name = 'fundo profundo de calcário do expositor';
+    backing.position.set(0, 1.34, -0.34);
+    group.add(backing);
+    const recessedPanel = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.72, 2.22),
+      new THREE.MeshStandardMaterial({ color: 0x625746, roughness: 0.94, metalness: 0 })
+    );
+    recessedPanel.name = 'painel de sombra do nicho';
+    recessedPanel.position.set(0, 1.36, -0.225);
+    group.add(recessedPanel);
+
+    const shelf = new THREE.Mesh(new THREE.BoxGeometry(1.62, 0.24, 0.88), limestoneShade);
+    shelf.name = 'pedestal de calcário da estátua';
+    shelf.position.set(0, 0.43, 0.12);
+    group.add(shelf);
+    const shelfInlay = new THREE.Mesh(new THREE.BoxGeometry(1.42, 0.035, 0.04), raGold);
+    shelfInlay.position.set(0, 0.565, 0.54);
+    group.add(shelfInlay);
+
+    for (const side of [-1, 1]) {
+      const jamb = new THREE.Mesh(new THREE.BoxGeometry(0.17, 2.28, 0.58), limestone);
+      jamb.name = 'montante frontal do nicho';
+      jamb.position.set(side * 0.91, 1.34, 0.04);
+      group.add(jamb);
+      const capital = new THREE.Mesh(new THREE.BoxGeometry(0.23, 0.18, 0.62), limestoneShade);
+      capital.position.set(side * 0.91, 2.54, 0.04);
+      group.add(capital);
+      for (let groove = 0; groove < 3; groove++) {
+        const gx = side * 0.91 + (groove - 1) * 0.038;
+        addTube('sulco vertical no montante', [[gx, 0.48, 0.335], [gx, 1.3, 0.335], [gx, 2.22, 0.335]], 0.006, raGold, group, 18);
       }
     }
-    addTube('arco superior do nicho funerário',[
-      [-.65,1.61,.12],[-.6,1.74,.12],[-.44,1.83,.12],[-.23,1.88,.12],
-      [0,1.9,.12],[.23,1.88,.12],[.44,1.83,.12],[.6,1.74,.12],[.65,1.61,.12]
-    ],.058,limestoneShade,niche,48);
-    const crownBlock=new THREE.Mesh(new THREE.BoxGeometry(.27,.13,.29),limestoneShade);
-    crownBlock.name='fecho em flor de lótus do nicho';
-    crownBlock.position.set(0,1.89,.12);
-    niche.add(crownBlock);
-    const crownInset=new THREE.Mesh(new THREE.TorusGeometry(.064,.015,8,24),raGold);
-    crownInset.position.set(0,1.9,.29);
-    niche.add(crownInset);
+    addTube('arco de calcário do nicho', [
+      [-1.02, 2.43, 0.06], [-0.94, 2.62, 0.06], [-0.69, 2.76, 0.06],
+      [-0.36, 2.83, 0.06], [0, 2.86, 0.06], [0.36, 2.83, 0.06],
+      [0.69, 2.76, 0.06], [0.94, 2.62, 0.06], [1.02, 2.43, 0.06]
+    ], 0.075, limestoneShade, group, 56);
 
-    const figure=shabtiTemplate.clone(true);
-    figure.name='shabti de faiança em nicho';
-    figure.position.set(0,.33,.31);
-    figure.scale.setScalar(.55);
-    figure.traverse(object=>{
-      if(object.isMesh){object.castShadow=true;object.receiveShadow=true;}
-      if(object.name==='selo de invocação da miniatura'
-        ||object.name==='khopesh de treino do shabti'
-        ||object.name==='punho da espada curva'
-        ||object.name==='guarda da espada curva'
-        ||object.name==='escudo oval do shabti'
-        ||object.name==='escudo de faiança esmaltada'
-        ||object.name==='aro dourado do escudo'
-        ||object.name==='umbigo de bronze do escudo') object.visible=false;
+    const labelCanvas = document.createElement('canvas');
+    labelCanvas.width = 512; labelCanvas.height = 128;
+    const labelCtx = labelCanvas.getContext('2d');
+    labelCtx.fillStyle = '#203239'; labelCtx.fillRect(0, 0, 512, 128);
+    labelCtx.strokeStyle = '#c7a36a'; labelCtx.lineWidth = 7; labelCtx.strokeRect(5, 5, 502, 118);
+    labelCtx.fillStyle = '#f0dfbd'; labelCtx.textAlign = 'center';
+    labelCtx.font = 'bold 38px Georgia'; labelCtx.fillText(placement.title.toUpperCase(), 256, 80);
+    const labelTexture = new THREE.CanvasTexture(labelCanvas);
+    labelTexture.colorSpace = THREE.SRGBColorSpace;
+    const label = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.18, 0.25),
+      new THREE.MeshBasicMaterial({ map: labelTexture, toneMapped: false })
+    );
+    label.name = 'plaqueta identificadora da estátua';
+    label.position.set(0, 0.32, 0.575);
+    group.add(label);
+    scene.add(group);
+
+    loadMuseumModel(placement.asset).then(source => {
+      if (!source) return;
+      const targetHeight = placement.asset === 'thothBaboon' ? 1.08 : 1.22;
+      const model = fitMuseumModel(source, targetHeight);
+      model.name = 'scan 3D de ' + placement.title;
+      model.position.set(0, 0.57, 0.16);
+      group.add(model);
     });
-    niche.add(figure);
-    scene.add(niche);
-    return niche;
+    return group;
   }
-  const wallShabtiNiches=wallShabtiNichePlacements.map(addWallShabtiNiche);
+  const wallGodStatues = wallGodStatuePlacements.map(addWallGodStatue);
 
+  // Cada miniatura dos quatro guerreiros usa o scan do Shabti de Ramose.
+  // A forma procedural só aparece na transformação para o guerreiro armado.
   const shabtiOffsets=[[-6.2,-10.2],[6.2,-10.2],[-6.2,10.2],[6.2,10.2]];
   const shabtiWarriors = shabtiOffsets.map((offset,index)=>{
     const group=index===0?shabtiTemplate:shabtiTemplate.clone(true);
@@ -1093,6 +1192,8 @@ export function buildTrainingRoom({
       group,index,health:2,spawnProgress:1,hitAt:0,defeatTime:0,magicRespawnTimer:0,active:false,defeated:false,collider:null,
       aiState:'idle',windup:0,strike:0,strikeResolved:false,attackCooldown:0,moveSpeed:1.32,
       origin:group.position.clone(),miniScale:shabtiMiniScale,fullScale:shabtiFullScale,
+      warriorForm:group.getObjectByName('shabti-warrior-form'),
+      scanRoot:group.getObjectByName('shabti-museum-scan'),
       aura,beamMat,swordArm:group.getObjectByName('shabti-sword-arm'),shieldArm:group.getObjectByName('shabti-shield-arm'),
       swordForearm:group.getObjectByName('cotovelo armado'),shieldForearm:group.getObjectByName('antebraço do escudo'),
       leftLeg:group.getObjectByName('shabti-perna-esquerda'),rightLeg:group.getObjectByName('shabti-perna-direita'),
@@ -1121,6 +1222,16 @@ export function buildTrainingRoom({
       }
     });
     return state;
+  });
+  loadMuseumModel('shabtiRamose').then(source => {
+    if (!source) return;
+    for (const state of shabtiWarriors) {
+      const scan = fitMuseumModel(source, 1.68);
+      scan.name = 'scan original do Shabti de Ramose';
+      state.scanRoot.add(scan);
+      state.scanRoot.visible = !state.active;
+      state.warriorForm.visible = state.active;
+    }
   });
   let shabtiActive=false,shabtiRemaining=0;
   const shabtiDebris=[];
@@ -1275,6 +1386,8 @@ export function buildTrainingRoom({
     state.group.rotation.set(0, 0, 0);
     state.group.scale.setScalar(state.miniScale);
     state.group.visible = true;
+    state.warriorForm.visible = true;
+    state.scanRoot.visible = false;
     state.group.traverse(object => { if (object.userData?.miniatureOnly) object.visible = true; });
     state.health = 2;
     state.spawnProgress = 0;
@@ -1337,6 +1450,7 @@ export function buildTrainingRoom({
       state.windup=0;state.strike=0;state.strikeResolved=false;state.attackCooldown=.7+state.index*.22;state.moveSpeed=1.18+(state.index%2)*.15;
       state.hitAt=0;state.defeatTime=0;state.active=true;state.defeated=false;state.marked=false;
       state.group.visible=true;state.group.position.copy(state.origin);state.group.rotation.set(0,0,0);state.group.scale.setScalar(state.miniScale);
+      state.warriorForm.visible=true;state.scanRoot.visible=false;
       state.swordArm.rotation.set(0,0,-.78);state.shieldArm.rotation.set(0,0,.78);state.leftLeg.visible=false;state.rightLeg.visible=false;
       state.leftLeg.rotation.set(0,0,0);state.rightLeg.rotation.set(0,0,0);
       state.group.traverse(obj=>{if(obj.userData?.miniatureOnly)obj.visible=true;});
@@ -1350,24 +1464,71 @@ export function buildTrainingRoom({
     return reason+' Restam '+shabtiRemaining+' guerreiros.';
   }
 
+  // Quadro-negro físico para a aula. A existência de um quadro é adaptação visual:
+  // o romance descreve a atividade Magic Problem-Solving 101 / Whatever Works, não o objeto.
   const problemBoard = new THREE.Group();
-  problemBoard.name = 'quadro da aula Whatever Works';
-  problemBoard.position.set(westWallX + 0.48, floorY + 2.0, 11.2);
+  problemBoard.name = 'quadro-negro físico da aula Whatever Works';
+  problemBoard.position.set(westWallX + 0.34, floorY + 2.03, 12.45);
   problemBoard.rotation.y = Math.PI / 2;
-  const problemBack = new THREE.Mesh(new THREE.BoxGeometry(0.14, 2.4, 3.1), darkBronze);
-  problemBoard.add(problemBack);
-  const paperCanvas=document.createElement('canvas'); paperCanvas.width=768;paperCanvas.height=512;
-  const pg=paperCanvas.getContext('2d'); pg.fillStyle='#ead9b5';pg.fillRect(0,0,768,512);pg.strokeStyle='#765431';pg.lineWidth=16;pg.strokeRect(10,10,748,492);
-  pg.fillStyle='#24424a';pg.fillRect(24,24,720,76);pg.fillStyle='#f1d7a0';pg.textAlign='center';pg.font='bold 36px Georgia';pg.fillText('MAGIC PROBLEM-SOLVING 101',384,76);
-  pg.fillStyle='#332a20';pg.font='bold 66px Georgia';pg.fillText('WHATEVER WORKS',384,190);
-  pg.font='bold 30px Georgia';pg.fillText('E / INTERAGIR  ·  DESPERTAR OS QUATRO SHABTIS',384,270);
-  pg.font='26px Georgia';pg.fillText('Aproxime-se e use E para marcar SA-PER (errar)',384,330);
-  pg.fillText('G / HA-DI · destrua um Shabti à distância',384,380);
-  pg.fillText('F / USAR, khopesh ou basquete também funcionam',384,430);
-  const paperTexture = new THREE.CanvasTexture(paperCanvas);
-  paperTexture.colorSpace = THREE.SRGBColorSpace;
-  const problemFace = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 1.92), new THREE.MeshBasicMaterial({ map: paperTexture }));
-  problemFace.position.z = 0.085; problemBoard.add(problemFace);
+  const boardBacking = new THREE.Mesh(new THREE.BoxGeometry(2.58, 2.0, 0.18), woodDark);
+  boardBacking.name = 'corpo espesso de madeira do quadro';
+  problemBoard.add(boardBacking);
+  const chalkCanvas = document.createElement('canvas');
+  chalkCanvas.width = 1024; chalkCanvas.height = 768;
+  const chalkCtx = chalkCanvas.getContext('2d');
+  chalkCtx.fillStyle = '#253c35'; chalkCtx.fillRect(0, 0, 1024, 768);
+  let chalkSeed = 43129;
+  const chalkRandom = () => { chalkSeed = (chalkSeed * 1664525 + 1013904223) >>> 0; return chalkSeed / 4294967296; };
+  for(let i=0;i<4200;i++){
+    const x=chalkRandom()*1024, y=chalkRandom()*768, r=.5+chalkRandom()*1.8;
+    chalkCtx.fillStyle=chalkRandom()>.5?'rgba(244,239,220,.075)':'rgba(9,19,17,.10)';
+    chalkCtx.beginPath();chalkCtx.arc(x,y,r,0,Math.PI*2);chalkCtx.fill();
+  }
+  chalkCtx.strokeStyle='rgba(235,228,206,.72)';chalkCtx.lineWidth=5;chalkCtx.strokeRect(24,24,976,720);
+  chalkCtx.fillStyle='#f2e8ce';chalkCtx.textAlign='center';
+  chalkCtx.font='bold 49px Georgia';chalkCtx.fillText('MAGIC PROBLEM-SOLVING 101',512,135);
+  chalkCtx.strokeStyle='rgba(218,199,158,.8)';chalkCtx.lineWidth=3;
+  chalkCtx.beginPath();chalkCtx.moveTo(120,177);chalkCtx.lineTo(904,177);chalkCtx.stroke();
+  chalkCtx.font='bold 75px Georgia';chalkCtx.fillText('WHATEVER WORKS',512,292);
+  chalkCtx.font='italic 35px Georgia';chalkCtx.fillText('A aula de combate de Carter',512,359);
+  chalkCtx.font='bold 34px Georgia';chalkCtx.fillText('DESPERTE OS QUATRO SHABTIS',512,466);
+  chalkCtx.font='30px Georgia';chalkCtx.fillText('Use o que funcionar para neutralizá-los.',512,528);
+  chalkCtx.font='27px Georgia';chalkCtx.fillText('SA-PER  ·  HA-DI  ·  KHOpeSH  ·  BASQUETE',512,603);
+  chalkCtx.strokeStyle='rgba(234,224,195,.55)';chalkCtx.lineWidth=4;
+  chalkCtx.beginPath();chalkCtx.moveTo(270,653);chalkCtx.lineTo(754,653);chalkCtx.stroke();
+  const chalkTexture = new THREE.CanvasTexture(chalkCanvas);
+  chalkTexture.colorSpace = THREE.SRGBColorSpace;
+  const chalkFace = new THREE.Mesh(
+    new THREE.PlaneGeometry(2.38, 1.78),
+    new THREE.MeshBasicMaterial({ map: chalkTexture, toneMapped: false })
+  );
+  chalkFace.name = 'superfície verde de giz do quadro';
+  chalkFace.position.z = 0.096;
+  problemBoard.add(chalkFace);
+
+  // Moldura em madeira, friso metálico e bandeja inferior com pedaços de giz.
+  for (const [x,y,w,h] of [
+    [0,0.97,2.62,0.11],[0,-0.97,2.62,0.11],[-1.255,0,0.11,1.96],[1.255,0,0.11,1.96]
+  ]) {
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(w,h,0.24), darkBronze);
+    rail.name = 'moldura de madeira do quadro';
+    rail.position.set(x,y,0.04);
+    problemBoard.add(rail);
+  }
+  const chalkTray = new THREE.Mesh(new THREE.BoxGeometry(2.42,0.09,0.34), woodDark);
+  chalkTray.name = 'bandeja inferior do quadro';
+  chalkTray.position.set(0,-1.08,0.18);
+  problemBoard.add(chalkTray);
+  const chalkPieceMat = new THREE.MeshStandardMaterial({ color: 0xe8dfc8, roughness: 0.9 });
+  for(let i=0;i<4;i++){
+    const chalk = new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.14,8),chalkPieceMat);
+    chalk.rotation.z=Math.PI/2;
+    chalk.position.set(-.72+i*.13,-1.015,.28);
+    problemBoard.add(chalk);
+  }
+  const eraser = new THREE.Mesh(new THREE.BoxGeometry(.19,.055,.12),new THREE.MeshStandardMaterial({color:0x9c7655,roughness:.88}));
+  eraser.position.set(.68,-1.015,.27);
+  problemBoard.add(eraser);
   scene.add(problemBoard);
   addInteractable({
     name: 'Quadro da aula Magic Problem-Solving 101', label: 'Whatever Works — prova prática',
@@ -1546,6 +1707,7 @@ export function buildTrainingRoom({
           state.group.position.copy(state.origin);
           state.group.rotation.set(0, 0, 0);
           state.group.scale.setScalar(state.miniScale);
+          state.warriorForm.visible=false;state.scanRoot.visible=true;
           state.group.traverse(object => { if (object.userData?.miniatureOnly) object.visible = true; });
           state.defeated = false;
           state.spawnProgress = 1;
@@ -1681,6 +1843,7 @@ export function buildTrainingRoom({
         state.group.scale.setScalar(THREE.MathUtils.lerp(state.fullScale,state.miniScale,reverse));
         if(state.defeatTime<=0){
           state.group.visible=true;state.group.position.copy(state.origin);state.group.rotation.set(0,0,0);state.group.scale.setScalar(state.miniScale);
+          state.warriorForm.visible=false;state.scanRoot.visible=true;
           state.spawnProgress=1;state.aura.visible=false;state.swordArm.rotation.set(0,0,-.78);state.shieldArm.rotation.set(0,0,.78);
           state.leftLeg.visible=false;state.rightLeg.visible=false;state.leftLeg.rotation.set(0,0,0);state.rightLeg.rotation.set(0,0,0);
           state.group.traverse(obj=>{if(obj.userData?.miniatureOnly)obj.visible=true;});

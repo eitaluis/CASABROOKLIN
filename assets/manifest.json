@@ -317,7 +317,7 @@
     },
     {
       "id": "casabrooklin-visual-research-approval-skill",
-      "path": "SKILL.md",
+      "path": "SKILL.md + AGENTS.md",
       "role": "mandatory project-wide process: read book passages and separate canon from interpretation; inspect official author/publisher/illustrator imagery plus historical and fan-art references with proper attribution; search real open 3D/code/texture assets and verify license, dimensions, hierarchy, rig, formats, Three.js/mobile fit; present actual visual references/previews/comparison in chat; wait for explicit user approval before download, new modeling, replacement or integration; preserve desktop/mobile parity and run visual QA",
       "license": "project-original-documentation"
     }

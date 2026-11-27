@@ -1,5 +1,12 @@
 {
-  "generatedAt": "2026-11-27T16:24:35.851Z",
+  "generatedAt": "2026-11-27T16:27:29.785Z",
+  "bagAsset": {
+    "source": "Innerscene - original model",
+    "url": "https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2",
+    "license": "CC0-1.0",
+    "file": "assets/models/carter/innerscene-crossbody-bag.glb",
+    "bytes": 3687552
+  },
   "sourceLibrary": "KinemIQ public animation library",
   "sourceCreditsPage": "https://kinemiq.app/sources/",
   "licensingNote": "KinemIQ identifies Quaternius Universal Animation Library/UAL2 as CC0-1.0, Open Motion Project (ACCAD / The Ohio State University) as CC-BY-3.0, and The 100STYLE Dataset as CC-BY-4.0. The pack declares the mixed source set; retain the per-file metadata and attribution when redistributing.",

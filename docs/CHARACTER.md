@@ -57,11 +57,12 @@ As ações expressivas são expostas por playAction() e stopAction(). Se algum I
 
 - A locomoção continua sendo orientada pela velocidade física do controlador e pelo blending idle/walk/run do Ara.
 - A aceleração e a desaceleração foram suavizadas.
-- A rotação horizontal do corpo e a inclinação frontal foram suavizadas. A inclinação lateral do root foi desativada para impedir que Carter tombe para a direita/esquerda ao correr.
+- A rotação horizontal do corpo é suavizada, mas o root fica estritamente neutro nos eixos de inclinação: somente yaw é aplicado. Não há inclinação frontal nem lateral ao correr, andar para os lados ou girar a câmera.
 - Ao trocar de cômodo, o controlador de locomoção anterior é encerrado antes de criar o novo; os portais automáticos reativam a locomoção sem acumular controladores no mesmo mixer.
 - A câmera de terceira pessoa acompanha com easing mais lento.
 - O salto combina jump_start/jump_air/jump_land com um arco físico vertical no controlador (impulso inicial + gravidade), em vez de manter o root no piso durante o clip.
-- A partir de 50% de vitalidade, Carter troca para crouch idle e walk_slouch; o controlador bloqueia sprint enquanto o estado ferido estiver ativo.
+- A partir de 50% de vitalidade, Carter troca para crouch idle e walk_slouch; o sprint fica bloqueado. O blend mantém três clips distintos (crouch / walk_slouch / run) para evitar duas ações concorrentes com o mesmo clip.
+- A reação hit_* tem uma janela curta de impacto; ao continuar andando, o jogador pode retomar a locomoção sem esperar o fim de uma animação longa. Hits repetidos não reiniciam indefinidamente a mesma reação.
 - Os valores são compartilhados entre desktop e mobile; somente os controles de entrada diferem.
 
 ## Preview
@@ -81,7 +82,7 @@ Abra character-preview.html para conferir o mesmo módulo usado pelo jogo. O pre
 - Confirmar elevação física do root durante o salto e contato dos pés na aterrissagem.
 - Verificar o balanço secundário sem vibração, penetração na perna ou movimento excessivo.
 - Confirmar que os cinco botões cinematográficos correspondem a clips carregados no Ara.
-- Conferir as reações de impacto direcionais e o retorno suave à locomoção.
+- Conferir as reações de impacto direcionais e o retorno à locomoção, inclusive quando dois ou mais golpes chegam em sequência e enquanto o jogador mantém movimento.
 - Testar as barras VITALIDADE/ENERGIA, custo de HA-DI/orbe, regeneração e limiar de 50% para o estado ferido.
 - Conferir o tremor de câmera e a vinheta vermelha periférica quando um golpe conecta.
 - Conferir escala do personagem contra portas, móveis, corrimãos e objetos da Brooklyn House.

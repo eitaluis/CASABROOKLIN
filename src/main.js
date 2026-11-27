@@ -28,7 +28,7 @@ const renderer=new THREE.WebGLRenderer({
   canvas,
   antialias:!isTouchDevice,
   powerPreference:isTouchDevice?'low-power':'high-performance',
-  precision:'mediump'
+  precision:isTouchDevice?'mediump':'highp'
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,isTouchDevice?0.85:1.45));
 renderer.setSize(window.innerWidth,window.innerHeight);

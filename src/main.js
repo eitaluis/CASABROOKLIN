@@ -6,9 +6,9 @@ import { buildInteriorDetails } from './interior-details.js?v=great-hall-travers
 import { buildLibrary } from './library.js?v=library-asset-first-20261127b';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-curves-20261127c';
 import { buildTrainingRoom } from './training-room.js?v=museum-statues-board-20261127b';
-import { createInventory } from './inventory.js?v=inventory-polyfork-quarterstaff-20261127a';
+import { createInventory } from './inventory.js?v=carter-ara-weapons-duat-vortex-20261127a';
 import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
-import { createCharacter } from './character.js?v=great-hall-curves-20261127c';
+import { createCharacter } from './character.js?v=carter-ara-weapons-duat-vortex-20261127a';
 import { createThirdPersonController } from './third-person.js?v=great-hall-curves-20261127c';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';

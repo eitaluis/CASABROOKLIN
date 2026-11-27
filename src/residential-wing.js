@@ -565,25 +565,31 @@ export function buildResidentialWing({
   loadModel('nightstand.glb', [26.8, FLOOR_Y, 2.55], [1, 1, 1], Math.PI, 'Mesa de cabeceira de Sadie');
   loadModel('table-lamp.glb', [26.8, FLOOR_Y + 0.55, 2.55], [1, 1, 1], 0, 'Luminária de cabeceira de Sadie');
   loadModel('wardrobe.glb', [23.9, FLOOR_Y, 8.35], [0.96, 1, 1], Math.PI, 'Armário do closet de Sadie');
+  loadModel('counter.glb', [32.55, FLOOR_Y, 4.65], [0.82, 0.82, 0.82], -Math.PI / 2, 'Aparador de apoio do frigobar de Sadie');
+  addCollider(32.55, FLOOR_Y + 0.31, 4.65, 0.76, 0.65, 0.56);
 
   // O minibar tem GLB CC0 próprio e dois clips (open/close). A origem e a licença
   // foram verificadas na ficha pública do asset; não depende de um modelo embutido
   // no pacote inteiro de hotel.
   let sadieMinibar = null;
+  let minibarFallbackHinge = null;
   let sadieMinibarOpen = false;
   const sadieMinibarLight = new THREE.PointLight(0xa7d8df, 0, 2.1);
   sadieMinibarLight.position.set(33.18, FLOOR_Y + 0.62, 4.65);
   roomGroup.add(sadieMinibarLight);
   const playMinibarClip = (open) => {
-    if (!sadieMinibar?.mixer) return;
-    const expression = open ? /open/i : /close/i;
-    const clip = sadieMinibar.animations.find(item => expression.test(item.name));
-    if (!clip) return;
-    const action = sadieMinibar.mixer.clipAction(clip);
-    action.reset();
-    action.setLoop(THREE.LoopOnce, 1);
-    action.clampWhenFinished = true;
-    action.play();
+    if (sadieMinibar?.mixer) {
+      const expression = open ? /open/i : /close/i;
+      const clip = sadieMinibar.animations.find(item => expression.test(item.name));
+      if (!clip) return;
+      const action = sadieMinibar.mixer.clipAction(clip);
+      action.reset();
+      action.setLoop(THREE.LoopOnce, 1);
+      action.clampWhenFinished = true;
+      action.play();
+    } else if (minibarFallbackHinge) {
+      minibarFallbackHinge.rotation.y = open ? -0.92 : 0;
+    }
   };
   loadRemoteModel(
     'https://cdn.3dassets.dev/assets/25760/v1/model.glb',
@@ -591,6 +597,24 @@ export function buildResidentialWing({
     'Minibar CC0 do quarto de Sadie',
     loaded => {
       sadieMinibar = loaded;
+      if (!loaded) {
+        // Fallback local para que a interação continue disponível mesmo offline.
+        const cabinet = new THREE.Group();
+        cabinet.position.set(33.42, FLOOR_Y, 4.65);
+        roomGroup.add(cabinet);
+        const carcass = new THREE.Mesh(new RoundedBoxGeometry(0.62, 0.88, 0.58, 6, 0.035), woodMat);
+        carcass.position.y = 0.44;
+        carcass.castShadow = true; carcass.receiveShadow = true; cabinet.add(carcass);
+        const inner = new THREE.Mesh(new RoundedBoxGeometry(0.48, 0.66, 0.44, 5, 0.025), darkWood);
+        inner.position.set(0, 0.47, 0.045); cabinet.add(inner);
+        minibarFallbackHinge = new THREE.Group();
+        minibarFallbackHinge.position.set(-0.29, 0.05, 0.31);
+        cabinet.add(minibarFallbackHinge);
+        const leaf = new THREE.Mesh(new RoundedBoxGeometry(0.57, 0.77, 0.045, 5, 0.025), bronze);
+        leaf.position.set(0.285, 0.39, 0);
+        minibarFallbackHinge.add(leaf);
+        sadieMinibar = { model: cabinet, mixer: null, animations: [] };
+      }
       if (loaded && sadieMinibarOpen) playMinibarClip(true);
     }
   );
@@ -737,7 +761,7 @@ export function buildResidentialWing({
   roomGroup.add(fridgeGlow);
 
   const sadieSnacks = new THREE.Group();
-  sadieSnacks.position.set(33.42, FLOOR_Y + 0.94, 4.65);
+  sadieSnacks.position.set(32.55, FLOOR_Y + 0.78, 4.65);
   roomGroup.add(sadieSnacks);
   const ribenaBottle = new THREE.Mesh(
     new THREE.CylinderGeometry(0.055, 0.062, 0.24, 20),
@@ -756,7 +780,7 @@ export function buildResidentialWing({
   // exata é interpretação, pois o romance não fornece medidas ou posição cotada.
   wallZ(6.05, 22.55, 25.45, [[23.62, 24.82]]);
   wallX(25.45, 6.05, 9.0, []);
-  box('Piso em nogueira do closet de Sadie', 23.98, FLOOR_Y + 0.015, 7.5, 2.84, 0.025, 2.9, woodMat, false);
+  box('Piso em nogueira do closet de Sadie', 23.98, FLOOR_Y - 0.005, 7.5, 2.84, 0.01, 2.9, woodMat, false);
   makeDoorOnZ({
     name: 'Porta do closet de Sadie', x: 24.22, z: 6.05, width: 1.2,
     prompt: 'E / INTERAGIR · abrir o closet de Sadie',
@@ -787,7 +811,7 @@ export function buildResidentialWing({
 
   wallZ(6.05, 29.25, 34.65, [[30.05, 31.55]]);
   wallX(29.25, 6.05, 9.0, []);
-  box('Piso de travertino do banheiro de Sadie', 31.95, FLOOR_Y + 0.015, 7.5, 5.3, 0.025, 2.9, stoneMat, false);
+  box('Piso de travertino do banheiro de Sadie', 31.95, FLOOR_Y - 0.005, 7.5, 5.3, 0.01, 2.9, stoneMat, false);
   loadModel('shower.glb', [33.65, FLOOR_Y, 8.08], [0.95, 0.95, 0.95], Math.PI, 'Box do banheiro de Sadie');
   loadModel('sink.glb', [32.15, FLOOR_Y, 8.45], [0.88, 0.88, 0.88], Math.PI, 'Lavatório do banheiro de Sadie');
   loadModel('toilet.glb', [30.65, FLOOR_Y, 8.15], [0.92, 0.92, 0.92], Math.PI / 2, 'Vaso sanitário do banheiro de Sadie');
@@ -926,24 +950,22 @@ export function buildResidentialWing({
     });
   let sadieSnacksTaken = false;
   addInspect('Minibar de Sadie', 'Frigobar embutido',
-    'Cômoda com refrigerador embutido, como descrita no quarto de Sadie em O Trono de Fogo. Abra, recolha os lanches e feche novamente.',
-    33.42, 4.65, 1.7, () => {
-      if (!sadieMinibarOpen) {
-        sadieMinibarOpen = true;
-        sadieMinibarLight.intensity = 0.62;
-        playMinibarClip(true);
-        return 'O frigobar abriu: Ribena gelada e chocolates estão disponíveis.';
-      }
-      if (!sadieSnacksTaken) {
-        sadieSnacksTaken = true;
-        sadieSnacks.visible = false;
-        return 'Você guardou uma Ribena e alguns chocolates.';
-      }
-      sadieMinibarOpen = false;
-      sadieMinibarLight.intensity = 0;
-      playMinibarClip(false);
-      return 'O frigobar de Sadie foi fechado.';
-    }, 'E / INTERAGIR · abrir / recolher / fechar');
+    'Cômoda com refrigerador embutido, como descrita no quarto de Sadie em O Trono de Fogo.',
+    33.42, 4.65, 1.55, () => {
+      sadieMinibarOpen = !sadieMinibarOpen;
+      sadieMinibarLight.intensity = sadieMinibarOpen ? 0.62 : 0;
+      playMinibarClip(sadieMinibarOpen);
+      return sadieMinibarOpen ? 'O frigobar abriu.' : 'O frigobar de Sadie foi fechado.';
+    }, 'E / INTERAGIR · abrir / fechar');
+  addInspect('Ribena e chocolates de Sadie', 'Ribena e chocolates',
+    'Bebidas Ribena e chocolates ficam disponíveis ao lado do refrigerador embutido.',
+    32.55, 4.65, 1.35, () => {
+      if (!sadieMinibarOpen) return 'Abra primeiro o frigobar para pegar os lanches.';
+      if (sadieSnacksTaken) return 'Você já guardou os lanches de Sadie na bolsa.';
+      sadieSnacksTaken = true;
+      sadieSnacks.visible = false;
+      return 'Você guardou uma Ribena e alguns chocolates.';
+    }, 'E / INTERAGIR · pegar os lanches');
   let sadieDockOn = false;
   addInspect('Dock do iPod de Sadie', 'Dock de música',
     'Dock moderno para iPod com fones de ouvido. A interação acende o visor e os indicadores, sem reproduzir áudio comercial.',

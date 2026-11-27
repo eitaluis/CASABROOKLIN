@@ -51,7 +51,11 @@ Todo espaço começa pela compreensão do lugar descrito no livro e por uma pesq
 - [ ] Criar collider coerente com a silhueta e o uso do objeto.
 - [ ] Adicionar interação quando houver valor de jogo: inspeção, sentar, usar, abrir, subir, ler, recolher, acionar ou evitar.
 
-### Fase 04 — validação
+### Estudos residenciais já existentes
+
+A ala residencial do terceiro andar tem uma matriz asset-first específica em [RESIDENTIAL-WING-STUDY.md](RESIDENTIAL-WING-STUDY.md). Ela reúne passagens de Carter e Sadie, separação entre cânone e planta interpretativa, modelos MIT locais, modelos CC0 remotos, referências do Grand Egyptian Museum, dimensões/licenças, assets rejeitados e QA pendente. Antes de reutilizar qualquer peça dessa ala, conferir o estudo e o manifesto: o GLB bed.glb local está vazio e não pode ser considerado um asset integrado.
+
+## Fase 04 — validação
 - [ ] Comparar com a referência textual e visual, frontal e em ângulos de jogo.
 - [ ] Testar distância do personagem aos móveis e altura de assento/mesa.
 - [ ] Testar colisão, passagem, escadas, interações e clipping.

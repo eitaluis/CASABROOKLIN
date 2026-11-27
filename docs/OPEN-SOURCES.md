@@ -331,3 +331,18 @@ Estes três GLBs foram adicionados à cena a partir de versões otimizadas do pr
 - The Met — [Head of an anthropomorphic falcon god](https://www.metmuseum.org/art/collection/search/549699): cabeça em diorito, peruca estriada e encaixe superior que pode ter sustentado um disco solar; a instituição relaciona a peça a Re/Re-Harakhty. Referência visual para a cabeça e o encaixe, não um asset importado.
 - RISD Museum — [Temple god / Seated Horus](https://risdmuseum.org/art-design/collection/temple-god-38207): bronze escurecido, figura sentada e trono de bloco. Referência de pose e relação cabeça/corpo/trono; a peça representa Horus, não Rá.
 - Nenhuma malha, textura ou fotografia dos museus foi copiada para o runtime.
+
+## Ala residencial — mobiliário e props adicionais
+
+### 3DAssets.dev — CC0 1.0
+
+- **Minibar cabinet (Hotel and Resort Operations):** https://3dassets.dev/assets/hotel-and-resort-operations-minibar-cabinet-601f19a1 — GLB CC0, 0,64 × 0,89 × 0,591 m, 960 triângulos, clips open e close, carregado pelo CDN com GLTFLoader.
+- **Guest room armchair (Hotel and Resort Operations):** https://3dassets.dev/assets/hotel-and-resort-operations-guest-armchair-bb3c4e37 — GLB CC0, 0,745 × 0,83 × 0,72 m, 2.320 triângulos, carregado pelo CDN com GLTFLoader.
+- O provedor declara estes GLBs self-contained, CORS habilitado, texturas WebP embutidas e nenhuma necessidade de Draco, Meshopt ou KTX2: https://3dassets.dev/docs.
+- Os modelos são AI-assisted de acordo com as fichas públicas. Foram usados como props secundários depois de conferir licença, dimensão e compatibilidade; não substituem a geometria autoral dos objetos hero.
+
+### Candidatos avaliados, não carregados
+
+- Innerscene TATAMI — Low Platform Bed: https://www.innerscene.com/tools/library/3d-parts/tatami-low-platform-bed-3e8a3cb6 — modelo original CC0, 1,95 × 2,28 × 0,57 m, cerca de 22k triângulos, materiais PBR embutidos. Candidato de cama; o GLB ainda requer teste de carregamento/CORS e comparação visual antes da substituição.
+- 3DAssets.dev King bed with upholstered headboard: https://3dassets.dev/assets/hotel-and-resort-operations-bed-king-upholstered-819ff50d — CC0, 6.194 triângulos, mas com cabeceira estofada comum. Avaliado e rejeitado para a cama principal por não substituir o apoio de cabeça egípcio descrito no romance.
+- 3DAssets.dev Guest Room with En-Suite: https://3dassets.dev/assets/hotel-and-resort-operations-guest-room-w-0766f7ed — CC0, ~36k triângulos, AI-generated. Usado apenas para leitura de composição/escala, não importado como quarto completo.

@@ -325,22 +325,7 @@ const legacyLibraryTable=box('mesa de leitura antiga da biblioteca',[0,-16.2,-.5
 for(let x of [-3.8,3.8]){const oldCandlestick=cyl('castiçal antigo da biblioteca',[x,-15.6,-.5],.12,.12,.65,gold,12);oldCandlestick.name='castiçal antigo da biblioteca';const flame=new THREE.PointLight(0xffc77a,.55,5);flame.name='luz do castiçal antigo da biblioteca';flame.position.set(x,-15.05,-.5);scene.add(flame)}
 const libLight=new THREE.PointLight(0x9abdc0,1.8,28);libLight.position.set(0,-7.5,-.5);scene.add(libLight);
 for(let a=0;a<6;a++){const ang=a*Math.PI/3;glyphPanel(Math.cos(ang)*12,-12.7,Math.sin(ang)*12-.5,-ang,1.1)}
-// Ala dos quartos: composição interpretativa com conforto moderno e peças antigas.
-const roomFloor=box('piso da ala dos quartos',[25.0,17.1,-.5],[13.3,.35,12.5],woodMat,false);groundSurfaces.push(roomFloor);
-for(let z of [-6.7,5.7])box('parede do quarto',[25,19,-.5+z],[13.3,4.2,.35],plaster,false);
-for(let z of [-4.35,4.35])box('parede lateral do quarto',[18.4,19,z],[.35,4.2,3.8],plaster,false);
-box('lintel da passagem do quarto',[18.4,20.55,-.5],[.35,.5,5.0],plaster,false);
-box('parede lateral externa do quarto',[31.6,19,-.5],[.35,4.2,12.5],plaster,false);
-for(let z of [-2.6,2.6])box('ombreira de calcário da ala',[19.25,18.7,z],[.55,3.6,.5],stone,false);
-box('parede divisória do quarto',[25,19,-.5],[.25,4.2,12.5],plaster,false);
-box('cama de madeira',[21.8,17.85,-1.2],[4.3,.7,5.4],cedarMat,false);box('colchão',[21.8,18.35,-1.2],[4.1,.45,5.1],new THREE.MeshStandardMaterial({color:0xd1c5ae,roughness:1}),false);for(let x of [20.6,23.0])box('travesseiro',[x,18.65,-3.0],[1.0,.25,1.2],new THREE.MeshStandardMaterial({color:0xebe4d5}),false);
-box('mesa de estudo',[28.2,18.0,-3.8],[3.2,.22,1.5],woodMat,false);for(let x of [27.0,29.4])box('pé da mesa',[x,17.3,-3.8],[.13,1.25,.13],cedarMat,false);
-box('cômoda',[28.5,18.0,3.2],[2.5,1.6,1.0],cedarMat,false);for(let y of [17.7,18.2,18.7])box('gaveta',[28.5,y,3.73],[2.2,.35,.05],gold,false);
-addWindow(25,19.1,-6.25,3.4,2.0,'back');
-for(let i=0;i<5;i++){const book=box('pilha de livros',[27+i*.3,18.3,-4.1],[.42,.16,.75],new THREE.MeshStandardMaterial({color:[0x6f4537,0x334e50,0x987346,0x51405c][i%4]}),false);book.rotation.z=(i-2)*.03}
-const bedside=new THREE.PointLight(0xffc98b,.5,6);bedside.position.set(21.3,19.3,1.2);scene.add(bedside);
-box('cama secundária',[28,17.65,1.2],[3.2,.5,3.3],leather,false);
-addRoomLabel('ALA DOS QUARTOS',25,20.8,-6.15);
+// A ala residencial do terceiro andar é construída integralmente em src/residential-wing.js.
 // Ponto de referência: placa discreta no pátio.
 const info=box('placa de identificação',[ -22,2.3,24],[.08,2.3,3.2],metal,false);const sign=new THREE.Mesh(new THREE.PlaneGeometry(2.8,1.65),canvasSign('BROOKLYN HOUSE'));sign.position.set(-21.94,2.4,24);sign.rotation.y=Math.PI/2;scene.add(sign);
 // Luzes interiores quentes.
@@ -351,17 +336,13 @@ for(let x of [-8,0,8])for(let z of [-6,5]){const lamp=new THREE.PointLight(0xffd
  registerCollider(0,18.0,-.5,2.7,9.4,1.8);
 
 
- // Mobiliário principal da ala residencial.
- registerCollider(21.8,18.05,-1.2,4.3,1.6,5.4);
- registerCollider(28.2,18.15,-3.8,3.2,1.8,1.5);
- registerCollider(28.5,18.1,3.2,2.5,1.7,1.0);
- registerCollider(28,17.9,1.2,3.2,1.2,3.3);
+ // Os colliders residenciais são registrados pelo módulo src/residential-wing.js.
 
  const zones={
  dock:{label:'DOCA · BROOKLYN',pos:[0,0,31],yaw:0,bounds:[-34,34,-14,58],base:0},
  hall:{label:'GRANDE SALÃO',pos:[0,13.175,7.0],yaw:0,bounds:[-21,21,-15,32],base:13.175},
  library:{label:'BIBLIOTECA SUBTERRÂNEA',pos:[0,-17.4,2.5],yaw:0,bounds:[-11.4,11.4,-11.4,11.4],base:-17.4},
- bedroom:{label:'ALA DOS QUARTOS',pos:[25,17.275,2.5],yaw:0,bounds:[19.3,32.2,-5.5,5.5],base:17.275}
+ bedroom:{label:'ALA RESIDENCIAL · 3º ANDAR',pos:[20.35,24.375,0],yaw:0,bounds:[17.8,40.0,-9.3,9.3],base:24.375}
 };
 // Todo conteúdo criado depois da fachada pertence ao espaço mágico interno.
 const magicalInteriorGroup=new THREE.Group();

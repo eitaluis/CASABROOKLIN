@@ -95,3 +95,78 @@ Não reutilizar os modelos mumiformes anteriores como substitutos destas estatue
 - [ ] Refinar a escada de três andares após teste de travessia e comparação de escala.
 
 **Status:** implementação estrutural registrada; não significa aprovação visual. A inspeção real em desktop e mobile continua obrigatória.
+
+
+## Atualização aprovada e integrada — biblioteca monumental (27/11/2026)
+
+Esta seção substitui os números e o estado de implementação da primeira versão registrados acima. O estudo anterior documenta a pesquisa; a seção atual registra o build aprovado.
+
+### Escala final do espaço
+
+- **Diâmetro interno aproximado:** 31 m (raio de 15,5 m).
+- **Altura total aproximada:** 15,9 m do piso ao ponto mais alto da abóbada. A parede cilíndrica sobe 10,4 m a partir do piso; a cúpula elíptica de Nut acrescenta aproximadamente 5,5 m.
+- **Níveis:** a descida foi organizada em três lances curvos; a escadaria é uma interpretação de level design da descida de três andares, cuja forma exata não é fixada no romance.
+
+### Parede pintada, escrita e cavidades
+
+- O atlas mural original é gerado no runtime como uma textura única de 4096 × 2048, dividida em 24 × 8 cenas de pintura distintas, com figuras de perfil, criaturas e variação de pigmentos.
+- As composições de sinais egípcios variam em sequência, orientação, densidade e cartuchos. A tipografia usa Noto Sans Egyptian Hieroglyphs (SIL OFL 1.1). As sequências são **ornamentação interpretativa**, não traduções ou transcrições literais de frases do romance.
+- A parede usa um alpha map alinhado às UVs cilíndricas para abrir os furos visuais; cada cavidade tem túnel e fundo recuado, aro e uma cápsula pneumática com papiro.
+- **4.800 cavidades/cápsulas** no total: 30 faixas verticais × 160 posições angulares, alternadas como colmeia. A abertura tem aproximadamente 34 cm de diâmetro no espaço do jogo; quantidade e dimensões são decisões de escala, não valores canônicos.
+- 20 cápsulas da faixa inferior têm pontos de interação para abrir/fechar e revelar o papiro. As demais compõem visualmente o arquivo e não geram milhares de listeners separados.
+- As peças repetidas usam InstancedMesh, geometrias e materiais compartilhados; atlas e mapas alpha são compartilhados para limitar draw calls e duplicação de texturas.
+
+### Escadaria física
+
+- A antiga hélice estreita foi removida.
+- A nova escada tem **90 degraus largos**, divididos em três lances curvos de 30 degraus, dois patamares intermediários e áreas de entrada/saída.
+- O caminho das alturas é exportado de src/library.js e consumido pelo solver walkableCurves do controlador em src/third-person.js. A geometria visível e a superfície caminhável derivam dos mesmos pontos.
+- Corrimãos curvos e balaústres acompanham a trajetória. A escada é feita com geometria original Three.js; os modelos Tevy avaliados são referências de forma, não arquivos importados.
+
+### Estatuetas e pedidos dos servos
+
+As quatro estatuetas humanas de cerâmica permanecem diferentes dos guerreiros mumiformes da Sala de Treinamento. As tarefas jogáveis seguem dois acontecimentos específicos do romance:
+
+1. **Figura de mãos vazias:** ao interagir, desperta, vai até a área de armazenamento, procura a cápsula com a versão em inglês e retorna; a folha recuperada aparece sobre a mesa.
+2. **Figura com cajado em gancho:** ao interagir, sai do pedestal e retorna com uma representação simplificada da Paleta de Narmer.
+
+A movimentação atual é **procedural** (deslocamento, oscilação e inclinação), não um clip de caminhada humanoide retargetado. O pacote KinemIQ CC0 (35 clips GLB/FBX num esqueleto de 66 ossos) foi avaliado, mas não importado: as estatuetas atuais são geometrias articuladas por componentes, sem skin weights/skeleton compatível. Para usar o pacote será necessário rigar ou reconstruir as estatuetas como malha skinned e então testar o retarget; não se deve fingir que o pack já está no runtime.
+
+### Mesa de trabalho de Julius Kane
+
+A mesa longa de pedra recebeu:
+- bolsa de Julius com aba que abre/fecha;
+- paleta de escriba e dois bolos de pigmento (preto e vermelho);
+- três pincéis/estiletes de junco;
+- pequeno recipiente de tinta;
+- papiro aberto com linhas de escrita, dois rolos, cordão e pano de linho;
+- apresentação da folha em inglês e da Paleta de Narmer quando os servos retornam.
+
+A paleta, os pincéis e os demais acessórios são geometrias próprias inspiradas em objetos históricos; nenhum scan de museu foi copiado para o runtime.
+
+### Geb e Nut — estado visual
+
+As superfícies de piso e abóbada foram redimensionadas para a nova câmara e continuam compartilhadas entre desktop e mobile. **As pinturas figurativas finais de Geb e Nut não foram geradas nem integradas nesta etapa**, conforme a decisão explícita de deixar a geração de imagem para depois. As texturas cartográficas/estreladas existentes são provisórias e não representam o acabamento final aprovado.
+
+### Assets, licenças e decisões de importação
+
+- **Runtime criado para esta etapa:** geometria, atlas mural, texturas, alpha map, instâncias, animações de tarefa e mesa de trabalho são originais do projeto em src/library.js.
+- **Materiais de pedra:** mapas PBR locais previamente registados, com fontes CC0 no manifest.
+- **Hieróglifos:** Noto Sans Egyptian Hieroglyphs — SIL Open Font License 1.1; já presente no carregamento tipográfico do projeto, usada nas composições murais.
+- **Escadas Tevy Dungeon Stone Stairs e Vault Stairs:** modelos GLB CC0 aprovados como referência visual/técnica, não importados porque a escada da biblioteca requer trajetória curva e solver próprios.
+- **KinemIQ Free Game Animations:** pack CC0 aprovado para avaliação, mas não importado nesta etapa por incompatibilidade direta com as figuras procedurais sem rig.
+- **Paleta de Narmer Sketchfab:** referência CC BY-NC-SA apenas; não integrada. A peça jogável é uma silhueta simplificada original.
+- **Paleta de escriba do The Met:** referência histórica/Open Access; não foi importado um modelo 3D.
+
+### QA e limites conhecidos
+
+- [x] Sintaxe verificada nos módulos library.js, world.js, third-person.js, interior-details.js e main.js.
+- [x] JSON do manifest verificado após a atualização.
+- [x] Integração do caminho de escada, do ciclo de atualização das tarefas e da interação compartilhada verificada estaticamente.
+- [ ] Testar a subida e descida reais de cada lance, os patamares e a colisão com Carter no navegador desktop.
+- [ ] Repetir o teste em celular em paisagem, medir FPS/memória e observar transparência das cápsulas.
+- [ ] Conferir visualmente o alinhamento das aberturas alpha, dos túneis e das cápsulas, além da leitura dos novos textos murais.
+- [ ] Ajustar a câmera e circulação caso a mesa, as estatuetas ou a escada causem obstruções.
+- [ ] Criar e integrar as pinturas finais figurativas de Geb e Nut em uma etapa posterior.
+
+**Status real:** implementação no repositório + validação estática concluídas; QA em navegador e aprovação visual ainda pendentes.

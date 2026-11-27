@@ -165,6 +165,13 @@ box('ombreira esquerda do portal',[ -2.18,16.1,11.42],[.48,6.2,.8],stone,false);
 box('ombreira direita do portal',[ 2.18,16.1,11.42],[.48,6.2,.8],stone,false);
 box('lintel superior do portal',[0,19.16,11.42],[4.82,.48,.8],stone,false);
 const door=box('porta de madeira sem maçaneta',[0,15.9,11.93],[4.08,5.28,.34],woodMat,false);door.material=cedarMat;
+// Colisor móvel da folha: acompanha a porta e impede atravessar o vão enquanto fechada.
+const portalDoorCollider={
+ minX:door.position.x-2.04,maxX:door.position.x+2.04,
+ minY:door.position.y-2.64,maxY:door.position.y+2.64,
+ minZ:door.position.z-.17,maxZ:door.position.z+.17
+};
+colliders.push(portalDoorCollider);
 box('soleira monumental',[0,13.24,12.1],[4.4,.18,1.2],stone,false);
 for(let side of [-1,1]){box('pilar do portal',[side*2.58,16.1,11.7],[.55,6.3,.75],stone);for(let y=13.5;y<19;y+=.85)box('detalhe dourado do portal',[side*2.58,y,12.12],[.62,.06,.06],gold)}
 // Escada metálica helicoidal pela lateral leste do galpão, sem atravessar sua parede.
@@ -373,5 +380,5 @@ for(const child of scene.children.slice(interiorBuildStart)){
 scene.add(magicalInteriorGroup);
 magicalInteriorGroup.visible=false;
 
-return {zones,groundSurfaces,water,fireLight,mansionRevealGroup,magicalInteriorGroup,spiralStair:{centerX:stairCenter.x,centerZ:stairCenter.y,radius:stairRadius,bottomY:.08,topY:.08+stairRise,startAngle:stairStartAngle,totalAngle:stairTotalAngle}};
+return {zones,groundSurfaces,water,fireLight,mansionRevealGroup,magicalInteriorGroup,portalDoorCollider,spiralStair:{centerX:stairCenter.x,centerZ:stairCenter.y,radius:stairRadius,bottomY:.08,topY:.08+stairRise,startAngle:stairStartAngle,totalAngle:stairTotalAngle}};
 }

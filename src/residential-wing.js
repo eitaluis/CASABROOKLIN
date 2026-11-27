@@ -262,47 +262,50 @@ export function buildResidentialWing({
 
   // Bacia baixa de bronze sobre pedestal de pedra: referência ao objeto de
   // vidência de Walt em O Trono de Fogo; sua implementação é geometria autoral.
-  const bowlBase = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.56, 0.18, 48), stoneMat);
-  bowlBase.position.set(37.2, FLOOR_Y + 0.2, -3.05);
+  const bowlBase = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.28, 0.12, 48), stoneMat);
+  bowlBase.position.set(37.2, FLOOR_Y + 0.06, -3.05);
   roomGroup.add(bowlBase);
-  const bowlStem = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.32, 0.58, 32), stoneMat);
-  bowlStem.position.set(37.2, FLOOR_Y + 0.56, -3.05);
+  const bowlStem = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.16, 0.34, 32), stoneMat);
+  bowlStem.position.set(37.2, FLOOR_Y + 0.29, -3.05);
   roomGroup.add(bowlStem);
-  const bowlPedestal = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.72, 0.18, 48), stoneMat);
-  bowlPedestal.position.set(37.2, FLOOR_Y + 0.93, -3.05);
+  const bowlPedestal = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.36, 0.12, 48), stoneMat);
+  bowlPedestal.position.set(37.2, FLOOR_Y + 0.52, -3.05);
   roomGroup.add(bowlPedestal);
   const bowlProfile = [
-    new THREE.Vector2(0.48, 0.02), new THREE.Vector2(0.68, 0.08),
-    new THREE.Vector2(0.82, 0.22), new THREE.Vector2(0.86, 0.29),
-    new THREE.Vector2(0.78, 0.32), new THREE.Vector2(0.68, 0.25),
-    new THREE.Vector2(0.55, 0.13), new THREE.Vector2(0.08, 0.12)
+    new THREE.Vector2(0.24, 0.01), new THREE.Vector2(0.34, 0.04),
+    new THREE.Vector2(0.41, 0.11), new THREE.Vector2(0.43, 0.15),
+    new THREE.Vector2(0.39, 0.16), new THREE.Vector2(0.34, 0.12),
+    new THREE.Vector2(0.28, 0.065), new THREE.Vector2(0.04, 0.06)
   ];
   const bowl = new THREE.Mesh(new THREE.LatheGeometry(bowlProfile, 64), bronze);
-  bowl.position.set(37.2, FLOOR_Y + 1.02, -3.05);
+  bowl.position.set(37.2, FLOOR_Y + 0.58, -3.05);
   roomGroup.add(bowl);
-  const oil = new THREE.Mesh(new THREE.CircleGeometry(0.56, 48), new THREE.MeshPhysicalMaterial({
+  const oil = new THREE.Mesh(new THREE.CircleGeometry(0.28, 48), new THREE.MeshPhysicalMaterial({
     color: 0x172324, metalness: 0.28, roughness: 0.12, clearcoat: 0.9,
     transparent: true, opacity: 0.88
   }));
   oil.rotation.x = -Math.PI / 2;
-  oil.position.set(37.2, FLOOR_Y + 1.29, -3.05);
+  oil.position.set(37.2, FLOOR_Y + 0.72, -3.05);
   roomGroup.add(oil);
-  const ripple = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.012, 8, 48), bronzeLight);
+  const ripple = new THREE.Mesh(new THREE.TorusGeometry(0.11, 0.008, 8, 48), bronzeLight);
   ripple.rotation.x = Math.PI / 2;
-  ripple.position.set(37.2, FLOOR_Y + 1.315, -3.05);
+  ripple.position.set(37.2, FLOOR_Y + 0.735, -3.05);
   roomGroup.add(ripple);
   interactables.push({
     name: 'Bacia de vidência de bronze', kind: 'inspect', zone: ZONE,
     label: 'Bacia de vidência',
     description: 'Bacia baixa de bronze sobre pedestal de pedra. A superfície escura lembra o óleo usado para vidência por Walt.',
-    position: new THREE.Vector3(37.2, FLOOR_Y + 1.25, -3.05), radius: 4.4
+    position: new THREE.Vector3(37.2, FLOOR_Y + 0.72, -3.05), radius: 4.4
   });
 
   // O apoio de cabeça é modelado sob medida a partir da peça histórica GEM 270:
   // base alongada, leões nas extremidades e Shu sustentando a curva central.
   const headrest = new THREE.Group();
   headrest.name = 'Apoio de cabeça de marfim com leões — referência GEM 270';
-  headrest.position.set(31.6, FLOOR_Y + 0.78, -3.45);
+  box('Suporte de nogueira para o apoio de cabeça', 31.6, FLOOR_Y + 0.36, -3.45, 0.82, 0.72, 0.55, woodMat, true);
+  box('Filete de bronze do suporte do headrest', 31.6, FLOOR_Y + 0.70, -3.45, 0.84, 0.035, 0.56, bronzeLight, false);
+  headrest.position.set(31.6, FLOOR_Y + 0.79, -3.45);
+  headrest.scale.setScalar(0.32);
   roomGroup.add(headrest);
   const plinth = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.18, 0.5), darkWood);
   plinth.position.y = -0.13;
@@ -489,8 +492,7 @@ export function buildResidentialWing({
   addCollider(33.35, FLOOR_Y + 1.0, -7.0, 0.9, 2.0, 0.9);
   addCollider(31.4, FLOOR_Y + 0.43, -5.9, 0.8, 0.9, 0.5);
   addCollider(29.85, FLOOR_Y + 0.39, -7.45, 0.42, 0.8, 0.7);
-  addCollider(31.6, FLOOR_Y + 0.55, -3.45, 2.0, 1.1, 0.55);
-  addCollider(37.2, FLOOR_Y + 0.7, -3.05, 1.65, 1.5, 1.65);
+  addCollider(37.2, FLOOR_Y + 0.42, -3.05, 0.74, 0.84, 0.74);
 
   // Objetos e ações: a busca de proximidade é compartilhada com biblioteca e treinamento.
   const addInspect = (name, label, description, x, z, radius = 2.2, onInteract = null) => {

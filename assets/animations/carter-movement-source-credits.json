@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-27T16:43:11.704Z",
+  "generatedAt": "2026-11-27T16:43:59.000Z",
   "bagAsset": {
     "source": "Innerscene - original model",
     "url": "https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2",
@@ -14,74 +14,74 @@
     {
       "id": "sprint_shield_loop",
       "source": "https://kinemiq.app/wp-content/kinemiq-app/library/clips/sprint_shield_loop.glb",
-      "sourceClip": "Armature",
-      "glbBytes": 119672,
-      "assetExtras": null,
       "sourcePage": "https://kinemiq.app/animations/run-sprint-with-a-shield/",
       "sourceLibrary": "Universal Animation Library 2 by Quaternius",
       "author": "Quaternius",
       "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "sourceClip": "Armature",
+      "glbBytes": 119672,
+      "assetExtras": null
     },
     {
       "id": "sprint_loop",
       "source": "https://kinemiq.app/wp-content/kinemiq-app/library/clips/sprint_loop.glb",
-      "sourceClip": "Armature",
-      "glbBytes": 119488,
-      "assetExtras": null,
       "sourcePage": "https://kinemiq.app/animations/run-sprint/",
       "sourceLibrary": "Universal Animation Library by Quaternius",
       "author": "Quaternius",
       "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "sourceClip": "Armature",
+      "glbBytes": 119488,
+      "assetExtras": null
     },
     {
       "id": "ninjajump_double",
       "source": "https://kinemiq.app/wp-content/kinemiq-app/library/clips/ninjajump_double.glb",
-      "sourceClip": "Armature",
-      "glbBytes": 138176,
-      "assetExtras": null,
       "sourcePage": "https://kinemiq.app/animations/jump-ninja-double/",
       "sourceLibrary": "Universal Animation Library 2 by Quaternius",
       "author": "Quaternius",
       "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "sourceClip": "Armature",
+      "glbBytes": 138176,
+      "assetExtras": null
     },
     {
       "id": "jump_land",
       "source": "https://kinemiq.app/wp-content/kinemiq-app/library/clips/jump_land.glb",
-      "sourceClip": "Armature",
-      "glbBytes": 167108,
-      "assetExtras": null,
       "sourcePage": "https://kinemiq.app/animations/jump-landing/",
       "sourceLibrary": "Universal Animation Library by Quaternius",
       "author": "Quaternius",
       "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "sourceClip": "Armature",
+      "glbBytes": 167108,
+      "assetExtras": null
     },
     {
       "id": "melee_combo",
       "source": "https://kinemiq.app/wp-content/kinemiq-app/library/clips/melee_combo.glb",
-      "sourceClip": "Armature",
-      "glbBytes": 246768,
-      "assetExtras": null,
       "sourcePage": "https://kinemiq.app/animations/punch-combo-of-punches-and-kicks/",
       "sourceLibrary": "Universal Animation Library 2 by Quaternius",
       "author": "Quaternius",
       "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "sourceClip": "Armature",
+      "glbBytes": 246768,
+      "assetExtras": null
     },
     {
       "id": "sword_heavy_combo",
       "source": "https://kinemiq.app/wp-content/kinemiq-app/library/clips/sword_heavy_combo.glb",
-      "sourceClip": "Armature",
-      "glbBytes": 410904,
-      "assetExtras": null,
       "sourcePage": "https://kinemiq.app/animations/sword-heavy-combo/",
       "sourceLibrary": "Universal Animation Library by Quaternius",
       "author": "Quaternius",
       "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "sourceClip": "Armature",
+      "glbBytes": 410904,
+      "assetExtras": null
     }
   ]
 }

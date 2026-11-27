@@ -401,3 +401,11 @@ Estes três GLBs foram adicionados à cena a partir de versões otimizadas do pr
 - **Controle:** H no desktop e botão HÓRUS no mobile; 40 pontos de energia para invocar e o mesmo comando para desfazer. Custo e toggle são adaptações de gameplay, não regras canônicas.
 - **Compatibilidade:** a mesma geometria, cópia do rig e lógica são compartilhadas por desktop e mobile; apenas o acionamento difere.
 - **QA:** sintaxe e JSON validados; leitura da cabeça, escala, transparência e sincronização ainda precisam ser inspecionadas no navegador desktop e em celular paisagem.
+
+
+## Grande Salão — parede opaca atrás das portas do Olho de Hórus (27/11/2026)
+
+- Geometria: painel original Three.js de calcário, opaco, atrás das duas folhas e da moldura; ocupa o antigo vão central da fachada frontal e continua verticalmente até próximo da cobertura.
+- Material: o material PBR opaco de calcário já utilizado no Grande Salão (mapa de cor/normal/roughness CC0 local); não usa `transparent:true`, `opacity<1` nem transmissão.
+- Colisão: colisor das folhas realinhado ao novo plano de fachada; colisor adicional para a porção alta da alvenaria.
+- Estado: integrado em `src/grand-salon.js`; a vista externa precisa de QA visual no browser.

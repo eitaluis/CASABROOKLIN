@@ -1,4 +1,4 @@
-import { mkdir, rm, writeFile, copyFile } from 'node:fs/promises';
+import { mkdir, rm, writeFile, copyFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = process.cwd();
@@ -158,7 +158,24 @@ async function prepare() {
 }
 
 async function publish() {
-  await copyFile(generatedPack, finalPack);
+  const pack = JSON.parse(await readFile(generatedPack, 'utf8'));
+  // The unarmed KinemIQ sprint GLB contains a forward/backward Hips translation
+  // inside its cycle. The player controller already moves the character root,
+  // so retain the lateral weight shift and vertical bounce but flatten this
+  // clip's local forward axis to prevent a second, sawtooth root movement.
+  const unarmedSprint = pack.animations?.find((animation) => animation.id === 'sprint_loop');
+  if (!unarmedSprint?.motion?.hips || !Number.isInteger(unarmedSprint.motion.frames)) {
+    throw new Error('O pack Ara não contém o Hips track esperado de sprint_loop.');
+  }
+  const hipsBuffer = Buffer.from(unarmedSprint.motion.hips, 'base64');
+  if (hipsBuffer.byteLength !== unarmedSprint.motion.frames * 6) {
+    throw new Error('O Hips track do sprint_loop tem tamanho inválido.');
+  }
+  for (let frame = 0; frame < unarmedSprint.motion.frames; frame++) {
+    hipsBuffer.writeInt16LE(0, frame * 6 + 4);
+  }
+  unarmedSprint.motion.hips = hipsBuffer.toString('base64');
+  await writeFile(finalPack, JSON.stringify(pack, null, 2) + '\\n');
   await copyFile(path.join(buildDir, 'source-credits.json'), finalCredits);
   await rm(buildDir, { recursive: true, force: true });
   await rm(generatedPack, { force: true });

@@ -32,8 +32,7 @@ const CINEMATIC_ANIMATIONS = [
   'point',
   'bow',
   'sit_down',
-  'sit_idle',
-  'stand_up'
+  'sit_idle'
 ];
 
 const ARA_ANIMATION_IDS = new Set(ANIMATIONS.map((animation) => animation.id));
@@ -198,10 +197,27 @@ export async function createCharacter({
     actionInterruptOnMovement = options.interruptOnMovement !== false;
     actionInterruptDelay = Number.isFinite(options.interruptDelay) ? Math.max(0, options.interruptDelay) : 0;
     actionElapsed = 0;
-    actionSequence = hero.playSequence(mixer, id, {
-      repeat: options.loop === true,
-      fade: Number.isFinite(options.fade) ? options.fade : 0.38
-    });
+    if (options.reverse === true) {
+      // Ara defines Stand up as Sit down played in reverse; start at the clip's
+      // final timestamp and let the same grounded motion return to standing.
+      const reverseAction = mixer.clipAction(clip);
+      reverseAction.reset();
+      reverseAction.enabled = true;
+      reverseAction.setLoop(THREE.LoopOnce, 1);
+      reverseAction.clampWhenFinished = true;
+      reverseAction.time = clip.duration;
+      reverseAction.setEffectiveTimeScale(-1);
+      reverseAction.setEffectiveWeight(1);
+      const fade = Number.isFinite(options.fade) ? options.fade : 0.38;
+      if (fade > 0) reverseAction.fadeIn(fade);
+      reverseAction.play();
+      actionSequence = { stop: () => reverseAction.stop() };
+    } else {
+      actionSequence = hero.playSequence(mixer, id, {
+        repeat: options.loop === true,
+        fade: Number.isFinite(options.fade) ? options.fade : 0.38
+      });
+    }
     onActionChange(id);
 
     if (options.loop !== true) {
@@ -346,8 +362,7 @@ export async function createCharacter({
   function sitDown() {
     if (disposed || jumping || sitting) return false;
     if (!AVAILABLE_ACTION_ANIMATIONS.includes('sit_down') ||
-        !AVAILABLE_ACTION_ANIMATIONS.includes('sit_idle') ||
-        !AVAILABLE_ACTION_ANIMATIONS.includes('stand_up')) {
+        !AVAILABLE_ACTION_ANIMATIONS.includes('sit_idle')) {
       console.warn('As animações de sentar/levantar não estão disponíveis no rig Ara carregado.');
       return false;
     }
@@ -372,7 +387,8 @@ export async function createCharacter({
   function standFromSeat(onComplete) {
     if (disposed || jumping || !sitting) return false;
     sitting = false;
-    const started = playAction('stand_up', {
+    const started = playAction('sit_down', {
+      reverse: true,
       fade: 0.22,
       interruptOnMovement: false,
       onFinish: () => { onComplete?.(); }

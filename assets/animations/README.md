@@ -8,10 +8,10 @@ As animações são controladas pelo módulo compartilhado src/character.js e pe
 
 - **Idle:** respiração, pequenos movimentos de cabeça e transferência de peso.
 - **Walk:** passada natural, flexão dos joelhos e braços em oposição.
-- **Run:** passada mais ampla, com inclinação frontal moderada.
+- **Run:** passada mais ampla; o root externo permanece neutro e gira somente no eixo vertical, sem tombar para os lados.
 - **Jump:** jump_start, jump_air e jump_land com arco físico vertical (impulso + gravidade) no controlador, compartilhado entre desktop e mobile.
 
-A velocidade de locomoção é enviada ao blending do Ara a cada frame. Caminhada usa alvo de 1,7 m/s; corrida usa 4,2 m/s. A aceleração, desaceleração, rotação do corpo e câmera receberam uma resposta mais suave para a direção cinematográfica. Abaixo de 50% de vitalidade, o sprint é bloqueado e Carter usa crouch idle + walk_slouch em velocidade reduzida.
+A velocidade de locomoção é enviada ao blending do Ara a cada frame. Caminhada usa alvo de 1,7 m/s; corrida usa 4,2 m/s. A aceleração e desaceleração receberam uma resposta mais suave. A orientação do root usa apenas yaw, sem inclinação lateral ou frontal. Abaixo de 50% de vitalidade, o sprint é bloqueado e Carter usa crouch idle + walk_slouch em velocidade reduzida; o terceiro canal do blend usa o clip run distinto, sem duplicar walk_slouch.
 
 ### Ações cinematográficas
 

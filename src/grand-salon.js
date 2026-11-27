@@ -1775,7 +1775,7 @@ function addThothBaseSeating(scene,stone,marble,wood,brass,colliders,interactabl
     base.castShadow=true;base.receiveShadow=true;scene.add(base);
 
     const cushion=new THREE.Mesh(
-      arcBenchBandGeometry(2.76,3.92,arc.start,arc.end,13.56,13.72,-.5,112),
+      arcBenchBandGeometry(2.76,3.92,arc.start,arc.end,13.56,13.66,-.5,112),
       leather
     );
     cushion.name='almofada contínua de couro do banco curvo '+arc.side;
@@ -1788,9 +1788,9 @@ function addThothBaseSeating(scene,stone,marble,wood,brass,colliders,interactabl
       backPoints.push([x,14.02,z]);
       backTrim.push([x,13.80,z]);
     }
-    const back=new THREE.Mesh(tube(backPoints,.135,leather,112,16).geometry,leather);
+    const back=tube(backPoints,.135,leather,112,16);
     back.name='encosto contínuo estofado em curva '+arc.side;
-    back.castShadow=true;back.receiveShadow=true;scene.add(back);
+    scene.add(back);
     scene.add(tube(backTrim,.025,leatherEdge,112,8));
 
     for(const angle of [arc.start,arc.end]) {

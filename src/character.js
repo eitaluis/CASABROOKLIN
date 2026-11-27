@@ -395,7 +395,6 @@ export async function createCharacter({
     });
     if (!started) {
       restoreLocomotion();
-      onComplete?.();
       return false;
     }
     return true;

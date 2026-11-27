@@ -403,6 +403,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
           airborne = false;
           verticalVelocity = 0;
           jumpFloorHeight = walkingSurface.height;
+          character.land?.();
         }
       } else if (walkingSurface.raised) {
         updated.y = walkingSurface.height;
@@ -444,6 +445,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
           airborne = false;
           verticalVelocity = 0;
           jumpFloorHeight = walkingSurface.height;
+          character.land?.();
         }
       } else if (walkingSurface.raised) {
         current.y = walkingSurface.height;

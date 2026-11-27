@@ -292,3 +292,24 @@ Os seguintes modelos foram integrados no runtime por GLTFLoader, com URL do mirr
 **Limites e notas**
 - O scan de Shabti of Ramose é de madeira pintada e não de faiança azul; a referência direta à história descreve os guerreiros como cerâmica vitrificada. O scan fornece forma e detalhes escultóricos à miniatura, mas a superfície visual pode ser ajustada para sugerir o esmalte azulado da ficção sem alterar o scan-base, caso a leitura no jogo exija isso.
 - Os scans de Horus/Thoth são peças de museu em pequena escala. O jogo normaliza os modelos para a composição da parede; a escala de exibição é uma decisão artística do cenário e não a escala arqueológica original.
+
+
+### Scans adicionais para os expositores laterais (27/11/2026)
+
+Estes três GLBs foram adicionados à cena a partir de versões otimizadas do projeto público Atrium Earth, fixadas ao commit `28aefba9209eab48535ee7a193bea310fde10f47`. A distribuição é feita pelo CDN jsDelivr a partir de arquivos publicados no repositório-fonte. Os originais e os metadados de proveniência são mantidos pelo projeto Atrium; as versões carregadas no jogo são derivados otimizados. As licenças declaradas nos registros são CC BY 4.0.
+
+| Arquivo carregado | Objeto / proveniência | Licença e observações |
+|---|---|---|
+| `jackal-statuette-art-institute-chicago/preview.glb` | Statuette of a Jackal, Art Institute of Chicago, c. 664–525 BCE; cobre/ligas de cobre; accession 1920.252; H 9,5 × W 17,5 × D 5,1 cm. Modelo do Art Institute of Chicago, otimizado pelo Atrium. | CC BY 4.0. O registro permite a leitura como chacal associado a Anúbis ou Wepwawet; o projeto evita escolher uma identidade sem evidência mais específica. |
+| `horus-falcon-british-museum/preview.glb` | Horus Falcon, British Museum, EA1226; Abu Qir, Egito; depois de 600 BCE; granodiorito com incrustações de marfim e betume; altura 45,8 cm. Modelo por jwexler, otimizado pelo Atrium. | CC BY 4.0. O registro de digitalização observa que a textura da cabeça tem baixo detalhe, embora o corpo e a base estejam completos. |
+| `falcon-headed-sphinx-abu-simbel-british-museum/preview.glb` | Falcon-headed Sphinx from Abu Simbel, British Museum, EA13; 19ª Dinastia; arenito; modelo por artfletch, otimizado pelo Atrium. | CC BY 4.0. A dimensão física ainda não foi confirmada; a revisão da fonte relata a representação completa do objeto preservado em todas as faces. |
+
+**Páginas de origem**
+- Jackal statuette — Art Institute of Chicago: https://www.artic.edu/artworks/78159/statuette-of-a-jackal. Modelo: https://sketchfab.com/3d-models/9aba58c860c7453c8bcea37dd614c288.
+- Horus Falcon — British Museum EA1226: https://www.britishmuseum.org/collection/object/Y_EA1226. Modelo: https://sketchfab.com/3d-models/034dc69ab0a7412f97368607f378c037.
+- Falcon-headed Sphinx — British Museum EA13: https://www.britishmuseum.org/collection/object/Y_EA13. Modelo: https://sketchfab.com/3d-models/0047be934a22442fa9ed9cc0a119acd2.
+
+**Mirror e arquivos de runtime**
+- Repositório de origem, commit fixado: https://github.com/never-nude/atrium.earth/tree/28aefba9209eab48535ee7a193bea310fde10f47/public/models/previews/egyptian
+- Base URL no runtime: `https://cdn.jsdelivr.net/gh/never-nude/atrium.earth@28aefba9209eab48535ee7a193bea310fde10f47/public/models/previews/egyptian/`
+- Os modelos permanecem hospedados no repositório-fonte e são carregados via CDN; não foram copiados para `assets/models/` nesta atualização.

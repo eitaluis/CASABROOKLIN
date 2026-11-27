@@ -343,3 +343,47 @@ Estes três GLBs foram adicionados à cena a partir de versões otimizadas do pr
 - **Adaptação de socket:** o Ara Rigging define `WeaponR` no centro da mão fechada, com eixo `+Y` saindo pelo topo do punho. A malha vertical e com origem no chão é deslocada em Y −0,9 m para que o centro do cajado coincida com esse socket. Referência técnica: https://ara3dgen.com/docs/rigging/
 - **Fallback local:** em falha de CDN/CORS, o item mantém uma haste procedural de madeira com ponteiras de ferro e duas faixas de tecido. O fallback não é considerado substituto visual aprovado do GLB.
 - **Estado:** runtime importado em `src/inventory.js`; jogo e `character-preview.html` usam o mesmo módulo. Inspeção visual da empunhadura no navegador ainda pendente.
+
+## Grande Salão — Thoth, bancos curvos, escadaria e interações (27/11/2026)
+
+### Texto-fonte e iconografia
+
+- **Canônico textual:** *The Red Pyramid*, Rick Riordan, capítulo da primeira visita dos Kane à mansão. Thoth é a estátua central do Grande Salão: corpo humano, cabeça/pescoço longos de íbis, bico comprido, mármore negro, kilt, faixa, colar, estilete e pergaminho aberto com Per Ankh; escala aproximada de 30 pés (9,1 m).
+- **Canônico visual/editorial:** *The Red Pyramid: The Graphic Novel*, Disney Books, arte de Orpheus Collar. A prancha “First Floor — The Great Room” foi usada para composição espacial e relação entre a estátua, galerias e mobiliário. Nenhum painel foi importado, recortado ou copiado para o runtime.
+- **Referência histórica:** The Metropolitan Museum of Art, “Striding Thoth” (faiança, período ptolomaico, 332–30 BCE), Public Domain. Usado para a silhueta de corpo humano/cabeça de íbis e proporções iconográficas; não prova escala monumental, mármore negro ou os atributos exatos da estátua descrita no romance. https://www.metmuseum.org/art/collection/search/544092
+- **Referência histórica CC0:** Minneapolis Institute of Art / Sketchfab, “Thoth c. 644 BCE–30 CE”, modelo de bronze com cabeça de íbis. Usado como comparação histórica; não importado. https://sketchfab.com/3d-models/thoth-c-644-bce-30-ce-394a94722862460e8cefab54b4bed7bf
+
+### Asset de assentos curvos — aprovado e adaptado
+
+- **Fonte:** Innerscene, “Curved Modular Seating, 3 Modules”. https://www.innerscene.com/tools/library/3d-parts/curved-modular-seating-3-modules-1f4a9531
+- **Autor:** Innerscene (modelo original).
+- **Licença declarada:** CC0-1.0.
+- **Formato publicado:** GLB, 127 KB.
+- **Dimensões publicadas:** aproximadamente 4,446 × 1,330 × 0,440 m.
+- **Uso nesta versão:** referência aprovada de escala e linguagem modular curva. O arquivo GLB binário não pôde ser recuperado/inspecionado nesta sessão; não foi salvo em `assets/` nem carregado no runtime. A estrutura atual é geometria Three.js original, feita sob medida para a planta, os vãos de circulação e o pedestal existente. Portanto, não creditar o mesh original à Innerscene nem afirmar que o GLB foi importado.
+- **Adaptação implementada:** dois bancos em arcos/crescentes laterais contínuos, estrutura em calcário, almofada de couro, encosto curvo estofado, apoios de braço e acabamentos de bronze. A face frontal e a face posterior permanecem abertas. Altura superior do assento: cerca de 0,485 m acima do piso principal.
+
+### Escadaria monumental — Museum Grand Stair como referência aprovada
+
+- **Fonte:** Tevy, “Museum Grand Stair”. https://tevy.dev/models/museum-grand-stair
+- **Autor:** Tevy.
+- **Licença declarada:** CC0-1.0.
+- **Formato publicado:** GLB, com três LODs; LOD0 416 KB e cerca de 12.064 triângulos.
+- **Dimensões publicadas:** aproximadamente 6,16 × 4,81 × 6,63 m; descrição do modelo indica 18 degraus e elevação de cerca de 3 m.
+- **Uso nesta versão:** referência aprovada para linguagem construtiva, laterais de sustentação, degraus, corrimãos, balaústres e newels. O binário GLB não pôde ser recuperado e inspecionado nesta sessão; não foi guardado em `assets/` ou importado. O runtime usa geometria Three.js original adaptada às larguras, alturas e coordenadas dos três níveis existentes. A escadaria externa e os dados de rampas/patamares compartilhados não foram substituídos.
+- **Adaptação implementada:** espelhos verticais, focinhos de degrau com bronze, paredes laterais contínuas de calcário, coroamento inclinado, corrimãos contínuos, balaústres torneados, newels e patamares. A geometria preserva o conjunto de rampas e superfícies caminháveis do controlador.
+
+### Animação e interação de Carter
+
+- **Runtime escolhido:** Ara 3D Gen, versão 0.18.1 já usada no projeto; o personagem Carter Ara aprovado foi preservado.
+- **Clips requisitados:** `sit_down`, `sit_idle` e `stand_up`, consultados na lista `ANIMATIONS` do Ara e incluídos apenas se presentes no catálogo carregado. A cadeia de execução é sentar → repousar em loop → levantar.
+- **Ação de inspeção:** `look_around` para a estátua de Thoth, sem substituir o rig nem a malha de Carter.
+- **Comportamento:** E/INTERAGIR posiciona Carter num ponto de assento, trava o movimento durante a animação, mantém o idle sentado e usa uma âncora de saída para levantar. Se os três clips não estiverem disponíveis, Carter volta à posição anterior e o jogo informa a indisponibilidade.
+- **Alternativa pesquisada:** Quaternius Universal Animation Library, CC0-1.0, inclui animações humanoides de sentar/repousar/levantar. Não foi importada porque o Ara do projeto já oferece clips nativos retargetados para o rig ativo; evita-se introduzir uma dependência externa redundante de animações.
+- **Licença dos clips Ara:** os dados de animação permanecem sujeitos aos termos upstream de Ara/CMU listados no bloco `ara3d-js` do manifest. Não redistribuímos clips.
+
+### Estado desta integração
+
+- **Implementado em código:** anatomia refinada de Thoth, dois bancos curvos contínuos, escadaria apoiada e detalhada, interação de assento/saída e inspeção da estátua.
+- **Referência aprovada, mas GLB não importado:** Innerscene Curved Modular Seating e Tevy Museum Grand Stair. As geometrias de runtime são originais e não cópias binárias dos modelos.
+- **QA pendente:** testar os clips no carregamento Ara real; conferir assento/altura/raiz, pose, alinhamento de pés e saída; subir e descer cada lance; verificar colisões, materiais, desempenho e paridade visual no navegador desktop e em celular paisagem.

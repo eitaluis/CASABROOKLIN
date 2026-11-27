@@ -150,8 +150,28 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [ ] Implementar subida/descida física pela escada em caracol, com altura dos degraus (circulação do Grande Salão foi resolvida separadamente).
 - [ ] Fazer o portal mágico funcionar como passagem física.
 - [ ] Refinar terraço, piscina, refeições e fogueira.
-- [ ] Refinar quarto do Carter, banheiro, deck e pavimentos.
+- [x] Criar módulo asset-first independente para quarto de Carter, quarto contíguo, banheiro, kitchenette, deck e corredor residencial no terceiro andar.
+- [x] Importar 16 GLBs PBR locais com licença MIT e preservar o ficheiro de licença/proveniência.
+- [x] Abrir a saída da sala lateral superior para o corredor e criar transições físicas de zona entre galeria e ala residencial.
+- [x] Implementar portas interativas com colisores dinâmicos, interações de mobiliário/eletrônicos/banheiro e prompts compartilhados desktop/mobile.
+- [ ] Validar percurso real galeria superior → corredor → quarto de Carter → banheiro → quarto adjacente → retorno; testar colisões, interações e portas no navegador desktop e celular paisagem.
+- [ ] Inspecionar visualmente cama, headrest GEM 270 reconstruído, banheiro, kitchenette, deck e bacia de vidência; ajustar escalas/orientações dos GLBs e materiais PBR.
 - [ ] Construir enfermaria e salas auxiliares como reconstruções interpretativas quando o texto não definir forma.
+
+
+### Ala residencial — primeira implementação asset-first (27/11/2026)
+
+Estudo e matriz de assets: [RESIDENTIAL-WING-STUDY.md](RESIDENTIAL-WING-STUDY.md).
+
+- [x] Separar canônico e interpretação: quarto de Carter e Sadie contíguos; planta/corredor reconstruídos como interpretação.
+- [x] Corrigir a terminologia do objeto egípcio: apoio de cabeça de marfim (*headrest*), não cabeceira convencional.
+- [x] Selecionar referência GEM 270 (*Lions Headrest*) e reconstruir a peça com leões e Shu como geometria autoral.
+- [x] Importar GLBs originais MIT locais para cama, mesas de cabeceira, escrivaninha, cadeira, luminárias, kitchenette, refrigerador, box, lavatório, vaso, espelho, toalheiro, armário e TV/console.
+- [x] Preservar os PBR embutidos nos GLBs e reutilizar madeira/calcário/plaster locais; evitar dependência de CDN em runtime.
+- [x] Construir corredor do terceiro andar conectado à saída da sala lateral superior, com portas para os dois quartos.
+- [x] Implementar passagem entre os quartos, entrada de banheiro, deck e porta de vidro bloqueada pela barreira invisível descrita no primeiro livro.
+- [x] Adicionar interações para cama/headrest, computador, TV, som, snacks, refrigerador, pia, chuveiro, espelho e portas.
+- [ ] Fazer QA visual e de navegação no navegador real; não considerar aprovado antes do teste desktop e celular paisagem.
 
 ### Sala de Treinamento — implementada, QA pendente
 

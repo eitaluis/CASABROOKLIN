@@ -273,3 +273,34 @@ A leitura canônica permanece: câmara circular escavada na rocha; descida de tr
 - Luminárias de mesa cônicas foram substituídas por difusores cilíndricos opalinos com aros e nervuras de bronze.
 
 **QA pendente:** a validação realizada nesta etapa é estática (fonte, colisores e imports). Ainda é necessário testar a caminhada real, abertura das portas, degraus, passagens e renderização do material em navegador, desktop e celular em paisagem.
+
+## Ala residencial — continuidade do estudo asset-first (27/11/2026)
+
+### Programa narrativo
+
+A ala fica no terceiro andar. Carter e Sadie têm quartos contíguos; a planta exata do corredor, das divisórias e das portas não é cotada pelo texto. O quarto de Carter combina cama king-size, apoio de cabeça de marfim com leões/hieróglifos, kitchenette, tecnologia, banheiro privativo e deck com portas de vidro inicialmente bloqueadas. O quarto de Sadie tem cama grande, closet/banheiro próprios, cômoda com refrigerador para Ribena e chocolates, dock de iPod, fones, gravador cassete e isolamento acústico mágico.
+
+### Assets e lookdev escolhidos
+
+- **Mobiliário recorrente:** modelos originais MIT do repositório jamesEmerson112/NVIDIA-Crusoe-The-Recursive-Agents-Hackathon, já copiados para assets/models/residential/, com mapas PBR embutidos.
+- **Minibar de Sadie:** GLB CC0 do 3DAssets.dev (0,64 × 0,89 × 0,591 m; 960 triângulos; animações open/close), carregado pelo CDN e integrado com AnimationMixer. A geometria recebe collider no runtime.
+- **Poltrona de Sadie:** GLB CC0 do 3DAssets.dev (0,745 × 0,83 × 0,72 m; 2.320 triângulos), carregado pelo mesmo loader.
+- **Cama:** mantém geometria autoral com roupa de cama em linho PBR-like e acabamento de nogueira. A alternativa de cama com cabeceira estofada foi avaliada, mas não corresponde ao apoio de cabeça descrito como travesseiro. O GLB bed.glb da fonte MIT está vazio no repositório atual (0 bytes); não é usado.
+- **Headrest:** modelado sob medida a partir da referência GEM 270, colocado sobre o travesseiro em vez de virar cabeceira ou objeto de mesa.
+- **Cômoda, minibar, dock, cassete, fones e runas:** objetos posicionados conforme a descrição literária; onde não há GLB adequado ou proveniência suficiente, a geometria é autoral e identificada como interpretação visual.
+- **Banheiros e closet:** reutilizam modelos GLB MIT de ducha, lavatório, vaso, espelho e guarda-roupa. As divisórias e larguras são interpretação arquitetônica.
+
+### Circulação física
+
+A entrada não é um teleporte obrigatório. Carter atravessa a porta da galeria lateral mais alta do Grande Salão, passa pelo vão posterior aberto para o vestíbulo/corredor residencial e chega às portas dos dois quartos. A zona residencial começa no limiar do corredor; a saída repete o percurso no sentido inverso. Os atalhos do menu continuam disponíveis apenas para testes e navegação rápida.
+
+### QA da ala residencial
+
+- [x] Módulo src/residential-wing.js integrado no mesmo mundo Three.js.
+- [x] Colisores nas paredes, divisórias, móveis principais e portas; abertura de porta remove o collider correspondente.
+- [x] Interações compartilhadas E/INTERAGIR: descanso/energia, luzes, TV, computador, stereo, kitchenette, pia/chuveiro, closet, minibar, lanches, dock, cassete e isolamento mágico.
+- [x] Quarto de Sadie com banheiro e closet próprios; comunicação interna entre as suítes.
+- [x] Continuidade lógica entre a galeria superior e o corredor residencial.
+- [ ] Validar a caminhada física e o retorno no browser.
+- [ ] Verificar a carga dos modelos remotos CC0 e as alternativas de fallback no GitHub Pages.
+- [ ] Inspecionar todos os ambientes em desktop e celular paisagem, com foco em colisões, escala, aparência e FPS.

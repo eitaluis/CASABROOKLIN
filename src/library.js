@@ -7,7 +7,7 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   const centerZ = -0.5;
   const floorY = -17.4;
   const radius = 15.5;
-  const wallTop = -1.9;
+  const wallTop = -7.0;
   const wallHeight = wallTop - floorY;
   const columns = 160;
   const rows = 30;
@@ -477,7 +477,7 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   // Escadaria monumental: três lances curvos contínuos, três patamares e corrimãos.
   const stairRadius = 10.35;
   const stairWidth = 2.7;
-  const stepsPerFlight = 40;
+  const stepsPerFlight = 30;
   const flights = 3;
   const totalSteps = stepsPerFlight * flights;
   const totalAngle = Math.PI * 2;

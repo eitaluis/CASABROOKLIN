@@ -343,7 +343,7 @@
     {
       "id": "great-hall-thoth-ara-seated-interaction",
       "path": "src/character.js + src/third-person.js + src/main.js + src/grand-salon.js",
-      "role": "Shared desktop/mobile bench interaction with Ara-native retargeted sit_down, sit_idle and stand_up clips when present in the runtime animation catalogue; interaction locks movement while seated, returns Carter to a safe exit anchor, and restores normal locomotion. Thoth inspection triggers Ara look_around.",
+      "role": "Shared desktop/mobile bench interaction with Ara-native retargeted sit_down and sit_idle clips; standing up plays the sit_down clip in reverse, as documented by Ara. The interaction locks movement while seated, returns Carter to a safe exit anchor, and restores locomotion. Thoth inspection triggers look_around.",
       "license": "project-original-code; Ara 3D Gen API/runtime and upstream Ara/CMU animation data follow the terms recorded under runtimeAssets/openSourceReferences"
     }
   ],
@@ -359,7 +359,7 @@
       "id": "ara3d-character-generator",
       "source": "https://github.com/olatunde85/3d-gen",
       "license": "MIT-code; CC0-1.0-MakeHuman-data; CMU-motion-capture-free-commercial-use",
-      "role": "runtime: geração da malha humana contínua, skin weights, game rig, WeaponR e clips; o catálogo ANIMATIONS filtra os clips nativos fight_idle (Fighting stance) e point para a sequência HA-DI; captura a guarda esquerda no clip de combate e mantém o apontamento direito por IK; this revision also requests native retargeted sit_down, sit_idle and stand_up clips when present in the current ANIMATIONS catalogue.",
+      "role": "runtime: geração da malha humana contínua, skin weights, game rig, WeaponR e clips; o catálogo ANIMATIONS filtra os clips nativos fight_idle (Fighting stance) e point para a sequência HA-DI; captura a guarda esquerda no clip de combate e mantém o apontamento direito por IK; this revision also requests native retargeted sit_down and sit_idle, with standing up implemented as the sit_down clip played in reverse clips when present in the current ANIMATIONS catalogue.",
       "runtimeImported": true
     },
     {
@@ -797,7 +797,7 @@
       "id": "ara3d-sit-down-idle-stand-up",
       "source": "https://ara3dgen.com/docs/animations/",
       "license": "Ara 3D Gen API/runtime; upstream animation-data terms as listed for ara3d-js",
-      "role": "Native Ara animation catalogue and retarget pipeline consulted for sit_down, sit_idle and stand_up. Runtime requests these clip IDs only when present in ANIMATIONS, then plays the sequence on the approved Carter rig; no separate Quaternius animation pack imported.",
+      "role": "Native Ara animation catalogue and retarget pipeline: sit_down and sit_idle are requested if present in ANIMATIONS; the Ara documentation defines Stand up as the sit_down clip played in reverse. The runtime reverses the same THREE.AnimationAction rather than depending on a separate stand_up clip.",
       "runtimeImported": true
     },
     {

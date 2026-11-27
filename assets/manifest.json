@@ -29,6 +29,13 @@
       "version": "vendored-and-adapted-2026-11-26",
       "role": "view-aligned volumetric fire mesh and procedural noise shader; local WebGL2 GLSL3 adaptation",
       "license": "MIT"
+    },
+    {
+      "id": "polyfork-monk-quarterstaff",
+      "source": "https://polyfork.dev/asset/monk-s-quarterstaff-cbdadd",
+      "version": "GLB 57 KB; 496 triangles; 0.08 × 1.8 × 0.08 m",
+      "role": "approved Carter quarterstaff loaded at runtime through GLTFLoader from Polyfork CDN; original wood/iron/cloth material preserved; local WeaponR grip pivot is centered by offsetting origin -0.9m on Y",
+      "license": "commercial hotlink/use allowed without attribution; CC BY 4.0 if redistributing the mesh; direct CDN use is not redistribution"
     }
   ],
   "localGeneratedAssets": [
@@ -53,8 +60,8 @@
     {
       "id": "egyptian-staff-and-khopesh",
       "path": "src/inventory.js",
-      "role": "procedural Egyptian-inspired magic staff and khopesh props attached to Carter WeaponR socket",
-      "license": "project-original-code"
+      "role": "procedural local fallback for the externally loaded Polyfork quarterstaff; khopesh remains the current procedural model until a replacement is approved",
+      "license": "project-original-code; primary staff asset is the Polyfork runtime GLB listed in runtimeAssets"
     },
     {
       "id": "great-hall-sculpted-finish",
@@ -681,6 +688,14 @@
       "status": "user-approved direction A on 2026-11-27; awaiting binary access and hierarchy inspection",
       "role": "Approved as the source body for Carter's compact cognac crossbody satchel. Use the leather body/flap/hardware as the base; discard the original loose ground-loop strap and build a new fitted strap for Carter's left shoulder, torso/flank and anatomical right posterior hip. Target 0.88 scale (about 202 x 76 x 158 mm body). Not downloaded, not locally stored and not imported; the download redirect to files.innerscene.com was inaccessible during this session. Do not substitute procedural geometry for this approved GLB.",
       "runtimeImported": false
+    },
+    {
+      "id": "polyfork-monk-quarterstaff",
+      "source": "https://polyfork.dev/asset/monk-s-quarterstaff-cbdadd",
+      "license": "commercial use and hotlinking allowed without attribution; mesh redistribution CC BY 4.0",
+      "author": "Lucas Martinic / Polyfork",
+      "role": "user-approved runtime GLB for Carter's quarterstaff; 1.8m wooden pole with iron end caps and two cloth grip bands; original appearance retained",
+      "runtimeImported": true
     }
   ],
   "features": [
@@ -705,6 +720,19 @@
         "index.html"
       ],
       "summary": "Máscaras GLSL FBM recortam o alpha dos sprites do impacto HA-DI em formas orgânicas, evitando placas quadradas; máscaras animadas com o tempo do impacto.",
+      "date": "2026-11-27"
+    },
+    {
+      "id": "carter-approved-polyfork-quarterstaff-20261127",
+      "scope": "runtime",
+      "files": [
+        "src/inventory.js",
+        "src/main.js",
+        "character-preview.html",
+        "docs/CHARACTER-INVENTORY-DUAT.md",
+        "docs/OPEN-SOURCES.md"
+      ],
+      "summary": "The user-approved Polyfork Monk's Quarterstaff GLB is loaded by GLTFLoader and attached to Ara WeaponR. Original material/shape retained; 0.9m local Y offset centers the 1.8m staff at the closed hand. Local fallback remains available.",
       "date": "2026-11-27"
     }
   ]

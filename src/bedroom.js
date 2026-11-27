@@ -215,10 +215,7 @@ export function buildBedroom({
   }
   addWall('divisória de vidro do banheiro', 23.38, floorY + 1.5, -4.35,
     0.09, 3.0, 4.65, mat.frosted);
-  addWall('divisória baixa do banheiro', 21.0, floorY + 1.5, -2.02,
-    4.85, 3.0, 0.09, mat.frosted);
-  // Keep a real doorway in that low, corner-only partition.
-  root.children[root.children.length - 1].visible = false;
+  // The lower ensuite partition is split around a 1.05 m doorway.
   const bathWallLeft = addBox('painel de vidro esquerdo do banheiro',
     [19.72, floorY + 1.5, -2.02], [2.28, 3.0, 0.09], mat.frosted);
   const bathWallRight = addBox('painel de vidro direito do banheiro',
@@ -226,7 +223,8 @@ export function buildBedroom({
   addCollider(19.72, floorY + 1.5, -2.02, 2.28, 3.0, 0.09);
   addCollider(22.62, floorY + 1.5, -2.02, 1.37, 3.0, 0.09);
   const bathDoor = addBox('porta de correr de vidro fosco do banheiro',
-    [21.85, floorY + 1.25, -2.02], [1.0, 2.5, 0.07], mat.frosted);
+    [21.4, floorY + 1.25, -2.02], [1.0, 2.5, 0.07], mat.frosted);
+  const bathDoorCollider = addCollider(21.4, floorY + 1.25, -2.02, 1.0, 2.5, 0.12);
   let bathDoorOpen = false;
 
   // Architectural finish: wood ceiling beams, recessed light and Egyptian detailing.
@@ -387,29 +385,41 @@ export function buildBedroom({
     [0.92, 0.57, 0.07], mat.black, fallback.desk);
   root.add(fallback.desk);
 
-  fallback.kitchen = new THREE.Group();
+  fallback.kitchenSink = new THREE.Group();
   addBox('módulo de pia da kitchenette', [26.1, floorY + 0.47, -6.15],
-    [1.22, 0.94, 0.62], mat.walnut, fallback.kitchen);
+    [1.22, 0.94, 0.62], mat.walnut, fallback.kitchenSink);
   addBox('bancada clara da kitchenette', [26.1, floorY + 0.98, -6.15],
-    [1.26, 0.06, 0.68], mat.ivory, fallback.kitchen);
-  addBox('módulo de gavetas da kitchenette', [27.45, floorY + 0.47, -6.15],
-    [0.62, 0.94, 0.62], mat.walnutLight, fallback.kitchen);
-  addBox('minigeladeira compacta', [29.55, floorY + 0.43, -6.15],
-    [0.62, 0.86, 0.62], mat.black, fallback.kitchen);
-  addBox('porta de vidro da minigeladeira', [29.55, floorY + 0.43, -5.83],
-    [0.53, 0.76, 0.035], mat.darkGlass, fallback.kitchen);
-  root.add(fallback.kitchen);
+    [1.26, 0.06, 0.68], mat.ivory, fallback.kitchenSink);
+  root.add(fallback.kitchenSink);
 
-  fallback.bathroom = new THREE.Group();
+  fallback.kitchenDrawers = new THREE.Group();
+  addBox('módulo de gavetas da kitchenette', [27.45, floorY + 0.47, -6.15],
+    [0.62, 0.94, 0.62], mat.walnutLight, fallback.kitchenDrawers);
+  root.add(fallback.kitchenDrawers);
+
+  fallback.fridge = new THREE.Group();
+  addBox('minigeladeira compacta', [29.55, floorY + 0.43, -6.15],
+    [0.62, 0.86, 0.62], mat.black, fallback.fridge);
+  addBox('porta de vidro da minigeladeira', [29.55, floorY + 0.43, -5.83],
+    [0.53, 0.76, 0.035], mat.darkGlass, fallback.fridge);
+  root.add(fallback.fridge);
+
+  fallback.bathVanity = new THREE.Group();
   addBox('gabinete da pia do banheiro', [19.25, floorY + 0.45, -5.55],
-    [0.82, 0.9, 0.5], mat.walnut, fallback.bathroom);
+    [0.82, 0.9, 0.5], mat.walnut, fallback.bathVanity);
   addBox('bancada de cerâmica do banheiro', [19.25, floorY + 0.93, -5.55],
-    [0.88, 0.07, 0.54], mat.ivory, fallback.bathroom);
+    [0.88, 0.07, 0.54], mat.ivory, fallback.bathVanity);
+  root.add(fallback.bathVanity);
+
+  fallback.bathtub = new THREE.Group();
   addBox('banheira de porcelana', [21.2, floorY + 0.34, -3.2],
-    [1.75, 0.64, 0.78], mat.linen, fallback.bathroom);
+    [1.75, 0.64, 0.78], mat.linen, fallback.bathtub);
+  root.add(fallback.bathtub);
+
+  fallback.toilet = new THREE.Group();
   addBox('vaso sanitário cerâmico', [22.35, floorY + 0.38, -5.45],
-    [0.42, 0.72, 0.66], mat.linen, fallback.bathroom);
-  root.add(fallback.bathroom);
+    [0.42, 0.72, 0.66], mat.linen, fallback.toilet);
+  root.add(fallback.toilet);
 
   // A small audio system is deliberately separate from the TV.
   const speakerFallback = new THREE.Group();
@@ -550,15 +560,15 @@ export function buildBedroom({
   loadModel('Mesa e computador', 'office-desk', 'v2',
     [29.45, floorY, 1.85], -Math.PI / 2, 1.0, fallback.desk);
   loadModel('Armário de pia da kitchenette', 'kitchen-base-unit-sink', 'v1',
-    [26.1, floorY, -6.15], 0, 1.0, null);
+    [26.1, floorY, -6.15], 0, 1.0, fallback.kitchenSink);
   loadModel('Gaveteiro da kitchenette', 'kitchen-base-unit-drawers', 'v1',
-    [27.45, floorY, -6.15], 0, 1.0, null);
+    [27.45, floorY, -6.15], 0, 1.0, fallback.kitchenDrawers);
   loadModel('Pia de banheiro', 'bathroom-vanity', 'v1',
-    [19.25, floorY, -5.55], 0, 1.0, null);
+    [19.25, floorY, -5.55], 0, 1.0, fallback.bathVanity);
   loadModel('Banheira privativa', 'bathtub', 'v1',
-    [21.2, floorY, -3.2], 0, 1.0, null);
+    [21.2, floorY, -3.2], 0, 1.0, fallback.bathtub);
   loadModel('Vaso sanitário', 'toilet', 'v1',
-    [22.35, floorY, -5.45], Math.PI, 1.0, null);
+    [22.35, floorY, -5.45], Math.PI, 1.0, fallback.toilet);
   loadModel('Caixa acústica esquerda', 'bookshelf-speaker', 'v1',
     [25.75, floorY + 0.28, 4.55], 0, 1.0, speakerFallback);
   loadModel('Caixa acústica direita', 'bookshelf-speaker', 'v1',
@@ -632,6 +642,9 @@ export function buildBedroom({
     onInteract() {
       bathDoorOpen = !bathDoorOpen;
       bathDoor.visible = !bathDoorOpen;
+      const colliderIndex = colliders.indexOf(bathDoorCollider);
+      if (bathDoorOpen && colliderIndex >= 0) colliders.splice(colliderIndex, 1);
+      if (!bathDoorOpen && colliderIndex < 0) colliders.push(bathDoorCollider);
       return bathDoorOpen ? 'A porta de vidro fosco do banheiro desliza para abrir.' : 'A porta do banheiro se fecha.';
     }
   });
@@ -639,7 +652,7 @@ export function buildBedroom({
     name: 'Sistema de som',
     label: 'Sistema de som',
     prompt: 'E / INTERAGIR · Examinar o sistema de som',
-    position: new THREE.Vector3(27.1, floorY + 0.6, 4.42),
+    position: new THREE.Vector3(28.4, floorY + 0.6, 4.42),
     radius: 2.0,
     onInteract: () => 'O sistema de som estéreo está montado em duas caixas acústicas de madeira, uma de cada lado da televisão.'
   });

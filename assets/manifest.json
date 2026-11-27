@@ -66,7 +66,7 @@
     {
       "id": "great-hall-sculpted-finish",
       "path": "src/grand-salon.js",
-      "role": "sculpted Thoth ibis-headed statue, fluted lotus columns, twin stair flights, turned balustrades, textured stone/wood materials, softened sofas, oval woven rug and carved wall/ceiling reliefs",
+      "role": "Original Great Hall sculptural and architectural finish: refined black-marble Thoth ibis anatomy (long tapered neck, curved tapered beak, eye rims and feather grooves), integrated curved limestone/cognac-leather seating, and Museum Grand Stair-inspired supported flights with limestone cheek walls, continuous handrails, risers, balusters and monumental newels; references documented separately, no external GLB imported.",
       "license": "project-original-code"
     },
     {
@@ -84,7 +84,7 @@
     {
       "id": "great-hall-object-interactions",
       "path": "src/grand-salon.js + src/main.js + src/third-person.js",
-      "role": "inspection prompts/colliders for sofa GLBs, centre table, Thoth, fireplace, doors, balcony room doors, harp/drum/flutes/weapons and interactable plasma TV power toggle; shared desktop/mobile controller",
+      "role": "Shared desktop/mobile object interactions for sofas, table, Thoth, fireplace, doors, instruments, weapons and TV; additionally two curved Thoth benches support Ara sit_down -> sit_idle loop -> stand_up retargeted clips with precise seat/exit anchors, controller locking and safe fallback when a clip is unavailable.",
       "license": "project-original-code"
     },
     {
@@ -108,7 +108,7 @@
     {
       "id": "great-hall-thoth-human-kilt",
       "path": "src/grand-salon.js",
-      "role": "original human-proportioned black-marble Thoth sculpture with ibis head and beak, separate legs/torso, pleated shendyt kilt, diagonal ceremonial sash, broad collar, open textured papyrus, Per Ankh graphic and writer's stylus; approximately 9.1 m including crown",
+      "role": "Original human-proportioned black-marble Thoth preserved at approximately 9.1 m including crown; separate legs/torso, pleated shendyt kilt, diagonal sash, broad collar, open papyrus with Per Ankh and writer's stylus; head and neck refined with a longer tapered ibis neck, curved tapered beak, cheek volume, eye rims and feather grooves. Historic museum models are visual references only; none imported.",
       "license": "project-original-code; material surface maps CC0 ambientCG Marble012; visual reference MIA Thoth CC0, not imported"
     },
     {
@@ -327,6 +327,24 @@
       "path": "SKILL.md + AGENTS.md",
       "role": "mandatory project-wide process: read book passages and separate canon from interpretation; inspect official author/publisher/illustrator imagery plus historical and fan-art references with proper attribution; search real open 3D/code/texture assets and verify license, dimensions, hierarchy, rig, formats, Three.js/mobile fit; present actual visual references/previews/comparison in chat; wait for explicit user approval before download, new modeling, replacement or integration; preserve desktop/mobile parity and run visual QA",
       "license": "project-original-documentation"
+    },
+    {
+      "id": "great-hall-curved-bench-seating",
+      "path": "src/grand-salon.js",
+      "role": "Two continuous crescent bench structures at the sides of Thoth's base: segmented-annular limestone substructure, continuous leather cushion at 0.485 m above the Great Hall floor, upholstered curved backrest, timber arm supports and brass caps; segment-aligned colliders and two precise sitting/exit anchors. Custom Three.js geometry shaped from the Innerscene Curved Modular Seating CC0 reference; the source GLB was not downloaded or imported.",
+      "license": "project-original-code; visual/proportion reference Innerscene CC0-1.0 (not imported)"
+    },
+    {
+      "id": "great-hall-museum-stair-adaptation",
+      "path": "src/grand-salon.js",
+      "role": "Museum Grand Stair-inspired adaptation on the existing three-gallery layout: full limestone cheek walls, continuous sloped capstones, vertical risers, brass nosings, turned stone balusters, continuous limestone handrails with bronze reveal, terminal newel pedestals/finials and broad landings; retains existing ramp and walkable-platform data. The 416 KB Museum Grand Stair GLB is a design/technical reference only and was not imported.",
+      "license": "project-original-code; architectural reference Tevy Museum Grand Stair CC0-1.0 (binary not imported)"
+    },
+    {
+      "id": "great-hall-thoth-ara-seated-interaction",
+      "path": "src/character.js + src/third-person.js + src/main.js + src/grand-salon.js",
+      "role": "Shared desktop/mobile bench interaction with Ara-native retargeted sit_down, sit_idle and stand_up clips when present in the runtime animation catalogue; interaction locks movement while seated, returns Carter to a safe exit anchor, and restores normal locomotion. Thoth inspection triggers Ara look_around.",
+      "license": "project-original-code; Ara 3D Gen API/runtime and upstream Ara/CMU animation data follow the terms recorded under runtimeAssets/openSourceReferences"
     }
   ],
   "openSourceReferences": [
@@ -341,7 +359,7 @@
       "id": "ara3d-character-generator",
       "source": "https://github.com/olatunde85/3d-gen",
       "license": "MIT-code; CC0-1.0-MakeHuman-data; CMU-motion-capture-free-commercial-use",
-      "role": "runtime: geração da malha humana contínua, skin weights, game rig, WeaponR e clips; o catálogo ANIMATIONS filtra os clips nativos fight_idle (Fighting stance) e point para a sequência HA-DI; captura a guarda esquerda no clip de combate e mantém o apontamento direito por IK",
+      "role": "runtime: geração da malha humana contínua, skin weights, game rig, WeaponR e clips; o catálogo ANIMATIONS filtra os clips nativos fight_idle (Fighting stance) e point para a sequência HA-DI; captura a guarda esquerda no clip de combate e mantém o apontamento direito por IK; this revision also requests native retargeted sit_down, sit_idle and stand_up clips when present in the current ANIMATIONS catalogue.",
       "runtimeImported": true
     },
     {
@@ -569,7 +587,7 @@
       "id": "disney-red-pyramid-graphic-novel-reference",
       "source": "https://books.disney.com/book/the-red-pyramid-the-graphic-novel/",
       "license": "publisher bibliographic reference only; no panel image imported",
-      "role": "official graphic novel edition confirmed; no public verifiable exterior Brooklyn House panel found",
+      "role": "Official Disney Books edition of The Red Pyramid: The Graphic Novel, illustrated by Orpheus Collar; used to identify and study the editorial Great Room composition. No panel image/geometry imported or copied.",
       "runtimeImported": false
     },
     {
@@ -737,6 +755,58 @@
       "format": "GLB / FBX / OBJ / USDZ / STL (download requires free account)",
       "role": "Unapproved visual/asset candidate: warm brown vintage leather satchel, broad flap, two decorative silver-tone buckles, embossed ornament and top handle. Technical dimensions/topology/node hierarchy not verified; not downloaded or imported.",
       "runtimeImported": false
+    },
+    {
+      "id": "innerscene-curved-modular-seating",
+      "source": "https://www.innerscene.com/tools/library/3d-parts/curved-modular-seating-3-modules-1f4a9531",
+      "author": "Innerscene (original model)",
+      "license": "CC0-1.0",
+      "format": "GLB, 127 KB",
+      "dimensionsM": [
+        4.446,
+        1.33,
+        0.44
+      ],
+      "role": "User-approved asset reference for the continuous curved bench geometry and seat scale. GLB was not downloaded or imported; project geometry in src/grand-salon.js is original Three.js code informed by this reference.",
+      "runtimeImported": false
+    },
+    {
+      "id": "tevy-museum-grand-stair",
+      "source": "https://tevy.dev/models/museum-grand-stair",
+      "author": "Tevy",
+      "license": "CC0-1.0",
+      "format": "GLB LOD0 416 KB; LOD1 206 KB; LOD2 54 KB",
+      "trianglesLOD0": 12064,
+      "dimensionsM": [
+        6.16,
+        4.81,
+        6.63
+      ],
+      "role": "User-approved architectural reference for an 18-step marble stair, limestone cheek walls, rounded marble handrails, turned balusters and terminal newels. GLB could not be retrieved for inspection/import; the current runtime uses custom geometry adapted to existing stair widths and gallery heights, not the external GLB.",
+      "runtimeImported": false
+    },
+    {
+      "id": "met-striding-thoth-visual-reference",
+      "source": "https://www.metmuseum.org/art/collection/search/544092",
+      "author": "The Metropolitan Museum of Art",
+      "license": "Public Domain",
+      "role": "Historical iconographic reference for a human-form Thoth with ibis head; supports ibis silhouette and period iconographic details, not the book's black-marble monumental scale or exact costume. No museum model/image imported.",
+      "runtimeImported": false
+    },
+    {
+      "id": "ara3d-sit-down-idle-stand-up",
+      "source": "https://ara3dgen.com/docs/animations/",
+      "license": "Ara 3D Gen API/runtime; upstream animation-data terms as listed for ara3d-js",
+      "role": "Native Ara animation catalogue and retarget pipeline consulted for sit_down, sit_idle and stand_up. Runtime requests these clip IDs only when present in ANIMATIONS, then plays the sequence on the approved Carter rig; no separate Quaternius animation pack imported.",
+      "runtimeImported": true
+    },
+    {
+      "id": "quaternius-universal-animation-library-reviewed-sitting",
+      "source": "https://quaternius.com/packs/universalanimation.html",
+      "author": "Quaternius",
+      "license": "CC0-1.0",
+      "role": "Reviewed as a fallback humanoid sitting animation set (including enter/idle/exit sitting); not imported because Ara's built-in retargeted sit_down/sit_idle/stand_up clips already serve the same purpose on the approved Carter rig.",
+      "runtimeImported": false
     }
   ],
   "features": [
@@ -774,6 +844,24 @@
         "docs/OPEN-SOURCES.md"
       ],
       "summary": "The user-approved Polyfork Monk's Quarterstaff GLB is loaded by GLTFLoader and attached to Ara WeaponR. Original material/shape retained; 0.9m local Y offset centers the 1.8m staff at the closed hand. Local fallback remains available.",
+      "date": "2026-11-27"
+    },
+    {
+      "id": "great-hall-statue-seating-stairs-interactions-20261127",
+      "scope": "runtime",
+      "files": [
+        "src/grand-salon.js",
+        "src/character.js",
+        "src/third-person.js",
+        "src/main.js",
+        "index.html",
+        "assets/manifest.json",
+        "docs/OPEN-SOURCES.md",
+        "docs/ASSET-FIRST-ROOM-BUILDING.md",
+        "docs/INTERIORES-E-LOOKDEV.md",
+        "docs/ROADMAP-CHECKLIST.md"
+      ],
+      "summary": "Refined the existing canonical 9.1m black-marble Thoth ibis sculpture; replaced segmented ring benches with two continuous curved limestone/leather seating crescents; adapted Museum Grand Stair architectural features into supported stair flights; added shared Ara sit_down/sit_idle/stand_up interactions, Thoth look_around inspection, safe seat exit anchors and desktop/mobile parity. External GLBs remain reference-only, not imported.",
       "date": "2026-11-27"
     }
   ]

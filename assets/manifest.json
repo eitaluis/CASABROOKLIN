@@ -352,6 +352,12 @@
       "role": "Avatar dourado translúcido que envolve Carter; clone SkeletonUtils do rig Ara aprovado, ampliado e sincronizado por cópia das transformações ósseas e morph targets em cada frame; crânio, bico e olhos de falcão em geometria original, sem armadura ornamental nem asset externo",
       "license": "project-original-code; Three.js SkeletonUtils MIT",
       "runtimeImported": true
+    },
+    {
+      "id": "great-hall-opaque-portal-backing",
+      "path": "src/grand-salon.js",
+      "role": "Opaque full-height limestone masonry panel placed behind the locked double Eye of Horus doors at the Great Hall front portal; closes the otherwise exposed gap between the split front facade wings and the upper wall above the doors; includes upper masonry collision volume. Original project Three.js geometry, opaque MeshStandardMaterial from the local limestone PBR material.",
+      "license": "project-original-code; local surface maps CC0-1.0"
     }
   ],
   "openSourceReferences": [
@@ -890,6 +896,20 @@
         "docs/OPEN-SOURCES.md"
       ],
       "summary": "Avatar de Combate de Hórus translúcido e dourado envolve Carter; cópia ampliada do rig Ara sincronizada por frame, cabeça simplificada de falcão, tecla H e botão mobile; custo inicial de 40 de energia.; update visual no loop principal, hotkey H em capture e botão mobile separado.",
+      "date": "2026-11-27"
+    },
+    {
+      "id": "great-hall-opaque-door-wall-20261127",
+      "scope": "runtime",
+      "files": [
+        "src/grand-salon.js",
+        "src/main.js",
+        "index.html",
+        "assets/manifest.json",
+        "docs/INTERIORES-E-LOOKDEV.md",
+        "docs/ROADMAP-CHECKLIST.md"
+      ],
+      "summary": "Restored a full-height opaque limestone backing behind the locked double Eye of Horus doors, aligned the door assembly to the facade plane and added a continuous upper-wall collider, removing the direct exterior sightline through the portal wall.",
       "date": "2026-11-27"
     }
   ]

@@ -233,3 +233,16 @@ A sala já está ligada ao inventário e ao controlador comuns; a validação re
 
 
 A pele de serpente foi orientada com o eixo longo (40 pés) no sentido longitudinal do Grande Salão; validar a posição final no enquadramento 3/4 e na escala do avatar antes de marcar a etapa visual como concluída.
+
+
+## Biblioteca subterrânea — revisão estrutural de 27/11/2026
+
+Documento complementar de produção: [BIBLIOTECA-STUDY.md](BIBLIOTECA-STUDY.md).
+
+A leitura canônica permanece: câmara circular escavada na rocha; descida de três andares; parede, piso e teto pintados com figuras multicoloridas; Nut e Geb; cavidades redondas em padrão de colmeia com cilindros plásticos de armazenamento pneumático e papiros; quatro estatuetas humanas de cerâmica; mesa longa de pedra com a bolsa de Julius Kane.
+
+**Correção visual importante:** as quatro figuras da biblioteca não devem ser representadas como quatro shabtis mumiformes de braços cruzados. O texto descreve pequenas figuras humanas de cerâmica, com kilt, sandálias, cabelo preto angular e kohl, e objetos distintos (estilete/rolo, caixa, cajado curto em gancho e mãos vazias). Os shabtis guerreiros da Sala de Treinamento são outro conjunto narrativo e não devem ser confundidos com essas estatuetas.
+
+**Implementação estrutural registrada:** painéis murais curvos com aberturas circulares reais e profundidade interna; cápsulas translúcidas com papiro interno; quatro estatuetas humanas; mesa de pedra e bolsa de Julius. As 48 cápsulas (16 por faixa em três faixas) são uma distribuição de produção, não uma contagem canônica.
+
+**Ainda provisório:** forma figurativa final de Nut e Geb, desenho da escada dos três andares e aprovação dos materiais. A escada helicoidal é uma decisão interpretativa, pois o romance fixa a descida de três andares, mas não sua planta. A implementação não deve ser marcada como aprovada sem inspeção real em desktop e celular paisagem.

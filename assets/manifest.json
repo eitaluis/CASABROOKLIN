@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -696,6 +696,47 @@
       "author": "Lucas Martinic / Polyfork",
       "role": "user-approved runtime GLB for Carter's quarterstaff; 1.8m wooden pole with iron end caps and two cloth grip bands; original appearance retained",
       "runtimeImported": true
+    },
+    {
+      "id": "vinish-leather-satchel-alternative",
+      "source": "https://vinish.dev/free-3d-models/bags-and-backpacks",
+      "directDownload": "https://vinish-models.pages.dev/bags-and-backpacks/leather-satchel.glb",
+      "author": "vinish.dev",
+      "license": "CC BY 4.0",
+      "format": "GLB, 317 KB",
+      "dimensionsM": [
+        0.41,
+        0.13,
+        0.64
+      ],
+      "triangles": 8320,
+      "role": "Unapproved alternative candidate for Carter's satchel: tan leather body, dark brown flap, two gold buckles, top handle and shoulder strap. Single reported node LeatherSatchel_Mesh. Oversized for target and requires significant reshape; attribution and modification notice required. Not downloaded or imported.",
+      "runtimeImported": false
+    },
+    {
+      "id": "grab3d-handbag-alternative",
+      "source": "https://grab3d.com/models/props/handbag/",
+      "directDownload": "https://grab3d.com/dl/handbag/handbag.glb",
+      "author": "Grab3D",
+      "license": "CC0-1.0",
+      "format": "GLB, 597 KB",
+      "dimensionsM": [
+        0.3,
+        0.14,
+        0.38
+      ],
+      "triangles": 8348,
+      "role": "Unapproved alternative candidate: softly rounded pink leather handbag body with brown flap, brass turn-lock, cream piping, gold feet and top handle; PBR 2K maps. Would require cognac recolour, handle/feet removal and custom crossbody strap. Not downloaded or imported.",
+      "runtimeImported": false
+    },
+    {
+      "id": "meshy-illustros-vintage-leather-satchel-alternative",
+      "source": "https://www.meshy.ai/3d-models/Vintage-Leather-Satchel-v2-0195ba14-468c-73fb-a0f3-37f288a60227",
+      "author": "Illustros",
+      "license": "CC0 (as declared by Meshy model page)",
+      "format": "GLB / FBX / OBJ / USDZ / STL (download requires free account)",
+      "role": "Unapproved visual/asset candidate: warm brown vintage leather satchel, broad flap, two decorative silver-tone buckles, embossed ornament and top handle. Technical dimensions/topology/node hierarchy not verified; not downloaded or imported.",
+      "runtimeImported": false
     }
   ],
   "features": [

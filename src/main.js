@@ -8,8 +8,8 @@ import { buildGrandSalon } from './grand-salon.js?v=great-hall-traversal-2026112
 import { buildTrainingRoom } from './training-room.js?v=ra-shabti-niches-20261127b';
 import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
 import { createMagicSystem } from './magic-system.js?v=ha-di-pooled-throw-cast-20261127a';
-import { createCharacter } from './character.js?v=ha-di-throw-cast-20261127a';
-import { createThirdPersonController } from './third-person.js?v=room-transition-neutral-lean-20261127a';
+import { createCharacter } from './character.js?v=injury-reaction-unlock-20261127a';
+import { createThirdPersonController } from './third-person.js?v=yaw-only-neutral-root-20261127a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';

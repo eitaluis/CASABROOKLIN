@@ -3,6 +3,20 @@ import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { createCharacter as createAraCharacter, ANIMATIONS } from 'ara3d';
 import { createCarterAccessories } from './character-accessories.js?v=carter-accessories-rig-fit-20261127c';
 
+const CARTER_MOVE_PACK_URL = 'https://cdn.jsdelivr.net/gh/eitaluis/CASABROOKLIN@main/assets/animations/carter-movement.ara-pack.json';
+const CARTER_MOVE_CLIPS = Object.freeze({
+  sprintUnarmed: 'carter-moves/sprint_loop',
+  sprintArmed: 'carter-moves/sprint_shield_loop',
+  ninjaJump: 'carter-moves/ninjajump_double',
+  jumpLand: 'carter-moves/jump_land',
+  meleeCombo: 'carter-moves/melee_combo',
+  swordHeavyCombo: 'carter-moves/sword_heavy_combo'
+});
+const CARTER_COMBAT_ANIMATIONS = [
+  CARTER_MOVE_CLIPS.meleeCombo,
+  CARTER_MOVE_CLIPS.swordHeavyCombo
+];
+
 // Link compartilhado do Carter aprovado no Ara 3D Gen.
 // A malha humana, o rosto, o cabelo e as proporções permanecem preservados.
 const CARTER_SHARE_URL = 'https://ara3dgen.com/app/#c=XVDLboQwDPyVyr2iClbs87ZdqZce-wHImwaIgBg5jlZoxb_XoVTt9pDIM9aMx76Dx8HCCS7IYvnpHb2FDLBRLn_ZbMtyV24O232x_BkMMZh-6ZUZ3KxrWlnByDQSiyMfErNVk5qdQQ-nQuvgUpVnYDCaXxQ6pwVMFH1TrYJqQB2RgZ2sWsGV6eYVtuhYYWh1Sl6sxIV6SuxzsS82-ZuyFKV2Ggo8LasIjQqidzXxUIXWsSh7JREakl10UglTDJaDNhrkwXr5kKlP0-__lEqMKHqplDpQ7z5VY35C6I3OxwvMuteD7aNKW843f3Wv5fG8O8CchC0tWwdvsfuOZJB5SodA0436YP4C';
@@ -41,6 +55,7 @@ const AVAILABLE_CINEMATIC_ANIMATIONS = CINEMATIC_ANIMATIONS.filter((id) => ARA_A
 const REACTION_ANIMATIONS = ['hit_front', 'hit_back', 'hit_left', 'hit_right'];
 const AVAILABLE_ACTION_ANIMATIONS = [...AVAILABLE_CINEMATIC_ANIMATIONS, ...REACTION_ANIMATIONS]
   .filter((id) => ARA_ANIMATION_IDS.has(id));
+const PACK_ACTION_ANIMATIONS = CARTER_COMBAT_ANIMATIONS;
 
 export async function createCharacter({
   scene,
@@ -56,7 +71,12 @@ export async function createCharacter({
     // carried prop; Carter now uses only the custom side satchel below.
     carry: 'none',
     rootMotion: false,
-    animations: [...new Set([...CORE_ANIMATIONS, ...AVAILABLE_CINEMATIC_ANIMATIONS])],
+    packs: [CARTER_MOVE_PACK_URL],
+    animations: [...new Set([
+      ...CORE_ANIMATIONS,
+      ...AVAILABLE_CINEMATIC_ANIMATIONS,
+      ...Object.values(CARTER_MOVE_CLIPS)
+    ])],
     detail: 'medium',
     onProgress: (label, fraction) => {
       if (!loading || loading.classList.contains('done')) return;
@@ -73,13 +93,19 @@ export async function createCharacter({
   let actionInterruptOnMovement = true;
   let actionInterruptDelay = 0;
   let actionElapsed = 0;
+  let sprintArmed = false;
   // Keep three distinct Ara clips in the blend. Reusing walk_slouch as both
   // walk and run creates two actions for the same clip and can stall the gait.
   // Injured movement is slowed by the controller, so the normal run clip is
   // retained as a valid upper blend endpoint but sprint remains disabled.
   const locomotionOptions = () => injured
     ? { idle: 'crouch', walk: 'walk_slouch', run: 'run', smoothing: 0.18 }
-    : { smoothing: 0.18 };
+    : {
+        run: hero.clip(sprintArmed ? CARTER_MOVE_CLIPS.sprintArmed : CARTER_MOVE_CLIPS.sprintUnarmed)
+          ? (sprintArmed ? CARTER_MOVE_CLIPS.sprintArmed : CARTER_MOVE_CLIPS.sprintUnarmed)
+          : 'run',
+        smoothing: 0.18
+      };
   let locomotion = hero.locomotion(mixer, locomotionOptions());
   let jumping = false;
   let movementSpeed = 0;
@@ -364,7 +390,10 @@ export async function createCharacter({
   }
 
   function playAction(id, options = {}) {
-    if (disposed || jumping || !AVAILABLE_ACTION_ANIMATIONS.includes(id)) return false;
+    if (disposed || jumping || (
+      !AVAILABLE_ACTION_ANIMATIONS.includes(id) &&
+      !PACK_ACTION_ANIMATIONS.includes(id)
+    )) return false;
     const clip = hero.clip(id);
     if (!clip) return false;
 
@@ -577,32 +606,85 @@ export async function createCharacter({
     return true;
   }
 
+  function createClampedAction(clip, fade = 0.16) {
+    if (!clip) return null;
+    const action = mixer.clipAction(clip);
+    action.reset();
+    action.enabled = true;
+    action.setLoop(THREE.LoopOnce, 1);
+    action.clampWhenFinished = true;
+    action.setEffectiveTimeScale(1);
+    action.setEffectiveWeight(1);
+    if (fade > 0) action.fadeIn(fade);
+    action.play();
+    return { stop: () => action.stop() };
+  }
+
+  function land() {
+    if (disposed || !jumping) return false;
+    clearJumpListener();
+    jumpSequence?.stop();
+    jumpSequence = null;
+
+    const clip = hero.clip(CARTER_MOVE_CLIPS.jumpLand) || hero.clip('jump_land');
+    if (!clip) {
+      jumping = false;
+      restoreLocomotion();
+      return false;
+    }
+
+    const action = createClampedAction(clip, 0.1);
+    if (!action) {
+      jumping = false;
+      restoreLocomotion();
+      return false;
+    }
+    jumpSequence = action;
+    finishJump = (event) => {
+      if (event.action.getClip() !== clip || disposed) return;
+      clearJumpListener();
+      jumpSequence?.stop();
+      jumpSequence = null;
+      jumping = false;
+      restoreLocomotion();
+    };
+    mixer.addEventListener('finished', finishJump);
+    return true;
+  }
+
   function jump() {
     if (disposed || jumping || sitting) return false;
-    if (!hero.clip('jump_start') || !hero.clip('jump_air') || !hero.clip('jump_land')) {
-      console.warn('O conjunto de animações de salto não está completo.');
+    const jumpClip = hero.clip(CARTER_MOVE_CLIPS.ninjaJump) || hero.clip('jump_start');
+    const landingClip = hero.clip(CARTER_MOVE_CLIPS.jumpLand) || hero.clip('jump_land');
+    if (!jumpClip || !landingClip) {
+      console.warn('O conjunto de animações de salto do Carter não está completo.');
       return false;
     }
 
     cancelAction();
     jumping = true;
     locomotion.stop();
-    jumpSequence = hero.playSequence(mixer, 'jump_start 0.32s, jump_air 0.22s, jump_land', {
-      repeat: false,
-      fade: 0.22
-    });
-    finishJump = (event) => {
-      if (event.action.getClip() !== hero.clip('jump_land') || disposed) return;
-      clearJumpListener();
-      jumpSequence?.stop();
-      jumpSequence = null;
+    jumpSequence = createClampedAction(jumpClip, 0.18);
+    if (!jumpSequence) {
       jumping = false;
-      locomotion = hero.locomotion(mixer, locomotionOptions());
-      locomotion.speed = movementSpeed;
-      state.locomotion = locomotion;
-    };
-    mixer.addEventListener('finished', finishJump);
+      restoreLocomotion();
+      return false;
+    }
+    // A animação de salto segura a última pose até a física informar contato real
+    // com o piso. A aterrissagem começa no instante da colisão, não por cronômetro.
     return true;
+  }
+
+  function attack(armed = false) {
+    const id = armed ? CARTER_MOVE_CLIPS.swordHeavyCombo : CARTER_MOVE_CLIPS.meleeCombo;
+    return playAction(id, { fade: 0.12, interruptOnMovement: false });
+  }
+
+  function setSprintArmed(value) {
+    const next = Boolean(value);
+    if (next === sprintArmed) return;
+    sprintArmed = next;
+    if (!jumping && !actionSequence) restoreLocomotion();
   }
 
   state = {
@@ -612,6 +694,9 @@ export async function createCharacter({
     mixer,
     locomotion,
     jump,
+    land,
+    attack,
+    setSprintArmed,
     playAction,
     sitDown,
     standFromSeat,
@@ -678,7 +763,7 @@ export async function createCharacter({
     height: hero.height || 1.75,
     characterName,
     locomotionName: characterName + ' · Ara 3D · Cinematic',
-    availableActions: AVAILABLE_CINEMATIC_ANIMATIONS.slice(),
+    availableActions: [...AVAILABLE_CINEMATIC_ANIMATIONS, ...PACK_ACTION_ANIMATIONS],
     get action() { return currentAction; },
     accessoryAttachment: accessories?.attachment || 'none',
     updateFallback(dt, speed) {

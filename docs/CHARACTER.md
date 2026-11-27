@@ -53,10 +53,11 @@ As ações expressivas são expostas por playAction() e stopAction(). Se algum I
 ## Movimento compartilhado
 
 - O pack Ara `carter-moves` é carregado por `src/character.js` com `rootMotion: false`; os deslocamentos X/Z, aceleração, colisões e gravidade continuam no controlador físico `src/third-person.js`, evitando root motion duplicado.
-- **Sprint sem objeto:** `carter-moves/sprint_loop`. **Sprint com cajado/khopesh:** `carter-moves/sprint_shield_loop`. O clipe com escudo é usado como referência corporal de corrida com objeto; não adiciona um escudo ao inventário.
+- **Sprint sem objeto:** `carter-moves/sprint_loop`, com a translação longitudinal interna do Hips removida para manter a animação in-place. **Sprint com cajado/khopesh:** `carter-moves/sprint_shield_loop`, preservado sem alterações. O clipe com escudo é usado como referência corporal de corrida com objeto; não adiciona um escudo ao inventário.
 - **Salto:** `ninjajump_double` toca no impulso e segura a última pose enquanto o controlador calcula o arco. `jump_land` só começa quando a colisão detecta contato real com o piso; a locomoção retorna ao fim da aterrissagem.
-- **Ataque:** a tecla `F` e o botão de uso no inventário móvel chamam a mesma função. Sem arma equipada, toca `melee_combo`; com cajado ou khopesh, toca `sword_heavy_combo`.
+- **Ataque:** a tecla `F` e o botão de uso no inventário móvel chamam a mesma função. Sem arma equipada, toca `melee_combo`; com cajado ou khopesh, toca `sword_heavy_combo`. Ambos usam `LoopOnce` do Three.js e não reiniciam enquanto o combo está em execução.
 - O sprint só fica disponível quando Carter não está ferido; a condição de ferimento continua reduzindo a velocidade e usando as animações alternativas já existentes.
+- A caminhada e o sprint sem arma usam as velocidades naturais do rig Ara; o passo normal fica abaixo da zona de blend para não misturar o sprint no walk. A velocidade de sprint com cajado permanece preservada.
 - O mesmo rig, os mesmos clipes e a mesma lógica de acessórios são compartilhados; só os controles e os elementos de interface mudam entre desktop e mobile.
 
 ## Preview

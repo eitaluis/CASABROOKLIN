@@ -1288,21 +1288,48 @@ function createWallFluteRack(scene,side,wood,brass,iron,colliders,interactables)
 }
 
 function addSideTerraceGlassDoors(scene,brass,stone,colliders,interactables) {
-  const glass=new THREE.MeshPhysicalMaterial({
-    color:0xc7d8d5,metalness:.025,roughness:.1,transmission:.58,
-    thickness:.1,transparent:true,opacity:.24,side:THREE.DoubleSide,depthWrite:false
+  const windowGlass=new THREE.MeshPhysicalMaterial({
+    color:0x89958c,metalness:.08,roughness:.42,transmission:.025,
+    thickness:.08,transparent:false,opacity:1,side:THREE.DoubleSide,depthWrite:true
+  });
+  const doorGlass=new THREE.MeshPhysicalMaterial({
+    color:0xa9b7aa,metalness:.04,roughness:.3,transmission:.1,
+    thickness:.12,transparent:false,opacity:1,side:THREE.DoubleSide,depthWrite:true
+  });
+  const limestone=new THREE.MeshStandardMaterial({
+    color:0xd8c49d,map:stone.map||null,normalMap:stone.normalMap||null,
+    normalScale:new THREE.Vector2(.56,.56),roughnessMap:stone.roughnessMap||null,roughness:.92
   });
   const bronze=new THREE.MeshStandardMaterial({color:0x654b32,metalness:.68,roughness:.4});
   const wallX=14.2,baseY=13.175,wallTop=16.875,centreY=(baseY+wallTop)/2;
   for(const side of [-1,1]) {
+    // Two deeply framed window bays: solid limestone below, muted glass above.
     for(const segment of [{z:-5.7,length:8.85},{z:5.7,length:8.85}]) {
-      const panel=new THREE.Mesh(new THREE.PlaneGeometry(segment.length,3.56),glass);
-      panel.name='painel de vidro panorâmico da parede lateral';
-      panel.position.set(side*wallX,centreY,segment.z);
+      const lower=new THREE.Mesh(new RoundedBoxGeometry(segment.length,.96,.5,8,.055),limestone);
+      lower.name='peitoril maciço de calcário da janela lateral';
+      lower.position.set(side*wallX,13.66,segment.z);
+      lower.castShadow=true;lower.receiveShadow=true;scene.add(lower);
+
+      const panel=new THREE.Mesh(new THREE.PlaneGeometry(segment.length,2.05),windowGlass);
+      panel.name='janela fumê de calcário e bronze da parede lateral';
+      panel.position.set(side*wallX,15.32,segment.z);
       panel.rotation.y=side<0?Math.PI/2:-Math.PI/2;
       panel.renderOrder=2;panel.receiveShadow=true;scene.add(panel);
-      addBoxCollider(colliders,side*wallX,centreY,segment.z,.14,3.56,segment.length);
+      addBoxCollider(colliders,side*wallX,15.55,segment.z,.34,2.65,segment.length);
+
+      for(const y of [14.68,16.36]) {
+        const rail=new THREE.Mesh(new RoundedBoxGeometry(.22,.14,segment.length,8,.035),bronze);
+        rail.name='travessa de bronze da janela lateral';
+        rail.position.set(side*wallX,y,segment.z);scene.add(rail);
+      }
+      for(const offset of [-2.85,0,2.85]) {
+        const mullion=new THREE.Mesh(new RoundedBoxGeometry(.14,1.95,.16,6,.025),bronze);
+        mullion.name='montante vertical de bronze da janela lateral';
+        mullion.position.set(side*wallX,15.32,segment.z+offset);
+        scene.add(mullion);
+      }
     }
+
     const doorWidth=2.55,doorHeight=3.55;
     const doors=new THREE.Group();
     doors.name='porta dupla de vidro lateral para o terraço';
@@ -1311,8 +1338,8 @@ function addSideTerraceGlassDoors(scene,brass,stone,colliders,interactables) {
     const leaves=[];
     for(const leafSide of [-1,1]) {
       const hinge=new THREE.Group();hinge.position.set(leafSide*doorWidth/2,0,0);doors.add(hinge);
-      const leaf=new THREE.Mesh(new THREE.PlaneGeometry(doorWidth/2,doorHeight),glass);
-      leaf.name='folha de vidro articulada da varanda lateral';
+      const leaf=new THREE.Mesh(new THREE.PlaneGeometry(doorWidth/2,doorHeight),doorGlass);
+      leaf.name='folha de vidro fumê da porta lateral para o terraço';
       leaf.position.set(-leafSide*doorWidth/4,doorHeight/2,0);
       leaf.renderOrder=3;hinge.add(leaf);
       const stile=new THREE.Mesh(new RoundedBoxGeometry(.07,doorHeight,.12,6,.02),bronze);
@@ -1322,24 +1349,23 @@ function addSideTerraceGlassDoors(scene,brass,stone,colliders,interactables) {
       leaves.push(hinge);
     }
     for(const z of [-10.12,-1.3,1.3,10.12]) {
-      const post=new THREE.Mesh(new RoundedBoxGeometry(.18,3.68,.18,8,.035),stone);
-      post.name='montante de calcário da vidraça lateral';
+      const post=new THREE.Mesh(new RoundedBoxGeometry(.24,3.68,.28,8,.04),limestone);
+      post.name='pilar de calcário entre as janelas e a porta do terraço';
       post.position.set(side*wallX,centreY,z);post.castShadow=true;scene.add(post);
     }
-    for(const y of [13.22,16.82]) {
-      const rail=new THREE.Mesh(new RoundedBoxGeometry(.2,.12,20.4,8,.025),bronze);
-      rail.position.set(side*wallX,y,0);scene.add(rail);
-    }
-    const sill=new THREE.Mesh(new RoundedBoxGeometry(.58,.1,doorWidth,8,.025),stone);
+    const sill=new THREE.Mesh(new RoundedBoxGeometry(.58,.12,doorWidth,8,.025),limestone);
     sill.name='soleira de calcário da porta lateral do terraço';
-    sill.position.set(side*wallX,13.21,0);scene.add(sill);
-    const collider={minX:side*wallX-.12,maxX:side*wallX+.12,minY:13.2,maxY:16.75,minZ:-doorWidth/2,maxZ:doorWidth/2};
+    sill.position.set(side*wallX,13.22,0);scene.add(sill);
+    const header=new THREE.Mesh(new RoundedBoxGeometry(.52,.22,doorWidth,8,.03),limestone);
+    header.name='verga de calcário da porta lateral do terraço';
+    header.position.set(side*wallX,16.72,0);scene.add(header);
+    const collider={minX:side*wallX-.14,maxX:side*wallX+.14,minY:13.2,maxY:16.75,minZ:-doorWidth/2,maxZ:doorWidth/2};
     colliders.push(collider);
     let opened=false;
     interactables.push({
       name:'Porta lateral de vidro para o terraço',kind:'door',
       label:'Porta lateral para o terraço',
-      description:'Porta dupla de vidro na parede lateral panorâmica. Pressione E ou INTERAGIR para abrir e acessar o terraço.',
+      description:'Porta dupla de vidro fumê, emoldurada em calcário e bronze. Pressione E ou INTERAGIR para abrir e acessar o terraço da piscina.',
       position:new THREE.Vector3(side*13.0,14.7,0),radius:3.0,
       onInteract() {
         opened=!opened;
@@ -1593,57 +1619,95 @@ function addFireplaceSurround(scene,stone,brass,wood) {
 }
 
 function addThothBaseSeating(scene,stone,marble,wood,brass,colliders,interactables) {
+  // Three stepped, open-ended seating arcs replace the old ring of isolated benches.
+  // The gap faces the entry (+Z), keeping the statue readable and the route clear.
   const leather=new THREE.MeshStandardMaterial({color:0x624235,roughness:.9});
-  const edge=new THREE.MeshStandardMaterial({color:0x9e855f,metalness:.34,roughness:.62});
-  const lower=new THREE.Mesh(new THREE.CylinderGeometry(3.42,3.58,.22,96),stone);
-  lower.name='base circular de calcário do pedestal de Thoth';
-  lower.position.set(0,13.285,-.5);lower.castShadow=true;lower.receiveShadow=true;scene.add(lower);
-  const upper=new THREE.Mesh(new THREE.CylinderGeometry(3.12,3.2,.12,96),marble);
-  upper.name='degrau circular de mármore negro do pedestal de Thoth';
-  upper.position.set(0,13.44,-.5);upper.castShadow=true;upper.receiveShadow=true;scene.add(upper);
-  const rim=new THREE.Mesh(new THREE.TorusGeometry(3.2,.055,12,96),brass);
-  rim.rotation.x=Math.PI/2;rim.position.set(0,13.51,-.5);scene.add(rim);
+  const seatWood=new THREE.MeshStandardMaterial({
+    color:0x6c4931,map:wood.map||null,normalMap:wood.normalMap||null,
+    normalScale:new THREE.Vector2(.65,.65),roughnessMap:wood.roughnessMap||null,roughness:.82
+  });
+  const baseGeometry=new RoundedBoxGeometry(1,1,1,8,.055);
+  const seatGeometry=new RoundedBoxGeometry(1,1,1,8,.06);
+  const backGeometry=new RoundedBoxGeometry(1,1,1,8,.065);
+  const dummy=new THREE.Object3D();
+  const startAngle=.42,endAngle=Math.PI*2-.42,count=24;
+  const rows=[
+    {radius:2.48,bottomY:13.175,depth:.96},
+    {radius:3.68,bottomY:13.51,depth:.96},
+    {radius:4.88,bottomY:13.845,depth:.96}
+  ];
+  rows.forEach((row,rowIndex)=>{
+    const arcLength=row.radius*(endAngle-startAngle);
+    const segmentWidth=arcLength/count*.975;
+    const base=new THREE.InstancedMesh(baseGeometry,stone,count);
+    const seat=new THREE.InstancedMesh(seatGeometry,leather,count);
+    const back=new THREE.InstancedMesh(backGeometry,seatWood,count);
+    base.name='degrau curvo de calcário do assento de Thoth · nível '+(rowIndex+1);
+    seat.name='assento de couro curvo integrado · nível '+(rowIndex+1);
+    back.name='encosto de nogueira curvo integrado · nível '+(rowIndex+1);
+    for(let i=0;i<count;i++) {
+      const angle=startAngle+(i+.5)*(endAngle-startAngle)/count;
+      const x=Math.sin(angle)*row.radius,z=-.5+Math.cos(angle)*row.radius;
+      const radialZ=row.depth*.37;
+      dummy.position.set(x,row.bottomY+.18,z);
+      dummy.rotation.set(0,angle,0);
+      dummy.scale.set(segmentWidth,.36,row.depth);
+      dummy.updateMatrix();
+      base.setMatrixAt(i,dummy.matrix);
 
-  for(let i=0;i<8;i++) {
-    const angle=i*Math.PI/4;
-    const radius=4.08;
-    const x=Math.sin(angle)*radius,z=-.5+Math.cos(angle)*radius;
-    const bench=new THREE.Group();
-    bench.name='banco curvo de madeira e couro ao redor da estátua de Thoth';
-    bench.position.set(x,13.175,z);bench.rotation.y=angle;scene.add(bench);
-    const stoneBase=new THREE.Mesh(new RoundedBoxGeometry(2.35,.42,.86,10,.12),stone);
-    stoneBase.position.y=.22;stoneBase.castShadow=true;stoneBase.receiveShadow=true;bench.add(stoneBase);
-    const seat=new THREE.Mesh(new RoundedBoxGeometry(2.23,.14,.82,10,.06),leather);
-    seat.position.set(0,.49,.02);seat.castShadow=true;seat.receiveShadow=true;bench.add(seat);
-    const back=new THREE.Mesh(new RoundedBoxGeometry(2.18,.72,.22,10,.07),leather);
-    back.position.set(0,.91,-.29);back.castShadow=true;bench.add(back);
-    for(const side of [-1,1]) {
-      const arm=new THREE.Mesh(new RoundedBoxGeometry(.22,.62,.84,8,.08),wood);
-      arm.position.set(side*1.05,.63,-.02);arm.castShadow=true;bench.add(arm);
-      const finial=new THREE.Mesh(new THREE.SphereGeometry(.065,16,12),brass);
-      finial.position.set(side*1.05,.99,.25);bench.add(finial);
+      dummy.position.set(x,row.bottomY+.405,z);
+      dummy.scale.set(segmentWidth-.045,.12,row.depth-.07);
+      dummy.updateMatrix();
+      seat.setMatrixAt(i,dummy.matrix);
+
+      dummy.position.set(
+        x+Math.sin(angle)*radialZ,
+        row.bottomY+.68,
+        z+Math.cos(angle)*radialZ
+      );
+      dummy.scale.set(segmentWidth-.07,.43,.17);
+      dummy.updateMatrix();
+      back.setMatrixAt(i,dummy.matrix);
+
+      // Small, segmented collision volumes follow the arc and leave the entry gap open.
+      const halfX=Math.abs(Math.cos(angle))*segmentWidth/2+Math.abs(Math.sin(angle))*row.depth/2;
+      const halfZ=Math.abs(Math.sin(angle))*segmentWidth/2+Math.abs(Math.cos(angle))*row.depth/2;
+      colliders.push({
+        minX:x-halfX,maxX:x+halfX,
+        minY:row.bottomY+.08,maxY:row.bottomY+.88,
+        minZ:z-halfZ,maxZ:z+halfZ
+      });
     }
-    const inlay=new THREE.Mesh(new RoundedBoxGeometry(1.85,.025,.045,4,.01),edge);
-    inlay.position.set(0,.715,.42);bench.add(inlay);
-    bench.updateMatrixWorld(true);
-    const bounds=new THREE.Box3().setFromObject(bench);
-    colliders.push({
-      minX:bounds.min.x,maxX:bounds.max.x,minY:bounds.min.y,maxY:bounds.max.y,
-      minZ:bounds.min.z,maxZ:bounds.max.z
-    });
-  }
+    base.instanceMatrix.needsUpdate=true;
+    seat.instanceMatrix.needsUpdate=true;
+    back.instanceMatrix.needsUpdate=true;
+    base.castShadow=true;base.receiveShadow=true;
+    seat.castShadow=true;seat.receiveShadow=true;
+    back.castShadow=true;back.receiveShadow=true;
+    scene.add(base,seat,back);
+
+    const trimPoints=[];
+    for(let i=0;i<=72;i++) {
+      const a=startAngle+(endAngle-startAngle)*i/72;
+      const r=row.radius+row.depth*.48;
+      trimPoints.push([Math.sin(a)*r,row.bottomY+.39,-.5+Math.cos(a)*r]);
+    }
+    const trim=tube(trimPoints,.022,brass,96,8);
+    trim.name='filete contínuo de bronze do assento em arco';
+    scene.add(trim);
+  });
   interactables.push({
-    name:'Assentos circulares ao redor de Thoth',kind:'inspect',
-    label:'Bancos ao redor de Thoth',
-    description:'Assentos integrados ao pedestal circular de calcário e mármore negro, voltados para a estátua central.',
-    position:new THREE.Vector3(0,13.8,-.5),radius:4.7
+    name:'Assentos em anfiteatro junto a Thoth',kind:'inspect',
+    label:'Assentos integrados ao pedestal',
+    description:'Três níveis de assentos curvos em pedra, madeira e couro, integrados à base monumental e abertos no eixo de entrada.',
+    position:new THREE.Vector3(0,13.8,-.5),radius:5.2
   });
 }
 
 function addThoth(scene,marble,pale,brass,reliefTex,wood) {
   const group=new THREE.Group();group.name='estátua monumental de Thoth em basalto';group.position.set(0,13.175,-.5);
-  const plinth=new THREE.Mesh(new RoundedBoxGeometry(3,.48,3,6,.13),pale);plinth.position.y=.24;plinth.castShadow=true;plinth.receiveShadow=true;group.add(plinth);
-  const step=new THREE.Mesh(new RoundedBoxGeometry(2.62,.28,2.62,6,.1),marble);step.position.y=.6;step.castShadow=true;group.add(step);
+  const plinth=new THREE.Mesh(new THREE.CylinderGeometry(1.96,2.08,.48,96),pale);plinth.name='base cilíndrica integrada de calcário de Thoth';plinth.position.y=.24;plinth.castShadow=true;plinth.receiveShadow=true;group.add(plinth);
+  const step=new THREE.Mesh(new THREE.CylinderGeometry(1.72,1.82,.28,96),marble);step.name='degrau circular de mármore negro sob Thoth';step.position.y=.6;step.castShadow=true;group.add(step);
   const footRing=new THREE.Mesh(new THREE.TorusGeometry(.96,.055,10,56),brass);footRing.rotation.x=Math.PI/2;footRing.position.y=.78;group.add(footRing);
   const dais=new THREE.Mesh(new THREE.LatheGeometry([new THREE.Vector2(.68,0),new THREE.Vector2(.82,.14),new THREE.Vector2(.88,.31),new THREE.Vector2(.78,.52),new THREE.Vector2(.7,.65)],48),marble);dais.position.y=.72;dais.castShadow=true;group.add(dais);
   // Human body, visible shendyt kilt and legs rather than a single robe silhouette.
@@ -2097,6 +2161,7 @@ export function buildGrandSalon({
   groundSurfaces=[]
 }) {
   const stone=stoneMaterial();
+  stone.color.set(0xe3cfaa); // limestone remains warm under the local PBR maps
   const walnut=woodMaterial();
   const marble=marbleMaterial();
   const brass=new T.MeshStandardMaterial({color:0xb78d4f,metalness:.72,roughness:.29});

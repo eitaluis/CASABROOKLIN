@@ -318,3 +318,16 @@ Estes três GLBs foram adicionados à cena a partir de versões otimizadas do pr
 
 - **ThreeJS VFX — https://github.com/majidmanzarpour/threejs-vfx — MIT.** O sistema de partículas do projeto usa silhuetas proceduralmente recortadas em GLSL (soft, smoke, streak, chip, ring), em vez de depender exclusivamente do alpha de sprites. Referência técnica para a máscara orgânica implementada em src/magic-system.js; nenhum código foi copiado e nenhuma dependência foi adicionada.
 - No CASABROOKLIN, máscaras originais com ruído FBM são injetadas em map_fragment via Material.onBeforeCompile: núcleo/fumaça orgânicos, faíscas e corte afilados e sigilo anelar. As texturas Kenney CC0 continuam como detalhes internos e são protegidas pela máscara adicional.
+
+### Sala de Treinamento — pesquisa específica da efígie de Rá (27/11/2026)
+
+**Candidato 3D avaliado e rejeitado**
+- Polygonal Mind / ToxSam — [God Ra Art, coleção Tomb Chaser 1](https://models.codelove.in/models/tomb-chaser-1-god-ra-art/); [arquivo no repositório CC0](https://github.com/ToxSam/cc0-models-Polygonal-Mind/tree/main/projects/tomb-chaser-1).
+- A ficha da fonte declara GLB/glTF 2.0, CC0 1.0, 34 KB, 1.650 triângulos, 1.365 vértices, 2 materiais, 3 texturas, altura de 2,68 m e malha estática sem rig.
+- Preview inspecionado: personagem low-poly com olhos verdes e disco laranja. Embora leve e compatível com GLTFLoader/Three.js, a linguagem visual não corresponde à escultura monumental de diorito e o modelo não contém a abertura-cesta integrada à coroa solar.
+- **Status: rejeitado, não baixado e não integrado.** A geometria procedural em src/training-room.js foi preservada e remodelada para atender à descrição narrativa.
+
+**Referências históricas para a forma**
+- The Met — [Head of an anthropomorphic falcon god](https://www.metmuseum.org/art/collection/search/549699): cabeça em diorito, peruca estriada e encaixe superior que pode ter sustentado um disco solar; a instituição relaciona a peça a Re/Re-Harakhty. Referência visual para a cabeça e o encaixe, não um asset importado.
+- RISD Museum — [Temple god / Seated Horus](https://risdmuseum.org/art-design/collection/temple-god-38207): bronze escurecido, figura sentada e trono de bloco. Referência de pose e relação cabeça/corpo/trono; a peça representa Horus, não Rá.
+- Nenhuma malha, textura ou fotografia dos museus foi copiada para o runtime.

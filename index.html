@@ -173,7 +173,7 @@
 </aside>
 <aside id="minimap"><div class="maptitle">PLANTA DE EXPLORAÇÃO</div><canvas id="map" width="264" height="216"></canvas><div class="mapfoot">NAVEGAÇÃO · ACESSO RÁPIDO</div></aside>
 <div id="crosshair"></div>
-<div id="bottom"><div id="hint"><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> mover &nbsp; <span class="key">Mouse</span> orbitar câmera<br><span class="key">Shift</span> correr &nbsp; <span class="key">Espaço</span> saltar &nbsp; <span class="key">E</span> interagir &nbsp; <span class="key">I</span> inventário &nbsp; <span class="key">F</span> usar arma &nbsp; <span class="key">G</span> HA-DI (Shabti) &nbsp; <span class="key">H</span> Avatar de Hórus</div><div id="status">TERCEIRA PESSOA<br>WASD · MOUSE · SHIFT</div></div>
+<div id="bottom"><div id="hint"><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> mover &nbsp; <span class="key">Mouse</span> orbitar câmera<br><span class="key">Shift</span> correr &nbsp; <span class="key">Espaço</span> saltar &nbsp; <span class="key">E</span> interagir &nbsp; <span class="key">I</span> inventário &nbsp; <span class="key">F</span> atacar &nbsp; <span class="key">G</span> HA-DI (Shabti) &nbsp; <span class="key">H</span> Avatar de Hórus</div><div id="status">TERCEIRA PESSOA<br>WASD · MOUSE · SHIFT</div></div>
 <div id="toast"></div>
 <div id="mobile" aria-label="Controles de toque">
   <div class="joystick" id="joystick" aria-label="Joystick de movimento">
@@ -183,7 +183,7 @@
     <button data-action="run" aria-label="Correr">CORRER</button>
     <button data-action="jump" aria-label="Saltar">SALTAR</button>
     <button id="inventoryMobileToggle" aria-label="Abrir inventário">MOCHILA</button>
-    <button id="inventoryMobileUse" aria-label="Usar arma" disabled>USAR</button>
+    <button id="inventoryMobileUse" aria-label="Atacar">ATACAR</button>
     <button id="interactButton" data-action="interact" aria-label="Interagir com objeto próximo">INTERAGIR</button>
     <button id="haDiButton" type="button" hidden aria-label="Conjurar HA-DI no Shabti">HA-DI</button>
   </div>
@@ -205,7 +205,7 @@
   <button class="inventory-item" data-equip="scribe_palette" type="button"><span class="inventory-symbol">▰</span><span><strong>Paleta de escriba</strong><small>Madeira com poços de pigmento</small></span><em>NO DUAT</em></button>
   <button class="inventory-item" data-equip="brown_twine" type="button"><span class="inventory-symbol">◎</span><span><strong>Cordão marrom</strong><small>Rolo de fio para amarrações</small></span><em>NO DUAT</em></button>
   <button class="inventory-item" data-equip="ebony_cat" type="button"><span class="inventory-symbol">♟</span><span><strong>Estátua de gato em ébano</strong><small>Pequena escultura negra</small></span><em>NO DUAT</em></button>
-  <div class="inventory-footer"><button id="inventoryUse" type="button" disabled>USAR ARMA · F</button><button id="inventoryUnequip" type="button">GUARDAR NO DUAT</button></div>
+  <div class="inventory-footer"><button id="inventoryUse" type="button">ATACAR · F</button><button id="inventoryUnequip" type="button">GUARDAR NO DUAT</button></div>
 </aside>
 <div id="rotateNotice"><div class="rotate-card"><span class="phone">▱</span><h2>Gire seu celular</h2><p>A Brooklyn House foi preparada para explorar em modo paisagem. Vire o aparelho de lado para continuar.</p></div></div>
 <div id="startscreen"><div class="startcard"><div class="kicker">Um lugar escondido à margem do East River</div><h2>A casa que os<br><span>olhos não veem.</span></h2><p>Chegue pelo East River, passe sob a Williamsburg Bridge e pare junto à doca do Brooklyn. À primeira vista existe apenas um galpão antigo. Use E ou INTERAGIR para olhar novamente para o telhado; a mansão e sua escada metálica se tornam perceptíveis. Os ambientes internos só são descobertos depois de atravessar o portal.</p><div class="startmeta"><span>Brooklyn, New York</span><span>Personagem articulado</span><span>Terceira pessoa</span><span>Desktop · Mobile</span></div><button id="enter">Explorar em terceira pessoa&nbsp; ↗</button>
@@ -220,7 +220,7 @@
   }
 }
 </script>
-<script type="module" src="./src/main.js?v=great-hall-opaque-doorwall-20261127a"></script>
+<script type="module" src="./src/main.js?v=carter-combat-motion-20261127a"></script>
 <script>
   window.__brooklynWatchdog = setTimeout(() => {
     if (document.documentElement.dataset.appReady === 'true') return;

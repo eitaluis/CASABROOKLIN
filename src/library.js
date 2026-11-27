@@ -414,7 +414,7 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
       setMatrix(capsuleRings, index * 2, ringLeft.pos, ringLeft.q);
       setMatrix(capsuleRings, index * 2 + 1, ringRight.pos, ringRight.q);
 
-      const scroll = capsuleMatrix(surface, 0, 0, 0.255, tangentRotation);
+      const scroll = capsuleMatrix(surface, 0, 0, 0.255, null);
       setMatrix(capsuleScrolls, index, scroll.pos, scroll.q);
       const label = capsuleMatrix(surface, 0, 0.075, 0.36, null);
       setMatrix(capsuleLabels, index, label.pos, label.q);

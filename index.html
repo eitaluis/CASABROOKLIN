@@ -220,7 +220,35 @@
   }
 }
 </script>
-<script type="module" src="./src/main.js?v=lazy-interiors-desktop-mobile-20261127a"></script>
+<script>
+  // A tela inicial é independente do motor 3D. O jogo só começa a importar
+  // Three.js, Carter e os ambientes depois de uma ação explícita do usuário.
+  (() => {
+    const enter = document.getElementById('enter');
+    if (!enter) return;
+    let starting = false;
+    enter.addEventListener('click', async (event) => {
+      event.preventDefault();
+      if (starting) return;
+      starting = true;
+      window.__brooklynStartRequested = true;
+      enter.disabled = true;
+      enter.textContent = 'Preparando a Brooklyn House…';
+      document.getElementById('loading').classList.remove('done');
+      try {
+        await import('./src/main.js?v=deferred-game-boot-20261127a');
+      } catch (error) {
+        console.error('[Brooklyn House] Falha ao carregar o jogo:', error);
+        const panel = document.getElementById('loading');
+        panel.textContent = 'Não foi possível iniciar o jogo: ' + (error?.message || error);
+        enter.disabled = false;
+        enter.textContent = 'Tentar novamente';
+        starting = false;
+        window.__brooklynStartRequested = false;
+      }
+    }, { once: false });
+  })();
+</script>
 <script>
   window.__brooklynWatchdog = setTimeout(() => {
     if (document.documentElement.dataset.appReady === 'true') return;

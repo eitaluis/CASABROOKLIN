@@ -94,7 +94,7 @@ const world = buildWorld({
   canvasSign, rugTex, limestone, concrete, metal, gold, stone, brickMat, darkBrick, woodMat,
   cedarMat, darkGlass, plaster
 });
-const { zones, groundSurfaces, water, magicalInteriorGroup } = world;
+const { zones, groundSurfaces, water, mansionRevealGroup, magicalInteriorGroup } = world;
 let revealCameraCue=()=>{};
 let mansionPerceived=false;
 const exterior = buildExterior({
@@ -295,6 +295,9 @@ const controller = createThirdPersonController({
   ],
   spiralStair: world.spiralStair,
   onZoneChange: (name, zone) => {
+    // A casca externa invisível escreve profundidade para ocultar a mansão do lado de fora.
+    // Dentro dos cômodos, essa máscara deve ser desligada para não encobrir as paredes internas.
+    mansionRevealGroup.visible = name === 'dock';
     magicalInteriorGroup.visible = name !== 'dock';
     document.getElementById('zoneName').textContent = zone.label;
     document.querySelectorAll('.nav button').forEach(button =>

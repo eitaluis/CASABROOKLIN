@@ -31,6 +31,14 @@ jobs:
         with:
           node-version: 22
 
+      - name: Syntax-check shared Carter runtime modules
+        run: |
+          node --check src/character.js
+          node --check src/character-accessories.js
+          node --check src/third-person.js
+          node --check src/inventory.js
+          node --check src/main.js
+
       - name: Download and validate selected KinemIQ clips
         run: node scripts/build-carter-motion-pack.mjs prepare
 

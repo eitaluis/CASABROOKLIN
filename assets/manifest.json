@@ -13,7 +13,7 @@
       "id": "ara3d-js",
       "source": "https://github.com/olatunde85/3d-gen",
       "version": "0.18.1",
-      "role": "geração local no navegador da malha humana contínua, game rig, skin weights e clips de locomoção e ações cinematográficas do Carter; Ara ANIMATIONS é consultado para filtrar os IDs disponíveis; inclui o clipe throw_grenade como gesto corporal de lançamento usado por HA-DI, sem exibir granada",
+      "role": "geração local no navegador da malha humana contínua, game rig, skin weights e clips de locomoção e ações cinematográficas do Carter; Ara ANIMATIONS é consultado para filtrar os IDs disponíveis; inclui o clipe throw_grenade como gesto corporal de lançamento usado por HA-DI, sem exibir granada; o HA-DI usa fight_idle + point como gesto combinado de combate/apontamento",
       "license": "MIT-code; CC0-1.0-MakeHuman-data; CMU-motion-capture-free-commercial-use"
     },
     {
@@ -292,9 +292,9 @@
       "license": "project-original-code; Ara animation clips remain under their upstream terms in runtimeAssets and openSourceReferences"
     },
     {
-      "id": "ha-di-pooled-vfx-and-throw-cast",
+      "id": "ha-di-pooled-vfx-fighting-point",
       "path": "src/magic-system.js + src/character.js + src/main.js",
-      "role": "HA-DI com projétil e explosão pré-alocados; 18 raios, 46 faíscas e 9 puffs agrupados em InstancedMesh; shaders pré-compilados antes de liberar os controles; gesto Ara throw_grenade (2,2 s / liberação em 0,82 s); hieróglifo ḥḏ luminoso sem halo ou anéis externos; lógica compartilhada desktop/mobile",
+      "role": "HA-DI com explosão pré-alocada; 18 raios, 46 faíscas e 9 puffs agrupados em InstancedMesh; shaders pré-compilados; gesto de combate Ara fight_idle + point, com guarda esquerda preservada e dois dedos direitos; impacto diretamente no Shabti aos 0,82 s, sem projétil; glifo ḥḏ luminoso sem halo ou anéis externos; lógica compartilhada desktop/mobile",
       "license": "project-original-code; Ara/CMU animation data follows upstream terms"
     },
     {
@@ -316,7 +316,7 @@
       "id": "ara3d-character-generator",
       "source": "https://github.com/olatunde85/3d-gen",
       "license": "MIT-code; CC0-1.0-MakeHuman-data; CMU-motion-capture-free-commercial-use",
-      "role": "runtime: geração da malha humana contínua, skin weights, game rig, WeaponR e clips; catálogo ANIMATIONS filtra Point e throw_grenade para a conjuração HA-DI, com liberação do pulso em 0,82 s",
+      "role": "runtime: geração da malha humana contínua, skin weights, game rig, WeaponR e clips; o catálogo ANIMATIONS filtra os clips nativos fight_idle (Fighting stance) e point para a sequência HA-DI; captura a guarda esquerda no clip de combate e mantém o apontamento direito por IK",
       "runtimeImported": true
     },
     {
@@ -618,6 +618,27 @@
       "license": "CC0-1.0",
       "role": "reviewed external animation pack candidate: 35 FBX/GLB humanoid clips on a 66-bone, 30 fps skeleton, including sword slash/idle/block, crouch locomotion, jump phases and directional hit reactions; not yet imported because the Shabti enemies are procedural non-skinned meshes and Carter's current combat uses Ara-native clips; Ara content packs can retarget compatible GLB/FBX/BVH clips onto the Carter rig",
       "runtimeImported": false
+    },
+    {
+      "id": "kinemiq-quaternius-free-animations-reviewed",
+      "source": "https://github.com/Kinemiq/free-game-animations",
+      "license": "CC0-1.0",
+      "role": "35 humanoid GLB/FBX clips on a 66-bone 30 fps skeleton, verified as an external alternative. Not imported because Ara's native fight_idle and point clips already fit the Carter game rig and avoid retargeting.",
+      "runtimeImported": false
+    }
+  ],
+  "features": [
+    {
+      "id": "ha-di-direct-combat-point-20261127",
+      "scope": "runtime",
+      "files": [
+        "src/magic-system.js",
+        "src/character.js",
+        "src/main.js",
+        "index.html"
+      ],
+      "summary": "HA-DI usa fight_idle + point, preserva a guarda esquerda, aplica uma base corporal de combate e aciona a explosão diretamente no Shabti sem projétil.",
+      "date": "2026-11-27"
     }
   ]
 }

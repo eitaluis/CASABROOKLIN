@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { createCharacter as createAraCharacter, ANIMATIONS } from 'ara3d';
-import { createCarterAccessories } from './character-accessories.js?v=carter-accessories-body-fit-20261126j';
+import { createCarterAccessories } from './character-accessories.js?v=carter-accessories-rig-fit-20261127a';
 
 // Link compartilhado do Carter aprovado no Ara 3D Gen.
 // A malha humana, o rosto, o cabelo e as proporções permanecem preservados.

@@ -7,8 +7,8 @@ import { buildLibrary } from './library.js?v=library-asset-first-20261127b';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-traversal-20261127b';
 import { buildTrainingRoom } from './training-room.js?v=ra-shabti-niches-20261127b';
 import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
-import { createMagicSystem } from './magic-system.js?v=ha-di-energy-cast-20261126a';
-import { createCharacter } from './character.js?v=carter-room-locomotion-20261127a';
+import { createMagicSystem } from './magic-system.js?v=ha-di-pooled-throw-cast-20261127a';
+import { createCharacter } from './character.js?v=ha-di-throw-cast-20261127a';
 import { createThirdPersonController } from './third-person.js?v=room-transition-neutral-lean-20261127a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -542,6 +542,7 @@ window.addEventListener('resize', () => {
 });
 
 try {
+  await magicSystem.prepare(renderer);
   document.getElementById('zoneName').textContent = zones.dock.label;
   document.getElementById('status').innerHTML = 'TERCEIRA PESSOA<br>' + character.locomotionName.toUpperCase();
   document.documentElement.dataset.appReady = 'true';

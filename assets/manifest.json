@@ -29,6 +29,20 @@
       "version": "vendored-and-adapted-2026-11-26",
       "role": "view-aligned volumetric fire mesh and procedural noise shader; local WebGL2 GLSL3 adaptation",
       "license": "MIT"
+    },
+    {
+      "id": "polyfork-monk-quarterstaff",
+      "source": "https://polyfork.dev/asset/monk-s-quarterstaff-cbdadd",
+      "version": "GLB 57 KB; 496 triangles",
+      "role": "runtime staff GLB; 2m long, 2.4cm apparent diameter, pale-beige retint and midpoint grip pivot; GLTFLoader with procedural fallback",
+      "license": "commercial use allowed; CC BY 4.0 for mesh redistribution; creator attribution recorded in docs/OPEN-SOURCES.md"
+    },
+    {
+      "id": "vinish-khopesh",
+      "source": "https://vinish.dev/free-3d-models/swords",
+      "version": "GLB 297 KB; 10,868 triangles",
+      "role": "runtime khopesh GLB; approx. 57cm, upright frontal blade orientation and reduced thickness; procedural fallback",
+      "license": "CC BY 4.0; attribution required; modified/reoriented"
     }
   ],
   "localGeneratedAssets": [
@@ -53,8 +67,8 @@
     {
       "id": "egyptian-staff-and-khopesh",
       "path": "src/inventory.js",
-      "role": "procedural Egyptian-inspired magic staff and khopesh props attached to Carter WeaponR socket",
-      "license": "project-original-code"
+      "role": "fallback procedural geometry for the runtime Polyfork staff and Vinish.dev khopesh GLBs",
+      "license": "project-original-code (fallback only); external runtime GLBs have separate licences in runtimeAssets"
     },
     {
       "id": "great-hall-sculpted-finish",
@@ -320,6 +334,14 @@
       "path": "SKILL.md + AGENTS.md",
       "role": "mandatory project-wide process: read book passages and separate canon from interpretation; inspect official author/publisher/illustrator imagery plus historical and fan-art references with proper attribution; search real open 3D/code/texture assets and verify license, dimensions, hierarchy, rig, formats, Three.js/mobile fit; present actual visual references/previews/comparison in chat; wait for explicit user approval before download, new modeling, replacement or integration; preserve desktop/mobile parity and run visual QA",
       "license": "project-original-documentation"
+    },
+    {
+      "id": "duat-hand-energy-sphere",
+      "path": "src/inventory.js",
+      "source": "original Three.js shader and geometry; reuses assets/vfx/kenney-magic-01.png.b64, kenney-smoke-03.png.b64 and kenney-spark-07.png.b64",
+      "author": "CASABROOKLIN project; particle textures by Kenney",
+      "license": "project-original-code; Kenney particle textures CC0-1.0",
+      "role": "3D energy shell attached to Carter's hand socket with fresnel shader, two helical energy tubes, animated particles and point light; sphere encloses the hand"
     }
   ],
   "openSourceReferences": [
@@ -666,6 +688,46 @@
       "license": "official public planning reference",
       "role": "visual-resource context for East River, Williamsburg waterfront, bridge, industrial skyline and distant Manhattan; no image or geometry imported",
       "runtimeImported": false
+    },
+    {
+      "id": "polyfork-monk-quarterstaff",
+      "source": "https://polyfork.dev/asset/monk-s-quarterstaff-cbdadd",
+      "license": "commercial use allowed; CC BY 4.0 for redistribution of the mesh",
+      "author": "Lucas Martinic / Polyfork",
+      "role": "runtime GLB asset for Carter's staff; re-scaled, recoloured and pivoted to center hand grip",
+      "runtimeImported": true
+    },
+    {
+      "id": "vinish-khopesh",
+      "source": "https://vinish.dev/free-3d-models/swords",
+      "license": "CC BY 4.0",
+      "author": "vinish.dev",
+      "role": "runtime GLB asset for the khopesh; reoriented and thinned for Carter's hand grip",
+      "runtimeImported": true
+    },
+    {
+      "id": "jssea-khopesh-e1530",
+      "source": "https://ssea2020.thessea.org/images/SSEA_assets/journals/JSSEA_31.pdf",
+      "license": "academic/historical reference; not redistributed",
+      "author": "Journal of the Society for the Study of Egyptian Antiquities",
+      "role": "historical khopesh E1530 measurement reference, 57.79cm; not Carter's canonical sword",
+      "runtimeImported": false
+    },
+    {
+      "id": "read-riordan-carter-khopesh-art",
+      "source": "https://www.readriordan.com/2026/02/13/kc-vday/",
+      "license": "official publisher/editorial visual reference; not redistributed",
+      "author": "Read Riordan Staff",
+      "role": "official supplemental artwork of Carter and Zia; visual reference only, not a runtime 3D asset",
+      "runtimeImported": false
+    },
+    {
+      "id": "kenney-particle-pack-duat-hand",
+      "source": "https://kenney.nl/assets/particle-pack",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "role": "existing local magic, smoke and spark sprite textures used inside the 3D Duat hand-energy sphere",
+      "runtimeImported": true
     }
   ],
   "features": [
@@ -679,6 +741,21 @@
         "index.html"
       ],
       "summary": "HA-DI usa fight_idle + point, preserva a guarda esquerda, aplica uma base corporal de combate e aciona a explosão diretamente no Shabti sem projétil.",
+      "date": "2026-11-27"
+    },
+    {
+      "id": "inventory-asset-first-grip-sphere-20261127",
+      "scope": "runtime",
+      "files": [
+        "src/inventory.js",
+        "src/character.js",
+        "src/main.js",
+        "character-preview.html",
+        "docs/CHARACTER-INVENTORY-DUAT.md",
+        "docs/OPEN-SOURCES.md",
+        "docs/ASSET-FIRST-RESEARCH-STANDARD.md"
+      ],
+      "summary": "Real GLB staff and khopesh assets, midpoint hand grip, full-body Ara weapon attacks, 2-point Duat retrieval energy cost and 3D hand-enclosing energy sphere; shared desktop/mobile runtime.",
       "date": "2026-11-27"
     }
   ]

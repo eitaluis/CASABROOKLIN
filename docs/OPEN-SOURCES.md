@@ -9,6 +9,7 @@ Todo novo objeto ou espaço deve seguir [ASSET-FIRST-ROOM-BUILDING.md](ASSET-FIR
 **Ara 3D Gen** — https://github.com/olatunde85/3d-gen — pacote JavaScript MIT; os dados de personagem usam MakeHuman CC0 e os clips de captura de movimento vêm da base CMU, livres para uso comercial conforme a licença/documentação do projeto.
 - O corpo, rosto, cabelo, rig e clips principais preservam o Carter aprovado no share salvo do Ara.
 - src/character.js carrega idle/walk e o pack `carter-moves`, com sprint normal/com objeto, salto ninja, aterrissagem e dois combos. O inventário seleciona o clip adequado; a tecla F e o botão mobile compartilham a mesma ação. O clipe Ara Point serve como base do gesto HA-DI; a extensão do dedo médio é uma adaptação procedural original do projeto.
+- Os seis clipes KinemIQ do pack são CC0-1.0 da Universal Animation Library/Universal Animation Library 2 de Quaternius; as páginas e licenças individuais estão em `assets/animations/carter-movement-source-credits.json`.
 - src/character.js sobrescreve o item carregado do share Ara com `carry: 'none'`, removendo a mochila original.
 - Em 27/11/2026, `src/character-accessories.js` recebeu uma revisão estrutural: bolsa no Hips, trecho superior da alça no Spine2/Spine1, trecho inferior no Hips e corrente/medalhão no osso torácico. A faixa e a corrente usam raycast no SkinnedMesh deformado para encontrar a superfície da camisa/corpo. As dimensões-alvo da bolsa são 202 × 158 × 76 mm e a largura da alça é 22 mm.
 - Estado atual: o GLB Innerscene CC0 foi baixado e versionado em `assets/models/carter/innerscene-crossbody-bag.glb`; o corpo e ferragens são preservados, e a alça original é ocultada e substituída por fita customizada presa à superfície/ossos do Carter.
@@ -19,7 +20,7 @@ Todo novo objeto ou espaço deve seguir [ASSET-FIRST-ROOM-BUILDING.md](ASSET-FIR
 - assets/models/carter/blender/create_carter_accessories.py é a fonte editável de lookdev no Blender; ainda não é um .blend nem um asset carregado em runtime.
 - src/main.js direciona o olhar para o objeto examinado por E/INTERAGIR.
 - src/third-person.js suaviza aceleração, curvas, inclinação e câmera; o mesmo controlador e os mesmos assets são usados no desktop e mobile.
-- Os estudos Quaternius e o protótipo procedural anterior foram rejeitados; não fazem parte do runtime.
+- Os protótipos externos de acessórios que não correspondiam à direção aprovada foram rejeitados; a bolsa runtime usa o GLB Innerscene CC0. Em contraste, os seis movimentos Quaternius escolhidos pelo usuário fazem parte do runtime no pack `carter-moves`.
 
 ## Grande Salão — modelos e efeitos
 

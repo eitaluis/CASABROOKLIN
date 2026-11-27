@@ -232,6 +232,14 @@
       if (starting) return;
       starting = true;
       window.__brooklynStartRequested = true;
+      if (window.__brooklynWatchdog) clearTimeout(window.__brooklynWatchdog);
+      window.__brooklynWatchdog = setTimeout(() => {
+        if (document.documentElement.dataset.appReady === 'true') return;
+        const panel = document.getElementById('loading');
+        if (panel && !panel.classList.contains('done')) {
+          panel.textContent = 'A inicialização está demorando mais que o esperado. Verifique a conexão e tente novamente.';
+        }
+      }, 45000);
       enter.disabled = true;
       enter.textContent = 'Preparando a Brooklyn House…';
       document.getElementById('loading').classList.remove('done');
@@ -251,7 +259,7 @@
 </script>
 <script>
   window.__brooklynWatchdog = setTimeout(() => {
-    if (document.documentElement.dataset.appReady === 'true') return;
+    if (!window.__brooklynStartRequested || document.documentElement.dataset.appReady === 'true') return;
     const panel = document.getElementById('loading');
     if (!panel || panel.classList.contains('done')) return;
     panel.innerHTML = '<div style="max-width:460px;padding:28px;text-align:center;line-height:1.7;font:12px DM Sans,sans-serif;color:#eee"><div style="font:500 18px Cinzel,serif;color:#d0ad69;margin-bottom:12px">A cena ainda não iniciou</div>O motor 3D não respondeu. O problema pode ser o carregamento do Three.js pelo CDN ou um erro de inicialização. Recarregue a página; se continuar, abra o Console do navegador (F12) e envie a primeira mensagem vermelha.<div style="margin-top:18px"><button onclick="location.reload()" style="border:1px solid #d0ad69;background:#d0ad69;color:#111;padding:10px 18px;font-weight:700;cursor:pointer">RECARREGAR</button></div></div>';

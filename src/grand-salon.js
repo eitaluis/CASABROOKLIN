@@ -162,48 +162,100 @@ function stairFlight(scene,stone,treadMaterial,brass,wood,options) {
     new THREE.Vector2(.035,0),new THREE.Vector2(.055,.1),new THREE.Vector2(.105,.22),
     new THREE.Vector2(.075,.4),new THREE.Vector2(.045,.58),new THREE.Vector2(.078,.76),
     new THREE.Vector2(.045,.9)
-  ],20);
+  ],24);
+  const balusterTrim=new THREE.MeshStandardMaterial({color:0xb58a4c,metalness:.7,roughness:.3});
+
   for(let i=0;i<count;i++) {
     const top=baseY+(i+1)*rise;
     const z=startZ+direction*(i+.5)*depth;
-    const tread=new THREE.Mesh(new RoundedBoxGeometry(width,thick,depth+.04,7,.035),i%2?stone:treadMaterial);
-    tread.name='degrau amplo de calcário da escadaria central';
+    const tread=new THREE.Mesh(new RoundedBoxGeometry(width,thick,depth+.04,8,.035),i%2?stone:treadMaterial);
+    tread.name='degrau de mármore com face esculpida da escadaria monumental';
     tread.position.set(centerX,top-thick/2,z);
     tread.castShadow=true;tread.receiveShadow=true;scene.add(tread);
-    const nosing=new THREE.Mesh(new RoundedBoxGeometry(width-.08,.035,.075,5,.012),brass);
-    nosing.name='filete de bronze no degrau central';
-    nosing.position.set(centerX,top-.035,z-direction*depth*.45);scene.add(nosing);
-    const xL=centerX-width*.49,xR=centerX+width*.49,railY=top+.94;
+
+    // Riser and nosing turn separate slabs into one readable stair flight.
+    const riser=new THREE.Mesh(new RoundedBoxGeometry(width-.06,rise+.015,.085,6,.018),stone);
+    riser.name='espelho vertical contínuo do degrau da escadaria';
+    riser.position.set(centerX,top-rise/2,z+direction*depth*.47);
+    riser.castShadow=true;riser.receiveShadow=true;scene.add(riser);
+    const nosing=new THREE.Mesh(new RoundedBoxGeometry(width-.08,.04,.085,6,.012),brass);
+    nosing.name='filete de bronze no focinho do degrau';
+    nosing.position.set(centerX,top-.03,z-direction*depth*.44);
+    scene.add(nosing);
+
+    const xL=centerX-width*.5-.035,xR=centerX+width*.5+.035,railY=top+.96;
     left.push([xL,railY,z]);right.push([xR,railY,z]);
-    lowL.push([xL,top+.14,z]);lowR.push([xR,top+.14,z]);
+    lowL.push([xL,top+.18,z]);lowR.push([xR,top+.18,z]);
+
     if(i%2===0)for(const x of [xL,xR]) {
-      const baluster=new THREE.Mesh(balusterGeo,brass);
-      baluster.name='balaústre esculpido da escadaria central';
-      baluster.position.set(x,top+.12,z);baluster.castShadow=true;scene.add(baluster);
+      const baluster=new THREE.Mesh(balusterGeo,stone);
+      baluster.name='balaústre de mármore torneado da escadaria';
+      baluster.position.set(x,top+.22,z);
+      baluster.castShadow=true;baluster.receiveShadow=true;scene.add(baluster);
+      const collar=new THREE.Mesh(new THREE.TorusGeometry(.075,.014,8,20),balusterTrim);
+      collar.rotation.x=Math.PI/2;collar.position.set(x,top+.32,z);scene.add(collar);
     }
   }
-  scene.add(
-    tube(left,.07,wood,80,12),tube(right,.07,wood,80,12),
-    tube(left.map(p=>[p[0],p[1]-.07,p[2]]),.018,brass,80,8),
-    tube(right.map(p=>[p[0],p[1]-.07,p[2]]),.018,brass,80,8),
-    tube(lowL,.03,brass,80,8),tube(lowR,.03,brass,80,8)
-  );
+
   const endZ=startZ+direction*count*depth;
+  const run=count*depth,riseTotal=topY-baseY;
+  const slopeLength=Math.hypot(run,riseTotal),slopeAngle=Math.atan2(riseTotal,run);
+  const slopeRotation=-direction*slopeAngle;
+  // Full limestone cheek walls support the stair instead of leaving floating treads.
+  for(const side of [-1,1]) {
+    const cheek=new THREE.Mesh(new RoundedBoxGeometry(.34,.62,slopeLength+.36,10,.055),stone);
+    cheek.name='parede lateral maciça de calcário da escadaria monumental';
+    cheek.position.set(centerX+side*(width/2+.19),(baseY+topY)/2-.16,(startZ+endZ)/2);
+    cheek.rotation.x=slopeRotation;
+    cheek.castShadow=true;cheek.receiveShadow=true;scene.add(cheek);
+
+    const cap=new THREE.Mesh(new RoundedBoxGeometry(.4,.11,slopeLength+.34,10,.035),stone);
+    cap.name='coroamento contínuo da lateral da escadaria';
+    cap.position.copy(cheek.position);
+    cap.position.y+=.31*Math.cos(slopeAngle);
+    cap.rotation.x=slopeRotation;
+    cap.castShadow=true;cap.receiveShadow=true;scene.add(cap);
+
+    const brassLine=[];
+    for(let i=0;i<=32;i++) {
+      const t=i/32,z=startZ+direction*run*t,y=baseY+riseTotal*t+.36;
+      brassLine.push([centerX+side*(width/2+.19),y,z]);
+    }
+    scene.add(tube(brassLine,.018,brass,80,8));
+  }
+
+  // The handrail is a continuous rounded limestone profile with a slim bronze reveal.
+  scene.add(
+    tube(left,.082,stone,96,14),tube(right,.082,stone,96,14),
+    tube(left.map(p=>[p[0],p[1]-.075,p[2]]),.018,brass,96,8),
+    tube(right.map(p=>[p[0],p[1]-.075,p[2]]),.018,brass,96,8),
+    tube(lowL,.035,brass,96,8),tube(lowR,.035,brass,96,8)
+  );
+
   const landingZ=endZ+direction*.34;
-  const landing=new THREE.Mesh(new RoundedBoxGeometry(landingWidth,.25,landingDepth,10,.045),stone);
-  landing.name='patamar de calcário da escadaria central';
+  const landing=new THREE.Mesh(new RoundedBoxGeometry(landingWidth,.25,landingDepth,12,.045),stone);
+  landing.name='patamar amplo de calcário da escadaria monumental';
   landing.position.set(centerX,topY-.125,landingZ);
   landing.castShadow=true;landing.receiveShadow=true;scene.add(landing);
+
   const postGeo=new THREE.LatheGeometry([
     new THREE.Vector2(.13,0),new THREE.Vector2(.17,.16),new THREE.Vector2(.12,.36),
     new THREE.Vector2(.21,.54),new THREE.Vector2(.22,.83),new THREE.Vector2(.1,1.1),
     new THREE.Vector2(.06,1.23)
-  ],24);
+  ],28);
   for(const [z,y] of [[startZ,baseY],[endZ+direction*.15,topY]])for(const dx of [-1,1]) {
-    const post=new THREE.Mesh(postGeo,brass);
-    post.position.set(centerX+dx*(width*.52),y+.08,z);
-    post.name='poste de bronze da escadaria central';post.castShadow=true;scene.add(post);
+    const x=centerX+dx*(width/2+.035);
+    const newelBase=new THREE.Mesh(new RoundedBoxGeometry(.46,.3,.46,10,.07),stone);
+    newelBase.name='pedestal quadrado de calcário do corrimão';
+    newelBase.position.set(x,y+.16,z);newelBase.castShadow=true;scene.add(newelBase);
+    const post=new THREE.Mesh(postGeo,stone);
+    post.position.set(x,y+.3,z);
+    post.name='newel torneado de mármore da escadaria';
+    post.castShadow=true;scene.add(post);
+    const finial=new THREE.Mesh(new THREE.SphereGeometry(.105,20,14),brass);
+    finial.position.set(x,y+1.56,z);finial.castShadow=true;scene.add(finial);
   }
+
   return {
     centerX,width,startZ,endZ,bottomY:baseY,topY,
     landingPlatform:{
@@ -1666,92 +1718,140 @@ function addFireplaceSurround(scene,stone,brass,wood) {
   }
 }
 
-function addThothBaseSeating(scene,stone,marble,wood,brass,colliders,interactables) {
-  // Three stepped, open-ended seating arcs replace the old ring of isolated benches.
-  // The gap faces the entry (+Z), keeping the statue readable and the route clear.
-  const leather=new THREE.MeshStandardMaterial({color:0x624235,roughness:.9});
-  const seatWood=new THREE.MeshStandardMaterial({
-    color:0x6c4931,map:wood.map||null,normalMap:wood.normalMap||null,
-    normalScale:new THREE.Vector2(.65,.65),roughnessMap:wood.roughnessMap||null,roughness:.82
-  });
-  const baseGeometry=new RoundedBoxGeometry(1,1,1,8,.055);
-  const seatGeometry=new RoundedBoxGeometry(1,1,1,8,.06);
-  const backGeometry=new RoundedBoxGeometry(1,1,1,8,.065);
-  const dummy=new THREE.Object3D();
-  const startAngle=.42,endAngle=Math.PI*2-.42,count=24;
-  const rows=[
-    {radius:2.48,bottomY:13.175,depth:.96},
-    {radius:3.68,bottomY:13.51,depth:.96},
-    {radius:4.88,bottomY:13.845,depth:.96}
+function arcBenchBandGeometry(innerRadius,outerRadius,startAngle,endAngle,bottomY,topY,centerZ=-.5,segments=96) {
+  const positions=[],indices=[];
+  const point=(angle,radius,y)=>[
+    Math.sin(angle)*radius,y,centerZ+Math.cos(angle)*radius
   ];
-  rows.forEach((row,rowIndex)=>{
-    const arcLength=row.radius*(endAngle-startAngle);
-    const segmentWidth=arcLength/count*.975;
-    const base=new THREE.InstancedMesh(baseGeometry,stone,count);
-    const seat=new THREE.InstancedMesh(seatGeometry,leather,count);
-    const back=new THREE.InstancedMesh(backGeometry,seatWood,count);
-    base.name='degrau curvo de calcário do assento de Thoth · nível '+(rowIndex+1);
-    seat.name='assento de couro curvo integrado · nível '+(rowIndex+1);
-    back.name='encosto de nogueira curvo integrado · nível '+(rowIndex+1);
-    for(let i=0;i<count;i++) {
-      const angle=startAngle+(i+.5)*(endAngle-startAngle)/count;
-      const x=Math.sin(angle)*row.radius,z=-.5+Math.cos(angle)*row.radius;
-      const radialZ=row.depth*.37;
-      dummy.position.set(x,row.bottomY+.18,z);
-      dummy.rotation.set(0,angle,0);
-      dummy.scale.set(segmentWidth,.36,row.depth);
-      dummy.updateMatrix();
-      base.setMatrixAt(i,dummy.matrix);
+  const quad=(a,b,c,d)=>{
+    const base=positions.length/3;
+    positions.push(...a,...b,...c,...d);
+    indices.push(base,base+1,base+2,base,base+2,base+3);
+  };
+  for(let i=0;i<segments;i++) {
+    const a=startAngle+(endAngle-startAngle)*i/segments;
+    const b=startAngle+(endAngle-startAngle)*(i+1)/segments;
+    quad(point(a,innerRadius,topY),point(a,outerRadius,topY),
+      point(b,outerRadius,topY),point(b,innerRadius,topY));
+    quad(point(b,innerRadius,bottomY),point(b,outerRadius,bottomY),
+      point(a,outerRadius,bottomY),point(a,innerRadius,bottomY));
+    quad(point(a,outerRadius,bottomY),point(b,outerRadius,bottomY),
+      point(b,outerRadius,topY),point(a,outerRadius,topY));
+    quad(point(b,innerRadius,bottomY),point(a,innerRadius,bottomY),
+      point(a,innerRadius,topY),point(b,innerRadius,topY));
+  }
+  quad(point(startAngle,innerRadius,bottomY),point(startAngle,outerRadius,bottomY),
+    point(startAngle,outerRadius,topY),point(startAngle,innerRadius,topY));
+  quad(point(endAngle,outerRadius,bottomY),point(endAngle,innerRadius,bottomY),
+    point(endAngle,innerRadius,topY),point(endAngle,outerRadius,topY));
+  const geometry=new THREE.BufferGeometry();
+  geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  geometry.setIndex(indices);geometry.computeVertexNormals();
+  return geometry;
+}
 
-      dummy.position.set(x,row.bottomY+.405,z);
-      dummy.scale.set(segmentWidth-.045,.12,row.depth-.07);
-      dummy.updateMatrix();
-      seat.setMatrixAt(i,dummy.matrix);
+function addThothBaseSeating(scene,stone,marble,wood,brass,colliders,interactables) {
+  // A continuous annular step ties the statue pedestal to two curved lounge benches.
+  const step=new THREE.Mesh(new THREE.CylinderGeometry(2.55,2.72,.24,128),stone);
+  step.name='degrau baixo contínuo de calcário integrado à base de Thoth';
+  step.position.set(0,13.295,-.5);step.castShadow=true;step.receiveShadow=true;scene.add(step);
+  const stepInlay=new THREE.Mesh(new THREE.TorusGeometry(2.58,.035,12,128),brass);
+  stepInlay.rotation.x=Math.PI/2;stepInlay.position.set(0,13.42,-.5);scene.add(stepInlay);
 
-      dummy.position.set(
-        x+Math.sin(angle)*radialZ,
-        row.bottomY+.68,
-        z+Math.cos(angle)*radialZ
-      );
-      dummy.scale.set(segmentWidth-.07,.43,.17);
-      dummy.updateMatrix();
-      back.setMatrixAt(i,dummy.matrix);
+  const leather=new THREE.MeshStandardMaterial({
+    color:0x58392d,roughness:.88,metalness:.01
+  });
+  const leatherEdge=new THREE.MeshStandardMaterial({color:0x9c7852,roughness:.64,metalness:.25});
+  const arcs=[
+    {start:.48,end:2.66,side:'leste'},
+    {start:3.62,end:5.80,side:'oeste'}
+  ];
+  for(const arc of arcs) {
+    const base=new THREE.Mesh(
+      arcBenchBandGeometry(2.66,4.02,arc.start,arc.end,13.175,13.56,-.5,112),
+      stone
+    );
+    base.name='estrutura contínua de calcário do banco curvo '+arc.side+' de Thoth';
+    base.castShadow=true;base.receiveShadow=true;scene.add(base);
 
-      // Small, segmented collision volumes follow the arc and leave the entry gap open.
-      const halfX=Math.abs(Math.cos(angle))*segmentWidth/2+Math.abs(Math.sin(angle))*row.depth/2;
-      const halfZ=Math.abs(Math.sin(angle))*segmentWidth/2+Math.abs(Math.cos(angle))*row.depth/2;
+    const cushion=new THREE.Mesh(
+      arcBenchBandGeometry(2.76,3.92,arc.start,arc.end,13.56,13.72,-.5,112),
+      leather
+    );
+    cushion.name='almofada contínua de couro do banco curvo '+arc.side;
+    cushion.castShadow=true;cushion.receiveShadow=true;scene.add(cushion);
+
+    const backPoints=[],backTrim=[];
+    for(let i=0;i<=72;i++) {
+      const a=arc.start+(arc.end-arc.start)*i/72;
+      const x=Math.sin(a)*3.94,z=-.5+Math.cos(a)*3.94;
+      backPoints.push([x,14.02,z]);
+      backTrim.push([x,13.80,z]);
+    }
+    const back=new THREE.Mesh(tube(backPoints,.135,leather,112,16).geometry,leather);
+    back.name='encosto contínuo estofado em curva '+arc.side;
+    back.castShadow=true;back.receiveShadow=true;scene.add(back);
+    scene.add(tube(backTrim,.025,leatherEdge,112,8));
+
+    for(const angle of [arc.start,arc.end]) {
+      const x=Math.sin(angle)*3.42,z=-.5+Math.cos(angle)*3.42;
+      const arm=new THREE.Mesh(new RoundedBoxGeometry(.34,.44,.72,10,.1),wood);
+      arm.name='apoio de braço esculpido na extremidade do banco';
+      arm.position.set(x,13.84,z);arm.rotation.y=angle+Math.PI/2;
+      arm.castShadow=true;arm.receiveShadow=true;scene.add(arm);
+      const cap=new THREE.Mesh(new RoundedBoxGeometry(.29,.07,.62,8,.035),brass);
+      cap.position.set(x,14.075,z);cap.rotation.y=angle+Math.PI/2;scene.add(cap);
+    }
+
+    // Segment-sized collision boxes follow the real crescent, not a full invisible ring.
+    const collisionSegments=36;
+    for(let i=0;i<collisionSegments;i++) {
+      const a=arc.start+(arc.end-arc.start)*i/collisionSegments;
+      const b=arc.start+(arc.end-arc.start)*(i+1)/collisionSegments;
+      const corners=[
+        pointForCollider(a,2.66),pointForCollider(a,4.02),
+        pointForCollider(b,2.66),pointForCollider(b,4.02)
+      ];
+      const xs=corners.map(p=>p[0]),zs=corners.map(p=>p[1]);
       colliders.push({
-        minX:x-halfX,maxX:x+halfX,
-        minY:row.bottomY+.08,maxY:row.bottomY+.88,
-        minZ:z-halfZ,maxZ:z+halfZ
+        minX:Math.min(...xs)-.05,maxX:Math.max(...xs)+.05,
+        minY:13.20,maxY:14.18,
+        minZ:Math.min(...zs)-.05,maxZ:Math.max(...zs)+.05
       });
     }
-    base.instanceMatrix.needsUpdate=true;
-    seat.instanceMatrix.needsUpdate=true;
-    back.instanceMatrix.needsUpdate=true;
-    base.computeBoundingBox();base.computeBoundingSphere();
-    seat.computeBoundingBox();seat.computeBoundingSphere();
-    back.computeBoundingBox();back.computeBoundingSphere();
-    base.castShadow=true;base.receiveShadow=true;
-    seat.castShadow=true;seat.receiveShadow=true;
-    back.castShadow=true;back.receiveShadow=true;
-    scene.add(base,seat,back);
+  }
 
-    const trimPoints=[];
-    for(let i=0;i<=72;i++) {
-      const a=startAngle+(endAngle-startAngle)*i/72;
-      const r=row.radius+row.depth*.48;
-      trimPoints.push([Math.sin(a)*r,row.bottomY+.39,-.5+Math.cos(a)*r]);
-    }
-    const trim=tube(trimPoints,.022,brass,96,8);
-    trim.name='filete contínuo de bronze do assento em arco';
-    scene.add(trim);
-  });
+  function pointForCollider(angle,radius) {
+    return [Math.sin(angle)*radius,-.5+Math.cos(angle)*radius];
+  }
+
+  const target=new THREE.Vector3(0,15.1,-.5);
+  for(const angle of [Math.PI/2,Math.PI*1.5]) {
+    const x=Math.sin(angle)*3.34,z=-.5+Math.cos(angle)*3.34;
+    const sitPosition=new THREE.Vector3(x,13.175,z);
+    const exitRadius=4.58;
+    const exitPosition=new THREE.Vector3(Math.sin(angle)*exitRadius,13.175,-.5+Math.cos(angle)*exitRadius);
+    const exitFacing=new THREE.Vector3(
+      exitPosition.x+Math.sin(angle),14.0,exitPosition.z+Math.cos(angle)
+    );
+    interactables.push({
+      name:'Banco curvo '+(angle<Math.PI?'leste':'oeste')+' junto a Thoth',
+      kind:'seat',
+      label:'Sentar perto de Thoth',
+      description:'Pressione E ou INTERAGIR para Carter se acomodar no banco. Pressione novamente para levantar.',
+      position:sitPosition.clone(),
+      radius:2.55,
+      sitPosition,
+      exitPosition,
+      sitFacing:target.clone(),
+      exitFacing
+    });
+  }
   interactables.push({
-    name:'Assentos em anfiteatro junto a Thoth',kind:'inspect',
-    label:'Assentos integrados ao pedestal',
-    description:'Três níveis de assentos curvos em pedra, madeira e couro, integrados à base monumental e abertos no eixo de entrada.',
-    position:new THREE.Vector3(0,13.8,-.5),radius:5.2
+    name:'Base monumental de Thoth',kind:'inspect',
+    label:'Base integrada da estátua',
+    description:'O pedestal circular de calcário se integra aos dois bancos curvos de couro e nogueira, abertos no eixo de circulação.',
+    position:new THREE.Vector3(0,13.55,-.5),radius:2.7
   });
 }
 

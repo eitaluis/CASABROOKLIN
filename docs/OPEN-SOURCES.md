@@ -8,14 +8,14 @@ Todo novo objeto ou espaço deve seguir [ASSET-FIRST-ROOM-BUILDING.md](ASSET-FIR
 
 **Ara 3D Gen** — https://github.com/olatunde85/3d-gen — pacote JavaScript MIT; os dados de personagem usam MakeHuman CC0 e os clips de captura de movimento vêm da base CMU, livres para uso comercial conforme a licença/documentação do projeto.
 - O corpo, rosto, cabelo, rig e clips principais preservam o Carter aprovado no share salvo do Ara.
-- src/character.js carrega idle, walk, run e a sequência de salto, além de consultar ANIMATIONS para selecionar ações cinematográficas disponíveis (look_around, talk_gestures, wave, point e bow). O clipe Ara Point serve como base do gesto HA-DI; a extensão do dedo médio é uma adaptação procedural original do projeto.
+- src/character.js carrega idle/walk e o pack `carter-moves`, com sprint normal/com objeto, salto ninja, aterrissagem e dois combos. O inventário seleciona o clip adequado; a tecla F e o botão mobile compartilham a mesma ação. O clipe Ara Point serve como base do gesto HA-DI; a extensão do dedo médio é uma adaptação procedural original do projeto.
 - src/character.js sobrescreve o item carregado do share Ara com `carry: 'none'`, removendo a mochila original.
 - Em 27/11/2026, `src/character-accessories.js` recebeu uma revisão estrutural: bolsa no Hips, trecho superior da alça no Spine2/Spine1, trecho inferior no Hips e corrente/medalhão no osso torácico. A faixa e a corrente usam raycast no SkinnedMesh deformado para encontrar a superfície da camisa/corpo. As dimensões-alvo da bolsa são 202 × 158 × 76 mm e a largura da alça é 22 mm.
-- A revisão acima usa geometria procedural provisória de autoria do projeto. Ela **não é o GLB Innerscene** e ainda não foi visualmente validada em navegador.
-- Candidato visual aprovado para a bolsa-base: Innerscene Crossbody Bag, GLB CC0, corpo 230 × 86 × 180 mm. A alça original fica caída no chão e precisa ser substituída. O endpoint de download redirecionou para `files.innerscene.com`, host inacessível às ferramentas desta sessão; o arquivo não foi baixado nem importado.
-- O estudo, as fontes oficiais e a distinção entre cânone e interpretação estão em `docs/CARTER-ACCESSORIES-REFERENCE-STUDY.md`. Não chamar a geometria provisória de asset Innerscene nem afirmar que o GLB está integrado.
+- Estado atual: o GLB Innerscene CC0 foi baixado e versionado em `assets/models/carter/innerscene-crossbody-bag.glb`; o corpo e ferragens são preservados, e a alça original é ocultada e substituída por fita customizada presa à superfície/ossos do Carter.
+- O colar usa corrente e medalhão projetados na superfície da camisa e presos ao osso torácico. O módulo compartilhado é `src/character-accessories.js`; a validação visual final ainda está pendente no navegador.
+- O estudo e a distinção entre cânone e interpretação estão em `docs/CARTER-ACCESSORIES-REFERENCE-STUDY.md`.
 - A peça preta visível no ombro no screenshot não é criada por `src/character-accessories.js`; sua origem no share Ara ainda precisa ser localizada antes de removê-la. Não apagar peças do personagem-base por aproximação.
-- O módulo procedural atual não utiliza GLB de terceiro; nenhuma bolsa nova foi integrada.
+- O runtime carrega o GLB CC0 da Innerscene e mantém geometria procedural como fallback caso o arquivo falhe.
 - assets/models/carter/blender/create_carter_accessories.py é a fonte editável de lookdev no Blender; ainda não é um .blend nem um asset carregado em runtime.
 - src/main.js direciona o olhar para o objeto examinado por E/INTERAGIR.
 - src/third-person.js suaviza aceleração, curvas, inclinação e câmera; o mesmo controlador e os mesmos assets são usados no desktop e mobile.

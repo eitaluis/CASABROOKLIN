@@ -403,9 +403,12 @@ function interactWithNearby() {
   }
 
   if (nearest.kind === 'seat') {
+    const originalPosition = controller.getPosition().clone();
+    const originalForward = controller.getForward();
     const placed = controller.placeAt(nearest.sitPosition, nearest.sitFacing);
     const started = placed && character.sitDown?.();
     if (!started) {
+      controller.placeAt(originalPosition, originalPosition.clone().add(originalForward));
       toast('As animações de sentar não estão disponíveis neste carregamento do Carter.');
       return;
     }

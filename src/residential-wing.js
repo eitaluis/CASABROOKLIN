@@ -114,8 +114,8 @@ export function buildResidentialWing({
   // Fechamentos perimetrais dos dois quartos.
   wallX(34.65, -9.0, 9.0, [[-4.8, -1.35]]);
   wallZ(-9.0, 22.55, 34.65, []);
-  wallZ(-0.4, 22.55, 34.65, [[28.2, 30.15]]);
-  wallZ(0.4, 22.55, 34.65, [[28.2, 30.15]]);
+  addFloor('Faixa de piso entre os quartos', 28.6, 0, 12.3, 0.8);
+  wallZ(0, 22.55, 34.65, [[28.2, 30.15]]);
   wallZ(9.0, 22.55, 34.65, []);
 
   // Porta interna contígua entre os quartos.
@@ -237,7 +237,7 @@ export function buildResidentialWing({
   box('Guarda-corpo lateral sul do deck', 37.0, FLOOR_Y + 0.72, -0.48, 5.0, 1.35, 0.12, glass, true);
 
   const sliderFrame = new THREE.Group();
-  sliderFrame.position.set(34.65, FLOOR_Y, -4.8);
+  sliderFrame.position.set(34.65, FLOOR_Y, -3.075);
   roomGroup.add(sliderFrame);
   for (const z of [-1.72, 1.72]) {
     const post = new THREE.Mesh(new THREE.BoxGeometry(0.12, 2.85, 0.12), bronze);
@@ -252,12 +252,12 @@ export function buildResidentialWing({
     pane.position.set(0, 1.36, z);
     sliderFrame.add(pane);
   }
-  addCollider(34.65, FLOOR_Y + 1.32, -4.8, 0.28, 2.65, 3.5);
+  addCollider(34.65, FLOOR_Y + 1.32, -3.075, 0.28, 2.65, 3.5);
   interactables.push({
     name: 'Portas de vidro da varanda', kind: 'inspect', zone: ZONE,
     label: 'Portas deslizantes de vidro',
     description: 'As portas dão para o deck sobre o porto. Uma barreira invisível impede a passagem, como no primeiro encontro de Carter com o quarto.',
-    position: new THREE.Vector3(34.1, FLOOR_Y + 1.25, -4.8), radius: 2.8
+    position: new THREE.Vector3(34.1, FLOOR_Y + 1.25, -3.075), radius: 2.8
   });
 
   // Bacia baixa de bronze sobre pedestal de pedra: referência ao objeto de
@@ -295,7 +295,7 @@ export function buildResidentialWing({
     name: 'Bacia de vidência de bronze', kind: 'inspect', zone: ZONE,
     label: 'Bacia de vidência',
     description: 'Bacia baixa de bronze sobre pedestal de pedra. A superfície escura lembra o óleo usado para vidência por Walt.',
-    position: new THREE.Vector3(37.2, FLOOR_Y + 1.25, -3.05), radius: 2.5
+    position: new THREE.Vector3(37.2, FLOOR_Y + 1.25, -3.05), radius: 4.4
   });
 
   // O apoio de cabeça é modelado sob medida a partir da peça histórica GEM 270:

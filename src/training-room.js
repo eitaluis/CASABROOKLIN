@@ -1013,52 +1013,53 @@ export function buildTrainingRoom({
     niche.position.set(x,floorY,z);
     niche.rotation.y=facing;
 
-    const backing=new THREE.Mesh(new THREE.BoxGeometry(1.72,2.42,.16),reliefStone);
+    // Nicho compacto, dimensionado para a escala da estatueta, não para uma estátua humana.
+    const backing=new THREE.Mesh(new THREE.BoxGeometry(1.28,1.66,.16),reliefStone);
     backing.name='moldura profunda de pedra do nicho';
-    backing.position.set(0,1.22,-.12);
+    backing.position.set(0,1.03,-.12);
     niche.add(backing);
-    const recess=new THREE.Mesh(new THREE.BoxGeometry(1.39,2.03,.026),nicheShadow);
+    const recess=new THREE.Mesh(new THREE.BoxGeometry(1.02,1.38,.026),nicheShadow);
     recess.name='fundo sombreado do nicho';
-    recess.position.set(0,1.24,-.025);
+    recess.position.set(0,1.04,-.025);
     niche.add(recess);
 
-    const base=new THREE.Mesh(new THREE.BoxGeometry(1.65,.18,.42),limestoneShade);
+    const base=new THREE.Mesh(new THREE.BoxGeometry(1.2,.16,.42),limestoneShade);
     base.name='base de exposição do shabti';
     base.position.set(0,.22,.16);
     niche.add(base);
-    const baseInlay=new THREE.Mesh(new THREE.BoxGeometry(1.4,.035,.035),raGold);
-    baseInlay.position.set(0,.315,.38);
+    const baseInlay=new THREE.Mesh(new THREE.BoxGeometry(1.0,.032,.035),raGold);
+    baseInlay.position.set(0,.305,.38);
     niche.add(baseInlay);
 
     for(const sx of [-1,1]){
-      const pier=new THREE.Mesh(new THREE.BoxGeometry(.16,2.12,.29),limestone);
+      const pier=new THREE.Mesh(new THREE.BoxGeometry(.14,1.33,.29),limestone);
       pier.name='ombreira de calcário do nicho';
-      pier.position.set(sx*.78,1.3,.11);
+      pier.position.set(sx*.57,.99,.11);
       niche.add(pier);
-      const pierCap=new THREE.Mesh(new THREE.BoxGeometry(.22,.15,.34),limestoneShade);
-      pierCap.position.set(sx*.78,2.39,.11);
+      const pierCap=new THREE.Mesh(new THREE.BoxGeometry(.19,.13,.34),limestoneShade);
+      pierCap.position.set(sx*.57,1.68,.11);
       niche.add(pierCap);
       for(let groove=0;groove<3;groove++){
-        const gx=sx*.78+(groove-1)*.036;
-        addTube('estria vertical gravada na ombreira',[[gx,.48,.265],[gx,1.25,.266],[gx,2.1,.265]],.006,raGold,niche,16);
+        const gx=sx*.57+(groove-1)*.032;
+        addTube('estria vertical gravada na ombreira',[[gx,.39,.265],[gx,.98,.266],[gx,1.56,.265]],.0055,raGold,niche,16);
       }
     }
     addTube('arco superior do nicho funerário',[
-      [-.82,2.31,.12],[-.76,2.48,.12],[-.58,2.6,.12],[-.3,2.67,.12],
-      [0,2.69,.12],[.3,2.67,.12],[.58,2.6,.12],[.76,2.48,.12],[.82,2.31,.12]
-    ],.075,limestoneShade,niche,48);
-    const crownBlock=new THREE.Mesh(new THREE.BoxGeometry(.32,.16,.31),limestoneShade);
+      [-.65,1.61,.12],[-.6,1.74,.12],[-.44,1.83,.12],[-.23,1.88,.12],
+      [0,1.9,.12],[.23,1.88,.12],[.44,1.83,.12],[.6,1.74,.12],[.65,1.61,.12]
+    ],.058,limestoneShade,niche,48);
+    const crownBlock=new THREE.Mesh(new THREE.BoxGeometry(.27,.13,.29),limestoneShade);
     crownBlock.name='fecho em flor de lótus do nicho';
-    crownBlock.position.set(0,2.68,.12);
+    crownBlock.position.set(0,1.89,.12);
     niche.add(crownBlock);
-    const crownInset=new THREE.Mesh(new THREE.TorusGeometry(.075,.018,8,24),raGold);
-    crownInset.position.set(0,2.685,.29);
+    const crownInset=new THREE.Mesh(new THREE.TorusGeometry(.064,.015,8,24),raGold);
+    crownInset.position.set(0,1.9,.29);
     niche.add(crownInset);
 
     const figure=shabtiTemplate.clone(true);
     figure.name='shabti de faiança em nicho';
     figure.position.set(0,.33,.31);
-    figure.scale.setScalar(.39);
+    figure.scale.setScalar(.55);
     figure.traverse(object=>{
       if(object.isMesh){object.castShadow=true;object.receiveShadow=true;}
       if(object.name==='selo de invocação da miniatura'

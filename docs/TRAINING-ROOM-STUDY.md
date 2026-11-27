@@ -2,7 +2,7 @@
 
 Data: 27/11/2026  
 Projeto: CASABROOKLIN  
-Status: **correção de implantação e cesta integrada no código; inspeção visual e QA em navegador desktop/mobile ainda pendentes**
+Status: **cesta solar, encaixe mural e fechamento das paredes de fundo integrados no código; inspeção visual e QA em navegador desktop/mobile ainda pendentes**
 
 ## 1. Evidência narrativa e grau de certeza
 

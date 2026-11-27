@@ -108,7 +108,7 @@ const waterfrontEnvironment = buildWaterfrontEnvironment({
 
 // Interior passes are shared by desktop and mobile.
 buildInteriorDetails({ THREE, scene:magicalInteriorGroup, interactables });
-buildLibrary({ THREE, scene:magicalInteriorGroup, interactables, colliders, limestone });
+const libraryScene = buildLibrary({ THREE, scene:magicalInteriorGroup, interactables, colliders, limestone });
 const grandSalon = buildGrandSalon({
   THREE, scene:magicalInteriorGroup, animated, camera, isTouchDevice, colliders, interactables, groundSurfaces
 });
@@ -283,6 +283,7 @@ if (character.human) character.human.reset();
 const controller = createThirdPersonController({
   THREE, camera, canvas, character, zones, colliders,
   stairRamps: grandSalon.stairRamps,
+  walkableCurves: libraryScene.stairPaths,
   walkablePlatforms: [
     ...(grandSalon.walkablePlatforms || []),
     ...(trainingRoom.walkablePlatforms || []),
@@ -555,6 +556,8 @@ function animate() {
   }
   if (fireLight) fireLight.intensity = 4.25 + Math.sin(time * 8.7) * 0.72;
   grandSalon.update?.(time);
+  const libraryMessage = libraryScene.update(time, dt);
+  if (libraryMessage) toast(libraryMessage);
   const trainingMessage = trainingRoom.update(time, dt, controller.getPosition(), controller.getForward());
   if (trainingMessage) toast(trainingMessage);
   // Atualiza a magia depois da simulação da sala: os 10 s dos fragmentos começam no impacto real.
@@ -562,7 +565,7 @@ function animate() {
   updateVitalsHud(dt);
   const trainingStatus = trainingRoom.getStatus();
   let nearbyTrainingItem=null, nearbyTrainingDistance=Infinity;
-  if(controller.zone==='training'){
+  if(controller.zone==='training' || controller.zone==='library'){
     const player=controller.getPosition();
     for(const item of interactables){
       const distance=player.distanceTo(item.position);

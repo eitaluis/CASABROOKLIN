@@ -36,6 +36,169 @@
       "version": "GLB 57 KB; 496 triangles; 0.08 × 1.8 × 0.08 m",
       "role": "approved Carter quarterstaff loaded at runtime through GLTFLoader from Polyfork CDN; original wood/iron/cloth material preserved; local WeaponR grip pivot is centered by offsetting origin -0.9m on Y",
       "license": "commercial hotlink/use allowed without attribution; CC BY 4.0 if redistributing the mesh; direct CDN use is not redistribution"
+    },
+    {
+      "id": "tevy-cc0-bedroom-double-bed",
+      "source": "https://tevy.dev/models/double-bed",
+      "directUrls": {
+        "desktop": "https://tevy.dev/models/double-bed/v1/lod1.glb",
+        "mobile": "https://tevy.dev/models/double-bed/v1/lod2.glb"
+      },
+      "author": "Tevy",
+      "version": "v1",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "runtimeImported": true,
+      "role": "Cama moderna usada como base da cama king-size de Carter; LOD1 desktop e LOD2 mobile; fallback procedural local; GLB remoto, não armazenado no repositório."
+    },
+    {
+      "id": "tevy-cc0-bedroom-nightstand",
+      "source": "https://tevy.dev/models/nightstand",
+      "directUrls": {
+        "desktop": "https://tevy.dev/models/nightstand/v2/lod1.glb",
+        "mobile": "https://tevy.dev/models/nightstand/v2/lod2.glb"
+      },
+      "author": "Tevy",
+      "version": "v2",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "runtimeImported": true,
+      "role": "Criado-mudo ao lado da cama; fallback procedural local; GLB remoto, não armazenado no repositório."
+    },
+    {
+      "id": "tevy-cc0-bedroom-tv-stand",
+      "source": "https://tevy.dev/models/tv-stand",
+      "directUrls": {
+        "desktop": "https://tevy.dev/models/tv-stand/v2/lod1.glb",
+        "mobile": "https://tevy.dev/models/tv-stand/v2/lod2.glb"
+      },
+      "author": "Tevy",
+      "version": "v2",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "runtimeImported": true,
+      "role": "Console de nogueira e TV flat; a tela separada recebe o material/canvas interativo de ligar e desligar; fallback procedural local."
+    },
+    {
+      "id": "tevy-cc0-bedroom-office-desk",
+      "source": "https://tevy.dev/models/office-desk",
+      "directUrls": {
+        "desktop": "https://tevy.dev/models/office-desk/v2/lod1.glb",
+        "mobile": "https://tevy.dev/models/office-desk/v2/lod2.glb"
+      },
+      "author": "Tevy",
+      "version": "v2",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "runtimeImported": true,
+      "role": "Mesa com monitor, teclado, mouse e luminária; fallback procedural local; GLB remoto, não armazenado no repositório."
+    },
+    {
+      "id": "tevy-cc0-bedroom-kitchen-sink-unit",
+      "source": "https://tevy.dev/models/kitchen-base-unit-sink",
+      "directUrls": {
+        "desktop": "https://tevy.dev/models/kitchen-base-unit-sink/v1/lod1.glb",
+        "mobile": "https://tevy.dev/models/kitchen-base-unit-sink/v1/lod2.glb"
+      },
+      "author": "Tevy",
+      "version": "v1",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "runtimeImported": true,
+      "role": "Módulo de pia da kitchenette de Carter; fallback local."
+    },
+    {
+      "id": "tevy-cc0-bedroom-kitchen-drawer-unit",
+      "source": "https://tevy.dev/models/kitchen-base-unit-drawers",
+      "directUrls": {
+        "desktop": "https://tevy.dev/models/kitchen-base-unit-drawers/v1/lod1.glb",
+        "mobile": "https://tevy.dev/models/kitchen-base-unit-drawers/v1/lod2.glb"
+      },
+      "author": "Tevy",
+      "version": "v1",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "runtimeImported": true,
+      "role": "Módulo de gavetas da kitchenette; fallback local."
+    },
+    {
+      "id": "tevy-cc0-bedroom-bathroom-vanity",
+      "source": "https://tevy.dev/models/bathroom-vanity",
+      "directUrls": {
+        "desktop": "https://tevy.dev/models/bathroom-vanity/v1/lod1.glb",
+        "mobile": "https://tevy.dev/models/bathroom-vanity/v1/lod2.glb"
+      },
+      "author": "Tevy",
+      "version": "v1",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "runtimeImported": true,
+      "role": "Gabinete, cuba e espelho para o banheiro privativo; fallback local."
+    },
+    {
+      "id": "tevy-cc0-bedroom-bathtub",
+      "source": "https://tevy.dev/models/bathtub",
+      "directUrls": {
+        "desktop": "https://tevy.dev/models/bathtub/v1/lod1.glb",
+        "mobile": "https://tevy.dev/models/bathtub/v1/lod2.glb"
+      },
+      "author": "Tevy",
+      "version": "v1",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "runtimeImported": true,
+      "role": "Banheira do banheiro privativo; item de interpretação de produção, já que o romance não especifica o modelo de banho."
+    },
+    {
+      "id": "tevy-cc0-bedroom-toilet",
+      "source": "https://tevy.dev/models/toilet",
+      "directUrls": {
+        "desktop": "https://tevy.dev/models/toilet/v1/lod1.glb",
+        "mobile": "https://tevy.dev/models/toilet/v1/lod2.glb"
+      },
+      "author": "Tevy",
+      "version": "v1",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "runtimeImported": true,
+      "role": "Vaso sanitário do banheiro privativo; item de interpretação de produção."
+    },
+    {
+      "id": "tevy-cc0-bedroom-bookshelf-speaker",
+      "source": "https://tevy.dev/models/bookshelf-speaker",
+      "directUrls": {
+        "desktop": "https://tevy.dev/models/bookshelf-speaker/v1/lod1.glb",
+        "mobile": "https://tevy.dev/models/bookshelf-speaker/v1/lod2.glb"
+      },
+      "author": "Tevy",
+      "version": "v1",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "runtimeImported": true,
+      "role": "Duas caixas acústicas de estante de nogueira para o sistema de som estéreo; fallback procedural local."
+    },
+    {
+      "id": "innerscene-cc0-bedroom-undercounter-fridge",
+      "source": "https://www.innerscene.com/tools/library/3d-parts/undercounter-fridge-bef8ea56",
+      "directDownload": "https://files.innerscene.com/library/undercounter-fridge-bef8ea56/b0630c86bd61b5170a0c/undercounter-fridge.glb",
+      "author": "Innerscene (original model)",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "fileSize": "452 KB",
+      "dimensionsM": [
+        0.598,
+        0.548,
+        0.82
+      ],
+      "runtimeImported": true,
+      "role": "Frigobar sob bancada da kitchenette; URL direta incluída no código. CORS/carga ainda não validados no navegador; fallback procedural de escala proporcional permanece ativo."
+    },
+    {
+      "id": "three-r165-ktx2-loader-basis-transcoder",
+      "source": "https://github.com/mrdoob/three.js/tree/r165/examples/jsm/loaders",
+      "version": "Three.js r165.0",
+      "license": "MIT",
+      "role": "KTX2Loader e transcoder Basis em https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/libs/basis/ para carregar texturas KTX2 dos GLBs Tevy; mesmo runtime Three.js do projeto."
     }
   ],
   "localGeneratedAssets": [
@@ -364,6 +527,30 @@
       "path": "src/library.js + src/third-person.js",
       "role": "Original Three.js geometry for the three-flight curved stone stair and the instanced circular archive: 4,800 cut-out niche openings and pneumatic papyrus capsules; procedural walk-path sampling feeds the shared controller; statue tasks move the human ceramic figures and reveal the retrieved English papyrus/Narmer Palette; central scribal table includes palette, black/red ink cakes, reed brushes, open/rolled papyri, linen, and Julius Kane's satchel. During each task return, the empty-handed figure visibly carries a small scroll and the hooked-staff figure carries a miniature Narmer palette before the recovered item appears on the worktable.",
       "license": "project-original-code; local limestone PBR maps CC0-1.0; hieroglyph font remains under Noto SIL OFL 1.1"
+    },
+    {
+      "id": "carter-bedroom-open-plan-suite-20261127",
+      "path": "src/bedroom.js",
+      "role": "Suíte asset-first de Carter no terceiro pavimento: planta aberta sem parede central, teto e acabamento residencial, kitchenette, tecnologia, banheiro em canto translúcido, portas panorâmicas deslizantes e deck orientado ao East River; mesma cena desktop/mobile.",
+      "license": "project-original-code"
+    },
+    {
+      "id": "carter-bedroom-egyptian-lion-headrest-20261127",
+      "path": "src/bedroom.js",
+      "role": "Apoio de cabeça independente em geometria original: base de marfim, dois leões, figura central de Shu, apoio curvo e marcas hieroglíficas. A forma de Shu segue a referência histórica GEM #270; o romance confirma marfim, leões e hieróglifos, mas não especifica Shu.",
+      "license": "project-original-code; histórico GEM Public Domain/Open Access used only as visual reference; no museum model or image copied"
+    },
+    {
+      "id": "carter-bedroom-interactions-20261127",
+      "path": "src/bedroom.js + src/main.js",
+      "role": "Interações compartilhadas: portas do deck inicialmente trancadas com desbloqueio e deslizamento, porta do quarto de Sadie trancada, porta do banheiro, TV on/off, inspeção do apoio, computador, kitchenette e sistema de som; prompts E/INTERAGIR também são apresentados em mobile.",
+      "license": "project-original-code"
+    },
+    {
+      "id": "carter-bedroom-local-fallbacks-20261127",
+      "path": "src/bedroom.js",
+      "role": "Geometria procedural local de reserva para cama, criado, TV, estação de computador, kitchenette, frigobar, banheiro e caixas acústicas. Continua visível quando o GLB remoto não carrega.",
+      "license": "project-original-code"
     }
   ],
   "openSourceReferences": [
@@ -868,6 +1055,21 @@
       "license": "CC BY-NC-SA",
       "role": "Visual reference only for the silhouette and relief arrangement of the Narmer Palette. Not imported or redistributed because the license is non-commercial/share-alike; the in-game pickup is a simplified original silhouette pending visual QA.",
       "runtimeImported": false
+    },
+    {
+      "id": "grand-egyptian-museum-lions-headrest-270",
+      "source": "https://gem.eg/en/collection/artefacts/lions-headrest",
+      "author": "Grand Egyptian Museum",
+      "license": "official museum object record; used as historical visual reference only",
+      "role": "Lions Headrest #270: ivory base, kneeling Shu supporting curved head-rest and two crouching lions; 18.2 cm high × 29.5 cm long. Reference for the independent Carter headrest geometry; not asserted to be the exact canonical design and no museum model/image is imported.",
+      "runtimeImported": false
+    },
+    {
+      "id": "tevy-asset-loader-docs-bedroom",
+      "source": "https://tevy.dev/docs",
+      "license": "vendor technical documentation; models CC0-1.0",
+      "role": "Confirms HTTPS downloads, open CORS, versioned GLB URLs, Meshopt-compressed geometry, KTX2 textures, and the required GLTFLoader + MeshoptDecoder + KTX2Loader setup.",
+      "runtimeImported": false
     }
   ],
   "features": [
@@ -968,6 +1170,24 @@
         "docs/INTERIORES-E-LOOKDEV.md"
       ],
       "summary": "User-approved underground library implementation: ~31m chamber with ~15.9m total height to Nut dome apex; 4,800 instanced hand-sized circular niches and pneumatic capsules; original varied painted wall atlas and hieroglyph sequences; 90 walkable curved stone treads in three flights with landings, connected to the shared controller; empty-handed shabti retrieves the English papyrus and hooked-staff shabti retrieves a simplified Narmer Palette; central stone table is dressed as a scribal workstation. Shared desktop/mobile runtime. Final figurative Geb/Nut images explicitly deferred; browser visual QA remains pending. The returning statuettes visibly carry miniature papyrus/Narmer-palette props; the task motion remains procedural rather than a retargeted walk cycle.",
+      "date": "2026-11-27"
+    },
+    {
+      "id": "carter-bedroom-asset-first-suite-20261127",
+      "scope": "runtime",
+      "files": [
+        "src/bedroom.js",
+        "src/world.js",
+        "src/main.js",
+        "assets/manifest.json",
+        "docs/CARTER-BEDROOM-STUDY.md",
+        "docs/ASSET-FIRST-ROOM-BUILDING.md",
+        "docs/INTERIORES-E-LOOKDEV.md",
+        "docs/OPEN-SOURCES.md",
+        "docs/ARCHITECTURE.md",
+        "docs/ROADMAP-CHECKLIST.md"
+      ],
+      "summary": "Approved asset-first Carter bedroom on the third floor: open plan with no central partition, CC0 GLB furniture/tech, kitchenette and favourite snacks, ensuite, locked sliding deck doors towards the East River, locked connecting door to Sadie's adjacent room and a custom ivory lion headrest based on the novel and GEM historic reference. GLBs use pinned Tevy versions with LOD1 desktop/LOD2 mobile and local procedural fallbacks; same scene and interactions desktop/mobile. Static syntax checked; browser visual/network/performance QA pending.",
       "date": "2026-11-27"
     }
   ]

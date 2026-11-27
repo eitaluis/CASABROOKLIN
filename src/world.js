@@ -296,9 +296,9 @@ box('mesa de centro legado',[0,13.65,-1.4],[3.2,.38,1.8],woodMat,false);cyl('pé
 // Instrumentos musicais e armas antigas são substituídos por modelos detalhados em grand-salon.js.
 // As pequenas estátuas geométricas foram removidas; a decoração escultórica é criada em grand-salon.js.
 // Biblioteca circular subterrânea, escavada na rocha.
-const libCenterY=-9.65,libFloor= -17.4,libRadius=15.5;
+const libCenterY=-12.2,libFloor= -17.4,libRadius=15.5;
 const rockMat=new THREE.MeshStandardMaterial({color:0x82735e,map:concrete,roughness:.94,side:THREE.DoubleSide});
-const cylWall=new THREE.Mesh(new THREE.CylinderGeometry(libRadius,libRadius,15.5,128,1,true),rockMat);cylWall.name='parede lisa antiga da biblioteca';cylWall.position.set(0,libCenterY,-.5);cylWall.receiveShadow=true;scene.add(cylWall);
+const cylWall=new THREE.Mesh(new THREE.CylinderGeometry(libRadius,libRadius,10.4,128,1,true),rockMat);cylWall.name='parede lisa antiga da biblioteca';cylWall.position.set(0,libCenterY,-.5);cylWall.receiveShadow=true;scene.add(cylWall);
 for(let i=0;i<64;i++){
  const a=(i+.5)*(Math.PI*2/64);
  const arcHalf=libRadius*Math.PI/64;
@@ -307,7 +307,7 @@ for(let i=0;i<64;i++){
  const z=-Math.cos(a)*(libRadius-.16)-.5;
  const halfX=Math.abs(Math.cos(a))*arcHalf+Math.abs(Math.sin(a))*halfThickness;
  const halfZ=Math.abs(Math.sin(a))*arcHalf+Math.abs(Math.cos(a))*halfThickness;
- registerCollider(x,libCenterY,z,halfX*2,15.5,halfZ*2);
+ registerCollider(x,libCenterY,z,halfX*2,10.4,halfZ*2);
 }
 
 const libFloorMesh=new THREE.Mesh(new THREE.CircleGeometry(libRadius,128),new THREE.MeshStandardMaterial({color:0x33484b,roughness:.8}));libFloorMesh.name='piso antigo da biblioteca';libFloorMesh.rotation.x=-Math.PI/2;libFloorMesh.position.set(0,libFloor,-.5);libFloorMesh.receiveShadow=true;scene.add(libFloorMesh);groundSurfaces.push(libFloorMesh);

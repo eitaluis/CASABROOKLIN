@@ -1,6 +1,6 @@
 # Interiores da Brooklyn House — pesquisa de assets e direção visual
 
-Status: reestruturação do Grande Salão em átrio central implementada: escadarias principais simétricas, passarela elevada de travessia, lances superiores em faixas distintas, assentos circulares junto ao pedestal e passagens inferiores interpretativas. A inspeção visual no navegador e a validação desktop/mobile ainda estão pendentes.
+Status: reestruturação do Grande Salão em átrio central implementada: escadarias principais simétricas, passarela elevada, três níveis de assentos curvos abertos no eixo de entrada, passagens inferiores conectadas ao terraço posterior e portas laterais operáveis para a piscina. A descida de três pavimentos até a biblioteca e o QA visual/collision desktop-mobile ainda estão pendentes.
 
 ## Direção visual
 

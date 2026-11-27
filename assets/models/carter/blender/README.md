@@ -29,9 +29,13 @@ The script creates editable mesh and curve objects with materials, bevels and gr
 
 ## Runtime relationship
 
-The game currently creates the corresponding lightweight geometry in src/character-accessories.js and attaches it to the Ara Hips bone when available. The Blender generator is the editable look-development source for future refinement; it is not yet imported as a GLB in the game.
+The game currently creates lightweight procedural geometry in `src/character-accessories.js`; it is not using a downloaded GLB for the satchel. The attached user screenshot on 27/11/2026 shows that the current runtime fit is visually incorrect (floating bag/strap/necklace), so treat this generator and the runtime geometry as unapproved prototypes.
 
-The script creates three separate anchors: Carter_Bag_Hips_Anchor for the bag, Carter_Strap_Spine2_Anchor for the shoulder strap, and Carter_Necklace_Spine2_Anchor for the chain/medallion. When the Ara rig is present, parent the bag anchor to Hips and the strap/necklace anchors to Spine2 (or the nearest upper-chest bone), preserving rest-pose placement. Do not export the body or replace the approved character from this script.
+The current runtime attaches the bag and strap roots to Hips and the necklace root to an upper-chest bone. The older Blender generator still contains separate bag/strap/necklace anchors and must be reconciled after the user approves a new visual direction. Do not assume the old Spine2 strap anchor matches the runtime.
+
+Before creating a replacement .blend, first follow the project-wide `SKILL.md` approval gate and the research board at `docs/CARTER-ACCESSORIES-REFERENCE-STUDY.md`. No bag asset or new strap geometry should be downloaded or integrated until explicit approval.
+
+Do not export the body or replace the approved Ara character from this script.
 
 ## Art direction
 

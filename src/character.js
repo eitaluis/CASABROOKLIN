@@ -144,10 +144,15 @@ export async function createCharacter({
   }
 
   function restoreLocomotion() {
-    if (disposed || jumping) return;
+    if (disposed || jumping) return false;
+    // Stop the previous Ara locomotion controller before creating another one.
+    // This matters after teleport/room transitions and when changing injury state:
+    // otherwise two controllers can keep writing to the same mixer actions.
+    locomotion?.stop();
     locomotion = hero.locomotion(mixer, locomotionOptions());
     locomotion.speed = movementSpeed;
     if (state) state.locomotion = locomotion;
+    return true;
   }
 
   function cancelAction() {
@@ -326,6 +331,11 @@ export async function createCharacter({
     jump,
     playAction,
     stopAction,
+    resumeLocomotion() {
+      if (disposed || jumping) return false;
+      if (actionSequence) cancelAction();
+      return restoreLocomotion();
+    },
     playReaction(direction = 'front') {
       const id = REACTION_ANIMATIONS.includes('hit_' + direction) ? 'hit_' + direction : 'hit_front';
       return playAction(id, { fade: 0.08, interruptOnMovement: false });

@@ -218,12 +218,6 @@ export function buildResidentialWing({
     openedText: 'A porta do banheiro está aberta.',
     closedText: 'A porta do banheiro está fechada.'
   });
-  makeDoorOnZ({
-    name: 'Porta do banheiro de Carter', x: 30.875, z: -5.05, width: 1.65,
-    prompt: 'E / INTERAGIR · abrir o banheiro',
-    openedText: 'A porta do banheiro está aberta.',
-    closedText: 'A porta do banheiro está fechada.'
-  });
   box('Divisória de calcário do banheiro', 28.6, FLOOR_Y + 1.65, -7.02, 0.22, 3.3, 3.95, wallMat, true);
   box('Piso de travertino do banheiro', 31.65, FLOOR_Y - 0.055, -7.03, 5.85, 0.12, 3.85, stoneMat, false);
   box('Parede do box', 34.45, FLOOR_Y + 1.58, -7.0, 0.09, 3.05, 3.5, glass, false);
@@ -421,10 +415,6 @@ export function buildResidentialWing({
   const computerScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.69, 0.39), screenOff);
   computerScreen.position.set(0, 0.36, 0.031);
   computer.add(computerScreen);
-  const tvScreenMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.12, 0.64), screenOff);
-  tvScreenMesh.position.set(29.15, FLOOR_Y + 1.77, -0.505);
-  tvScreenMesh.rotation.y = Math.PI;
-  roomGroup.add(tvScreenMesh);
   const tvScreenMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.12, 0.64), screenOff);
   tvScreenMesh.position.set(29.15, FLOOR_Y + 1.77, -0.505);
   tvScreenMesh.rotation.y = Math.PI;

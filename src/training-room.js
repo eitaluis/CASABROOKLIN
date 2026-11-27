@@ -898,7 +898,7 @@ export function buildTrainingRoom({
     group.add(center);
     group.traverse(obj => { if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; } });
     scene.add(group);
-    targets.push({ group, position: group.position.clone(), glow: center, hitUntil: 0, index });
+    targets.push({ group, position: group.position.clone(), glow: center, restMaterial: center.material, hitUntil: 0, index });
   }
   addTarget(-10.0, 1); addTarget(-0.5, 2); addTarget(9.0, 3);
   const noticeBoard = new THREE.Group();
@@ -1224,7 +1224,13 @@ export function buildTrainingRoom({
     return state;
   });
   loadMuseumModel('shabtiRamose').then(source => {
-    if (!source) return;
+    if (!source) {
+      for (const state of shabtiWarriors) {
+        state.scanRoot.visible = false;
+        state.warriorForm.visible = !state.active;
+      }
+      return;
+    }
     for (const state of shabtiWarriors) {
       const scan = fitMuseumModel(source, 1.68);
       scan.name = 'scan original do Shabti de Ramose';
@@ -1852,7 +1858,7 @@ export function buildTrainingRoom({
     }
     for (const target of targets) {
       const glowing = target.hitUntil > time;
-      target.glow.material = glowing ? whiteGlow : warmEmissive;
+      target.glow.material = glowing ? whiteGlow : target.restMaterial;
       target.group.scale.y = 1 + (glowing ? Math.sin(time * 32) * 0.04 : 0);
     }
     return message;

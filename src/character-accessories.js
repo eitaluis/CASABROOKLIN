@@ -310,7 +310,8 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
   const bagPivot = new THREE.Group();
   bagPivot.name = 'CarterRightHipSatchelPivot';
   bagPivot.position.copy(bagAnchorFit.point);
-  bagPivot.rotation.set(0, -Math.PI / 2, -0.055);
+  const bagFacingYaw = Math.atan2(bagAnchorFit.normal.x, bagAnchorFit.normal.z);
+  bagPivot.rotation.set(0, bagFacingYaw, -0.055);
   bagRoot.add(bagPivot);
 
   const bodyGeometry = extrudeShape(softSatchelShape(bagWidth, bagHeight), bagDepth, 0.011 * unit);
@@ -460,8 +461,17 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
     new THREE.Vector3(0.092 * unit, 0.795 * height, 0.155 * unit),
     new THREE.Vector3(0.105 * unit, 0.86 * height, 0.125 * unit)
   ];
-  const necklaceFit = rawNecklacePoints.map(point =>
-    surface.project(point, new THREE.Vector3(0, 0, 1), 0.005 * unit)
+  const necklaceOutwardDirections = [
+    new THREE.Vector3(-0.45, 0.18, 0.88).normalize(),
+    new THREE.Vector3(-0.34, 0.08, 0.94).normalize(),
+    new THREE.Vector3(-0.16, 0.02, 0.99).normalize(),
+    new THREE.Vector3(0, 0, 1),
+    new THREE.Vector3(0.16, 0.02, 0.99).normalize(),
+    new THREE.Vector3(0.34, 0.08, 0.94).normalize(),
+    new THREE.Vector3(0.45, 0.18, 0.88).normalize()
+  ];
+  const necklaceFit = rawNecklacePoints.map((point, index) =>
+    surface.project(point, necklaceOutwardDirections[index], 0.005 * unit)
   );
   const necklaceCurve = new THREE.CatmullRomCurve3(
     necklaceFit.map(item => item.point),

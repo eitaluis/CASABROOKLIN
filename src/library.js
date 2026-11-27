@@ -263,9 +263,11 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
       const rx = nicheRadius / circumference * nicheAlphaCanvas.width;
       const ry = nicheRadius / wallHeight * nicheAlphaCanvas.height;
       alphaContext.fillStyle = '#000000';
-      alphaContext.beginPath();
-      alphaContext.ellipse(cx, cy, rx * 1.13, ry * 1.13, 0, 0, Math.PI * 2);
-      alphaContext.fill();
+      for (const seamOffset of [-nicheAlphaCanvas.width, 0, nicheAlphaCanvas.width]) {
+        alphaContext.beginPath();
+        alphaContext.ellipse(cx + seamOffset, cy, rx * 1.13, ry * 1.13, 0, 0, Math.PI * 2);
+        alphaContext.fill();
+      }
     }
   }
   const nicheAlphaMap = new THREE.CanvasTexture(nicheAlphaCanvas);

@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=library-asset-first-20261127a';
+import { buildWorld } from './world.js?v=great-hall-traversal-20261127a';
 import { buildExterior } from './exterior.js?v=waterfront-architecture-20261126a';
 import { buildWaterfrontEnvironment } from './waterfront-environment.js?v=waterfront-architecture-20261126a';
-import { buildInteriorDetails } from './interior-details.js?v=great-hall-atrium-20261126a';
+import { buildInteriorDetails } from './interior-details.js?v=great-hall-traversal-20261127a';
 import { buildLibrary } from './library.js?v=library-asset-first-20261127a';
-import { buildGrandSalon } from './grand-salon.js?v=great-hall-atrium-20261126d';
+import { buildGrandSalon } from './grand-salon.js?v=great-hall-traversal-20261127a';
 import { buildTrainingRoom } from './training-room.js?v=ra-shabti-niches-20261127b';
 import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
 import { createMagicSystem } from './magic-system.js?v=ha-di-energy-cast-20261126a';
@@ -386,6 +386,13 @@ function interactWithNearby() {
   }
 }
 window.addEventListener('keydown', event => {
+  // Atalho 2: entra no Grande Salão a partir de qualquer ambiente e sempre
+  // reposiciona Carter na zona livre em frente ao conjunto de assentos de Thoth.
+  if ((event.code === 'Digit2' || event.code === 'Numpad2') && !event.repeat &&
+      !document.activeElement?.matches('input,textarea,[contenteditable="true"]')) {
+    controller.teleport('hall');
+    document.getElementById('startscreen').classList.add('hidden');
+  }
   if (event.code === 'KeyE' && !event.repeat && document.getElementById('startscreen').classList.contains('hidden')) {
     interactWithNearby();
   }

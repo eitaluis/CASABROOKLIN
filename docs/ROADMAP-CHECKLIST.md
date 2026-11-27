@@ -157,6 +157,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Habilitar 20 cápsulas inferiores para abrir/fechar e revelar o papiro.
 - [x] Criar tarefas para os pequenos servos: a figura de mãos vazias procura a versão em inglês do papiro; a figura com cajado em gancho traz a Paleta de Narmer.
 - [x] Dar movimento procedural às figuras durante as tarefas; os clips humanoides KinemIQ CC0 permanecem não importados por incompatibilidade com a malha sem rig/skinning.
+- [x] Exibir um pequeno rolo de papiro ou uma miniatura da Paleta de Narmer na mão do servo durante o retorno e revelar o artefato sobre a mesa ao concluir.
 - [x] Vestir a mesa de pedra como estação de escriba: paleta, pigmentos preto/vermelho, pincéis de junco, recipiente de tinta, papiros, rolos, cordão, pano de linho e bolsa de Julius com aba interativa.
 - [x] Aumentar as superfícies de Nut e Geb para a escala ampliada e alinhar a borda da cúpula à parede.
 - [ ] Criar as pinturas figurativas finais de Geb e Nut em etapa futura (imagem explicitamente adiada).

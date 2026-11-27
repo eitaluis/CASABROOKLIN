@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=great-hall-traversal-20261127a';
+import { buildWorld } from './world.js?v=great-hall-traversal-20261127b';
 import { buildExterior } from './exterior.js?v=waterfront-architecture-20261126a';
 import { buildWaterfrontEnvironment } from './waterfront-environment.js?v=waterfront-architecture-20261126a';
-import { buildInteriorDetails } from './interior-details.js?v=great-hall-traversal-20261127a';
+import { buildInteriorDetails } from './interior-details.js?v=great-hall-traversal-20261127b';
 import { buildLibrary } from './library.js?v=library-asset-first-20261127b';
-import { buildGrandSalon } from './grand-salon.js?v=great-hall-traversal-20261127a';
+import { buildGrandSalon } from './grand-salon.js?v=great-hall-traversal-20261127b';
 import { buildTrainingRoom } from './training-room.js?v=ra-shabti-niches-20261127b';
 import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
 import { createMagicSystem } from './magic-system.js?v=ha-di-energy-cast-20261126a';

@@ -254,22 +254,64 @@ A leitura canônica permanece: câmara circular escavada na rocha; descida de tr
 
 - Prancha da graphic novel *The Red Pyramid*, “First Floor — The Great Room” (Orpheus Collar): referência de composição para a estátua de Thoth sobre uma base monumental com assentos curvos integrados. Usar como referência de linguagem e composição, não reproduzir a ilustração: https://i.pinimg.com/736x/9b/de/c9/9bdec905a485554ed34aa38e2659c5a7.jpg
 - Referência de asset CC0 para assentos modulares curvos: Innerscene, “Curved modular seating, 3 modules”, GLB, aproximadamente 4,4 × 1,3 × 0,4 m. É uma referência de forma/escala; o arquivo binário não foi integrado ao projeto nesta etapa: https://www.innerscene.com/tools/library/3d-parts/curved-modular-seating-3-modules-1f4a9531
-- A base atual foi reconstruída proceduralmente como três arcos escalonados de calcário, madeira e couro, abertos no eixo de entrada. Essa implantação é uma interpretação artística da prancha; não é uma medida ou planta descrita no romance.
+- A base foi reconstruída proceduralmente como dois bancos em crescentes laterais contínuos, com estrutura de calcário, almofada de couro, encosto curvo e braços de nogueira/bronze. A abertura frontal e posterior mantém a circulação; forma e posição exatas são interpretação artística, não planta descrita no romance.
 
 ### Cânone versus interpretação
 
 - **Canônico:** Grande Salão de quatro alturas; três níveis de galerias com portas voltadas ao salão; paredes de vidro para o terraço que contorna a casa, com piscina, jantar e fogueira; portas duplas marcadas pelo Olho de Hórus associadas à descida de três pavimentos até a biblioteca.
-- **Interpretação implementada:** janelas laterais fumê com peitoris de calcário e portas de vidro operáveis no centro de cada parede para o terraço; duas passagens inferiores posteriores alinhadas com o passeio perimetral do terraço; assentos curvos em anfiteatro ao redor do pedestal; percurso exato das escadas superiores.
+- **Interpretação implementada:** janelas laterais fumê com peitoris de calcário e portas de vidro operáveis no centro de cada parede para o terraço; duas passagens inferiores posteriores alinhadas com o passeio perimetral do terraço; dois assentos curvos laterais integrados à base; percurso exato das escadas superiores.
 - O livro não especifica duas passagens inferiores laterais até o terraço. Elas são uma solução de circulação provisória, não um detalhe canônico.
 - A ligação vertical entre o Grande Salão e a descida de três pavimentos da biblioteca ainda precisa ser construída e validada. A posição atual do portal do Olho de Hórus também precisa ser revisada para respeitar a localização no extremo oposto descrita no livro; não considerar a ligação com a biblioteca concluída.
 
 ### Correções de circulação e lookdev de 27/11
 
 - Ponto de entrada do Grande Salão reposicionado para a área livre diante do anfiteatro de assentos; atalho de teclado `2`/`Numpad2` chama a mesma transição.
-- Assentos antigos em oito módulos fechando um círculo foram substituídos por três fileiras curvas instanciadas, com abertura frontal e colisores segmentados. A estátua permanece preservada; somente o plinto inferior passou a ter planta circular.
+- Os oito bancos separados foram substituídos por dois crescentes contínuos, com subestrutura de calcário, assento de couro a aproximadamente 0,485 m, encosto curvo, braços e colisores segmentados. A estátua e a escala monumental foram preservadas; somente o degrau inferior foi integrado à base circular.
 - As saídas inferiores agora atravessam a fachada posterior reconstruída e alcançam o terraço perimetral existente. O colisor antigo da fachada posterior é removido e a alvenaria é recomposta ao redor das aberturas.
 - Treliças e exaustores da cobertura industrial foram rebaixados para não atravessarem o piso do Grande Salão.
 - Janelas laterais deixaram de ser painéis totalmente transparentes: agora têm peitoril maciço, vidro fumê, montantes de bronze e pilares de calcário. As portas centrais continuam operáveis.
 - Luminárias de mesa cônicas foram substituídas por difusores cilíndricos opalinos com aros e nervuras de bronze.
 
-**QA pendente:** a validação realizada nesta etapa é estática (fonte, colisores e imports). Ainda é necessário testar a caminhada real, abertura das portas, degraus, passagens e renderização do material em navegador, desktop e celular em paisagem.
+**QA pendente:** a validação realizada nesta etapa é estática (fonte, colisores e imports). Ainda é necessário testar a caminhada real, abertura das portas, degraus, passagens e renderização dos materiais em navegador, desktop e celular em paisagem.
+
+
+## Grande Salão — implementação aprovada de Thoth, bancos e escadaria (27/11/2026)
+
+### Estátua de Thoth
+
+- Preservada a identidade canônica de mármore negro e escala de aproximadamente 9,1 m, sem substituir a malha/identidade por Hórus.
+- Refinamento procedural da cabeça e pescoço de íbis: pescoço mais longo e afilado, volumes de face, bico curvo e afilado, aros das órbitas e sulcos verticais inspirados em penas. Pernas, kilt, faixa, colar, papiro, Per Ankh e estilete existentes foram preservados.
+- Referências: prancha editorial da graphic novel por Orpheus Collar; comparação iconográfica com Thoth no Metropolitan Museum of Art (Public Domain) e Minneapolis Institute of Art (CC0). Nenhum modelo de museu foi importado.
+
+### Base e bancos curvos
+
+- Os oito módulos de banco isolados foram removidos.
+- Implementados dois bancos em crescentes laterais: estrutura contínua de calcário, almofada de couro, encosto estofado curvo, braços de madeira e filetes/tampas de bronze.
+- Altura superior do assento: aproximadamente 0,485 m acima do piso do salão.
+- Colisores segmentados acompanham os arcos, preservando passagens de entrada e saída.
+- Dois pontos de interação usam âncoras de sentar e de saída. Carter executa a sequência `sit_down` → `sit_idle` (loop) → `stand_up`.
+
+**Referência de asset:** Innerscene Curved Modular Seating, CC0, GLB 127 KB, dimensões publicadas 4,446 × 1,330 × 0,440 m. O modelo binário não foi recuperado/inspecionado nem importado nesta sessão; a geometria de runtime é código original adaptado à planta atual, sem copiar ou redistribuir o GLB.
+
+### Escadaria estilo Museum Grand Stair
+
+- Degraus passam a ter espelhos verticais, focinhos com bronze e laterais de calcário contínuas que apoiam visualmente os lances.
+- Corrimãos contínuos de calcário com filete de bronze, balaústres torneados, newels com finiais e patamares amplos.
+- Mantidas as dimensões/plataformas e as superfícies caminháveis do controlador existentes; a escadaria não é uma nova zona isolada.
+
+**Referência de asset:** Tevy Museum Grand Stair, CC0, GLB LOD0 416 KB, 12.064 triângulos, três LODs, dimensões publicadas 6,16 × 4,81 × 6,63 m. O binário não foi recuperado/inspecionado nem importado; a implementação utiliza geometria Three.js original baseada nos atributos documentados do modelo.
+
+### Interação de Carter / retarget
+
+- A malha e o rig Ara aprovados foram mantidos.
+- O runtime solicita `sit_down`, `sit_idle` e `stand_up` por meio do catálogo `ANIMATIONS` da versão Ara já instalada; os IDs são incluídos somente se estiverem disponíveis no runtime.
+- A segunda interação E/INTERAGIR inicia o levantamento e posiciona Carter na âncora externa. O controlador bloqueia a locomoção durante a pose sentada e reabre os controles ao concluir.
+- Se os clips de sentar não estiverem disponíveis, Carter retorna à posição anterior e recebe uma mensagem em vez de ficar preso dentro do banco.
+- A interação da estátua usa o gesto Ara `look_around`.
+
+**Alternativa avaliada e não importada:** Quaternius Universal Animation Library, CC0. Os clips Ara nativos já oferecem retarget para o Carter atual e evitam uma dependência redundante.
+
+### Dispositivos e estado de QA
+
+- O runtime desktop/mobile é compartilhado: `mobile.html` redireciona para `index.html`; geometria, lógica, personagem e assets são idênticos.
+- Estado: código implementado e imports/cache atualizados; QA real de browser ainda pendente. Não marcar visualmente aprovado até testar os clipes Ara, assento, altura da pelve, alinhamento dos pés, saída, escada e colisores em desktop e celular paisagem.

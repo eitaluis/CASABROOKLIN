@@ -49,3 +49,17 @@ A validação automática prova a estrutura e o retarget do pack, não a aparên
 - Desktop e celular em paisagem, incluindo a tecla F e o botão de ataque móvel.
 
 Até essa inspeção, a implementação está integrada e a validação automatizada passou, mas o movimento não deve ser marcado como visualmente aprovado.
+
+## 9. Correção de ciclo, velocidade e ataque — 27/11/2026
+
+Após o teste do usuário, foi identificada uma translação longitudinal oscilante no track de posição do osso `Hips` de `sprint_loop`: o personagem acumulava deslocamento para a frente dentro do ciclo e voltava ao início no fechamento do loop, enquanto o controlador já deslocava o root externo. Isso produzia o efeito visual de avançar/retornar e dessincronizava o corpo da câmera.
+
+Correções integradas:
+
+- No clipe `sprint_loop`, apenas a componente longitudinal local do `Hips` foi zerada. Permanecem os balanços verticais e laterais do quadril, bem como as rotações completas de pernas, braços e tronco. O controlador de terceira pessoa continua sendo a única fonte de deslocamento no mundo.
+- O sprint sem arma usa a velocidade natural de corrida Ara (3,7 m/s escalada pela altura do Carter), em vez de 4,2 m/s. A corrida com cajado mantém os 4,2 m/s aprovados pelo usuário e seu clip original `sprint_shield_loop` permanece intocado.
+- A caminhada foi ajustada para 98% da velocidade natural de caminhada Ara. Assim, ela permanece abaixo do ponto em que o blend começava a misturar o sprint sem arma ao ciclo de walk.
+- O script de build agora aplica a mesma correção ao gerar novamente o pack, para que o defeito não retorne numa regeneração.
+- Os ataques do pack deixaram de usar `hero.playSequence()` do Ara, cuja tabela de loops só reconhece IDs nativos e tratava os IDs customizados como loops infinitos. `melee_combo` e `sword_heavy_combo` agora são tocados pelo Three.js com `LoopOnce`, `clampWhenFinished` e retorno à locomoção após o evento `finished`. Uma segunda chamada de ataque enquanto o combo está em execução é ignorada.
+
+O salto, a aterrissagem e a corrida com cajado não foram modificados. A verificação do pack confirma o track corrigido; ainda é necessária a inspeção visual no navegador para avaliar a cadência dos pés e a transição da câmera em movimento real.

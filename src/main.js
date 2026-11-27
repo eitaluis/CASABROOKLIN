@@ -1,11 +1,12 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=library-monumental-20261127a';
+import { buildWorld } from './world.js?v=carter-bedroom-asset-first-20261127a';
 import { buildExterior } from './exterior.js?v=urban-horizon-continuity-20261127a';
 import { buildWaterfrontEnvironment } from './waterfront-environment.js?v=urban-horizon-continuity-20261127a';
 import { buildInteriorDetails } from './interior-details.js?v=library-monumental-20261127a';
 import { buildLibrary } from './library.js?v=library-monumental-20261127b';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-opaque-doorwall-20261127a';
 import { buildTrainingRoom } from './training-room.js?v=training-room-opaque-endwalls-20261127c';
+import { buildBedroom } from './bedroom.js?v=carter-bedroom-asset-first-20261127a';
 import { createInventory } from './inventory.js?v=inventory-polyfork-quarterstaff-20261127a';
 import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
 import { createCharacter } from './character.js?v=horus-avatar-input-fix-20261127b';
@@ -113,6 +114,10 @@ const grandSalon = buildGrandSalon({
   THREE, scene:magicalInteriorGroup, animated, camera, isTouchDevice, colliders, interactables, groundSurfaces
 });
 const fireLight = grandSalon.fireLight;
+const bedroomScene = buildBedroom({
+  THREE, scene:magicalInteriorGroup, renderer, isTouchDevice,
+  colliders, groundSurfaces, interactables, floorY:zones.bedroom.base
+});
 
 // Estado de jogo global: a vida persiste entre ambientes e a energia recarrega em tempo real.
 const playerVitals = { health: 100, maxHealth: 100, energy: 100, maxEnergy: 100, energyRegen: 8 };
@@ -310,7 +315,7 @@ const controller = createThirdPersonController({
       dock: 'Margem do Brooklyn — do lado de fora, o que se vê é apenas o antigo galpão industrial.',
       hall: 'Grande Salão — quatro alturas, três níveis de balcões e Tot ao centro.',
       library: 'Biblioteca subterrânea — câmara circular escavada na rocha.',
-      bedroom: 'Ala residencial — reconstrução interpretativa dos quartos.',
+      bedroom: 'Quarto de Carter — suíte moderna com kitchenette, banheiro e deck panorâmico sobre o East River.',
       training: 'Sala de Treinamento — quadra, cestas solares de Rá e desafios mágicos.'
     };
     toast(notices[name] || zone.label);
@@ -564,6 +569,7 @@ function animate() {
   }
   if (fireLight) fireLight.intensity = 4.25 + Math.sin(time * 8.7) * 0.72;
   grandSalon.update?.(time);
+  bedroomScene.update?.(time, dt);
   const libraryMessage = libraryScene.update(time, dt);
   if (libraryMessage) toast(libraryMessage);
   const trainingMessage = trainingRoom.update(time, dt, controller.getPosition(), controller.getForward());
@@ -573,7 +579,7 @@ function animate() {
   updateVitalsHud(dt);
   const trainingStatus = trainingRoom.getStatus();
   let nearbyTrainingItem=null, nearbyTrainingDistance=Infinity;
-  if(controller.zone==='training' || controller.zone==='library'){
+  if(controller.zone==='training' || controller.zone==='library' || controller.zone==='bedroom'){
     const player=controller.getPosition();
     for(const item of interactables){
       const distance=player.distanceTo(item.position);

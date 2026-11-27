@@ -382,7 +382,7 @@ export function createCarterAccessories({ characterRoot, height = 1.75 }) {
   // A bolsa aprovada da Innerscene entra como malha PBR real; sua alça original
   // é desligada porque a fita do Carter é refeita em duas partes, projetada no
   // tórax e na lateral do quadril, e presa aos ossos correspondentes.
-  const approvedBagUrl = 'https://cdn.jsdelivr.net/gh/eitaluis/CASABROOKLIN@main/assets/models/carter/innerscene-crossbody-bag.glb';
+  const approvedBagUrl = 'https://cdn.jsdelivr.net/gh/eitaluis/CASABROOKLIN@f77ad108a0e81f1ff50152842eb26ba8fa456eeb/assets/models/carter/innerscene-crossbody-bag.glb';
   const bagLoader = new GLTFLoader();
   bagLoader.load(
     approvedBagUrl,

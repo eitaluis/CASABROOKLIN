@@ -331,3 +331,15 @@ Estes três GLBs foram adicionados à cena a partir de versões otimizadas do pr
 - The Met — [Head of an anthropomorphic falcon god](https://www.metmuseum.org/art/collection/search/549699): cabeça em diorito, peruca estriada e encaixe superior que pode ter sustentado um disco solar; a instituição relaciona a peça a Re/Re-Harakhty. Referência visual para a cabeça e o encaixe, não um asset importado.
 - RISD Museum — [Temple god / Seated Horus](https://risdmuseum.org/art-design/collection/temple-god-38207): bronze escurecido, figura sentada e trono de bloco. Referência de pose e relação cabeça/corpo/trono; a peça representa Horus, não Rá.
 - Nenhuma malha, textura ou fotografia dos museus foi copiada para o runtime.
+
+
+## Carter — quarterstaff Polyfork (27/11/2026)
+- **Asset:** [Monk's Quarterstaff](https://polyfork.dev/asset/monk-s-quarterstaff-cbdadd), de Lucas Martinic / Polyfork.
+- **Arquivo carregado:** https://polyfork.dev/cdn/monk-s-quarterstaff-cbdadd.glb
+- **Formato e compatibilidade:** GLB/glTF 2.0; a página do autor fornece exemplo direto com `GLTFLoader` para Three.js; o asset é web-ready, sem texturas externas.
+- **Dimensões e malha:** 0,08 × 1,8 × 0,08 m; origem no chão; eixo longitudinal vertical; 496 triângulos; 1 material; arquivo de 57 KB.
+- **Visual:** haste de madeira, ponteiras de ferro e duas faixas de tecido para empunhadura. O runtime preserva o modelo e os materiais originais; sem retintura ou alteração de silhueta.
+- **Licença:** Polyfork declara uso comercial/hotlink permitido sem atribuição para uso direto. A licença CC BY 4.0 aplica-se à redistribuição do mesh; neste momento o jogo usa o GLB diretamente da CDN do autor, sem redistribuir o ficheiro. Página/condições: https://polyfork.dev/asset/monk-s-quarterstaff-cbdadd
+- **Adaptação de socket:** o Ara Rigging define `WeaponR` no centro da mão fechada, com eixo `+Y` saindo pelo topo do punho. A malha vertical e com origem no chão é deslocada em Y −0,9 m para que o centro do cajado coincida com esse socket. Referência técnica: https://ara3dgen.com/docs/rigging/
+- **Fallback local:** em falha de CDN/CORS, o item mantém uma haste procedural de madeira com ponteiras de ferro e duas faixas de tecido. O fallback não é considerado substituto visual aprovado do GLB.
+- **Estado:** runtime importado em `src/inventory.js`; jogo e `character-preview.html` usam o mesmo módulo. Inspeção visual da empunhadura no navegador ainda pendente.

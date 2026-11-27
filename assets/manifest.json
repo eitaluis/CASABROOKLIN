@@ -149,13 +149,13 @@
     {
       "id": "brooklyn-east-river-williamsburg-bridge",
       "path": "src/exterior.js",
-      "role": "shared single-deck Williamsburg Bridge reconstruction: roadway lanes occupy the outer sides, two subway tracks run along the center between them, with approach ramps on both shores; suspension cables, towers and stiffening trusses follow official NYC DOT proportions",
+      "role": "shared single-deck Williamsburg Bridge reconstruction with road lanes at the sides, two central subway tracks, suspension cables and stiffening trusses; crossing and solid approach ramps are set farther down-river at game z≈140 to clear the starting dock/courtyard; supports are rectangular concrete bents with caps",
       "license": "project-original-code; official dimensions used as factual reference"
     },
     {
       "id": "brooklyn-papyrus-arrival-boat",
       "path": "src/papyrus-boat.js",
-      "role": "original procedural papyrus-reed boat docked beside the Brooklyn pier after passing under the bridge; rounded bundled-reed hull, woven-mat central shelter, two bow torches and a small stern steersman wearing an Amos-like coat/hat with face concealed; no sail or motor",
+      "role": "original procedural papyrus-reed boat docked beside the compact Brooklyn quay at x≈33.2,z≈29 after passing under the bridge; hull lowered to East River waterline and short woven gangway connected to the dock",
       "license": "project-original-code"
     },
     {
@@ -203,7 +203,7 @@
     {
       "id": "brooklyn-east-river-urban-waterfront",
       "path": "src/waterfront-environment.js",
-      "role": "continuous game environment for Brooklyn and Manhattan shores: land planes, brick industrial factories, warehouses, streets, windows, fire escapes, rooftop tanks/chimneys, cargo piers, seawalls, harbor cranes, road approach ramps to the Williamsburg Bridge and atmospheric skyline; two external CC0 landmark GLBs load asynchronously",
+      "role": "continuous Brooklyn/Manhattan waterfront environment with industrial brick factories, warehouses, roads, windows, fire escapes, roof tanks/chimneys, cargo piers, cranes, narrow quay opening, instanced riprap, thick bridge approach ramps and a continuous East River; two CC0 skyline GLBs load asynchronously",
       "license": "project-original-code; CC0 landmark GLBs documented in openSourceReferences"
     },
     {
@@ -296,6 +296,12 @@
       "path": "src/magic-system.js + src/character.js + src/main.js",
       "role": "HA-DI com projétil e explosão pré-alocados; 18 raios, 46 faíscas e 9 puffs agrupados em InstancedMesh; shaders pré-compilados antes de liberar os controles; gesto Ara throw_grenade (2,2 s / liberação em 0,82 s); hieróglifo ḥḏ luminoso sem halo ou anéis externos; lógica compartilhada desktop/mobile",
       "license": "project-original-code; Ara/CMU animation data follows upstream terms"
+    },
+    {
+      "id": "brooklyn-house-compact-arrival-quay",
+      "path": "src/world.js + src/papyrus-boat.js + src/waterfront-environment.js",
+      "role": "compact wooden arrival dock (~10×8 game units) with individual planks, underside stringers, piles, cleats and mooring rings; short papyrus-boat gangway meets the quay; seawall opening and instanced riprap integrate the shore",
+      "license": "project-original-code"
     }
   ],
   "openSourceReferences": [
@@ -481,7 +487,7 @@
       "id": "nyc-dot-williamsburg-bridge-dimensions",
       "source": "https://www.nyc.gov/html/dot/html/infrastructure/williamsburg-bridge.shtml",
       "license": "official public reference; no asset imported",
-      "role": "official bridge measurements and NYC DOT official panorama photograph used as visual reference for towers, suspension cables, deck and East River proportions; no photo imported",
+      "role": "official dimensions, deck arrangement (four roadway lanes and two central rapid-transit tracks), four suspension cables and NYC DOT visual panorama used as reference for the continuous bridge and approach proportions; no image or geometry imported",
       "runtimeImported": false
     },
     {

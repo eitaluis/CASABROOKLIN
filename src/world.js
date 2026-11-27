@@ -17,9 +17,31 @@ const yardFloor=box('pátio industrial',[-7,-.28,18],[74,.55,94],asphalt,false);
 const waterMat=new THREE.MeshStandardMaterial({color:0x2f7180,metalness:.2,roughness:.26,transparent:true,opacity:.96});
 const water=box('East River',[70,-.65,16],[80,.28,190],waterMat,false,false);
 for(let i=0;i<34;i++){const z=-70+i*5.5;const wav=line([[30,-.45,z],[49,-.48,z+.5],[68,-.46,z-.3],[90,-.5,z+.25],[112,-.46,z]],new THREE.MeshBasicMaterial({color:0x9bb4b1,transparent:true,opacity:.15}),.018);animated.push({obj:wav,phase:i*.4})}
-const dock=new THREE.Mesh(new THREE.BoxGeometry(25,.8,57),woodMat);dock.position.set(18,.1,17);dock.receiveShadow=true;dock.castShadow=true;scene.add(dock);groundSurfaces.push(dock);
-for(let z=-10;z<45;z+=3.1){for(let x=6;x<30;x+=2.5){const seam=box('junta do píer',[x,.52,z],[.035,.04,2.8],darkBrick,false,false)}}
-for(let x of [7,29])for(let z=-10;z<45;z+=8){cyl('estaca do píer',[x,-.8,z],.35,.42,3.2,woodMat,12)}
+// Pequena doca de embarque junto ao muro do East River.
+const dockBase=new THREE.Mesh(new THREE.BoxGeometry(10,.22,8),cedarMat);
+dockBase.name='plataforma compacta da doca do Brooklyn';
+dockBase.position.set(26,.14,29);
+dockBase.castShadow=true;dockBase.receiveShadow=true;scene.add(dockBase);groundSurfaces.push(dockBase);
+for(let x=21.25;x<=30.75;x+=.48){
+ const plank=new THREE.Mesh(new THREE.BoxGeometry(.40,.09,7.72),woodMat);
+ plank.name='tábua individual da pequena doca';
+ plank.position.set(x,.25,29);
+ plank.castShadow=true;plank.receiveShadow=true;scene.add(plank);
+}
+for(const x of [21.4,30.6]){
+ const stringer=new THREE.Mesh(new THREE.BoxGeometry(.32,.34,8.25),darkBrick);
+ stringer.name='longarina sob a doca';
+ stringer.position.set(x,-.11,29);scene.add(stringer);
+ for(const z of [25.55,32.45]) cyl('estaca de sustentação da pequena doca',[x,-.62,z],.19,.23,1.9,woodMat,12);
+}
+for(const z of [25.6,32.4]){
+ const cleat=new THREE.Mesh(new THREE.BoxGeometry(.42,.18,.22),outdoorSteel);
+ cleat.name='cabeço baixo de amarração da doca';
+ cleat.position.set(29.8,.49,z);cleat.castShadow=true;scene.add(cleat);
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(.15,.035,8,16),outdoorSteel);
+ ring.name='argola de amarração da pequena doca';
+ ring.position.set(29.8,.61,z);ring.rotation.x=Math.PI/2;scene.add(ring);
+}
 // Armazém, paredes de tijolo, janelas quebradas e portões.
 const WH={w:43,d:31,h:12,cx:0,cz:0};
 box('massa do armazém',[0,6,0],[43,12,31],brickMat,true);
@@ -109,12 +131,7 @@ for(const z of [-7,5,17,29,41]){
  tire.name='defensa de borracha do píer';tire.position.set(30.15,.0,z);tire.rotation.y=Math.PI/2;scene.add(tire);
  if(z===5||z===29)line([[28.7,1.05,z],[30.8,.45,z+2.3],[32,-.2,z+3.2]],woodMat,.045);
 }
-// Reforço visual da margem: blocos de concreto e postes de atracação.
-for(const z of [-12,0,12,24,36,48]){
- box('bloco de proteção da margem',[31.4,-.02,z],[1.0,1.15,2.0],concrete,false);
- const ring=new THREE.Mesh(new THREE.TorusGeometry(.22,.055,8,16),outdoorSteel);
- ring.name='argola de amarração';ring.position.set(31.95,.55,z);ring.rotation.y=Math.PI/2;scene.add(ring);
-}
+// A proteção da margem agora é construída no módulo de waterfront, com enrocamento contínuo e um vão curto para a doca.
 
 // A mansão está no telhado, mas sua leitura depende da percepção mágica.
 const mansionRevealStart=scene.children.length;

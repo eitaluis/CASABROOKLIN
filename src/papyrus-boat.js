@@ -4,7 +4,7 @@
 export function buildPapyrusArrivalBoat({ THREE, scene, interactables }) {
   const boat = new THREE.Group();
   boat.name = 'barco de papiro da chegada de Carter e Sadie';
-  boat.position.set(33.2, -0.65, 29);
+  boat.position.set(33.2, -0.85, 29);
   boat.rotation.y = 0.035;
   scene.add(boat);
 
@@ -247,7 +247,7 @@ export function buildPapyrusArrivalBoat({ THREE, scene, interactables }) {
 
   interactables.push({
     label: 'Barco de papiro',
-    position: new THREE.Vector3(33.2, 1.05, 29),
+    position: new THREE.Vector3(33.2, 0.95, 29),
     radius: 5.2,
     description: 'Um barco de fibras vegetais trançadas, com uma cabana de esteiras no centro e tochas baixas na proa. Na popa, uma figura pequena usa um casaco e um chapéu que lembram os de Amos; o rosto quase não aparece sob a aba. Não há vela nem motor.',
     onInteract: () => 'O barco deslizou pelo East River e está agora amarrado ao pequeno cais do Brooklyn.'

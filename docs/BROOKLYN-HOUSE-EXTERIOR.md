@@ -112,3 +112,19 @@ O entorno passa a ser um cenário contínuo, e não uma ponte isolada sobre um p
 **Referências de contexto urbano:** a [NYC Landmarks Preservation Commission](https://s-media.nyc.gov/agencies/lpc/lp/0163.pdf) descreve o waterfront histórico de Williamsburg como área de docas, estaleiros, fundições, moinhos, refinarias e fábricas. O [plano municipal Greenpoint-Williamsburg](https://www.nyc.gov/assets/planning/download/pdf/plans/greenpoint-williamsburg/greenpointwill.pdf) documenta a relação entre grandes indústrias na orla e moradias nas ruas próximas. As dimensões e a composição de pistas/trilhos da ponte seguem a referência oficial do [NYC DOT](https://www.nyc.gov/html/dot/html/infrastructure/williamsburg-bridge.shtml). A cidade do outro lado é composição interpretativa do jogo; não é descrita em detalhe pelo capítulo.
 
 **QA:** a estrutura comum do mundo é compartilhada entre desktop e mobile. Falta validar visualmente em navegador: ângulos 360°, passagem sob a ponte, leitura das rampas, colisão no cais, desempenho em celular e carregamento real dos dois GLBs.
+
+## Continuidade visual — correção da doca e do corredor da ponte — 27/11/2026
+
+A inspeção do enquadramento de gameplay identificou problemas de composição espacial: o antigo píer tinha 25 × 57 unidades e se comportava como um bloco elevado no primeiro plano; a rampa da Williamsburg Bridge cruzava o mesmo corredor visual do ponto de spawn; os apoios cilíndricos eram lidos como colunas soltas; e o muro de cais abria um vão grande demais para a pequena doca descrita no romance.
+
+**Doca:** a antiga plataforma foi substituída por uma pequena doca de aproximadamente 10 × 8 unidades, com tábuas individuais, longarinas inferiores, estacas e cabeços de amarração. O barco fica ao lado, rebaixado até a linha d'água. A passarela curta do barco encontra a borda do píer; o ponto de inspeção acompanha a posição real da embarcação.
+
+**Williamsburg Bridge:** o cruzamento foi deslocado para `z≈140` no sistema de coordenadas do jogo, mantendo o deck, as torres e os cabos como uma única estrutura. A rampa de aproximação recebeu volume/espessura e apoios retangulares com capitéis, substituindo os cilindros muito dominantes. O corredor de aproximação agora fica afastado do pátio e do spawn de Carter. O eixo central mantém os trilhos do metrô no mesmo tabuleiro das faixas rodoviárias.
+
+**Margem do Brooklyn:** o vão no muro foi reduzido para acompanhar a doca compacta. Pedras de enrocamento instanciadas cobrem os trechos adjacentes da transição entre terra e água, sem fechar o acesso do barco. Píeres secundários e alguns galpões foram movidos para não atravessar o corredor da ponte.
+
+**East River:** as ondulações agora se distribuem pela extensão visível do rio em uma única `InstancedMesh`, em vez de ficarem concentradas perto de um único ponto. A superfície mantém sua geometria contínua entre as duas margens.
+
+**Cânone e interpretação:** o romance informa que Carter e Sadie passam sob a Williamsburg Bridge e depois param em uma pequena doca no lado do Brooklyn. Não especifica o afastamento da ponte em metros nem fornece uma planta do waterfront. O novo `z≈140` é uma decisão de composição do jogo para deixar a ponte como infraestrutura no entorno, sem colocá-la em cima do pátio ou da entrada.
+
+**QA:** os módulos de cenário são compartilhados entre desktop e mobile. A sintaxe e a estrutura podem ser verificadas no código, mas a composição ainda precisa de inspeção real no navegador: enquadramento do spawn, leitura da ponte inteira, conexão visual entre piso/margem/água, embarque no barco e desempenho em celular.

@@ -120,23 +120,47 @@ export function buildWaterfrontEnvironment({ THREE, scene, isTouchDevice = false
     }
   }
 
-  // Muros de contenção, blocos de cantaria e coroamento junto à água.
-  // O cais principal abre um vão na contenção, para que a doca realmente encoste na terra.
-  for (const [z, length] of [[-84, 132], [160, 220]]) {
+  // Muros de contenção e coroamento: o vão principal acompanha a pequena doca,
+  // em vez de abrir dezenas de metros de cais sem função.
+  for (const [z, length] of [[-64, 172], [154, 232]]) {
     addBox('muro de cais do Brooklyn', [30.8, 0.95, z], [1.5, 2.1, length], concrete, false);
     addBox('coroamento de pedra do cais do Brooklyn', [30.8, 2.05, z], [2.5, 0.32, length], weatheredStone, false);
   }
   addBox('muro de cais de Manhattan', [589.1, 1.25, 60], [2.0, 2.7, 420], concrete, false);
   addBox('coroamento de pedra do cais de Manhattan', [589.1, 2.65, 60], [2.7, 0.34, 420], weatheredStone, false);
   for (const x of [29.95, 588.0]) {
-    for (const [z0, z1] of (x < 100 ? [[-150, -18], [52, 270]] : [[-145, 265]])) {
+    const ranges = x < 100 ? [[-150, 20], [38, 270]] : [[-145, 265]];
+    for (const [z0, z1] of ranges) {
       for (let z = z0; z <= z1; z += 18) {
         addBox('pilastra de cantaria do cais', [x, 0.95, z], [1.1, 2.25, 1.2], weatheredStone, false);
       }
     }
   }
 
-  // Píeres laterais de carga, afastados da doca pequena da narrativa.
+  // Pedras de enrocamento sob o coroamento, cobrindo a transição terra/água
+  // sem fechar o vão curto da doca principal.
+  const riprapGeometry = new THREE.IcosahedronGeometry(.48, 0);
+  const riprapMaterial = new THREE.MeshStandardMaterial({ color: 0x777a70, roughness: 1 });
+  const riprap = new THREE.InstancedMesh(riprapGeometry, riprapMaterial, 100);
+  riprap.name = 'pedras de enrocamento ao longo do cais do Brooklyn';
+  const rockDummy = new THREE.Object3D();
+  let rockIndex = 0;
+  for (const [z0, z1] of [[-150, 20], [38, 270]]) {
+    for (let z = z0; z <= z1; z += 4.2) {
+      rockDummy.position.set(31.15 + Math.sin(z * .17) * .35, -.38, z);
+      rockDummy.rotation.set(.12 * Math.cos(z), .22 * Math.sin(z * .11), .08 * Math.cos(z * .13));
+      rockDummy.scale.set(1.45, .7 + Math.abs(Math.sin(z)) * .35, 1.05);
+      rockDummy.updateMatrix();
+      riprap.setMatrixAt(rockIndex++, rockDummy.matrix);
+    }
+  }
+  riprap.count = rockIndex;
+  riprap.instanceMatrix.needsUpdate = true;
+  riprap.castShadow = true;
+  riprap.receiveShadow = true;
+  env.add(riprap);
+
+  // Píeres laterais de carga, afastados do corredor principal da ponte.
   function addFingerPier(centerX, z, length, name, towardRiver = 1) {
     const width = 8.5;
     const midX = centerX + towardRiver * length / 2;
@@ -152,62 +176,56 @@ export function buildWaterfrontEnvironment({ THREE, scene, isTouchDevice = false
     }
   }
   addFingerPier(31.8, -104, 52, 'píer industrial norte do Brooklyn');
-  addFingerPier(31.8, 148, 48, 'píer industrial sul do Brooklyn');
+  addFingerPier(31.8, 238, 48, 'píer industrial sul do Brooklyn');
   addFingerPier(588.0, -105, 42, 'píer de carga de Manhattan', -1);
-  addFingerPier(588.0, 154, 38, 'píer secundário de Manhattan', -1);
+  addFingerPier(588.0, 242, 38, 'píer secundário de Manhattan', -1);
 
-  // Pequenas defensas, argolas e cabeços na margem perto da Brooklyn House.
-  for (const z of [-12, 0, 12, 24, 36, 45]) {
+  // Cabeços e defensas menores nos trechos de margem livres.
+  for (const z of [-12, 0, 12, 44, 56, 68]) {
     addCylinder('cabeço de amarração do cais principal', 29.45, 0.72, z, 0.23, 0.23, 0.78, steel, 12);
     addCylinder('base do cabeço do cais principal', 29.45, 0.32, z, 0.33, 0.33, 0.12, darkStone, 12);
   }
 
-  // Rampas rodoviárias contínuas: o tabuleiro não termina na água nem sobre a praia.
+  // Rampas longas e maciças: a estrada liga as margens à ponte sem terminar
+  // visualmente no rio. O corredor cruza o East River mais ao sul do píer da casa.
   function surfaceYAt(x, x0, y0, x1, y1) {
     const t = THREE.MathUtils.clamp((x - x0) / (x1 - x0), 0, 1);
     return y0 + (y1 - y0) * t;
   }
   function addApproachRamp(label, x0, y0, x1, y1, zCenter) {
     const width = 18;
-    const zA = zCenter - width / 2, zB = zCenter + width / 2;
-    const positions = [
-      x0, y0, zA,
-      x1, y1, zA,
-      x1, y1, zB,
-      x0, y0, zB
-    ];
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    geometry.setIndex(x1 > x0 ? [0, 2, 1, 0, 3, 2] : [0, 1, 2, 0, 2, 3]);
-    geometry.computeVertexNormals();
-    const road = new THREE.Mesh(geometry, asphalt);
-    road.name = label + ' — pista de aproximação';
-    road.castShadow = false;
+    const span = x1 - x0;
+    const deckThickness = .85;
+    const slope = Math.atan2(y1 - y0, span);
+    const road = new THREE.Mesh(new THREE.BoxGeometry(Math.abs(span), deckThickness, width), asphalt);
+    road.name = label + ' — tabuleiro maciço da pista de aproximação';
+    road.position.set((x0 + x1) / 2, (y0 + y1) / 2 - deckThickness / 2, zCenter);
+    road.rotation.z = slope;
+    road.castShadow = true;
     road.receiveShadow = true;
     env.add(road);
 
-    // Barreira contínua e postes, com altura seguindo a inclinação da pista.
+    // Guarda-corpo, montantes e faixas acompanham a rampa de ponta a ponta.
     for (const side of [-1, 1]) {
       const z = zCenter + side * (width / 2 - 0.35);
       const railPoints = [];
-      for (let i = 0; i <= 10; i++) {
-        const t = i / 10;
-        const x = x0 + (x1 - x0) * t;
+      for (let i = 0; i <= 18; i++) {
+        const t = i / 18;
+        const x = x0 + span * t;
         railPoints.push([x, surfaceYAt(x, x0, y0, x1, y1) + 1.12, z]);
       }
-      addTube(label + ' — guarda-corpo', railPoints, 0.16, concrete, 90);
-      for (let i = 0; i <= 22; i++) {
-        const t = i / 22;
-        const x = x0 + (x1 - x0) * t;
+      addTube(label + ' — guarda-corpo', railPoints, 0.16, concrete, 120);
+      for (let i = 0; i <= 30; i++) {
+        const t = i / 30;
+        const x = x0 + span * t;
         const y = surfaceYAt(x, x0, y0, x1, y1);
         addBeam(label + ' — montante do guarda-corpo',
           [x, y + 0.15, z], [x, y + 1.08, z], 0.075, steel, 7);
       }
     }
 
-    // Duas áreas rodoviárias laterais e os trilhos do metrô no eixo central,
-    // mantendo a seção transversal da ponte nas rampas de aproximação.
-    const direction = Math.sign(x1 - x0);
+    // Vias rodoviárias laterais e trilhos centrais do metrô na mesma estrutura.
+    const direction = Math.sign(span);
     for (let x = x0 + direction * 14; direction > 0 ? x < x1 - 8 : x > x1 + 8; x += direction * 25) {
       const y = surfaceYAt(x, x0, y0, x1, y1) + 0.045;
       addBox(label + ' — faixa central da via norte', [x, y, zCenter - 6.0], [8, 0.035, 0.16], roadStripe, false);
@@ -216,31 +234,16 @@ export function buildWaterfrontEnvironment({ THREE, scene, isTouchDevice = false
       addBox(label + ' — limite rodoviário da via sul', [x, y, zCenter + 3.05], [8, 0.035, 0.12], roadStripe, false);
     }
 
-    // Berço, dormentes e quatro trilhos contínuos para as duas vias do metrô.
     const trackHalfWidth = 2.9;
-    const trackPositions = [
-      x0, y0 + 0.12, zCenter - trackHalfWidth,
-      x1, y1 + 0.12, zCenter - trackHalfWidth,
-      x1, y1 + 0.12, zCenter + trackHalfWidth,
-      x0, y0 + 0.12, zCenter + trackHalfWidth
-    ];
-    const trackGeometry = new THREE.BufferGeometry();
-    trackGeometry.setAttribute('position', new THREE.Float32BufferAttribute(trackPositions, 3));
-    trackGeometry.setIndex(x1 > x0 ? [0, 2, 1, 0, 3, 2] : [0, 1, 2, 0, 2, 3]);
-    trackGeometry.computeVertexNormals();
-    const trackBed = new THREE.Mesh(trackGeometry, darkStone);
-    trackBed.name = label + ' — berço central do metrô';
-    trackBed.receiveShadow = true;
-    env.add(trackBed);
-
-    const sleeperCount = Math.floor(Math.abs(x1 - x0) / 4.2) + 1;
-    const sleeperMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(0.95, 0.13, 5.5), wood, sleeperCount);
+    const sleeperCount = Math.floor(Math.abs(span) / 4.2) + 1;
+    const sleeperMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(.95,.13,5.5), wood, sleeperCount);
     sleeperMesh.name = label + ' — dormentes de madeira';
     const sleeperObject = new THREE.Object3D();
     let sleeperIndex = 0;
     for (let x = x0; direction > 0 ? x <= x1 : x >= x1; x += direction * 4.2) {
-      const y = surfaceYAt(x, x0, y0, x1, y1) + 0.205;
+      const y = surfaceYAt(x, x0, y0, x1, y1) + .205;
       sleeperObject.position.set(x, y, zCenter);
+      sleeperObject.rotation.z = slope;
       sleeperObject.updateMatrix();
       sleeperMesh.setMatrixAt(sleeperIndex++, sleeperObject.matrix);
     }
@@ -249,32 +252,31 @@ export function buildWaterfrontEnvironment({ THREE, scene, isTouchDevice = false
     sleeperMesh.castShadow = true;
     sleeperMesh.receiveShadow = true;
     env.add(sleeperMesh);
-
-    for (const offset of [-1.8, -0.4, 0.4, 1.8]) {
-      const railPoints = [];
-      for (let i = 0; i <= 56; i++) {
-        const t = i / 56;
-        const x = x0 + (x1 - x0) * t;
-        const y = surfaceYAt(x, x0, y0, x1, y1) + 0.34;
-        railPoints.push([x, y, zCenter + offset]);
+    for (const offset of [-1.8, -.4, .4, 1.8]) {
+      const points = [];
+      for (let i=0;i<=56;i++) {
+        const t=i/56;
+        const x=x0+span*t;
+        points.push([x,surfaceYAt(x,x0,y0,x1,y1)+.34,zCenter+offset]);
       }
-      addTube(label + ' — trilho do metrô', railPoints, 0.075, steel, 112);
+      addTube(label + ' — trilho do metrô', points, 0.075, steel, 112);
     }
 
-    // Pilares robustos em pares, apoiados na terra firme.
-    const step = 48;
-    for (let x = x0 + direction * 34; direction > 0 ? x < x1 - 18 : x > x1 + 18; x += direction * step) {
-      const y = surfaceYAt(x, x0, y0, x1, y1);
-      if (y < 3.2) continue;
-      for (const side of [-1, 1]) {
-        const z = zCenter + side * 6.25;
-        addCylinder(label + ' — pilar de sustentação', x, y / 2 - 0.1, z, 0.9, 1.15, y + 0.2, concrete, 12);
+    // Apoios estruturais afastados da casa e do ponto inicial.
+    const step=48;
+    for(let x=x0+direction*34;direction>0?x<x1-18:x>x1+18;x+=direction*step){
+      const y=surfaceYAt(x,x0,y0,x1,y1);
+      if(y<3.2)continue;
+      for(const side of [-1,1]){
+        const z=zCenter+side*6.25;
+        addBox(label+' — pilar retangular de concreto',[x,y/2-.08,z],[2.15,y+.2,2.15],concrete,true);
+        addBox(label+' — capitel do pilar',[x,y-.55,z],[2.9,.72,2.85],weatheredStone,false);
       }
-      addBox(label + ' — travessa dos pilares', [x, y - 0.9, zCenter], [2.8, 1.0, 14.5], concrete, true);
+      addBox(label+' — travessa dos pilares',[x,y-1.0,zCenter],[3.4,.85,16.0],concrete,true);
     }
   }
-  addApproachRamp('aproximação do Brooklyn à Williamsburg Bridge', 21, 41.2, -425, 1.8, 58);
-  addApproachRamp('aproximação de Manhattan à Williamsburg Bridge', 591, 41.2, 1040, 1.8, 58);
+  addApproachRamp('aproximação do Brooklyn à Williamsburg Bridge', 21, 41.2, -425, 1.8, 140);
+  addApproachRamp('aproximação de Manhattan à Williamsburg Bridge', 591, 41.2, 1040, 1.8, 140);
 
   // Galpões, fábricas e edifícios de tijolo no lado do Brooklyn e da outra margem.
   const windowGeometry = new THREE.BoxGeometry(0.16, 1.9, 1.3);
@@ -348,13 +350,13 @@ export function buildWaterfrontEnvironment({ THREE, scene, isTouchDevice = false
   // Brooklyn: galpões, antigas fábricas de tijolo e edifícios baixos de uso misto.
   const brooklynFactories = [
     { x: -64, z: -104, width: 40, depth: 44, height: 21, materialIndex: 1, fireEscape: true },
-    { x: -58, z: 148, width: 34, depth: 42, height: 18, materialIndex: 0 },
+    { x: -58, z: 205, width: 34, depth: 42, height: 18, materialIndex: 0 },
     { x: -112, z: -42, width: 48, depth: 42, height: 29, materialIndex: 2, fireEscape: true },
-    { x: -118, z: 132, width: 46, depth: 48, height: 25, materialIndex: 1 },
+    { x: -118, z: 198, width: 46, depth: 48, height: 25, materialIndex: 1 },
     { x: -190, z: -104, width: 54, depth: 56, height: 35, materialIndex: 0, fireEscape: true },
-    { x: -194, z: 164, width: 58, depth: 48, height: 31, materialIndex: 2 },
+    { x: -194, z: 208, width: 58, depth: 48, height: 31, materialIndex: 2 },
     { x: -274, z: -72, width: 52, depth: 54, height: 37, materialIndex: 1, fireEscape: true },
-    { x: -286, z: 158, width: 54, depth: 50, height: 28, materialIndex: 0 }
+    { x: -286, z: 218, width: 54, depth: 50, height: 28, materialIndex: 0 }
   ];
   brooklynFactories.forEach(factory => addFactory({ ...factory, orientation: 1 }));
 
@@ -362,16 +364,16 @@ export function buildWaterfrontEnvironment({ THREE, scene, isTouchDevice = false
   const manhattanFactories = [
     { x: 620, z: -108, width: 42, depth: 48, height: 21, materialIndex: 1, orientation: -1 },
     { x: 624, z: -40, width: 38, depth: 44, height: 18, materialIndex: 0, orientation: -1 },
-    { x: 622, z: 128, width: 48, depth: 50, height: 25, materialIndex: 2, orientation: -1 },
+    { x: 622, z: 210, width: 48, depth: 50, height: 25, materialIndex: 2, orientation: -1 },
     { x: 665, z: -128, width: 46, depth: 48, height: 39, materialIndex: 0, orientation: -1, fireEscape: true },
     { x: 668, z: -46, width: 48, depth: 46, height: 48, materialIndex: 2, orientation: -1 },
-    { x: 670, z: 130, width: 50, depth: 52, height: 34, materialIndex: 1, orientation: -1 },
+    { x: 670, z: 220, width: 50, depth: 52, height: 34, materialIndex: 1, orientation: -1 },
     { x: 716, z: -126, width: 52, depth: 48, height: 72, materialIndex: 0, orientation: -1, color: 0xb5a38e },
     { x: 720, z: 0, width: 48, depth: 44, height: 86, materialIndex: 1, orientation: -1, color: 0x8ba4ac },
-    { x: 724, z: 142, width: 54, depth: 50, height: 70, materialIndex: 2, orientation: -1, color: 0xb8a58e },
+    { x: 724, z: 235, width: 54, depth: 50, height: 70, materialIndex: 2, orientation: -1, color: 0xb8a58e },
     { x: 784, z: -114, width: 50, depth: 48, height: 96, materialIndex: 1, orientation: -1, color: 0x849da7 },
     { x: 794, z: 12, width: 58, depth: 52, height: 112, materialIndex: 0, orientation: -1, color: 0x9babb0 },
-    { x: 796, z: 144, width: 56, depth: 50, height: 88, materialIndex: 2, orientation: -1, color: 0xb5a28d }
+    { x: 796, z: 245, width: 56, depth: 50, height: 88, materialIndex: 2, orientation: -1, color: 0xb5a28d }
   ];
   manhattanFactories.forEach(factory => addFactory({ ...factory, rooftop: true }));
 
@@ -379,7 +381,7 @@ export function buildWaterfrontEnvironment({ THREE, scene, isTouchDevice = false
   const rowHouseMat = brickMaterials[2];
   for (let row = 0; row < 7; row++) {
     const x = -330 + row * 28;
-    for (const z of [-174, 230]) {
+    for (const z of [-174, 258]) {
       const width = 22 + (row % 3) * 3;
       const height = 10 + (row % 2) * 3;
       addBox('sobrado de tijolo do Brooklyn', [x, height / 2, z], [width, height, 23], rowHouseMat, true);
@@ -403,7 +405,7 @@ export function buildWaterfrontEnvironment({ THREE, scene, isTouchDevice = false
     addBeam('gancho de içamento', [x + reach * 0.75, top - 7.5, z], [x + reach * 0.75 + 0.22, top - 8.4, z], 0.09, darkStone, 10);
   }
   buildHarborCrane(-6, -100, 26);
-  buildHarborCrane(584, 142, -26);
+  buildHarborCrane(584, 238, -26);
 
   // Depósitos de carga: portões, vigas de cobertura e ventiladores de telhado.
   for (const [x, z, width, depth, height] of [
@@ -431,11 +433,11 @@ export function buildWaterfrontEnvironment({ THREE, scene, isTouchDevice = false
   // Torres art déco e modernas genéricas fazem a transição até o skyline real.
   const skyline = [
     { x: 840, z: -170, w: 38, d: 34, h: 118, m: limestone },
-    { x: 872, z: 160, w: 42, d: 38, h: 126, m: blueFacade },
+    { x: 872, z: 220, w: 42, d: 38, h: 126, m: blueFacade },
     { x: 904, z: -172, w: 45, d: 38, h: 152, m: blueFacade },
-    { x: 944, z: 154, w: 48, d: 42, h: 138, m: limestone },
+    { x: 944, z: 230, w: 48, d: 42, h: 138, m: limestone },
     { x: 982, z: -80, w: 38, d: 36, h: 102, m: blueFacade },
-    { x: 1000, z: 120, w: 42, d: 40, h: 96, m: limestone }
+    { x: 1000, z: 250, w: 42, d: 40, h: 96, m: limestone }
   ];
   skyline.forEach((tower, i) => {
     addBox('torre em camadas do skyline de Manhattan', [tower.x, tower.h / 2 + 0.2, tower.z], [tower.w, tower.h, tower.d], tower.m, false);

@@ -173,3 +173,25 @@ A construção do entorno segue a mesma ordem usada para os interiores: pesquisa
 
 
 **Percurso de entrada confirmado no código:** o personagem chega ao pátio ao nível do solo, contorna a lateral leste do galpão até a escada metálica, sobe os lances em espiral até o patamar superior e atravessa a passarela com guarda-corpos até o portal central. A espiral é interpretação geométrica; a escada metálica externa é a informação do livro. O material da escada deve ser opaco depois que a revelação mágica termina.
+
+## Waterfront externo — correção de continuidade — 27/11/2026
+
+| Elemento | Diagnóstico observado | Correção aplicada | Estado de QA |
+|---|---|---|---|
+| Doca principal | Plataforma anterior muito larga e espessa; parecia um bloco elevado e escondia a leitura do galpão | Substituída por pequena doca de aproximadamente 10 × 8, com tábuas, longarinas, estacas, cabeços e argolas | Implementado; validar altura e colisão no navegador |
+| Barco de papiro | Casco visualmente separado do píer e acima da leitura da superfície da água | Casco rebaixado até a linha d'água; passarela curta liga a embarcação à borda da doca; interação fica no ponto visual do barco | Implementado; validar embarque e escala |
+| Williamsburg Bridge | Aproximação alinhada ao mesmo corredor do spawn; apoios cilíndricos pareciam colunas avulsas no enquadramento | Ponte e rampas deslocadas para o corredor `z≈140`; deck maciço com espessura e apoios retangulares de concreto com capitéis | Implementado; validar perspectiva completa |
+| Margem do Brooklyn | Abertura do muro de cais muito grande e transição terra/água abrupta | Vão reduzido para a doca; enrocamento de pedra instanciado nos trechos laterais | Implementado; verificar se rochas, água e píer se encontram sem clipping |
+| East River | Ondulações limitadas à área próxima da margem; restante do rio parecia plano | Ripples distribuídas pela superfície em uma única `InstancedMesh` | Implementado; medir desempenho mobile |
+| Cidade e waterfront | Fábricas e píeres ocupavam a linha da nova aproximação | Alguns galpões, píeres secundários e guindaste foram reposicionados para liberar o corredor e manter o tecido industrial nos dois lados | Implementado; QA visual pendente |
+
+**Critério asset-first:** a busca no GitHub não encontrou um asset de dock/píer que correspondesse à pequena doca do romance, nem uma rampa/ponte modular que pudesse ser colocada na escala do projeto sem perder controle de posição e seção transversal. Os modelos CC0 do Chrysler Building e Empire State Building continuam como marcos distantes de Manhattan. A doca, o enrocamento e os apoios são geometria própria, em vez de substituir a cena por assets genéricos.
+
+- [x] Reduzir o píer e reconstruir sua superfície com tábuas individuais.
+- [x] Alinhar barco, passarela de embarque e doca.
+- [x] Mover o corredor da ponte para longe do spawn.
+- [x] Dar espessura ao deck da aproximação e tornar os apoios estruturais legíveis.
+- [x] Estreitar o vão da contenção e integrar pedras de enrocamento.
+- [x] Distribuir ondulações por toda a superfície do rio.
+- [ ] Verificar em navegador a continuidade visual do enquadramento de chegada em 360°.
+- [ ] Testar colisão/embarque e FPS no celular.

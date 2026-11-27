@@ -139,22 +139,27 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
     new THREE.MeshStandardMaterial({ color: 0x81989a, roughness: 0.3, metalness: 0.2, transparent: true, opacity: 0.17 })
   );
   waterline.name = 'reflexo difuso da margem distante';
-  waterline.position.set(582, -0.39, 58);
+  waterline.position.set(582, -0.39, 140);
   scene.add(waterline);
 
   // Ondulação larga e discreta, concentrada perto do cais para preservar desempenho.
   const rippleGeometry = new THREE.BoxGeometry(5.5, 0.018, 0.035);
   const rippleMaterial = new THREE.MeshBasicMaterial({
-    color: 0xb0c2bf, transparent: true, opacity: 0.14
+    color: 0xb0c2bf, transparent: true, opacity: 0.16
   });
-  const ripples = new THREE.InstancedMesh(rippleGeometry, rippleMaterial, 64);
-  ripples.name = 'ondulações do East River';
-  for (let i = 0; i < 64; i++) {
-    const x = 38 + (i % 16) * 5.6;
-    const z = -2 + Math.floor(i / 16) * 15 + Math.sin(i * 1.7) * 1.5;
+  const rippleCount = isTouchDevice ? 96 : 180;
+  const rippleColumns = isTouchDevice ? 12 : 18;
+  const rippleRows = Math.ceil(rippleCount / rippleColumns);
+  const ripples = new THREE.InstancedMesh(rippleGeometry, rippleMaterial, rippleCount);
+  ripples.name = 'ondulações distribuídas pelo East River';
+  for (let i = 0; i < rippleCount; i++) {
+    const column = i % rippleColumns;
+    const row = Math.floor(i / rippleColumns);
+    const x = 42 + column * (548 / (rippleColumns - 1));
+    const z = -138 + row * (396 / Math.max(1, rippleRows - 1)) + Math.sin(i * 1.7) * 2.2;
     const p = new THREE.Vector3(x, -0.44 + (i % 3) * 0.006, z);
     const q = new THREE.Quaternion().setFromAxisAngle(
-      new THREE.Vector3(0, 1, 0), (i % 5) * 0.11
+      new THREE.Vector3(0, 1, 0), (i % 7) * 0.13
     );
     beamMatrix.compose(p, q, new THREE.Vector3(1, 1, 1));
     ripples.setMatrixAt(i, beamMatrix);
@@ -284,7 +289,7 @@ export function buildExterior({ THREE, scene, world, interactables, isTouchDevic
     bridgeGroup.add(child);
   }
   // O vão permanece acima do East River e fora da projeção do galpão/mansão.
-  bridgeGroup.position.set(0,0,30);
+  bridgeGroup.position.set(0,0,112);
 
   // Margem de Manhattan: cais distante, armazéns baixos e skyline em camadas.
   addBox('muralha de cais de Manhattan', [584, 0.5, 58], [2.4, 2.4, 245], wornConcrete, false);

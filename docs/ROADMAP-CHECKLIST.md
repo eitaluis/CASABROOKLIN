@@ -332,3 +332,18 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [ ] Construir a descida canônica de três pavimentos do Grande Salão até a biblioteca.
 - [ ] Reposicionar/conectar o portal do Olho de Hórus no extremo oposto, conforme o texto-fonte.
 - [ ] Confirmar percurso completo entre Grande Salão, terraço/piscina, galerias e biblioteca.
+
+## Waterfront — continuidade visual da chegada — 27/11/2026
+
+- [x] Substituir o píer elevado de 25 × 57 por uma pequena doca de aproximadamente 10 × 8.
+- [x] Construir tábuas, longarinas, estacas, cabeços e argolas de amarração na doca.
+- [x] Rebaixar o barco à linha d'água e alinhar sua passarela ao píer.
+- [x] Mover o corredor da Williamsburg Bridge e suas aproximações para longe do spawn.
+- [x] Trocar os apoios cilíndricos mais dominantes por apoios retangulares com capitéis.
+- [x] Dar espessura ao deck da aproximação para que pareça uma estrutura contínua.
+- [x] Estreitar a abertura do muro de cais e adicionar enrocamento instanciado.
+- [x] Espalhar ondulações por toda a superfície do East River.
+- [x] Deslocar fábricas e píeres secundários que cruzavam o corredor da ponte.
+- [ ] Inspecionar no navegador a composição do spawn, dock, galpão, rio, ponte e Manhattan em 360°.
+- [ ] Confirmar passagem sob a ponte e atracação ao lado da doca em desktop e mobile.
+- [ ] Medir FPS no celular após os novos detalhes de água e margem.

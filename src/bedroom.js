@@ -242,6 +242,10 @@ export function buildBedroom({
   const bathDoorCollider = addCollider(21.4, floorY + 1.25, -2.02, 1.0, 2.5, 0.12);
   let bathDoorOpen = false;
 
+  // Continuous ceiling panel closes the room shell; beams remain visible below it.
+  addBox('forro contínuo de nogueira do quarto', [25, topY + 0.11, -0.5],
+    [13.2, 0.22, 12.4], mat.walnut);
+
   // Architectural finish: wood ceiling beams, recessed light and Egyptian detailing.
   for (let x = 19.2; x <= 31.0; x += 3.0) {
     addBox('viga de cedro do teto residencial', [x, topY - 0.04, -0.5],
@@ -354,7 +358,8 @@ export function buildBedroom({
   }
 
   const headrest = createHeadrest();
-  headrest.position.set(25.12, floorY + 1.02, 0.0);
+  // The headrest sits on the mattress surface; it is not a floating wall ornament.
+  headrest.position.set(25.12, floorY + 0.77, 0.0);
   headrest.rotation.y = Math.PI / 2;
   root.add(headrest);
 
@@ -521,6 +526,34 @@ export function buildBedroom({
   }
   drawTvScreen();
 
+  function loadDirectModel(label, url, position, rotationY, scale, fallbackGroup) {
+    if (!loader) return;
+    loader.load(url, gltf => {
+      const model = gltf.scene;
+      model.name = label;
+      model.traverse(node => {
+        if (!node.isMesh) return;
+        node.castShadow = true;
+        node.receiveShadow = true;
+      });
+      model.scale.setScalar(scale);
+      const bounds = new THREE.Box3().setFromObject(model);
+      const center = bounds.getCenter(new THREE.Vector3());
+      model.position.x -= center.x;
+      model.position.z -= center.z;
+      model.position.y -= bounds.min.y;
+      const placement = new THREE.Group();
+      placement.name = label + ' — posicionamento';
+      placement.position.set(position[0], position[1], position[2]);
+      placement.rotation.y = rotationY;
+      placement.add(model);
+      root.add(placement);
+      if (fallbackGroup) fallbackGroup.visible = false;
+    }, undefined, error => {
+      console.warn('CASABROOKLIN bedroom: ' + label + ' indisponível; fallback preservado.', error);
+    });
+  }
+
   // CC0 Tevy models — pinned versions, with a smaller LOD on touch devices.
   let loader = null;
   if (renderer) {
@@ -576,6 +609,9 @@ export function buildBedroom({
     [29.45, floorY, 1.85], -Math.PI / 2, 1.0, fallback.desk);
   loadModel('Armário de pia da kitchenette', 'kitchen-base-unit-sink', 'v1',
     [26.1, floorY, -6.15], 0, 1.0, fallback.kitchenSink);
+  loadDirectModel('Geladeira compacta da kitchenette',
+    'https://files.innerscene.com/library/undercounter-fridge-bef8ea56/b0630c86bd61b5170a0c/undercounter-fridge.glb',
+    [29.55, floorY, -6.15], 0, 1.0, fallback.fridge);
   loadModel('Gaveteiro da kitchenette', 'kitchen-base-unit-drawers', 'v1',
     [27.45, floorY, -6.15], 0, 1.0, fallback.kitchenDrawers);
   loadModel('Pia de banheiro', 'bathroom-vanity', 'v1',

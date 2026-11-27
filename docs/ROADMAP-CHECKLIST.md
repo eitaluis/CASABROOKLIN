@@ -139,6 +139,7 @@ Este documento é a fonte de verdade do andamento. A cada nova solicitação, cl
 - [x] Substituir a mesa de madeira por mesa comprida de pedra com a bolsa de Julius Kane.
 - [x] Remover colisores invisíveis das estantes desativadas e adicionar limites físicos à parede, mesa e pedestais.
 - [x] Registrar matriz de fontes, assets aceitos/rejeitados e distinção canônico/interpretação em docs/BIBLIOTECA-STUDY.md.
+- [x] Compartilhar o atlas do mural e a textura das etiquetas das cápsulas, evitando cópias desnecessárias de texturas na GPU do celular.
 - [ ] Validar recortes, normais, materiais, interação e circulação no navegador desktop.
 - [ ] Repetir QA em celular paisagem e medir desempenho/estabilidade.
 - [ ] Reconstruir Nut e Geb como figuras humanas pintadas; texturas atuais ainda são provisórias.

@@ -38,8 +38,8 @@ A passagem não descreve armadura completa, asas extensas, ornamentos ou dimens�
 
 ## Gameplay
 
-- Desktop: tecla H para invocar/desfazer.
-- Mobile: botão HÓRUS.
+- Desktop: tecla H capturada na fase capture do documento para invocar/desfazer.
+- Mobile: botão HÓRUS separado dos comandos comuns e posicionado acima deles.
 - Custo inicial: 40 pontos de energia na invocação. Não há custo para desfazer. O custo e o toggle são adaptações de gameplay.
 - A habilidade está disponível nos ambientes jogáveis e não substitui Carter nem modifica os controles normais.
 

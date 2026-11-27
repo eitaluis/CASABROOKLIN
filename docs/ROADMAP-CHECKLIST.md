@@ -407,3 +407,12 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [ ] Verificar Carter centralizado dentro da silhueta em idle, walk, run, jump, socos e reações.
 - [ ] Ajustar escala e cabeça de falcão após teste no navegador desktop e celular paisagem.
 - [ ] Conferir transparência, bloom, ordenação de profundidade e FPS no mobile.
+
+
+## Correção de acionamento do Avatar de Hórus — 27/11/2026
+
+- [x] Atualizar a manifestação no loop principal depois do controlador, sem depender do caminho alternativo do personagem.
+- [x] Capturar a tecla H na fase capture para não depender da propagação normal do evento.
+- [x] Retirar o botão HÓRUS do grupo de ações comuns e posicioná-lo como controle independente acima deles nos aparelhos touch.
+- [ ] Testar H com pointer lock ativo e verificar invocação/desativação no jogo real.
+- [ ] Testar botão HÓRUS em celular paisagem e confirmar energia/feedback.

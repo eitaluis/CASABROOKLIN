@@ -8,7 +8,7 @@ import { buildGrandSalon } from './grand-salon.js?v=great-hall-curves-20261127e'
 import { buildTrainingRoom } from './training-room.js?v=training-room-opaque-endwalls-20261127c';
 import { createInventory } from './inventory.js?v=inventory-polyfork-quarterstaff-20261127a';
 import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
-import { createCharacter } from './character.js?v=horus-avatar-sync-20261127b-carter-accessories-rig-fit';
+import { createCharacter } from './character.js?v=horus-avatar-input-fix-20261127b';
 import { createThirdPersonController } from './third-person.js?v=great-hall-curves-20261127e';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -467,11 +467,18 @@ window.addEventListener('keydown', event => {
   if (event.code === 'KeyG' && !event.repeat && document.getElementById('startscreen').classList.contains('hidden')) {
     if (controller.zone === 'training') castHaDi();
   }
-  if (event.code === 'KeyH' && !event.repeat && document.getElementById('startscreen').classList.contains('hidden') &&
-      !document.activeElement?.matches('input,textarea,[contenteditable="true"]')) {
-    toggleHorusAvatar();
-  }
 });
+
+// Captura H antes do controlador e da câmera, inclusive com pointer lock ativo.
+document.addEventListener('keydown', event => {
+  const isHorusKey = event.code === 'KeyH' || String(event.key || '').toLowerCase() === 'h';
+  if (!isHorusKey || event.repeat || event.ctrlKey || event.altKey || event.metaKey) return;
+  if (!document.getElementById('startscreen').classList.contains('hidden')) return;
+  if (document.activeElement?.matches('input,textarea,[contenteditable="true"]')) return;
+  event.preventDefault();
+  event.stopPropagation();
+  toggleHorusAvatar();
+}, true);
 document.getElementById('interactButton')?.addEventListener('click', interactWithNearby);
 
 document.querySelectorAll('.nav button').forEach(button => {
@@ -532,6 +539,7 @@ function animate() {
   requestAnimationFrame(animate);
   const dt = Math.min(clock.getDelta(), 0.04);
   const movementState = controller.update(dt);
+  character.updateHorusAvatar?.(dt);
   if (lookingAtInspectedObject && movementState?.speed > 0.25) {
     character.lookAt?.(null);
     lookingAtInspectedObject = false;

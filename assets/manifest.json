@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.13",
+  "version": "0.4.14",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -889,7 +889,7 @@
         "docs/HORUS-COMBAT-AVATAR.md",
         "docs/OPEN-SOURCES.md"
       ],
-      "summary": "Avatar de Combate de Hórus translúcido e dourado envolve Carter; cópia ampliada do rig Ara sincronizada por frame, cabeça simplificada de falcão, tecla H e botão mobile; custo inicial de 40 de energia.",
+      "summary": "Avatar de Combate de Hórus translúcido e dourado envolve Carter; cópia ampliada do rig Ara sincronizada por frame, cabeça simplificada de falcão, tecla H e botão mobile; custo inicial de 40 de energia.; update visual no loop principal, hotkey H em capture e botão mobile separado.",
       "date": "2026-11-27"
     }
   ]

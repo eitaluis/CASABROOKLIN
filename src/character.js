@@ -632,6 +632,7 @@ export async function createCharacter({
       return playAction(id, { fade: 0.08, interruptOnMovement: true, interruptDelay: 0.24 });
     },
     setHorusAvatarActive,
+    updateHorusAvatar,
     get isHorusAvatarActive() { return horusAvatarActive; },
     setInjured(value) {
       const next = Boolean(value);
@@ -707,7 +708,6 @@ export async function createCharacter({
       updateCastingBodyPose(dt);
       if (castingHandPose) applyCastingHandPose();
       accessories?.update(dt, movementSpeed);
-      updateHorusAvatar(dt);
     },
     resetFallback() {
       if (disposed) return;

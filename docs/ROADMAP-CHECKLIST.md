@@ -359,3 +359,40 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [ ] Inspecionar 360° a partir do spawn e ao longo da margem.
 - [ ] Verificar a distância aparente dos edifícios, os pontos de fuga e a continuidade do rio.
 - [ ] Testar GLBs, draw calls e FPS no celular.
+
+
+## Grande Salão — refinamento aprovado (27/11/2026)
+
+### Thoth, base e bancos
+- [x] Preservar a estátua canônica de Thoth em mármore negro e escala aproximada de 9,1 m.
+- [x] Refinar a cabeça e o pescoço de íbis com pescoço alongado, bico curvo e afilado, volumes faciais, olhos e sulcos de pena.
+- [x] Preservar kilt, faixa, colar, papiro Per Ankh e estilete existentes.
+- [x] Substituir os oito bancos isolados por dois crescentes curvos contínuos com estrutura de calcário, almofada de couro, encosto, braços e acabamentos de bronze.
+- [x] Definir altura do assento em aproximadamente 0,485 m e manter os vãos frontal/posterior.
+- [x] Substituir a interação genérica da base por dois anchors de sentar/levantar com colisores segmentados.
+
+### Escadaria — direção Museum Grand Stair
+- [x] Adicionar espelhos verticais e focinhos de degraus com bronze.
+- [x] Adicionar laterais maciças de calcário e coroamento contínuo inclinado.
+- [x] Substituir a leitura do corrimão por perfis contínuos de calcário e filetes de bronze.
+- [x] Refazer balaústres, newels, bases e finiais em linguagem monumental.
+- [x] Preservar as rampas, patamares e superfícies caminháveis do controlador existente.
+- [ ] Testar subida e descida dos três níveis no navegador e verificar que cada patamar se conecta corretamente às galerias.
+
+### Interação / retarget Ara
+- [x] Preservar o Carter Ara aprovado e solicitar os clips nativos `sit_down`, `sit_idle` e `stand_up` quando presentes no catálogo ANIMATIONS.
+- [x] Implementar sequência sentar → idle sentado em loop → levantar.
+- [x] Travar a locomoção enquanto sentado e liberar ao concluir a animação de levantar.
+- [x] Criar anchors de posição e direção para sentar e sair, sem atravessar a estrutura.
+- [x] Retornar Carter à posição anterior se o conjunto de clips não estiver disponível.
+- [x] Usar o gesto Ara `look_around` para a inspeção de Thoth.
+- [ ] Confirmar em runtime Ara 0.18.1 que os três clips são carregados e retargetados; conferir pés, pelve, mãos, clipping e transições.
+- [ ] Testar E/INTERAGIR, sentar, idle, levantar e movimento após a saída em desktop e celular paisagem.
+
+### Assets, licença e publicação
+- [x] Registrar Innerscene Curved Modular Seating como referência CC0 (GLB 127 KB; 4,446 × 1,330 × 0,440 m), sem declarar importação do binário.
+- [x] Registrar Tevy Museum Grand Stair como referência CC0 (GLB LOD0 416 KB; 12.064 triângulos; três LODs; 6,16 × 4,81 × 6,63 m), sem declarar importação do binário.
+- [x] Registrar a geometria procedural original, as adaptações, as licenças e o estado das referências em manifest, OPEN-SOURCES e lookdev.
+- [x] Atualizar cache-busters dos módulos compartilhados e da entrada index.html.
+- [ ] Revisão visual real do Grande Salão após reload sem cache.
+- [ ] QA de desempenho, carregamento de assets e paridade visual em desktop e mobile.

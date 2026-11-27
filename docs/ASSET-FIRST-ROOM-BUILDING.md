@@ -205,3 +205,23 @@ A construção do entorno segue a mesma ordem usada para os interiores: pesquisa
 - [x] Distribuir ondulações por toda a superfície do rio.
 - [ ] Verificar em navegador a continuidade visual do enquadramento de chegada em 360°.
 - [ ] Testar colisão/embarque e FPS no celular.
+
+## Skyline e fundo urbano — pesquisa asset-first — 27/11/2026
+
+| Candidato / elemento | Fonte e licença | Decisão |
+|---|---|---|
+| Edifícios industriais e torres d'água | Kenney City Kit Industrial 2.0, CC0-1.0; 20 silhuetas de edifícios, 3 containers e uma torre d'água | Referência de tipologia para depósitos, galpões e rooftops; não domina a cena porque as silhuetas do pack são repetitivas e têm leitura low-poly em primeiro plano |
+| Edifício residencial nova-iorquino pré-guerra | achrefelouafi/ProceduralBuildingsThreeJS, MIT; modelo NYC baseado em Blender Geometry Nodes, kit GLB, texturas e gerador TypeScript | Estudado como referência de fachada, cornijas, ACs, balcões e lojas; não importado como runtime porque depende de avaliador próprio de geometry nodes, shader graphs e assets adicionais |
+| Chrysler Building e Empire State Building | alexwohlbruck/landmarks, CC0-1.0; GLBs já presentes no projeto | Mantidos como marcos 3D reais do skyline; reposicionados para o horizonte que aparece a partir da doca |
+| Faixa de galpões, lofts e edifícios de transição | Geometria original em waterfront-environment.js | Construção instanciada com fachadas de tijolo, janelas, cornijas, lojas, escadas de incêndio, caixas d'água, chaminés e torres de vidro/calcário; cria três profundidades urbanas |
+| Céu e nuvens | Gradiente e textura procedural original em CanvasTexture/Three.js | Abóbada atmosférica em gradiente, nuvens altas difusas, menor densidade de névoa; sem fotografia de céu ou imagem externa embutida |
+
+**Base visual/histórica:** NYC DCP Greenpoint-Williamsburg descreve a mistura histórica de grandes fábricas, refinarias, estaleiros e moradias próximas. O estudo municipal de recursos visuais identifica o East River, os dois waterfronts, a Williamsburg Bridge e o skyline de Manhattan como um conjunto de vistas da área. Essa documentação orienta a sequência de profundidade, mas não determina a posição métrica exata das novas quadras.
+
+- [x] Alinhar uma faixa de galpões ao eixo visual inicial da doca.
+- [x] Acrescentar camada intermediária de lofts e edifícios residenciais.
+- [x] Acrescentar skyline de alta verticalidade no horizonte distante.
+- [x] Reposicionar os marcos CC0 já importados para o novo campo visual.
+- [x] Adicionar gradiente de céu e nuvens suaves sem depender de imagens externas.
+- [x] Reduzir a névoa para preservar a leitura da cidade ao longe.
+- [ ] Validar a composição em 360° e o desempenho em mobile.

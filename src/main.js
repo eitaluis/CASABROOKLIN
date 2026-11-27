@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=quay-tdz-fix-20261127a';
-import { buildExterior } from './exterior.js?v=quay-tdz-fix-20261127a';
-import { buildWaterfrontEnvironment } from './waterfront-environment.js?v=quay-tdz-fix-20261127a';
+import { buildWorld } from './world.js?v=urban-horizon-continuity-20261127a';
+import { buildExterior } from './exterior.js?v=urban-horizon-continuity-20261127a';
+import { buildWaterfrontEnvironment } from './waterfront-environment.js?v=urban-horizon-continuity-20261127a';
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-traversal-20261127b';
 import { buildLibrary } from './library.js?v=library-asset-first-20261127b';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-traversal-20261127b';
-import { buildTrainingRoom } from './training-room.js?v=museum-statues-board-20261127c';
+import { buildTrainingRoom } from './training-room.js?v=museum-statues-board-20261127b';
 import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
 import { createMagicSystem } from './magic-system.js?v=ha-di-direct-combat-point-20261127a';
 import { createCharacter } from './character.js?v=ha-di-fighting-point-20261127a';

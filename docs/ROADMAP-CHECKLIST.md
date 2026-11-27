@@ -347,3 +347,15 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [ ] Inspecionar no navegador a composição do spawn, dock, galpão, rio, ponte e Manhattan em 360°.
 - [ ] Confirmar passagem sob a ponte e atracação ao lado da doca em desktop e mobile.
 - [ ] Medir FPS no celular após os novos detalhes de água e margem.
+
+## Fundo urbano e horizonte — 27/11/2026
+
+- [x] Fechar o horizonte na direção inicial da câmera a partir da doca.
+- [x] Construir três planos urbanos: indústria de waterfront, bairro misto e skyline de Manhattan.
+- [x] Acrescentar janelas instanciadas, lojas, escadas de incêndio, chaminés e caixas d'água.
+- [x] Reposicionar Chrysler Building e Empire State Building no skyline que aparece no enquadramento inicial.
+- [x] Trocar céu plano claro por abóbada em gradiente e nuvens altas difusas.
+- [x] Reduzir a névoa para preservar a leitura da cidade ao longe.
+- [ ] Inspecionar 360° a partir do spawn e ao longo da margem.
+- [ ] Verificar a distância aparente dos edifícios, os pontos de fuga e a continuidade do rio.
+- [ ] Testar GLBs, draw calls e FPS no celular.

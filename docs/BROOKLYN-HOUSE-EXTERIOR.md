@@ -128,3 +128,19 @@ A inspeção do enquadramento de gameplay identificou problemas de composição 
 **Cânone e interpretação:** o romance informa que Carter e Sadie passam sob a Williamsburg Bridge e depois param em uma pequena doca no lado do Brooklyn. Não especifica o afastamento da ponte em metros nem fornece uma planta do waterfront. O novo `z≈140` é uma decisão de composição do jogo para deixar a ponte como infraestrutura no entorno, sem colocá-la em cima do pátio ou da entrada.
 
 **QA:** os módulos de cenário são compartilhados entre desktop e mobile. A sintaxe e a estrutura podem ser verificadas no código, mas a composição ainda precisa de inspeção real no navegador: enquadramento do spawn, leitura da ponte inteira, conexão visual entre piso/margem/água, embarque no barco e desempenho em celular.
+
+## Horizonte urbano e céu — continuidade do enquadramento — 27/11/2026
+
+O print de gameplay mostrou que a composição anterior concentrava os edifícios nas laterais do eixo da câmera inicial (`zones.dock` em `x=0`, `z=31`, `yaw=0`). A câmera olha ao longo de `-Z`; o rio e a cidade existiam nas laterais, mas não havia uma sequência de quadras fechando o horizonte à frente. Por isso o céu parecia um grande fundo vazio, mesmo com prédios presentes nas bordas.
+
+**Nova leitura em profundidade:** uma primeira faixa de galpões industriais de tijolo, chaminés, caixas d'água e escadas de incêndio forma a margem distante; uma segunda faixa mistura lofts, edifícios residenciais e fachadas comerciais; uma terceira faixa de torres altas forma o skyline ao fundo. A linha do horizonte fica alinhada ao campo visual inicial sem bloquear a leitura do East River ou a aproximação da ponte.
+
+**Marcos 3D reais:** os modelos CC0 Chrysler Building e Empire State Building já integrados foram reposicionados para a linha distante do horizonte. As torres procedurais servem como massa urbana intermediária e mantêm a leitura de uma cidade extensa mesmo antes dos GLBs terminarem de carregar.
+
+**Céu:** a cor única clara foi substituída por uma abóbada com gradiente azul/cinza e luz quente no horizonte, mais nuvens altas muito suaves. A névoa foi reduzida para preservar fachadas e skyline em vez de dissolver tudo em branco.
+
+**Pesquisa asset-first:** a pesquisa adicional incluiu o City Kit Industrial CC0 de Kenney (20 edifícios e peças industriais, com silhuetas relativamente repetitivas) e o projeto MIT ProceduralBuildingsThreeJS, que contém uma referência de edifício nova-iorquino pré-guerra. O primeiro foi mantido como referência de peças secundárias, não como conjunto dominante, devido ao estilo low-poly; o segundo exige um avaliador próprio de geometry nodes, assets e shaders para exportar o edifício NYC, então foi estudado mas não importado diretamente. O projeto preserva os modelos CC0 já importados de Manhattan e constrói a arquitetura de transição com geometria original instanciada.
+
+**Referências de composição:** o relatório de recursos visuais da prefeitura identifica East River, waterfronts, Williamsburg Bridge e skyline de Manhattan como um conjunto de vistas importantes; fotografias do waterfront mostram chaminés e galpões de tijolo diante de edifícios altos ao fundo. O romance não fornece uma planta exata para este horizonte; a disposição das quadras é composição interpretativa para dar continuidade espacial.
+
+**QA:** código compartilhado entre desktop/mobile; verificar no navegador o horizonte central a partir do spawn, a transição para os bairros laterais, o carregamento dos GLBs, o céu em 360° e o custo de renderização no celular.

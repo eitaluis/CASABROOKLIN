@@ -28,10 +28,10 @@ export function buildWaterfrontEnvironment({ THREE, scene, isTouchDevice = false
   });
 
   // A névoa continua presente no horizonte, mas deixa de apagar a cidade inteira.
-  scene.background = new THREE.Color(0x94b4c7);
+  scene.background = new THREE.Color(0x7796a4);
   if (scene.fog) {
-    scene.fog.color.setHex(0xa4bfcb);
-    scene.fog.density = isTouchDevice ? 0.00072 : 0.00082;
+    scene.fog.color.setHex(0x96aeb6);
+    scene.fog.density = isTouchDevice ? 0.00048 : 0.00056;
   }
 
   const brickMap = brickTexture ? brickTexture.clone() : null;
@@ -431,21 +431,297 @@ export function buildWaterfrontEnvironment({ THREE, scene, isTouchDevice = false
   }
 
   // Torres art déco e modernas genéricas fazem a transição até o skyline real.
-  const skyline = [
-    { x: 840, z: -170, w: 38, d: 34, h: 118, m: limestone },
-    { x: 872, z: 220, w: 42, d: 38, h: 126, m: blueFacade },
-    { x: 904, z: -172, w: 45, d: 38, h: 152, m: blueFacade },
-    { x: 944, z: 230, w: 48, d: 42, h: 138, m: limestone },
-    { x: 982, z: -80, w: 38, d: 36, h: 102, m: blueFacade },
-    { x: 1000, z: 250, w: 42, d: 40, h: 96, m: limestone }
-  ];
-  skyline.forEach((tower, i) => {
-    addBox('torre em camadas do skyline de Manhattan', [tower.x, tower.h / 2 + 0.2, tower.z], [tower.w, tower.h, tower.d], tower.m, false);
-    addBox('coroamento de cobertura do skyline', [tower.x, tower.h + 1.0, tower.z], [tower.w * 0.72, 2, tower.d * 0.72], steel, false);
-    if (i % 2 === 0) {
-      addCylinder('coroa de torre art déco', tower.x, tower.h + 5.6, tower.z, 0.8, 0.25, 9, steel, 8);
-    }
+  // O horizonte antigo em torres isoladas foi substituído pelas três faixas urbanas abaixo.
+
+
+  // Linha de horizonte urbana no eixo de visão inicial de Carter.
+  // O cenário anterior concentrava os edifícios nas laterais; esta faixa
+  // fecha o horizonte à frente sem esconder o East River nem a Brooklyn House.
+  const horizonLand = new THREE.Mesh(
+    new THREE.BoxGeometry(980, .72, 390),
+    darkStone
+  );
+  horizonLand.name = 'aterro urbano e quadras ao fim do East River';
+  horizonLand.position.set(205, -.32, -360);
+  horizonLand.receiveShadow = true;
+  env.add(horizonLand);
+
+  addBox('avenida de contorno ao fim do East River', [205, .045, -168], [940, .16, 12], asphalt, false);
+  addBox('calçada de pedra da avenida de contorno', [205, .13, -177], [940, .28, 5], weatheredStone, false);
+  addBox('mureta da margem norte do rio', [205, .55, -172], [940, 1.1, .85], concrete, false);
+  for (let x = -250; x <= 650; x += 90) {
+    addBox('junta da mureta da margem norte', [x, .58, -171.48], [.09, .75, .08], darkStone, false);
+  }
+  for (let x = -220; x <= 620; x += 84) {
+    addCylinder('poste de luz da avenida ao fundo', x, 4.0, -179.4, .075, .095, 8, steel, 8);
+    addBeam('braço da luminária da avenida ao fundo', [x, 7.6, -179.4], [x + 1.7, 7.6, -179.4], .055, steel, 7);
+    const lamp = new THREE.PointLight(0xffd5a0, .12, 13);
+    lamp.position.set(x + 1.7, 7.25, -179.4);
+    env.add(lamp);
+  }
+
+  const horizonCoolMatrices = [];
+  const horizonWarmMatrices = [];
+  const horizonWindowGeometry = new THREE.BoxGeometry(1.36, 1.72, .13);
+  const horizonCoolGlass = new THREE.MeshStandardMaterial({
+    color: 0x7895a0, metalness: .18, roughness: .34,
+    emissive: 0x1a2a31, emissiveIntensity: .12
   });
+  const horizonWarmGlass = new THREE.MeshStandardMaterial({
+    color: 0xd1ae7d, roughness: .48,
+    emissive: 0x8a5d33, emissiveIntensity: .28
+  });
+  const horizonFrame = new THREE.MeshStandardMaterial({ color: 0x343d3e, metalness: .42, roughness: .72 });
+  const horizonBrickTrim = new THREE.MeshStandardMaterial({ color: 0x785c4c, roughness: .94 });
+  const horizonRoofMat = new THREE.MeshStandardMaterial({ color: 0x45494a, roughness: .92 });
+  const horizonDummy = new THREE.Object3D();
+  let horizonSeed = 9137;
+  const horizonRand = () => {
+    horizonSeed = (horizonSeed * 1664525 + 1013904223) >>> 0;
+    return horizonSeed / 4294967296;
+  };
+
+  function addHorizonBuilding({
+    x, z, width, depth, height, materialIndex = 0,
+    style = 'loft', floors = null, waterTower = false,
+    chimney = false, fireEscape = false, setback = false
+  }) {
+    const bodyMat = style === 'modern'
+      ? (materialIndex % 2 ? blueFacade : limestone)
+      : brickMaterials[materialIndex % brickMaterials.length];
+    const baseY = .02;
+    const floorsCount = floors ?? Math.max(3, Math.floor((height - 3.2) / (style === 'modern' ? 3.65 : 3.45)));
+    const frontZ = z + depth / 2 + .08;
+    addBox('fachada urbana distante — corpo', [x, baseY + height / 2, z],
+      [width, height, depth], bodyMat, false);
+    addBox('embasamento de cantaria da fachada distante',
+      [x, baseY + .9, frontZ], [width + .25, 1.8, .28], weatheredStone, false);
+    addBox('cornija superior do edifício distante',
+      [x, baseY + height + .12, z], [width + .8, .28, depth + .8], horizonRoofMat, false);
+    addBox('platibanda frontal do edifício distante',
+      [x, baseY + height + .55, frontZ], [width + .25, .85, .35], bodyMat, false);
+    addBox('platibanda lateral do edifício distante',
+      [x + width / 2, baseY + height + .45, z], [.32, .7, depth], horizonRoofMat, false);
+
+    const windowRows = Math.max(2, floorsCount - 1);
+    const columns = Math.max(3, Math.floor(width / (style === 'modern' ? 3.15 : 3.75)));
+    const columnSpacing = (width - 5.2) / Math.max(1, columns - 1);
+    const floorHeight = height / floorsCount;
+    for (let floor = 0; floor < windowRows; floor++) {
+      const y = baseY + 2.65 + floor * floorHeight;
+      for (let col = 0; col < columns; col++) {
+        const wx = x - ((columns - 1) * columnSpacing) / 2 + col * columnSpacing;
+        horizonDummy.position.set(wx, y, frontZ + .17);
+        horizonDummy.scale.set(1, 1, 1);
+        horizonDummy.updateMatrix();
+        const warm = (floor * 3 + col * 5 + Math.round(x + z)) % 13 === 0;
+        (warm ? horizonWarmMatrices : horizonCoolMatrices).push(horizonDummy.matrix.clone());
+      }
+      if (floor > 0 && floor % 2 === 0) {
+        addBox('friso horizontal de pavimento da fachada distante',
+          [x, baseY + 2.0 + floor * floorHeight, frontZ + .08],
+          [width + .2, .14, .22], style === 'modern' ? limestone : horizonBrickTrim, false);
+      }
+    }
+
+    const pilasterCount = Math.max(2, Math.floor(width / 12));
+    for (let i = 0; i <= pilasterCount; i++) {
+      const px = x - width / 2 + (width / pilasterCount) * i;
+      addBox('pilastra vertical da fachada distante',
+        [px, baseY + height / 2, frontZ + .11],
+        [style === 'modern' ? .14 : .28, height - .7, .22],
+        style === 'modern' ? horizonFrame : horizonBrickTrim, false);
+    }
+
+    if (style === 'industrial') {
+      const bays = Math.max(2, Math.floor(width / 14));
+      const bayWidth = (width - 5) / bays;
+      for (let bay = 0; bay < bays; bay++) {
+        const bx = x - width / 2 + 2.5 + bayWidth * (bay + .5);
+        addBox('porta metálica de depósito na cidade distante',
+          [bx, 3.0, frontZ + .2], [bayWidth - .85, 5.5, .18], paintedSteel, false);
+        for (let rail = 0; rail < 4; rail++) {
+          addBox('friso de porta de depósito distante',
+            [bx, 1.0 + rail * 1.15, frontZ + .32], [bayWidth - 1.0, .055, .045], horizonFrame, false);
+        }
+      }
+    } else {
+      const shopWidth = Math.min(6.2, width / 3);
+      for (const side of [-1, 1]) {
+        addBox('vitrine de comércio do bairro distante',
+          [x + side * width * .24, 2.0, frontZ + .18],
+          [shopWidth, 2.45, .15], windowGlass, false);
+      }
+      addBox('marquise discreta de comércio distante',
+        [x, 3.42, frontZ + .48], [width * .9, .18, 1.0], horizonRoofMat, false);
+    }
+
+    if (fireEscape && height > 18) {
+      const escapeX = x + width * .28;
+      for (let floor = 1; floor < Math.min(floorsCount, 5); floor += 2) {
+        const y = baseY + 2.5 + floor * floorHeight;
+        addBox('patamar de escada de incêndio na cidade distante',
+          [escapeX, y, frontZ + .9], [3.2, .16, 1.5], steel, false);
+        for (const side of [-1, 1]) {
+          addBeam('guarda-corpo de escada de incêndio distante',
+            [escapeX, y + .08, frontZ + .9 + side * .68],
+            [escapeX, y + .9, frontZ + .9 + side * .68], .045, steel, 6);
+        }
+      }
+    }
+
+    if (waterTower) {
+      const tx = x + width * .24;
+      const tz = z - depth * .16;
+      const tankY = baseY + height + 2.0;
+      for (const sx of [-1, 1]) {
+        addBeam('perna do reservatório d’água urbano',
+          [tx + sx * .95, baseY + height + .18, tz],
+          [tx + sx * .95, tankY + .2, tz], .085, steel, 7);
+      }
+      addCylinder('reservatório d’água de cobertura urbana',
+        tx, tankY + 1.25, tz, 1.5, 1.5, 2.5, wood, 16);
+      addCylinder('aro metálico do reservatório urbano',
+        tx, tankY + 2.54, tz, 1.58, 1.58, .12, steel, 16);
+    }
+    if (chimney) {
+      const cx = x - width * .27;
+      const cy = baseY + height + 2.1;
+      addCylinder('chaminé de tijolo no horizonte urbano',
+        cx, cy, z - depth * .2, .72, .9, 4.4, brickMaterials[(materialIndex + 1) % brickMaterials.length], 12);
+      addCylinder('coroamento da chaminé distante',
+        cx, cy + 2.26, z - depth * .2, 1.0, .78, .24, horizonRoofMat, 12);
+    }
+    if (setback && height > 70) {
+      addBox('recuo superior do arranha-céu',
+        [x, baseY + height + 1.1, z], [width * .72, 2.2, depth * .72], bodyMat, false);
+      addBox('coroamento escalonado do arranha-céu',
+        [x, baseY + height + 3.0, z - depth * .08], [width * .48, 1.6, depth * .5], horizonRoofMat, false);
+      addCylinder('antena do arranha-céu distante',
+        x, baseY + height + 7.3, z - depth * .08, .16, .08, 7.0, steel, 8);
+    }
+  }
+
+  const horizonIndustrial = [
+    { x: -132, z: -208, width: 48, depth: 32, height: 26, materialIndex: 1, style: 'industrial', chimney: true },
+    { x: -78, z: -192, width: 46, depth: 34, height: 34, materialIndex: 0, style: 'industrial', waterTower: true },
+    { x: -25, z: -214, width: 50, depth: 32, height: 28, materialIndex: 2, style: 'industrial', fireEscape: true },
+    { x: 30, z: -195, width: 46, depth: 34, height: 42, materialIndex: 1, style: 'industrial', waterTower: true },
+    { x: 84, z: -218, width: 52, depth: 34, height: 32, materialIndex: 0, style: 'industrial', fireEscape: true },
+    { x: 142, z: -194, width: 48, depth: 32, height: 46, materialIndex: 2, style: 'industrial', chimney: true },
+    { x: 202, z: -220, width: 52, depth: 34, height: 36, materialIndex: 1, style: 'industrial', waterTower: true },
+    { x: 262, z: -196, width: 54, depth: 36, height: 50, materialIndex: 0, style: 'industrial', fireEscape: true },
+    { x: 326, z: -222, width: 54, depth: 34, height: 39, materialIndex: 2, style: 'industrial', chimney: true },
+    { x: 390, z: -198, width: 54, depth: 36, height: 46, materialIndex: 1, style: 'industrial', waterTower: true },
+    { x: 452, z: -220, width: 54, depth: 34, height: 34, materialIndex: 0, style: 'industrial' },
+    { x: 514, z: -196, width: 52, depth: 36, height: 42, materialIndex: 2, style: 'industrial', fireEscape: true },
+    { x: 574, z: -218, width: 48, depth: 32, height: 30, materialIndex: 1, style: 'industrial' }
+  ];
+  horizonIndustrial.forEach(building => addHorizonBuilding(building));
+
+  const horizonMixedUse = [
+    { x: -178, z: -300, width: 48, depth: 42, height: 48, materialIndex: 1, style: 'brick', floors: 12, fireEscape: true },
+    { x: -116, z: -282, width: 46, depth: 40, height: 60, materialIndex: 2, style: 'brick', floors: 15 },
+    { x: -54, z: -308, width: 48, depth: 42, height: 55, materialIndex: 0, style: 'brick', floors: 14, waterTower: true },
+    { x: 10, z: -284, width: 52, depth: 42, height: 68, materialIndex: 1, style: 'brick', floors: 17 },
+    { x: 78, z: -310, width: 50, depth: 42, height: 58, materialIndex: 2, style: 'brick', floors: 14, fireEscape: true },
+    { x: 146, z: -286, width: 54, depth: 44, height: 72, materialIndex: 0, style: 'modern', floors: 19 },
+    { x: 218, z: -312, width: 48, depth: 42, height: 64, materialIndex: 1, style: 'brick', floors: 16 },
+    { x: 286, z: -288, width: 56, depth: 44, height: 76, materialIndex: 2, style: 'modern', floors: 20 },
+    { x: 360, z: -314, width: 54, depth: 42, height: 62, materialIndex: 0, style: 'brick', floors: 15 },
+    { x: 432, z: -290, width: 56, depth: 46, height: 82, materialIndex: 1, style: 'modern', floors: 21 },
+    { x: 506, z: -316, width: 52, depth: 44, height: 67, materialIndex: 2, style: 'brick', floors: 16 },
+    { x: 578, z: -292, width: 52, depth: 44, height: 56, materialIndex: 0, style: 'brick', floors: 14 }
+  ];
+  horizonMixedUse.forEach(building => addHorizonBuilding(building));
+
+  const horizonTowers = [
+    { x: -238, z: -430, width: 50, depth: 46, height: 112, materialIndex: 0, style: 'modern', floors: 30, setback: true },
+    { x: -164, z: -456, width: 46, depth: 42, height: 142, materialIndex: 2, style: 'modern', floors: 38, setback: true },
+    { x: -92, z: -432, width: 52, depth: 48, height: 126, materialIndex: 1, style: 'modern', floors: 34, setback: true },
+    { x: -16, z: -458, width: 46, depth: 42, height: 164, materialIndex: 0, style: 'modern', floors: 44, setback: true },
+    { x: 62, z: -434, width: 58, depth: 48, height: 138, materialIndex: 2, style: 'modern', floors: 36, setback: true },
+    { x: 146, z: -462, width: 50, depth: 44, height: 174, materialIndex: 1, style: 'modern', floors: 46, setback: true },
+    { x: 230, z: -438, width: 54, depth: 48, height: 150, materialIndex: 0, style: 'modern', floors: 40, setback: true },
+    { x: 314, z: -464, width: 56, depth: 46, height: 160, materialIndex: 2, style: 'modern', floors: 42, setback: true },
+    { x: 400, z: -438, width: 52, depth: 44, height: 128, materialIndex: 1, style: 'modern', floors: 34, setback: true },
+    { x: 482, z: -460, width: 58, depth: 48, height: 146, materialIndex: 0, style: 'modern', floors: 38, setback: true },
+    { x: 564, z: -436, width: 50, depth: 44, height: 118, materialIndex: 2, style: 'modern', floors: 31, setback: true }
+  ];
+  horizonTowers.forEach(building => addHorizonBuilding(building));
+
+  for (const [name, matrices, material] of [
+    ['janelas frias do horizonte urbano', horizonCoolMatrices, horizonCoolGlass],
+    ['janelas acesas do horizonte urbano', horizonWarmMatrices, horizonWarmGlass]
+  ]) {
+    if (!matrices.length) continue;
+    const instances = new THREE.InstancedMesh(horizonWindowGeometry, material, matrices.length);
+    instances.name = name;
+    matrices.forEach((matrix, index) => instances.setMatrixAt(index, matrix));
+    instances.instanceMatrix.needsUpdate = true;
+    instances.castShadow = false;
+    instances.receiveShadow = false;
+    env.add(instances);
+  }
+
+  // Abóbada atmosférica em gradiente, para evitar o fundo uniforme quase branco.
+  const skyGeometry = new THREE.SphereGeometry(880, 32, 18);
+  const skyPositions = skyGeometry.attributes.position;
+  const skyColors = [];
+  const skyHorizon = new THREE.Color(0xc0b49b);
+  const skyMiddle = new THREE.Color(0x88a7b3);
+  const skyZenith = new THREE.Color(0x5e7d8c);
+  for (let i = 0; i < skyPositions.count; i++) {
+    const height = THREE.MathUtils.clamp(skyPositions.getY(i) / 880, -1, 1);
+    const color = height < .22
+      ? skyHorizon.clone().lerp(skyMiddle, THREE.MathUtils.smoothstep(height, -.12, .22))
+      : skyMiddle.clone().lerp(skyZenith, THREE.MathUtils.smoothstep(height, .22, .92));
+    skyColors.push(color.r, color.g, color.b);
+  }
+  skyGeometry.setAttribute('color', new THREE.Float32BufferAttribute(skyColors, 3));
+  const skyDome = new THREE.Mesh(skyGeometry, new THREE.MeshBasicMaterial({
+    vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false
+  }));
+  skyDome.name = 'abóbada atmosférica azul do East River';
+  env.add(skyDome);
+
+  // Nuvens altas e finas em painéis difusos para quebrar o vazio do céu.
+  const cloudCanvas = document.createElement('canvas');
+  cloudCanvas.width = 512; cloudCanvas.height = 192;
+  const cloudContext = cloudCanvas.getContext('2d');
+  for (const [cx, cy, radius] of [
+    [86, 108, 68], [142, 82, 74], [212, 112, 86], [286, 82, 76], [360, 112, 84], [430, 94, 62]
+  ]) {
+    const gradient = cloudContext.createRadialGradient(cx, cy, 2, cx, cy, radius);
+    gradient.addColorStop(0, 'rgba(255,249,235,.34)');
+    gradient.addColorStop(.52, 'rgba(255,249,235,.18)');
+    gradient.addColorStop(1, 'rgba(255,249,235,0)');
+    cloudContext.fillStyle = gradient;
+    cloudContext.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
+  }
+  const cloudTexture = new THREE.CanvasTexture(cloudCanvas);
+  cloudTexture.colorSpace = THREE.SRGBColorSpace;
+  const cloudMaterial = new THREE.MeshBasicMaterial({
+    map: cloudTexture, transparent: true, opacity: .52, depthWrite: false,
+    side: THREE.DoubleSide, fog: false
+  });
+  const cloudPlacements = [
+    { x: -120, y: 112, z: -560, w: 260, h: 52, ry: 0 },
+    { x: 170, y: 132, z: -590, w: 300, h: 58, ry: .05 },
+    { x: 465, y: 108, z: -550, w: 250, h: 50, ry: -.06 },
+    { x: -520, y: 118, z: -80, w: 260, h: 50, ry: Math.PI / 2 },
+    { x: 880, y: 116, z: -80, w: 300, h: 56, ry: -Math.PI / 2 },
+    { x: -100, y: 126, z: 610, w: 280, h: 52, ry: Math.PI },
+    { x: 380, y: 112, z: 630, w: 260, h: 48, ry: Math.PI }
+  ];
+  for (const cloud of cloudPlacements) {
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(cloud.w, cloud.h), cloudMaterial);
+    plane.name = 'nuvem alta difusa sobre o skyline';
+    plane.position.set(cloud.x, cloud.y, cloud.z);
+    plane.rotation.y = cloud.ry;
+    env.add(plane);
+  }
+  cloudTexture.anisotropy = isTouchDevice ? 2 : 8;
 
   // Modelos CC0 do GitHub — marcos distantes do horizonte de Manhattan.
   // Fonte: alexwohlbruck/landmarks; modelos CC0-1.0, geometria Y-up em metros.
@@ -455,12 +731,12 @@ export function buildWaterfrontEnvironment({ THREE, scene, isTouchDevice = false
     {
       name: 'Chrysler Building',
       url: new URL('../assets/models/manhattan-chrysler-building.glb', import.meta.url).href,
-      position: [875, 0, -88], scale: 0.36, offset: [8.7, 0, 6.0]
+      position: [-72, 0, -490], scale: 0.36, offset: [8.7, 0, 6.0]
     },
     {
       name: 'Empire State Building',
       url: new URL('../assets/models/manhattan-empire-state-building.glb', import.meta.url).href,
-      position: [948, 0, 18], scale: 0.27, offset: [-27.7, 0, 4.4]
+      position: [218, 0, -505], scale: 0.27, offset: [-27.7, 0, 4.4]
     }
   ];
   for (const landmark of landmarks) {

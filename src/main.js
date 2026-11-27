@@ -58,6 +58,11 @@ const sun=new THREE.DirectionalLight(0xffd7a0,2.35);sun.position.set(-42,58,35);
 const fill=new THREE.DirectionalLight(0x9dbbc7,.78);fill.position.set(50,24,-40);scene.add(fill);
 const clock=new THREE.Clock();
 const colliders=[];const animated=[];const clickable=[];const interactables=[];
+function tagNewInteractables(startIndex, zone) {
+  for (const item of interactables.slice(startIndex)) {
+    if (!item.zone) item.zone = zone;
+  }
+}
 function texCanvas(draw,w=512,h=512,repeatX=1,repeatY=1){const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');draw(g,w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(repeatX,repeatY);t.anisotropy=8;return t}
 function noise(g,w,h,count,color,alpha){g.save();g.globalAlpha=alpha;for(let i=0;i<count;i++){g.fillStyle=color;const s=Math.random()*2+0.3;g.fillRect(Math.random()*w,Math.random()*h,s,s)}g.restore()}
 const limestone=texCanvas((g,w,h)=>{g.fillStyle='#b8aa8d';g.fillRect(0,0,w,h);for(let y=0;y<h;y+=84){for(let x=0;x<w;x+=128){g.fillStyle=['#c8b99a','#b9aa8b','#a99a7d','#c0b293'][Math.floor(Math.random()*4)];g.fillRect(x+(Math.random()*12),y+2,125,80);g.strokeStyle='#8d806b';g.globalAlpha=.28;g.strokeRect(x,y,126,82);g.globalAlpha=1}}noise(g,w,h,6000,'#514a3d',.10)},512,512,2.2,2);
@@ -99,20 +104,29 @@ const world = buildWorld({
 const { zones, groundSurfaces, water, mansionRevealGroup, magicalInteriorGroup } = world;
 let revealCameraCue=()=>{};
 let mansionPerceived=false;
+const exteriorInteractableStart = interactables.length;
 const exterior = buildExterior({
   THREE, scene, world, interactables, isTouchDevice,
   onReveal:()=>{mansionPerceived=true;revealCameraCue();}
 });
+tagNewInteractables(exteriorInteractableStart, 'dock');
 const waterfrontEnvironment = buildWaterfrontEnvironment({
   THREE, scene, isTouchDevice, brickTexture: brick
 });
 
-// Interior passes are shared by desktop and mobile.
+// Interior passes are shared by desktop and mobile. Assign each legacy
+// interaction to its room so prompts and E/mobile controls remain zone-specific.
+const interiorDetailsInteractableStart = interactables.length;
 buildInteriorDetails({ THREE, scene:magicalInteriorGroup, interactables });
+tagNewInteractables(interiorDetailsInteractableStart, 'library');
+const libraryInteractableStart = interactables.length;
 buildLibrary({ THREE, scene:magicalInteriorGroup, interactables, colliders, limestone });
+tagNewInteractables(libraryInteractableStart, 'library');
+const grandSalonInteractableStart = interactables.length;
 const grandSalon = buildGrandSalon({
   THREE, scene:magicalInteriorGroup, animated, camera, isTouchDevice, colliders, interactables, groundSurfaces
 });
+tagNewInteractables(grandSalonInteractableStart, 'hall');
 const fireLight = grandSalon.fireLight;
 
 // Estado de jogo global: a vida persiste entre ambientes e a energia recarrega em tempo real.
@@ -161,10 +175,12 @@ function handlePlayerHit(hit) {
   }
 }
 
+const trainingInteractableStart = interactables.length;
 const trainingRoom = buildTrainingRoom({
   THREE, scene:magicalInteriorGroup, zones, groundSurfaces, colliders, interactables, animated,
   onPlayerHit: handlePlayerHit
 });
+tagNewInteractables(trainingInteractableStart, 'training');
 
 const trainingHud = document.createElement('aside');
 trainingHud.id = 'trainingHud';
@@ -376,7 +392,6 @@ function interactWithNearby() {
   let nearestDistance = Infinity;
   for (const item of interactables) {
     if (item.zone && item.zone !== controller.zone) continue;
-    if (!item.zone && controller.zone !== 'training') continue;
     const distance = p.distanceTo(item.position);
     if (distance <= item.radius && distance < nearestDistance) {
       nearest = item;
@@ -505,7 +520,6 @@ function animate() {
   const playerPosition=controller.getPosition();
   for(const item of interactables){
     if(item.zone && item.zone!==controller.zone) continue;
-    if(!item.zone && controller.zone!=='training') continue;
     const distance=playerPosition.distanceTo(item.position);
     if(distance<=item.radius&&distance<nearbyDistance){
       nearbyItem=item;nearbyDistance=distance;

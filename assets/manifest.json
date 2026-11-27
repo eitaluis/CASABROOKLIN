@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -191,7 +191,7 @@
     {
       "id": "carter-cinematic-actions-and-motion",
       "path": "src/character.js + src/third-person.js",
-      "role": "integração das ações look_around, talk_gestures, wave, point e bow após consulta ao catálogo Ara; suavização da aceleração, desaceleração, rotação corporal, inclinação lateral e easing da câmera; Carter também direciona cabeça e pescoço ao objeto examinado por E/INTERAGIR; tudo no controlador comum desktop/mobile; Ara-native walk_slouch and crouch clips are used below half vitality; directional hit_front/back/left/right reactions are loaded; jump animation is paired with a physical vertical arc in the shared controller; automatic room transitions stop the previous Ara locomotion controller before re-binding it, preventing duplicate mixer controllers; lateral root roll is disabled so sprint leans forward without tilting to either side",
+      "role": "integração das ações look_around, talk_gestures, wave, point e bow após consulta ao catálogo Ara; locomoção ferida com três IDs distintos: crouch idle, walk_slouch e run como endpoint de blend; hit reactions interrompíveis após 0,24 s de impacto quando o jogador se move, sem reinício por golpes repetidos; root do Carter usa apenas rotação yaw, sem inclinação nos eixos pitch/roll ao correr, mover lateralmente ou girar a câmera; rebind de locomotion em transições de cômodo; compartilhado desktop/mobile",
       "license": "project-original-code; os clips do personagem permanecem sujeitos aos termos de Ara/CMU descritos em openSourceReferences"
     },
     {

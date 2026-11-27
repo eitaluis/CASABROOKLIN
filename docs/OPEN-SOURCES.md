@@ -237,3 +237,12 @@ As fontes externas são registradas separadamente do código de integração. S�
 - **ArchaeoArchive — Ra-Horakhty AA-016:** https://archaeoarchive.com/view/ra-horakhty — scan fotogramétrico com versões texturizadas e sem textura. O registro indica disponibilização CC BY 4.0 após publicação; a versão STL no Wikimedia Commons tem licença CC BY-SA 4.0: https://commons.wikimedia.org/wiki/File:Statue_of_Ra-Horakhty,_3D_photogrammetry_scan_(STL).stl.
 
 **Implementação:** nesta iteração, os scans acima foram usados como referência, não distribuídos dentro do repositório. A cabeça de Rá, disco solar, aro funcional, nichos e modelos decorativos de shabti são geometrias originais implementadas no Three.js. Isso evita atribuir procedência arqueológica falsa a uma reconstrução procedural.
+
+
+### HA-DI — correção de desempenho e animação (27/11/2026)
+
+- **Ara 3D Gen — catálogo de animações:** https://github.com/olatunde85/3d-gen/blob/main/docs/animations.md. A categoria Shooter documenta `throw_grenade` com duração de 2,2 s e liberação do objeto em 0,82 s. O HA-DI reutiliza o movimento de corpo inteiro como gesto de lançamento, sem exibir a granada.
+- **Ara 3D Gen — API de personagens:** https://github.com/olatunde85/3d-gen/blob/main/docs/library.md. A aplicação solicita somente os clips necessários; `throw_grenade` é adicionado à lista filtrada pelo catálogo exportado `ANIMATIONS`, em vez de carregar os 261 clips.
+- **Origem e licença dos movimentos:** o README upstream identifica os dados de movimento como gravações retargetadas da CMU Motion Capture Database e documenta as condições de uso comercial e de não revenda isolada.
+- **Three.js 0.165:** VFX de HA-DI reorganizados em pools persistentes, com três `InstancedMesh` para raios/faíscas/fumaça. Não foi incluída dependência adicional.
+- **Pré-compilação:** os shaders dos materiais do feitiço são preparados via `WebGLRenderer.compileAsync` antes de liberar o jogo, reduzindo o trabalho no primeiro disparo.

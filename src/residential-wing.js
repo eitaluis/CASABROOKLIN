@@ -691,13 +691,13 @@ export function buildResidentialWing({
     color: 0x79aeb5, emissive: 0x2b8e9d, emissiveIntensity: 0,
     metalness: 0.35, roughness: 0.42
   });
-  for (let i = 0; i < 7; i++) {
+  [23.3, 24.2, 25.1, 26.0, 27.0, 31.0, 32.0].forEach((x, i) => {
     const rune = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.009, 6, 18), runeMaterial);
-    rune.position.set(26.25 + i * 0.85, FLOOR_Y + 1.8 + (i % 2) * 0.12, 0.13);
+    rune.position.set(x, FLOOR_Y + 1.8 + (i % 2) * 0.12, 0.13);
     soundproofRunes.add(rune);
-  }
+  });
   const soundproofHalo = new THREE.PointLight(0x4ba8b5, 0, 4.5);
-  soundproofHalo.position.set(28.8, FLOOR_Y + 1.65, 0.38);
+  soundproofHalo.position.set(26.0, FLOOR_Y + 1.65, 0.38);
   roomGroup.add(soundproofHalo);
 
   // Snacks e garrafas: modelos autorais pequenos, reconhecíveis e inspecionáveis.
@@ -766,6 +766,7 @@ export function buildResidentialWing({
   // Arara discreta, cabides e peças de roupa que surgem por magia.
   const outfitRail = new THREE.Group();
   outfitRail.position.set(24.7, FLOOR_Y + 1.55, 8.45);
+  outfitRail.visible = false;
   roomGroup.add(outfitRail);
   const rail = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.3, 16), bronze);
   rail.rotation.z = Math.PI / 2;
@@ -912,26 +913,37 @@ export function buildResidentialWing({
       onRest();
       return 'Sadie deixou a cama preparada. Carter recuperou energia ao descansar.';
     }, 'E / INTERAGIR · descansar');
-  addInspect('Minibar de Sadie', 'Frigobar embutido',
-    'Cômoda com refrigerador embutido, como descrita no quarto de Sadie em O Trono de Fogo.',
-    33.42, 4.65, 1.7, () => {
-      sadieMinibarOpen = !sadieMinibarOpen;
-      sadieMinibarLight.intensity = sadieMinibarOpen ? 0.62 : 0;
-      playMinibarClip(sadieMinibarOpen);
-      return sadieMinibarOpen
-        ? 'O frigobar abriu: Ribena gelada e chocolates estão disponíveis.'
-        : 'O frigobar de Sadie foi fechado.';
-    }, 'E / INTERAGIR · abrir o frigobar');
+  let sadieBedsideOn = true;
+  const sadieBedsideLight = new THREE.PointLight(0xffc88a, 0.58, 4.8, 1.8);
+  sadieBedsideLight.position.set(26.8, FLOOR_Y + 1.62, 2.55);
+  roomGroup.add(sadieBedsideLight);
+  addInspect('Luminária de cabeceira de Sadie', 'Luminária de Sadie',
+    'Luminária de leitura junto à cama de Sadie.',
+    26.8, 2.55, 1.5, () => {
+      sadieBedsideOn = !sadieBedsideOn;
+      sadieBedsideLight.intensity = sadieBedsideOn ? 0.58 : 0;
+      return sadieBedsideOn ? 'A luminária de Sadie foi acesa.' : 'A luminária de Sadie foi apagada.';
+    });
   let sadieSnacksTaken = false;
-  addInspect('Ribena e chocolates', 'Bebidas e chocolates',
-    'As bebidas Ribena e os chocolates ficam no refrigerador embutido da cômoda de Sadie.',
-    33.42, 4.65, 1.25, () => {
-      if (!sadieMinibarOpen) return 'Abra primeiro o frigobar para alcançar os lanches.';
-      if (sadieSnacksTaken) return 'Você já guardou os lanches de Sadie na bolsa.';
-      sadieSnacksTaken = true;
-      sadieSnacks.visible = false;
-      return 'Você guardou uma Ribena e alguns chocolates.';
-    }, 'E / INTERAGIR · pegar os lanches');
+  addInspect('Minibar de Sadie', 'Frigobar embutido',
+    'Cômoda com refrigerador embutido, como descrita no quarto de Sadie em O Trono de Fogo. Abra, recolha os lanches e feche novamente.',
+    33.42, 4.65, 1.7, () => {
+      if (!sadieMinibarOpen) {
+        sadieMinibarOpen = true;
+        sadieMinibarLight.intensity = 0.62;
+        playMinibarClip(true);
+        return 'O frigobar abriu: Ribena gelada e chocolates estão disponíveis.';
+      }
+      if (!sadieSnacksTaken) {
+        sadieSnacksTaken = true;
+        sadieSnacks.visible = false;
+        return 'Você guardou uma Ribena e alguns chocolates.';
+      }
+      sadieMinibarOpen = false;
+      sadieMinibarLight.intensity = 0;
+      playMinibarClip(false);
+      return 'O frigobar de Sadie foi fechado.';
+    }, 'E / INTERAGIR · abrir / recolher / fechar');
   let sadieDockOn = false;
   addInspect('Dock do iPod de Sadie', 'Dock de música',
     'Dock moderno para iPod com fones de ouvido. A interação acende o visor e os indicadores, sem reproduzir áudio comercial.',

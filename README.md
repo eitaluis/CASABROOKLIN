@@ -58,3 +58,8 @@ Consulte [docs/OPEN-SOURCES.md](docs/OPEN-SOURCES.md) e [assets/manifest.json](a
 ## Estudo do exterior
 
 A geografia narrativa da Brooklyn House, a chegada pelo East River, a Williamsburg Bridge, a doca, a escada e o portal estão documentados em [docs/BROOKLYN-HOUSE-EXTERIOR.md](docs/BROOKLYN-HOUSE-EXTERIOR.md). Manhattan fica do outro lado do rio; não é a localização da casa. A escada metálica contorna o armazém no romance, mas o formato helicoidal exato adotado no jogo é uma interpretação.
+
+
+## Quarto de Carter
+
+A suíte de Carter, os móveis asset-first, a kitchenette, o banheiro, o deck e o apoio de cabeça egípcio estão documentados em [docs/CARTER-BEDROOM-STUDY.md](docs/CARTER-BEDROOM-STUDY.md). A cena é compartilhada entre desktop e mobile; os GLBs CC0 são carregados de fontes versionadas e mantêm fallbacks locais.

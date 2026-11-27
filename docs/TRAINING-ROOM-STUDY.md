@@ -276,7 +276,7 @@ Decisão: preservar a geometria procedural original em src/training-room.js, usa
 ### Implementação
 
 - Removidos o pedestal apoiado no piso e o aro separado com suportes laterais, aro suspenso e rede decorativa.
-- As duas efígies foram reposicionadas nas paredes norte e sul, com painel dorsal encostado ao calcário e fixações de bronze. A base do conjunto fica a 3,05 m do piso, como interpretação da indicação narrativa de dez pés.
+- As duas efígies foram reposicionadas nas paredes norte e sul, com painel dorsal encostado ao calcário, dois braços cantilever de bronze e fixações na faixa inferior da parede. A base do conjunto fica a 3,05 m do piso, como interpretação da indicação narrativa de dez pés.
 - O crânio foi refeito com perfil alongado de falcão; o nemes recebeu superfície azul-lápis com estrias douradas. A composição mantém o tronco humano sentado, o kilt, os braços, o colar e o trono dorsal como interpretação iconográfica.
 - O disco agora é formado por moldura anelar aberta. O aro funcional está integrado à abertura; não há face preenchida no centro, tabela ou rede convencional.
 - A abertura útil tem 45 cm de diâmetro após a escala de 0,78. Como a bola de gameplay mede 24 cm, o teste aceita a passagem do centro dentro do raio livre restante (aprox. 10,5 cm).

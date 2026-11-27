@@ -367,6 +367,7 @@ export function buildResidentialWing({
   });
 
   const loader = new GLTFLoader();
+  const fridgeDoorMeshes = [];
   const assetRoot = '../assets/models/residential/';
   const loadModel = (file, position, scale = [1, 1, 1], rotation = 0, name = file) => {
     const url = new URL(assetRoot + file, import.meta.url).href;
@@ -381,6 +382,7 @@ export function buildResidentialWing({
         obj.castShadow = true;
         obj.receiveShadow = true;
         obj.frustumCulled = true;
+        if(file === 'fridge.glb' && /Brushed stainless door/i.test(obj.name)) fridgeDoorMeshes.push(obj);
       });
       roomGroup.add(model);
     }, undefined, error => console.warn('Asset residencial não carregou:', file, error));
@@ -545,6 +547,7 @@ export function buildResidentialWing({
     26.3, -7.25, 2.0, () => {
       fridgeOpen = !fridgeOpen;
       fridgeGlow.intensity = fridgeOpen ? 0.55 : 0;
+      fridgeDoorMeshes.forEach((door,index) => { door.rotation.y = fridgeOpen ? (index === 0 ? -0.82 : 0.82) : 0; });
       return fridgeOpen ? 'Você abriu o refrigerador: ginger ale gelada e alguns doces.' : 'Você fechou o refrigerador.';
     });
   let snacksCollected = false;

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { createCharacter as createAraCharacter, ANIMATIONS } from 'ara3d';
-import { createCarterAccessories } from './character-accessories.js?v=carter-innerscene-bag-20261127a';
+import { createCarterAccessories } from './character-accessories.js?v=carter-innerscene-bag-20261127b';
 
 const CARTER_MOVE_PACK_URL = 'https://cdn.jsdelivr.net/gh/eitaluis/CASABROOKLIN@f77ad108a0e81f1ff50152842eb26ba8fa456eeb/assets/animations/carter-movement.ara-pack.json';
 const CARTER_MOVE_CLIPS = Object.freeze({

@@ -256,7 +256,7 @@ export function buildLibrary({ THREE, scene, interactables = [], colliders = [],
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < columns; col++) {
       const angle = (col + (row % 2) * 0.5) * ((Math.PI * 2) / columns);
-      const u = ((angle - Math.PI / 2) / (Math.PI * 2) + 1) % 1;
+      const u = ((angle + Math.PI) / (Math.PI * 2)) % 1;
       const v = (rowCenters[row] - floorY) / wallHeight;
       const cx = u * nicheAlphaCanvas.width;
       const cy = (1 - v) * nicheAlphaCanvas.height;

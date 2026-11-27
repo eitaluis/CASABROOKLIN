@@ -48,7 +48,6 @@ export function buildTrainingRoom({
   const raGold = new THREE.MeshStandardMaterial({ color: 0xc69a4e, metalness: 0.78, roughness: 0.25 });
   const raGoldLight = new THREE.MeshStandardMaterial({ color: 0xe0bb70, metalness: 0.68, roughness: 0.22 });
   const raLapis = new THREE.MeshPhysicalMaterial({ color: 0x183c59, metalness: 0.12, roughness: 0.3, clearcoat: 0.28 });
-  const raSolarStone = new THREE.MeshPhysicalMaterial({ color: 0xb45a35, metalness: 0.08, roughness: 0.42, clearcoat: 0.18, clearcoatRoughness: 0.32 });
   const nicheShadow = new THREE.MeshStandardMaterial({ color: 0x625746, roughness: 0.96, metalness: 0 });
   const paintedLine = new THREE.MeshStandardMaterial({ color: 0xe6d8b6, roughness: 0.62 });
   const warmEmissive = new THREE.MeshStandardMaterial({
@@ -753,7 +752,8 @@ export function buildTrainingRoom({
       prompt:'DISCO SOLAR DE RÁ · E para examinar · arremesse a bola pela abertura da coroa',
       position:new THREE.Vector3(centerX,floorY+mountHeight+1.8,baselineZ),radius:5.2
     });
-  }  // As esculturas ficam rente às paredes de fundo; o painel dorsal encosta no calcário.
+  }
+  // As esculturas ficam rente às paredes de fundo; o painel dorsal encosta no calcário.
   addRaHoop(room.minZ + 1.09, 0, 'Rá — cesta norte');
   addRaHoop(room.maxZ - 1.09, Math.PI, 'Rá — cesta sul');
 

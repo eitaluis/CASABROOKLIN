@@ -302,8 +302,8 @@ export function buildInteriorDetails({ THREE, scene, interactables = [] }) {
     })
   );
   dome.name = 'cúpula celeste de Nut';
-  dome.position.set(0, -1.9, -0.5);
-  dome.scale.y = 0.4;
+  dome.position.set(0, -7.0, -0.5);
+  dome.scale.y = 0.36;
   dome.receiveShadow = true;
   scene.add(dome);
 

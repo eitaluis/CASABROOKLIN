@@ -135,3 +135,12 @@ A integração no GitHub confirma que o código e a documentação foram adicion
 - **Seleção de assets:** não foi importado um segundo esqueleto nem animação externa para o Carter. Ara é a fonte ativa e os IDs são confirmados pelo catálogo exportado `ANIMATIONS`; KinemIQ/Quaternius foi verificado como alternativa de clips CC0, mas rejeitado para esta versão por não trazer uma vantagem sobre os dois clips já retargetados no rig do personagem.
 - **Compatibilidade:** a mesma sequência, captura da guarda, gesto e impacto são usados em desktop e mobile.
 - **Validação:** sintaxe JavaScript, IDs de animação e ausência de projétil no módulo de magia foram verificadas. A leitura visual da transição e da mão esquerda ainda requer conferência no navegador real; não foi feita captura de gameplay nesta alteração.
+
+### HA-DI — silhuetas orgânicas no impacto (27/11/2026)
+
+- **Problema identificado:** o conjunto de impacto ainda usa sprites em quads para núcleo, círculo no piso, corte, faíscas e fumaça. Mesmo com texturas CC0 com transparência, a superfície base continua sendo retangular e o contorno podia ficar legível dependendo de textura, câmera e fallback.
+- **Correção:** cada material com sprite recebe uma máscara GLSL procedural multiplicada ao alpha original. O ruído FBM distorce os limites do núcleo e das nuvens; faíscas e corte recebem silhuetas alongadas e afiladas; o sigilo no chão usa máscara anelar. Pixels externos são descartados, eliminando o contorno quadrado da placa.
+- **Animação:** o campo de ruído recebe o mesmo relógio do impacto, de modo que as bordas da fumaça e do brilho se movimentam durante a explosão. As texturas Kenney CC0 permanecem como detalhe de superfície; o recorte é código original.
+- **Referência técnica:** https://github.com/majidmanzarpour/threejs-vfx — repositório MIT de VFX procedural em Three.js/GLSL que usa silhuetas de fumaça, partículas e fragmentos calculadas no shader. Apenas a abordagem foi estudada; nenhum código foi copiado e nenhuma dependência foi adicionada.
+- **Compatibilidade:** usa Material.onBeforeCompile e GLSL compatível com o renderer WebGL existente; desktop e mobile continuam no mesmo sistema.
+- **Validação:** sintaxe JavaScript e presença das cinco máscaras/atualização temporal verificadas. A conferência visual em navegador e dispositivo físico ainda é necessária.

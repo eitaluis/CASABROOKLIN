@@ -29,6 +29,11 @@ const CINEMATIC_ANIMATIONS = [
   'talk_gestures',
   'wave',
   'fight_idle',
+  'sword_idle',
+  'sword_block',
+  'sword_slash',
+  'sword_combo',
+  'sword_thrust',
   'point',
   'bow',
   'sit_down',
@@ -77,9 +82,17 @@ export async function createCharacter({
   // walk and run creates two actions for the same clip and can stall the gait.
   // Injured movement is slowed by the controller, so the normal run clip is
   // retained as a valid upper blend endpoint but sprint remains disabled.
-  const locomotionOptions = () => injured
-    ? { idle: 'crouch', walk: 'walk_slouch', run: 'run', smoothing: 0.18 }
-    : { smoothing: 0.18 };
+  let equippedWeapon = null;
+  const locomotionOptions = () => {
+    if (equippedWeapon === 'khopesh') {
+      return injured
+        ? { idle: 'sword_idle', walk: 'walk_slouch', run: 'run', smoothing: 0.18 }
+        : { idle: 'sword_idle', smoothing: 0.18 };
+    }
+    return injured
+      ? { idle: 'crouch', walk: 'walk_slouch', run: 'run', smoothing: 0.18 }
+      : { smoothing: 0.18 };
+  };
   let locomotion = hero.locomotion(mixer, locomotionOptions());
   let jumping = false;
   let movementSpeed = 0;
@@ -89,6 +102,7 @@ export async function createCharacter({
   let finishJump = null;
   let finishAction = null;
   let currentAction = null;
+  let actionCancel = null;
   let castingHandPose = false;
   let castingBodyPose = false;
   let castingBodyWeight = 0;
@@ -178,7 +192,10 @@ export async function createCharacter({
     actionInterruptOnMovement = true;
     actionInterruptDelay = 0;
     actionElapsed = 0;
+    const onCancel = actionCancel;
+    actionCancel = null;
     onActionChange(null);
+    onCancel?.();
   }
 
   function stopAction() {
@@ -198,6 +215,7 @@ export async function createCharacter({
     actionInterruptOnMovement = options.interruptOnMovement !== false;
     actionInterruptDelay = Number.isFinite(options.interruptDelay) ? Math.max(0, options.interruptDelay) : 0;
     actionElapsed = 0;
+    actionCancel = typeof options.onCancel === 'function' ? options.onCancel : null;
     actionSequence = hero.playSequence(mixer, id, {
       repeat: options.loop === true,
       fade: Number.isFinite(options.fade) ? options.fade : 0.38
@@ -211,6 +229,7 @@ export async function createCharacter({
         actionSequence?.stop();
         actionSequence = null;
         currentAction = null;
+        actionCancel = null;
         onActionChange(null);
         const handled = typeof options.onFinish === 'function' ? options.onFinish() : undefined;
         if (handled !== false) restoreLocomotion();
@@ -430,6 +449,13 @@ export async function createCharacter({
       if (actionSequence) cancelAction();
       return restoreLocomotion();
     },
+    setWeaponMode(weapon) {
+      const next = weapon === 'khopesh' ? 'khopesh' : weapon === 'staff' ? 'staff' : null;
+      if (next === equippedWeapon) return;
+      equippedWeapon = next;
+      if (!jumping && !actionSequence) restoreLocomotion();
+    },
+    get equippedWeapon() { return equippedWeapon; },
     playReaction(direction = 'front') {
       // Do not restart a reaction that is already playing: hits can arrive at
       // shorter intervals than a full reaction clip and otherwise starve gait.
@@ -483,7 +509,7 @@ export async function createCharacter({
     height: hero.height || 1.75,
     characterName,
     locomotionName: characterName + ' · Ara 3D · Cinematic',
-    availableActions: AVAILABLE_CINEMATIC_ANIMATIONS.slice(),
+    availableActions: AVAILABLE_ACTION_ANIMATIONS.slice(),
     get action() { return currentAction; },
     accessoryAttachment: accessories?.attachment || 'none',
     updateFallback(dt, speed) {

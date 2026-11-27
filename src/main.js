@@ -1,8 +1,9 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js?v=waterfront-architecture-20261126a';
+import { buildWorld } from './world.js?v=library-asset-first-20261127a';
 import { buildExterior } from './exterior.js?v=waterfront-architecture-20261126a';
 import { buildWaterfrontEnvironment } from './waterfront-environment.js?v=waterfront-architecture-20261126a';
 import { buildInteriorDetails } from './interior-details.js?v=great-hall-atrium-20261126a';
+import { buildLibrary } from './library.js?v=library-asset-first-20261127a';
 import { buildGrandSalon } from './grand-salon.js?v=great-hall-atrium-20261126d';
 import { buildTrainingRoom } from './training-room.js?v=ra-wall-opacity-20261126b';
 import { createInventory } from './inventory.js?v=inventory-capabilities-20261126b';
@@ -107,6 +108,7 @@ const waterfrontEnvironment = buildWaterfrontEnvironment({
 
 // Interior passes are shared by desktop and mobile.
 buildInteriorDetails({ THREE, scene:magicalInteriorGroup, interactables });
+buildLibrary({ THREE, scene:magicalInteriorGroup, interactables, colliders, limestone });
 const grandSalon = buildGrandSalon({
   THREE, scene:magicalInteriorGroup, animated, camera, isTouchDevice, colliders, interactables, groundSurfaces
 });

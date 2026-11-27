@@ -93,6 +93,10 @@ Abra character-preview.html para conferir o mesmo módulo usado pelo jogo. O pre
 - Testar em Chrome desktop e celular em paisagem; conferir FPS, memória e descarte do personagem.
 - Confirmar que o inventário e o socket WeaponR continuam funcionando.
 
+## Corrida e salto — pesquisa para a próxima revisão
+
+O estudo de referências e assets candidatos está em `docs/CARTER-MOVEMENT-ANIMATION-STUDY.md`. A direção proposta é corrida baixa/inclinada com o objeto equipado estendido atrás, inspirada visualmente na Naruto Run, mas tratada como interpretação de gameplay. A proposta para o salto combina antecipação, take-off, air loop variável e aterrissagem absorvida. Os clips ainda não foram baixados nem integrados; revisar depois da validação visual da bolsa e do medalhão.
+
 ## Próximas etapas
 
 1. Apresentar e obter aprovação do painel visual de bolsa/alça/colar. Depois da aprovação, identificar a peça escura do ombro no Ara e construir um preview de montagem antes de alterar o runtime.

@@ -1855,6 +1855,36 @@ function addThothBaseSeating(scene,stone,marble,wood,brass,colliders,interactabl
   });
 }
 
+function createTaperedTube(points,radii,material,tubularSegments=48,radialSegments=16) {
+  const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)),false,'centripetal');
+  const frames=curve.computeFrenetFrames(tubularSegments,false);
+  const positions=[],indices=[];
+  const radiusAt=t=>{
+    const scaled=t*(radii.length-1),index=Math.min(radii.length-2,Math.floor(scaled));
+    return THREE.MathUtils.lerp(radii[index],radii[index+1],scaled-index);
+  };
+  for(let i=0;i<=tubularSegments;i++) {
+    const t=i/tubularSegments,centre=curve.getPointAt(t),radius=radiusAt(t);
+    for(let j=0;j<=radialSegments;j++) {
+      const angle=j/radialSegments*Math.PI*2;
+      const normal=frames.normals[i].clone().multiplyScalar(Math.cos(angle));
+      const binormal=frames.binormals[i].clone().multiplyScalar(Math.sin(angle));
+      const vertex=centre.addScaledVector(normal,radius).addScaledVector(binormal,radius);
+      positions.push(vertex.x,vertex.y,vertex.z);
+    }
+  }
+  for(let i=0;i<tubularSegments;i++)for(let j=0;j<radialSegments;j++) {
+    const a=i*(radialSegments+1)+j,b=a+radialSegments+1;
+    indices.push(a,b,a+1,b,b+1,a+1);
+  }
+  const geometry=new THREE.BufferGeometry();
+  geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  geometry.setIndex(indices);geometry.computeVertexNormals();
+  const mesh=new THREE.Mesh(geometry,material);
+  mesh.castShadow=true;mesh.receiveShadow=true;
+  return mesh;
+}
+
 function addThoth(scene,marble,pale,brass,reliefTex,wood) {
   const group=new THREE.Group();group.name='estátua monumental de Thoth em basalto';group.position.set(0,13.175,-.5);
   const plinth=new THREE.Mesh(new THREE.CylinderGeometry(1.96,2.08,.48,96),pale);plinth.name='base cilíndrica integrada de calcário de Thoth';plinth.position.y=.24;plinth.castShadow=true;plinth.receiveShadow=true;group.add(plinth);
@@ -1933,12 +1963,54 @@ function addThoth(scene,marble,pale,brass,reliefTex,wood) {
   const goldL=new THREE.MeshStandardMaterial({color:0xd4b16f,metalness:.68,roughness:.25});
   const waist=new THREE.Mesh(new THREE.TorusGeometry(.55,.075,10,56),gold);waist.rotation.x=Math.PI/2;waist.position.set(0,2.78,.02);group.add(waist);
   for(const y of [4.16,4.29,4.42]){const c=new THREE.Mesh(new THREE.TorusGeometry(.67+(y-4.16)*.18,.055,10,72),gold);c.rotation.x=Math.PI/2;c.position.set(0,y,.14);c.scale.set(1.18,1,.98);group.add(c);}
-  const neck=new THREE.Mesh(new THREE.CylinderGeometry(.22,.29,.9,32),marble);neck.position.set(0,4.48,0);neck.castShadow=true;group.add(neck);
-  const head=new THREE.Mesh(new THREE.SphereGeometry(.43,32,24),marble);head.name='cabeça de íbis de Thoth';head.position.set(0,5.05,.03);head.scale.set(.76,1.16,.87);head.castShadow=true;group.add(head);
-  const beak=new THREE.Mesh(new THREE.LatheGeometry([new THREE.Vector2(.17,0),new THREE.Vector2(.155,.16),new THREE.Vector2(.12,.39),new THREE.Vector2(.075,.68),new THREE.Vector2(.035,.91),new THREE.Vector2(.008,1)],28),marble);beak.name='bico de íbis de Thoth';beak.rotation.x=Math.PI/2;beak.position.set(0,5.15,.29);beak.castShadow=true;group.add(beak);
+  const neck=new THREE.Mesh(new THREE.LatheGeometry([
+    new THREE.Vector2(.16,0),new THREE.Vector2(.205,.12),new THREE.Vector2(.19,.32),
+    new THREE.Vector2(.165,.54),new THREE.Vector2(.16,.78),new THREE.Vector2(.19,1.02)
+  ],56),marble);
+  neck.name='pescoço longo esculpido de íbis de Thoth';
+  neck.position.set(0,4.36,-.015);neck.castShadow=true;neck.receiveShadow=true;group.add(neck);
+
+  // Fine vertical feather grooves make the long black-marble neck read as sculpture,
+  // while retaining the original silhouette and the approved 9.1 m overall scale.
+  for(const side of [-1,0,1]) {
+    const groove=tube([
+      [side*.105,4.48,.14],[side*.12,4.78,.16],
+      [side*.105,5.03,.15],[side*.085,5.24,.12]
+    ],.009,pale,28,6);
+    groove.name='sulco de pena no pescoço de Thoth';group.add(groove);
+  }
+
+  const head=new THREE.Mesh(new THREE.SphereGeometry(.43,48,32),marble);
+  head.name='cabeça alongada de íbis de Thoth';
+  head.position.set(0,5.35,.025);head.scale.set(.72,1.02,.82);
+  head.castShadow=true;head.receiveShadow=true;group.add(head);
+  const cheek=new THREE.Mesh(new THREE.SphereGeometry(.27,32,24),marble);
+  cheek.name='volume facial da cabeça de íbis';
+  cheek.position.set(0,5.17,.19);cheek.scale.set(.86,.8,.72);
+  cheek.castShadow=true;group.add(cheek);
+
+  const beak=createTaperedTube([
+    [0,5.38,.27],[0,5.34,.46],[0,5.25,.64],
+    [0,5.08,.79],[0,4.88,.88]
+  ],[.128,.118,.09,.055,.014],marble,56,18);
+  beak.name='bico longo curvo de mármore negro de Thoth';group.add(beak);
+
   const eyeGold=new THREE.MeshStandardMaterial({color:0xc8a45f,metalness:.7,roughness:.22});
-  const pupil=new THREE.MeshStandardMaterial({color:0x14100a,roughness:.35});
-  for(const s of [-1,1]){const socket=new THREE.Mesh(new THREE.SphereGeometry(.092,16,12),gold);socket.position.set(s*.265,5.19,.235);socket.scale.set(1,.8,.48);group.add(socket);const eye=new THREE.Mesh(new THREE.SphereGeometry(.05,14,10),eyeGold);eye.position.set(s*.265,5.19,.278);group.add(eye);const dot=new THREE.Mesh(new THREE.SphereGeometry(.021,12,8),pupil);dot.position.set(s*.265,5.19,.302);group.add(dot);}
+  const pupil=new THREE.MeshStandardMaterial({color:0x080a0a,roughness:.28});
+  for(const side of [-1,1]) {
+    const socket=new THREE.Mesh(new THREE.SphereGeometry(.096,24,18),gold);
+    socket.position.set(side*.24,5.39,.225);socket.scale.set(1,.82,.5);group.add(socket);
+    const eyeRim=new THREE.Mesh(new THREE.TorusGeometry(.065,.015,8,32),eyeGold);
+    eyeRim.position.set(side*.24,5.39,.272);eyeRim.scale.set(1,.78,1);group.add(eyeRim);
+    const eye=new THREE.Mesh(new THREE.SphereGeometry(.052,20,16),eyeGold);
+    eye.position.set(side*.24,5.39,.278);eye.scale.set(1,.78,.5);group.add(eye);
+    const dot=new THREE.Mesh(new THREE.SphereGeometry(.024,16,12),pupil);
+    dot.position.set(side*.24,5.39,.304);group.add(dot);
+    const brow=tube([
+      [side*.14,5.49,.26],[side*.23,5.52,.285],[side*.32,5.48,.245]
+    ],.018,marble,18,8);
+    brow.name='arco da órbita de mármore de Thoth';group.add(brow);
+  }
   for(const s of [-1,1]){
     group.add(tube([[s*.63,4,.02],[s*.88,3.72,.07],[s*.92,3.25,.13]],.17,marble,26,12));
     group.add(tube([[s*.92,3.25,.13],[s*.85,2.96,.17],[s*.78,2.78,.21]],.125,marble,20,12));

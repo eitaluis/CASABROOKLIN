@@ -697,13 +697,14 @@ function centerTable(scene,wood,brass) {
   return group;
 }
 
-function addGreatHallRearWall(scene,stone,brass) {
+function addGreatHallRearWall(scene,stone,brass,colliders=[]) {
   const wallZ=-9.58,wallDepth=.78;
   const addBlock=(x,y,w,h,name='bloco de calcário aparelhado da parede posterior')=>{
     if(w<.08||h<.08)return;
     const mesh=new THREE.Mesh(new RoundedBoxGeometry(w,h,wallDepth,6,.035),stone);
     mesh.name=name;mesh.position.set(x,y,wallZ);
     mesh.castShadow=true;mesh.receiveShadow=true;scene.add(mesh);
+    addBoxCollider(colliders,x,y,wallZ,w,h,wallDepth);
   };
   // Lower wall wings contain two real openings; the middle bay is reserved for the fireplace.
   for(const side of [-1,1]) {
@@ -750,6 +751,46 @@ function addGreatHallRearWall(scene,stone,brass) {
   header.position.set(0,17.43,-9.1);header.castShadow=true;scene.add(header);
 }
 
+function addRearTerraceOpenings(scene,stone,colliders) {
+  // The original rear mansion facade closed the two interpretive lower passages.
+  // Rebuild it with two ground-level openings aligned to the passage arches.
+  scene.traverse(object=>{
+    if(object.name==='fachada posterior da mansão') object.visible=false;
+  });
+  for(let i=colliders.length-1;i>=0;i--) {
+    const c=colliders[i];if(!c)continue;
+    const cx=(c.minX+c.maxX)/2,cy=(c.minY+c.maxY)/2,cz=(c.minZ+c.maxZ)/2;
+    const sx=c.maxX-c.minX,sy=c.maxY-c.minY,sz=c.maxZ-c.minZ;
+    if(Math.abs(cx)<.08&&Math.abs(cy-21.45)<.08&&Math.abs(cz+12)<.08&&
+       Math.abs(sx-32)<.12&&Math.abs(sy-17.6)<.12&&Math.abs(sz-.85)<.12) {
+      colliders.splice(i,1);
+    }
+  }
+  const z=-12.0,depth=.85,lowerBottom=12.65,lowerTop=16.2;
+  const passageWidth=2.85,centres=[-8.45,8.45];
+  const gaps=centres.map(x=>[x-passageWidth/2,x+passageWidth/2]).sort((a,b)=>a[0]-b[0]);
+  const spans=[];
+  let cursor=-16;
+  for(const [a,b] of gaps) {
+    if(a>cursor)spans.push([cursor,a]);
+    cursor=b;
+  }
+  if(cursor<16)spans.push([cursor,16]);
+  const addWall=(x,y,width,height,name)=>{
+    if(width<.08||height<.08)return;
+    const wall=new THREE.Mesh(new RoundedBoxGeometry(width,height,depth,8,.045),stone);
+    wall.name=name;wall.position.set(x,y,z);
+    wall.castShadow=true;wall.receiveShadow=true;scene.add(wall);
+    addBoxCollider(colliders,x,y,z,width,height,depth);
+  };
+  for(const [a,b] of spans) {
+    addWall((a+b)/2,(lowerBottom+lowerTop)/2,b-a,lowerTop-lowerBottom,
+      'alvenaria posterior de calcário entre as saídas inferiores');
+  }
+  addWall(0,(lowerTop+30.25)/2,32,30.25-lowerTop,
+    'fachada posterior superior reconstruída em calcário');
+}
+
 function addLowerPassages(scene,stone,brass,colliders,walkablePlatforms,groundSurfaces) {
   const trim=new THREE.MeshStandardMaterial({color:0x9a8058,metalness:.38,roughness:.58});
   for(const centre of [-8.45,8.45]) {
@@ -789,11 +830,18 @@ function addLowerPassages(scene,stone,brass,colliders,walkablePlatforms,groundSu
     }
     const endHeader=new THREE.Mesh(new RoundedBoxGeometry(2.85,.2,.24,8,.035),trim);
     endHeader.name='verga do portal no fim da passagem';
-    endHeader.position.set(centre,16.0,-12.72);scene.add(endHeader);
+    endHeader.position.set(centre,16.0,-12.0);scene.add(endHeader);
     for(const x of [centre-1.42,centre+1.42]) {
       const endPier=new THREE.Mesh(new RoundedBoxGeometry(.18,2.8,.24,6,.025),stone);
-      endPier.position.set(x,14.55,-12.72);scene.add(endPier);
+      endPier.position.set(x,14.55,-12.0);scene.add(endPier);
     }
+    const exitArch=tube([
+      [centre-1.42,16.0,-12.0],[centre-1.3,16.35,-12.0],
+      [centre-.9,16.62,-12.0],[centre,16.74,-12.0],
+      [centre+.9,16.62,-12.0],[centre+1.3,16.35,-12.0],
+      [centre+1.42,16.0,-12.0]
+    ],.095,trim,64,10);
+    exitArch.name='arco externo de calcário da passagem ao terraço posterior';
     const glow=new THREE.PointLight(0xffc783,.42,5,1.8);
     glow.position.set(centre,15.0,-12.2);scene.add(glow);
   }
@@ -1681,6 +1729,9 @@ function addThothBaseSeating(scene,stone,marble,wood,brass,colliders,interactabl
     base.instanceMatrix.needsUpdate=true;
     seat.instanceMatrix.needsUpdate=true;
     back.instanceMatrix.needsUpdate=true;
+    base.computeBoundingBox();base.computeBoundingSphere();
+    seat.computeBoundingBox();seat.computeBoundingSphere();
+    back.computeBoundingBox();back.computeBoundingSphere();
     base.castShadow=true;base.receiveShadow=true;
     seat.castShadow=true;seat.receiveShadow=true;
     back.castShadow=true;back.receiveShadow=true;
@@ -2254,7 +2305,8 @@ export function buildGrandSalon({
   walkablePlatforms.push(...addBalconyDoorRows(
     scene,stone,darkWood,brass,colliders,interactables,groundSurfaces
   ));
-  addGreatHallRearWall(scene,stone,brass);
+  addGreatHallRearWall(scene,stone,brass,colliders);
+  addRearTerraceOpenings(scene,stone,colliders);
   addLowerPassages(scene,stone,brass,colliders,walkablePlatforms,groundSurfaces);
 
   for(const side of [-1,1]) {

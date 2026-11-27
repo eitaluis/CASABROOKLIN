@@ -1103,7 +1103,20 @@ function addIconPlaque(scene, file, position, rotationY, wood, brass, size = 0.5
 function addGreatHallDoors(scene, stone, wood, brass, colliders, interactables) {
   const group = new THREE.Group();
   group.name = 'portas duplas do Grande Salão com Olho de Hórus';
-  group.position.set(0, 13.175, 8.91);
+  // The original front facade is split at the portal. Restore a full, opaque
+  // limestone backing behind the locked leaves so the East River cannot show
+  // through the door wall, including the tall masonry above the lintel.
+  group.position.set(0, 13.175, 10.75);
+  const portalBacking = new THREE.Mesh(
+    new RoundedBoxGeometry(4.98, 17.56, 0.84, 10, 0.055),
+    stone
+  );
+  portalBacking.name = 'painel maciço opaco de calcário atrás das portas com Olho de Hórus';
+  portalBacking.position.set(0, 8.275, 0.33);
+  portalBacking.castShadow = true;
+  portalBacking.receiveShadow = true;
+  portalBacking.renderOrder = 0;
+  group.add(portalBacking);
 
   const frame = new THREE.Mesh(
     new RoundedBoxGeometry(4.86, 5.74, 0.72, 10, 0.13),
@@ -1309,13 +1322,15 @@ function addGreatHallDoors(scene, stone, wood, brass, colliders, interactables) 
     description: 'As portas duplas de madeira estão marcadas com o Olho de Hórus e presas por correntes e seis cadeados. Por enquanto, a passagem continua trancada.'
   };
 
-  addBoxCollider(colliders, 0, 15.72, 8.75, 4.55, 5.35, 0.78);
+  // Door leaves block the lower opening; the upper masonry backing is solid too.
+  addBoxCollider(colliders, 0, 15.72, 11.0, 4.78, 5.35, 0.9);
+  addBoxCollider(colliders, 0, 24.25, 11.0, 4.98, 12.1, 0.9);
   interactables.push({
     name: 'Portas duplas do Olho de Hórus',
     kind: 'locked-door',
     label: 'As portas estão acorrentadas',
     description: 'O Olho de Hórus foi gravado acima das correntes. Seis cadeados prendem as duas folhas; não há passagem aberta neste momento.',
-    position: new THREE.Vector3(0, 15.35, 6.8),
+    position: new THREE.Vector3(0, 15.35, 9.1),
     radius: 2.7
   });
   return group;

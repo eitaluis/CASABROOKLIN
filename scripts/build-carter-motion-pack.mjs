@@ -6,6 +6,8 @@ const buildDir = path.join(root, 'assets/animations/_carter-motion-build');
 const generatedPack = path.join(root, 'assets/animations/carter-moves.ara-pack.json');
 const finalPack = path.join(root, 'assets/animations/carter-movement.ara-pack.json');
 const finalCredits = path.join(root, 'assets/animations/carter-movement-source-credits.json');
+const bagAssetPath = path.join(root, 'assets/models/carter/innerscene-crossbody-bag.glb');
+const bagDownloadUrl = 'https://files.innerscene.com/library/crossbody-bag-42a4ebf2/14c278501b0655fa74c6/crossbody-bag.glb';
 
 const selectedClips = [
   { slug: 'sprint_shield_loop', id: 'sprint_shield_loop', name: 'Corrida com cajado', category: 'Locomotion', loop: true },
@@ -33,6 +35,32 @@ function readGlbJson(buffer, name) {
 
 async function prepare() {
   await rm(buildDir, { recursive: true, force: true });
+  await mkdir(path.dirname(bagAssetPath), { recursive: true });
+  const bagResponse = await fetch(bagDownloadUrl, { signal: AbortSignal.timeout(60000) });
+  if (!bagResponse.ok) {
+    throw new Error('Innerscene não entregou o GLB da bolsa (HTTP ' + bagResponse.status + ').');
+  }
+  const bagBuffer = Buffer.from(await bagResponse.arrayBuffer());
+  const bagGltf = readGlbJson(bagBuffer, 'innerscene-crossbody-bag');
+  if (!Array.isArray(bagGltf.meshes) || !bagGltf.meshes.length) {
+    throw new Error('O GLB da Innerscene não contém malhas.');
+  }
+  await writeFile(bagAssetPath, bagBuffer);
+  const sceneNodes = (bagGltf.nodes || []).map((node, index) => ({
+    index, name: node.name || 'node-' + index, mesh: node.mesh ?? null,
+    children: node.children || [], translation: node.translation || null,
+    rotation: node.rotation || null, scale: node.scale || null
+  }));
+  const meshSummary = (bagGltf.meshes || []).map((mesh, index) => ({
+    index, name: mesh.name || 'mesh-' + index,
+    primitives: mesh.primitives?.length || 0,
+    materials: [...new Set((mesh.primitives || []).map(p => p.material).filter(Number.isInteger))]
+  }));
+  console.log('Innerscene CC0 bag stored: ' + bagBuffer.byteLength + ' bytes.');
+  console.log('Innerscene node hierarchy: ' + JSON.stringify(sceneNodes));
+  console.log('Innerscene mesh summary: ' + JSON.stringify(meshSummary));
+  console.log('Innerscene materials: ' + JSON.stringify((bagGltf.materials || []).map((m, i) => ({ index:i, name:m.name || 'material-'+i }))));
+
   await mkdir(buildDir, { recursive: true });
   const animations = [];
   const creditRecords = [];
@@ -85,6 +113,7 @@ async function prepare() {
   await writeFile(path.join(buildDir, 'pack.json'), JSON.stringify(pack, null, 2) + '\n');
   await writeFile(path.join(buildDir, 'source-credits.json'), JSON.stringify({
     generatedAt: new Date().toISOString(),
+    bagAsset: { source: 'Innerscene - original model', url: 'https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2', license: 'CC0-1.0', file: 'assets/models/carter/innerscene-crossbody-bag.glb', bytes: bagBuffer.byteLength },
     sourceLibrary: 'KinemIQ public animation library',
     sourceCreditsPage: 'https://kinemiq.app/sources/',
     licensingNote: 'KinemIQ identifies Quaternius Universal Animation Library/UAL2 as CC0-1.0, Open Motion Project (ACCAD / The Ohio State University) as CC-BY-3.0, and The 100STYLE Dataset as CC-BY-4.0. The pack declares the mixed source set; retain the per-file metadata and attribution when redistributing.',

@@ -1,6 +1,6 @@
 # Carter Kane — estudo visual dos acessórios (revisão após screenshot)
 
-Status em 27/11/2026: **direção A e composição aprovadas explicitamente pelo usuário.** A correção de rig e encaixe foi integrada em src/character-accessories.js usando uma geometria procedural provisória com a dimensão/silhueta-alvo. O GLB Innerscene CC0 continua como base visual aprovada, mas ainda não foi importado: o endpoint de download redireciona para files.innerscene.com, que não ficou acessível às ferramentas desta sessão. O resultado de código ainda precisa de validação visual real em navegador; não marcar como visualmente aprovado.
+Status em 27/11/2026: **direção A aprovada e asset Innerscene CC0 baixado, inspecionado e integrado ao runtime.** O corpo GLB real está versionado em `assets/models/carter/innerscene-crossbody-bag.glb`; a alça original está separada em um nó próprio e é ocultada, enquanto a alça customizada de Carter permanece projetada na superfície e ligada aos ossos. O colar mantém corrente/medalhão projetados no tórax. A validação de arquivos e hierarquia passou; a inspeção visual em navegador desktop/mobile ainda é necessária antes de chamar o encaixe de aprovado.
 
 ## 1. Diagnóstico do screenshot enviado em 27/11/2026
 
@@ -179,3 +179,38 @@ Commits de implementação em main:
 - f8e9055 — registra proveniência e status no manifest.
 
 O resultado esperado é bolsa sentada na lateral posterior da pelve, faixa colada à camisa e medalhão apoiado na parte superior do tórax. Esta é a intenção técnica documentada; só a inspeção real do preview pode confirmar o resultado visual.
+
+
+## 11. Download e integração efetiva do asset Innerscene — 27/11/2026
+
+O antigo bloqueio de download desta pesquisa foi resolvido usando o redirecionamento público oficial da página para o arquivo GLB. O arquivo foi baixado e gravado no repositório em `assets/models/carter/innerscene-crossbody-bag.glb` (3.687.552 bytes). A página oficial descreve o corpo como couro conhaque, com aba costurada, fecho de latão e anéis laterais, em dimensões aproximadas de 230 × 86 × 180 mm; a própria página declara CC0.
+
+A hierarquia interna do GLB foi inspecionada antes da integração:
+
+| Nó | Malha | Decisão |
+|---|---|---|
+| `Crossbody body` | 0 | Preservar |
+| `Front flap` | 1 | Preservar |
+| `Shoulder strap` | 2 | Ocultar, pois fica caída atrás da bolsa e não acompanha o corpo |
+| `Stitching, lock and rings` | 3 | Preservar |
+
+Os materiais separados são `Cognac smooth leather`, `Brushed brass hardware` e `Cream stitching`. O GLB tem eixo Z-up e declara a frente em -Y; o loader gira -90° no eixo X para o sistema Y-up do Three.js, aplica escala 0,88 e posiciona o corpo no pivô de quadril. A fita própria de 22 mm continua ajustada à superfície skinned da camisa, com segmentos vinculados aos pivôs do peito e quadril.
+
+O loader mantém uma geometria procedural de fallback caso o GLB não carregue. Assim, a ausência do recurso remoto não retira a bolsa do personagem. A origem é carregada do GitHub Pages/CDN a partir do asset CC0 versionado no próprio repositório.
+
+### Colar
+
+A corrente é uma curva tubular fina com projeção ponto a ponto na superfície skinned da camisa. O medalhão está ligado ao centro do tórax por um pivô cuja orientação acompanha a normal da superfície; o desenho de aro e ankh existente foi mantido. A margem de poucos milímetros reduz a chance de a peça flutuar ou atravessar a camisa, mas ainda precisa ser observada em movimento real.
+
+### Estado técnico
+
+- [x] GLB original baixado e mantido no repositório.
+- [x] Hierarquia, dimensões e materiais inspecionados.
+- [x] Alça original identificada e ocultada sem apagar as demais peças.
+- [x] Corpo do asset ligado ao loader Three.js.
+- [x] Alça nova projetada na malha e ancorada aos ossos do torso/quadril.
+- [x] Corrente e medalhão preservados no módulo e presos ao tórax.
+- [ ] Verificação visual de frente, costas, perfil e 3/4 em idle, walk, run, salto e combate.
+- [ ] Verificação física de clipping/folga em desktop e celular paisagem.
+
+A seção 9 acima, que pede o envio manual do GLB, é histórica e foi **superada** pela integração realizada nesta data.

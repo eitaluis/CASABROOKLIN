@@ -33,10 +33,20 @@ Referência textual: *The Red Pyramid*, passagem da descida à biblioteca. A bib
 
 ### Quartos — canônico
 
-- Quarto de Carter com cama king-size, cabeceira egípcia de marfim com leões e hieróglifos, tecnologia moderna, banheiro e deck com vista para a água.
-- A decoração deve mesclar conforto contemporâneo com objetos egípcios funcionais.
+- Quarto de Carter com cama king-size, **apoio de cabeça egípcio de marfim** (*ivory headrest*) decorado com leões e hieróglifos, tecnologia moderna, banheiro privativo, kitchenette e deck com vista para o porto.
+- O apoio é um objeto egípcio independente, não uma cabeceira estofada de cama. A referência visual principal é o *Lions Headrest* do Grand Egyptian Museum, GEM 270, com dois leões e Shu sustentando a curva.
+- O quarto reúne cama ampla, computador, televisão, aparelho de som, bebidas e doces; as portas de vidro para o deck estão bloqueadas por uma força invisível na primeira visita de Carter.
+- Em *The Throne of Fire*, a varanda recebe uma bacia baixa de bronze sobre pedestal de pedra para vidência com óleo.
+- A decoração deve mesclar conforto contemporâneo com objetos egípcios funcionais, sem transformar o quarto numa tumba.
 
-Referência textual: *The Red Pyramid*, descrição do quarto de Carter.
+Referências textuais: *The Red Pyramid*, descrição do quarto de Carter; *The Throne of Fire*, bacia de vidência na varanda.
+
+### Ala residencial — primeira reconstrução asset-first
+
+- A ala fica no terceiro andar; o quarto de Carter e o de Sadie são contíguos. A planta exata e o desenho do corredor não são cotados no texto.
+- O projeto abre a sala lateral do terceiro nível para um corredor interpretativo, com portas para os dois quartos e comunicação interna entre eles.
+- A suíte de Carter tem banheiro, kitchenette e acesso visual ao deck; a passagem pelo vidro permanece bloqueada na primeira visita, conforme o romance.
+- O estudo completo, a matriz de assets, licenças, medidas, rejeições e QA estão em [RESIDENTIAL-WING-STUDY.md](RESIDENTIAL-WING-STUDY.md). A primeira implementação está em `src/residential-wing.js`.
 
 ### Reconstrução espacial interpretativa
 

@@ -113,17 +113,67 @@ const waterfrontEnvironment = buildWaterfrontEnvironment({
   THREE, scene, isTouchDevice, brickTexture: brick
 });
 
-// Interior passes are shared by desktop and mobile.
-buildInteriorDetails({ THREE, scene:magicalInteriorGroup, interactables });
-const libraryScene = buildLibrary({ THREE, scene:magicalInteriorGroup, interactables, colliders, limestone });
-const grandSalon = buildGrandSalon({
-  THREE, scene:magicalInteriorGroup, animated, camera, isTouchDevice, colliders, interactables, groundSurfaces
-});
-const fireLight = grandSalon.fireLight;
-const bedroomScene = buildBedroom({
-  THREE, scene:magicalInteriorGroup, renderer, isTouchDevice,
-  colliders, groundSurfaces, interactables, floorY:zones.bedroom.base
-});
+// Ambientes internos são construídos sob demanda, igualmente no desktop e no mobile.
+// As listas compartilhadas permitem que o controlador receba rampas, plataformas,
+// caminhos e portais quando cada sala for criada, sem reconstruir o controlador.
+const stairRamps = [];
+const walkablePlatforms = [
+  { minX: 22.2, maxX: 27.8, minZ: 10.2, maxZ: 15.8, height: 13.05 },
+  { minX: -0.2, maxX: 25.2, minZ: 10.7, maxZ: 13.5, height: 13.05 },
+  { minX: -14.4, maxX: 14.4, minZ: -10.4, maxZ: 9.7, height: 13.175 }
+];
+const walkableCurves = [];
+const zonePortals = [
+  { from:'dock', to:'hall', axis:'z', direction:'lt', threshold:11.8, rangeMin:-2.15, rangeMax:2.15 },
+  { from:'hall', to:'dock', axis:'z', direction:'gt', threshold:12.15, rangeMin:-2.15, rangeMax:2.15 }
+];
+let interiorDetailsBuilt = false;
+let libraryScene = null;
+let grandSalon = null;
+let fireLight = null;
+let bedroomScene = null;
+let trainingRoomImpl = null;
+let trainingRoom = null;
+function ensureRoom(name) {
+  if (name === 'dock') return;
+  if (!interiorDetailsBuilt) {
+    buildInteriorDetails({ THREE, scene:magicalInteriorGroup, interactables });
+    interiorDetailsBuilt = true;
+  }
+  if (name === 'library' && !libraryScene) {
+    libraryScene = buildLibrary({ THREE, scene:magicalInteriorGroup, interactables, colliders, limestone });
+    walkableCurves.push(...(libraryScene.stairPaths || []));
+  }
+  if (name === 'hall' && !grandSalon) {
+    grandSalon = buildGrandSalon({
+      THREE, scene:magicalInteriorGroup, animated, camera, isTouchDevice, colliders, interactables, groundSurfaces
+    });
+    fireLight = grandSalon.fireLight;
+    stairRamps.push(...(grandSalon.stairRamps || []));
+    walkablePlatforms.push(...(grandSalon.walkablePlatforms || []));
+  }
+  if (name === 'bedroom' && !bedroomScene) {
+    bedroomScene = buildBedroom({
+      THREE, scene:magicalInteriorGroup, renderer, isTouchDevice,
+      colliders, groundSurfaces, interactables, floorY:zones.bedroom.base
+    });
+  }
+  if (name === 'training' && !trainingRoomImpl) {
+    trainingRoomImpl = buildTrainingRoom({
+      THREE, scene:magicalInteriorGroup, zones, groundSurfaces, colliders, interactables, animated,
+      onPlayerHit: handlePlayerHit
+    });
+    walkablePlatforms.push(...(trainingRoomImpl.walkablePlatforms || []));
+    zonePortals.push(...(trainingRoomImpl.zonePortals || []));
+  }
+}
+trainingRoom = {
+  getStatus: () => trainingRoomImpl?.getStatus?.() || {
+    challengeActive:false, targetPracticeActive:false, shabtiRemaining:0, totalShabti:0, targetHits:0
+  },
+  onWeaponUse: (...args) => trainingRoomImpl?.onWeaponUse?.(...args) || null,
+  update: (...args) => trainingRoomImpl?.update?.(...args) || null
+};
 
 // Estado de jogo global: a vida persiste entre ambientes e a energia recarrega em tempo real.
 const playerVitals = { health: 100, maxHealth: 100, energy: 100, maxEnergy: 100, energyRegen: 8 };
@@ -167,10 +217,7 @@ function handlePlayerHit(hit) {
   }
 }
 
-const trainingRoom = buildTrainingRoom({
-  THREE, scene:magicalInteriorGroup, zones, groundSurfaces, colliders, interactables, animated,
-  onPlayerHit: handlePlayerHit
-});
+// Sala de treinamento também é construída apenas na primeira entrada.
 
 const trainingHud = document.createElement('aside');
 trainingHud.id = 'trainingHud';
@@ -293,24 +340,15 @@ if (character.human) character.human.reset();
 
 const controller = createThirdPersonController({
   THREE, camera, canvas, character, zones, colliders,
-  stairRamps: grandSalon.stairRamps,
-  walkableCurves: libraryScene.stairPaths,
-  walkablePlatforms: [
-    ...(grandSalon.walkablePlatforms || []),
-    ...(trainingRoom.walkablePlatforms || []),
-    { minX: 22.2, maxX: 27.8, minZ: 10.2, maxZ: 15.8, height: 13.05 },
-    { minX: -0.2, maxX: 25.2, minZ: 10.7, maxZ: 13.5, height: 13.05 },
-    { minX: -14.4, maxX: 14.4, minZ: -10.4, maxZ: 9.7, height: 13.175 }
-  ],
-  zonePortals: [
-    ...(trainingRoom.zonePortals || []),
-    { from:'dock', to:'hall', axis:'z', direction:'lt', threshold:11.8, rangeMin:-2.15, rangeMax:2.15 },
-    { from:'hall', to:'dock', axis:'z', direction:'gt', threshold:12.15, rangeMin:-2.15, rangeMax:2.15 }
-  ],
+  stairRamps,
+  walkableCurves,
+  walkablePlatforms,
+  zonePortals,
   spiralStair: world.spiralStair,
   onZoneChange: (name, zone) => {
     // A casca externa invisível escreve profundidade para ocultar a mansão do lado de fora.
     // Dentro dos cômodos, essa máscara deve ser desligada para não encobrir as paredes internas.
+    ensureRoom(name);
     mansionRevealGroup.visible = name === 'dock';
     magicalInteriorGroup.visible = name !== 'dock';
     document.getElementById('zoneName').textContent = zone.label;
@@ -574,9 +612,9 @@ function animate() {
     }
   }
   if (fireLight) fireLight.intensity = 4.25 + Math.sin(time * 8.7) * 0.72;
-  grandSalon.update?.(time);
-  bedroomScene.update?.(time, dt);
-  const libraryMessage = libraryScene.update(time, dt);
+  grandSalon?.update?.(time);
+  bedroomScene?.update?.(time, dt);
+  const libraryMessage = libraryScene?.update?.(time, dt);
   if (libraryMessage) toast(libraryMessage);
   const trainingMessage = trainingRoom.update(time, dt, controller.getPosition(), controller.getForward());
   if (trainingMessage) toast(trainingMessage);

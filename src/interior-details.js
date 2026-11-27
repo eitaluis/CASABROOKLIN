@@ -291,7 +291,7 @@ export function buildInteriorDetails({ THREE, scene, interactables = [] }) {
   domeTexture.colorSpace = THREE.SRGBColorSpace;
   domeTexture.anisotropy = 4;
   const dome = new THREE.Mesh(
-    new THREE.SphereGeometry(12.32, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2),
+    new THREE.SphereGeometry(15.3, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2),
     new THREE.MeshStandardMaterial({
       map: domeTexture,
       emissiveMap: domeTexture,
@@ -302,8 +302,8 @@ export function buildInteriorDetails({ THREE, scene, interactables = [] }) {
     })
   );
   dome.name = 'cúpula celeste de Nut';
-  dome.position.set(0, -6.66, -0.5);
-  dome.scale.y = 0.32;
+  dome.position.set(0, -1.9, -0.5);
+  dome.scale.y = 0.4;
   dome.receiveShadow = true;
   scene.add(dome);
 
@@ -345,7 +345,7 @@ export function buildInteriorDetails({ THREE, scene, interactables = [] }) {
   const earthTexture = new THREE.CanvasTexture(earthCanvas);
   earthTexture.colorSpace = THREE.SRGBColorSpace;
   const earthFloor = new THREE.Mesh(
-    new THREE.CircleGeometry(8.25, 64),
+    new THREE.CircleGeometry(14.5, 128),
     new THREE.MeshStandardMaterial({ map: earthTexture, roughness: 0.94, metalness: 0.08, side: THREE.DoubleSide })
   );
   earthFloor.name = 'mapa terrestre de Geb';
@@ -353,7 +353,7 @@ export function buildInteriorDetails({ THREE, scene, interactables = [] }) {
   earthFloor.position.set(0, -17.325, -0.5);
   earthFloor.receiveShadow = true;
   scene.add(earthFloor);
-  for (const radius of [5.4, 7.95]) {
+  for (const radius of [9.0, 14.0]) {
     const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.035, 8, 96), brass);
     ring.name = 'anel cartográfico de Geb';
     ring.rotation.x = Math.PI / 2;

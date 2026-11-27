@@ -9,8 +9,8 @@ import { buildTrainingRoom } from './training-room.js?v=training-room-opaque-end
 import { buildBedroom } from './bedroom.js?v=carter-bedroom-asset-first-20261127a';
 import { createInventory } from './inventory.js?v=carter-combat-inputs-20261127a';
 import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
-import { createCharacter } from './character.js?v=carter-oneshot-sprint-sync-20261127a';
-import { createThirdPersonController } from './third-person.js?v=carter-oneshot-sprint-sync-20261127a';
+import { createCharacter } from './character.js?v=carter-portrait-hud-20261127a';
+import { createThirdPersonController } from './third-person.js?v=carter-portrait-hud-20261127a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
@@ -36,7 +36,7 @@ renderer.shadowMap.enabled=!isTouchDevice;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.18;
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x83949a);scene.fog=new THREE.FogExp2(0x87979a,.0048);
-const camera=new THREE.PerspectiveCamera(58,window.innerWidth/window.innerHeight,.1,1200);
+const camera=new THREE.PerspectiveCamera(window.innerHeight > window.innerWidth ? 76 : 58,window.innerWidth/window.innerHeight,.1,1200);
 
 camera.rotation.order='YXZ';
 
@@ -533,9 +533,20 @@ document.addEventListener('keydown', event => {
 }, true);
 document.getElementById('interactButton')?.addEventListener('click', interactWithNearby);
 
+const mobileWorldMenu = document.getElementById('mobileWorldMenu');
+const mobileMapToggle = document.getElementById('mobileMapToggle');
+mobileWorldMenu?.addEventListener('click', () => {
+  document.getElementById('leftpanel')?.classList.toggle('portrait-open');
+  document.getElementById('minimap')?.classList.remove('portrait-open');
+});
+mobileMapToggle?.addEventListener('click', () => {
+  document.getElementById('minimap')?.classList.toggle('portrait-open');
+  document.getElementById('leftpanel')?.classList.remove('portrait-open');
+});
 document.querySelectorAll('.nav button').forEach(button => {
   button.addEventListener('click', () => {
     controller.teleport(button.dataset.zone);
+    document.getElementById('leftpanel')?.classList.remove('portrait-open');
     document.getElementById('startscreen').classList.add('hidden');
   });
 });
@@ -645,8 +656,12 @@ function animate() {
     if(isTouchDevice)prompt=String(prompt).replaceAll('E / INTERAGIR','TOQUE · INTERAGIR').replaceAll('E ·','TOQUE ·').replaceAll('F / USAR','BOTÃO USAR');
     interactionPrompt.textContent=prompt;
     interactionPrompt.hidden=false;
+    const interactButton = document.getElementById('interactButton');
+    if (interactButton && isTouchDevice) interactButton.hidden = false;
   }else{
     interactionPrompt.hidden=true;
+    const interactButton = document.getElementById('interactButton');
+    if (interactButton && isTouchDevice) interactButton.hidden = !activeSeat;
   }
   if (haDiButton) {
     const showHaDi = controller.zone === 'training' && trainingStatus.challengeActive;
@@ -684,6 +699,7 @@ function animate() {
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
+  camera.fov = window.innerHeight > window.innerWidth ? 76 : 58;
   camera.updateProjectionMatrix();
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isTouchDevice ? 0.85 : 1.45));
   renderer.setSize(window.innerWidth, window.innerHeight);

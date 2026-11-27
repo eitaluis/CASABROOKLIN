@@ -67,9 +67,15 @@ export async function createCharacter({
   const mixer = new THREE.AnimationMixer(hero.scene);
   let injured = false;
   let actionInterruptOnMovement = true;
+  let actionInterruptDelay = 0;
+  let actionElapsed = 0;
+  // Keep three distinct Ara clips in the blend. Reusing walk_slouch as both
+  // walk and run creates two actions for the same clip and can stall the gait.
+  // Injured movement is slowed by the controller, so the normal run clip is
+  // retained as a valid upper blend endpoint but sprint remains disabled.
   const locomotionOptions = () => injured
-    ? { idle: 'crouch', walk: 'walk_slouch', run: 'walk_slouch', smoothing: 0.12 }
-    : { smoothing: 0.12 };
+    ? { idle: 'crouch', walk: 'walk_slouch', run: 'run', smoothing: 0.18 }
+    : { smoothing: 0.18 };
   let locomotion = hero.locomotion(mixer, locomotionOptions());
   let jumping = false;
   let movementSpeed = 0;
@@ -162,6 +168,8 @@ export async function createCharacter({
     actionSequence = null;
     currentAction = null;
     actionInterruptOnMovement = true;
+    actionInterruptDelay = 0;
+    actionElapsed = 0;
     onActionChange(null);
   }
 
@@ -180,6 +188,8 @@ export async function createCharacter({
     locomotion.stop();
     currentAction = id;
     actionInterruptOnMovement = options.interruptOnMovement !== false;
+    actionInterruptDelay = Number.isFinite(options.interruptDelay) ? Math.max(0, options.interruptDelay) : 0;
+    actionElapsed = 0;
     actionSequence = hero.playSequence(mixer, id, {
       repeat: options.loop === true,
       fade: Number.isFinite(options.fade) ? options.fade : 0.38
@@ -338,8 +348,13 @@ export async function createCharacter({
       return restoreLocomotion();
     },
     playReaction(direction = 'front') {
+      // Do not restart a reaction that is already playing: hits can arrive at
+      // shorter intervals than a full reaction clip and otherwise starve gait.
+      if (actionSequence && String(currentAction || '').startsWith('hit_')) return false;
       const id = REACTION_ANIMATIONS.includes('hit_' + direction) ? 'hit_' + direction : 'hit_front';
-      return playAction(id, { fade: 0.08, interruptOnMovement: false });
+      // Show a brief impact, then let movement reclaim the mixer even if the
+      // authored reaction clip is longer than the player's invulnerability gap.
+      return playAction(id, { fade: 0.08, interruptOnMovement: true, interruptDelay: 0.24 });
     },
     setInjured(value) {
       const next = Boolean(value);
@@ -389,8 +404,10 @@ export async function createCharacter({
     updateFallback(dt, speed) {
       if (disposed) return;
       movementSpeed = speed;
-      // Release one-shot/gesture poses as soon as navigation resumes to avoid foot sliding.
-      if (actionSequence && speed > 0.25 && actionInterruptOnMovement) {
+      // Reactions and gestures have a short authored grace period, then movement
+      // can cancel them so repeated incoming hits never lock the locomotion.
+      if (actionSequence) actionElapsed += dt;
+      if (actionSequence && speed > 0.25 && actionInterruptOnMovement && actionElapsed >= actionInterruptDelay) {
         cancelAction();
         restoreLocomotion();
       }
@@ -398,6 +415,10 @@ export async function createCharacter({
       removeCastingBodyOffsets();
       mixer.update(dt);
       hero.update(dt);
+      // The movement root is yaw-only; no animation or camera-relative turn may
+      // leave a residual pitch/roll after strafing or sprinting.
+      root.rotation.x = 0;
+      root.rotation.z = 0;
       updateCastingBodyPose(dt);
       if (castingHandPose) applyCastingHandPose();
       accessories?.update(dt, movementSpeed);

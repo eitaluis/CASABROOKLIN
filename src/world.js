@@ -281,10 +281,21 @@ box('mesa de centro legado',[0,13.65,-1.4],[3.2,.38,1.8],woodMat,false);cyl('pé
 // Biblioteca circular subterrânea, escavada na rocha.
 const libCenterY=-12.5,libFloor= -17.4,libRadius=12.5;
 const rockMat=new THREE.MeshStandardMaterial({color:0x82735e,map:concrete,roughness:.94,side:THREE.DoubleSide});
-const cylWall=new THREE.Mesh(new THREE.CylinderGeometry(libRadius,libRadius,11.4,64,1,true),rockMat);cylWall.position.set(0,libCenterY,-.5);cylWall.receiveShadow=true;scene.add(cylWall);
-const libFloorMesh=new THREE.Mesh(new THREE.CircleGeometry(libRadius,64),new THREE.MeshStandardMaterial({color:0x33484b,roughness:.8}));libFloorMesh.rotation.x=-Math.PI/2;libFloorMesh.position.set(0,libFloor,-.5);libFloorMesh.receiveShadow=true;scene.add(libFloorMesh);groundSurfaces.push(libFloorMesh);
+const cylWall=new THREE.Mesh(new THREE.CylinderGeometry(libRadius,libRadius,11.4,64,1,true),rockMat);cylWall.name='parede lisa antiga da biblioteca';cylWall.position.set(0,libCenterY,-.5);cylWall.receiveShadow=true;scene.add(cylWall);
+for(let i=0;i<32;i++){
+ const a=(i+.5)*(Math.PI*2/32);
+ const arcHalf=libRadius*Math.PI/32;
+ const halfThickness=.42;
+ const x=Math.sin(a)*(libRadius-.16);
+ const z=-Math.cos(a)*(libRadius-.16)-.5;
+ const halfX=Math.abs(Math.cos(a))*arcHalf+Math.abs(Math.sin(a))*halfThickness;
+ const halfZ=Math.abs(Math.sin(a))*arcHalf+Math.abs(Math.cos(a))*halfThickness;
+ registerCollider(x,libCenterY,z,halfX*2,11.0,halfZ*2);
+}
+
+const libFloorMesh=new THREE.Mesh(new THREE.CircleGeometry(libRadius,64),new THREE.MeshStandardMaterial({color:0x33484b,roughness:.8}));libFloorMesh.name='piso antigo da biblioteca';libFloorMesh.rotation.x=-Math.PI/2;libFloorMesh.position.set(0,libFloor,-.5);libFloorMesh.receiveShadow=true;scene.add(libFloorMesh);groundSurfaces.push(libFloorMesh);
 const mosaic=texCanvas((g,w,h)=>{g.fillStyle='#23383a';g.fillRect(0,0,w,h);for(let i=0;i<12;i++){g.strokeStyle=i%2?'#b28c52':'#71908a';g.lineWidth=7;g.beginPath();g.arc(w/2,h/2,30+i*17,0,Math.PI*2);g.stroke()}for(let i=0;i<12;i++){g.save();g.translate(w/2,h/2);g.rotate(i*Math.PI/6);g.fillStyle=i%2?'#bb9b64':'#71938a';g.fillRect(-7,-195,14,38);g.restore()}},512,512,1,1);
-const mosaicMesh=new THREE.Mesh(new THREE.CircleGeometry(8.5,64),new THREE.MeshStandardMaterial({map:mosaic,roughness:.8,side:THREE.DoubleSide}));mosaicMesh.rotation.x=-Math.PI/2;mosaicMesh.position.set(0,libFloor+.035,-.5);scene.add(mosaicMesh);
+const mosaicMesh=new THREE.Mesh(new THREE.CircleGeometry(8.5,64),new THREE.MeshStandardMaterial({map:mosaic,roughness:.8,side:THREE.DoubleSide}));mosaicMesh.name='mosaico antigo da biblioteca';mosaicMesh.rotation.x=-Math.PI/2;mosaicMesh.position.set(0,libFloor+.035,-.5);scene.add(mosaicMesh);
 const ceiling=new THREE.Mesh(new THREE.CircleGeometry(libRadius,64),new THREE.MeshStandardMaterial({color:0x192c39,roughness:.9,side:THREE.DoubleSide}));ceiling.name='biblioteca teto plano provisório';ceiling.rotation.x=Math.PI/2;ceiling.position.set(0,-6.65,-.5);scene.add(ceiling);
 for(let i=0;i<0;i++){const star=new THREE.Mesh(new THREE.SphereGeometry(.025+Math.random()*.035,6,6),new THREE.MeshBasicMaterial({color:i%4?0xc6a66e:0x8fb2b4}));const a=Math.random()*Math.PI*2,r=Math.random()*11.5;star.position.set(Math.cos(a)*r,-6.55,Math.sin(a)*r-.5);scene.add(star)}
 // Estantes circulares em três níveis.
@@ -293,8 +304,8 @@ for(let a=0;a<8;a++){const angle=a*Math.PI/4;cyl('coluna da biblioteca',[Math.co
 // Escada helicoidal representando a descida de três níveis.
 for(let i=0;i<150;i++){const a=i*.13,r=5.1,y=-6.7-i*.071;const step=box('degrau da escada em espiral',[Math.cos(a)*r,y,Math.sin(a)*r-.5],[1.6,.18,.72],i%4===0?gold:woodMat,false);step.rotation.y=-a;groundSurfaces.push(step)}
 line(Array.from({length:100},(_,i)=>{const a=i*.13;return [Math.cos(a)*4.1,-6.5-i*.107,Math.sin(a)*4.1-.5]}),gold,.045);
-box('mesa de leitura',[0,-16.2,-.5],[4.2,.25,2.2],woodMat,false);for(let x of [-1.6,1.6])box('pé mesa biblioteca',[x,-16.9,-.5],[.18,1.3,.18],cedarMat,false);
-for(let x of [-3.8,3.8]){cyl('castiçal',[x,-15.6,-.5],.12,.12,.65,gold,12);const flame=new THREE.PointLight(0xffc77a,.55,5);flame.position.set(x,-15.05,-.5);scene.add(flame)}
+const legacyLibraryTable=box('mesa de leitura antiga da biblioteca',[0,-16.2,-.5],[4.2,.25,2.2],woodMat,false);legacyLibraryTable.name='mesa de leitura antiga da biblioteca';for(let x of [-1.6,1.6]){const oldLeg=box('pé da mesa antiga da biblioteca',[x,-16.9,-.5],[.18,1.3,.18],cedarMat,false);oldLeg.name='pé da mesa antiga da biblioteca';}
+for(let x of [-3.8,3.8]){const oldCandlestick=cyl('castiçal antigo da biblioteca',[x,-15.6,-.5],.12,.12,.65,gold,12);oldCandlestick.name='castiçal antigo da biblioteca';const flame=new THREE.PointLight(0xffc77a,.55,5);flame.name='luz do castiçal antigo da biblioteca';flame.position.set(x,-15.05,-.5);scene.add(flame)}
 const libLight=new THREE.PointLight(0x9abdc0,1.8,28);libLight.position.set(0,-7.5,-.5);scene.add(libLight);
 for(let a=0;a<6;a++){const ang=a*Math.PI/3;glyphPanel(Math.cos(ang)*12,-12.7,Math.sin(ang)*12-.5,-ang,1.1)}
 // Ala dos quartos: composição interpretativa com conforto moderno e peças antigas.
@@ -322,11 +333,6 @@ for(let x of [-8,0,8])for(let z of [-6,5]){const lamp=new THREE.PointLight(0xffd
  // independentes das malhas visuais, para manter o mesmo comportamento em desktop e mobile.
  registerCollider(0,18.0,-.5,2.7,9.4,1.8);
 
- // Estantes inferiores da biblioteca, no nível em que o personagem caminha.
- for(let i=0;i<32;i++){
-   const angle=i/32*Math.PI*2;
-   registerCollider(Math.cos(angle)*10.65,-15.15,Math.sin(angle)*10.65-.5,1.2,2.2,1.1);
- }
 
  // Mobiliário principal da ala residencial.
  registerCollider(21.8,18.05,-1.2,4.3,1.6,5.4);
@@ -337,7 +343,7 @@ for(let x of [-8,0,8])for(let z of [-6,5]){const lamp=new THREE.PointLight(0xffd
  const zones={
  dock:{label:'DOCA · BROOKLYN',pos:[0,0,31],yaw:0,bounds:[-34,34,-14,58],base:0},
  hall:{label:'GRANDE SALÃO',pos:[0,13.175,2.2],yaw:0,bounds:[-21,21,-15,32],base:13.175},
- library:{label:'BIBLIOTECA SUBTERRÂNEA',pos:[0,-17.4,2.5],yaw:0,bounds:[-10.8,10.8,-10.8,10.8],base:-17.4},
+ library:{label:'BIBLIOTECA SUBTERRÂNEA',pos:[0,-17.4,2.5],yaw:0,bounds:[-11.4,11.4,-11.4,11.4],base:-17.4},
  bedroom:{label:'ALA DOS QUARTOS',pos:[25,17.275,2.5],yaw:0,bounds:[19.3,32.2,-5.5,5.5],base:17.275}
 };
 // Todo conteúdo criado depois da fachada pertence ao espaço mágico interno.

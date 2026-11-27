@@ -364,11 +364,13 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     if (direction.lengthSq() > 0.0001) direction.normalize();
 
     const injured = character.isInjured === true;
-    const keyboardSprint = keys.has('ShiftLeft') || keys.has('ShiftRight');
+    const keyboardSprint = !injured && (keys.has('ShiftLeft') || keys.has('ShiftRight'));
     // No celular, empurrar o joystick progressivamente para frente aumenta a velocidade.
     // A corrida entra suavemente no trecho final do curso, sem botão separado.
     const forwardPush = Math.max(0, -touch.moveY);
-    const analogSprintBlend = THREE.MathUtils.clamp((forwardPush - 0.48) / 0.48, 0, 1);
+    const analogSprintBlend = !injured
+      ? THREE.MathUtils.clamp((forwardPush - 0.48) / 0.48, 0, 1)
+      : 0;
     const running = !controlsLocked && !injured && (keyboardSprint || touch.sprint || analogSprintBlend > 0.02);
     const injuryMultiplier = Number.isFinite(character.movementMultiplier) ? character.movementMultiplier : 1;
     const characterScale = (Number.isFinite(character.height) ? character.height : 1.75) / 1.78;

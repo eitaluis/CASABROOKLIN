@@ -289,7 +289,7 @@ A leitura canônica permanece: câmara circular escavada na rocha; descida de tr
 - Implementados dois bancos em crescentes laterais: estrutura contínua de calcário, almofada de couro, encosto estofado curvo, braços de madeira e filetes/tampas de bronze.
 - Altura superior do assento: aproximadamente 0,485 m acima do piso do salão.
 - Colisores segmentados acompanham os arcos, preservando passagens de entrada e saída.
-- Dois pontos de interação usam âncoras de sentar e de saída. Carter executa a sequência `sit_down` → `sit_idle` (loop) → `stand_up`.
+- Dois pontos de interação usam âncoras de sentar e de saída. Carter executa `sit_down` → `sit_idle` (loop) → `sit_down` em reverso para levantar, conforme o manual Ara.
 
 **Referência de asset:** Innerscene Curved Modular Seating, CC0, GLB 127 KB, dimensões publicadas 4,446 × 1,330 × 0,440 m. O modelo binário não foi recuperado/inspecionado nem importado nesta sessão; a geometria de runtime é código original adaptado à planta atual, sem copiar ou redistribuir o GLB.
 
@@ -304,7 +304,7 @@ A leitura canônica permanece: câmara circular escavada na rocha; descida de tr
 ### Interação de Carter / retarget
 
 - A malha e o rig Ara aprovados foram mantidos.
-- O runtime solicita `sit_down`, `sit_idle` e `stand_up` por meio do catálogo `ANIMATIONS` da versão Ara já instalada; os IDs são incluídos somente se estiverem disponíveis no runtime.
+- O runtime solicita `sit_down` e `sit_idle` por meio do catálogo `ANIMATIONS` da versão Ara já instalada; para levantar, reproduz `sit_down` em sentido inverso, conforme a documentação oficial.
 - A segunda interação E/INTERAGIR inicia o levantamento e posiciona Carter na âncora externa. O controlador bloqueia a locomoção durante a pose sentada e reabre os controles ao concluir.
 - Se os clips de sentar não estiverem disponíveis, Carter retorna à posição anterior e recebe uma mensagem em vez de ficar preso dentro do banco.
 - A interação da estátua usa o gesto Ara `look_around`.

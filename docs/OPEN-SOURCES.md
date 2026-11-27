@@ -377,9 +377,9 @@ Estes três GLBs foram adicionados à cena a partir de versões otimizadas do pr
 ### Animação e interação de Carter
 
 - **Runtime escolhido:** Ara 3D Gen, versão 0.18.1 já usada no projeto; o personagem Carter Ara aprovado foi preservado.
-- **Clips requisitados:** `sit_down` e `sit_idle`, consultados na lista `ANIMATIONS` do Ara e incluídos apenas se presentes no catálogo carregado. O manual do Ara define Stand up como `sit_down` reproduzido em sentido inverso.
+- **Clips requisitados:** `sit_down`, `sit_idle` e `stand_up`, consultados na lista `ANIMATIONS` do Ara e incluídos apenas se presentes no catálogo carregado. O código-fonte do Ara define `stand_up` como um clip derivado por `reversed(SIT_DOWN, 'stand_up', ...)`; por isso a integração chama o ID nativo `stand_up`.
 - **Ação de inspeção:** `look_around` para a estátua de Thoth, sem substituir o rig nem a malha de Carter.
-- **Comportamento:** E/INTERAGIR posiciona Carter num ponto de assento, trava o movimento durante `sit_down` e mantém `sit_idle` em loop. A segunda interação reproduz `sit_down` em reverso, posiciona Carter na âncora externa e libera a locomoção. Se `sit_down` ou `sit_idle` não estiverem disponíveis, Carter volta à posição anterior e o jogo informa a indisponibilidade.
+- **Comportamento:** E/INTERAGIR posiciona Carter num ponto de assento, trava o movimento durante `sit_down` e mantém `sit_idle` em loop. A segunda interação executa o clip nativo `stand_up`, posiciona Carter na âncora externa e libera a locomoção. Se algum dos três IDs não estiver disponível, Carter volta à posição anterior e o jogo informa a indisponibilidade.
 - **Alternativa pesquisada:** Quaternius Universal Animation Library, CC0-1.0, inclui animações humanoides de sentar/repousar/levantar. Não foi importada porque o Ara do projeto já oferece clips nativos retargetados para o rig ativo; evita-se introduzir uma dependência externa redundante de animações.
 - **Licença dos clips Ara:** os dados de animação permanecem sujeitos aos termos upstream de Ara/CMU listados no bloco `ara3d-js` do manifest. Não redistribuímos clips.
 

@@ -3,7 +3,7 @@ import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { createCharacter as createAraCharacter, ANIMATIONS } from 'ara3d';
 import { createCarterAccessories } from './character-accessories.js?v=carter-innerscene-bag-20261127c';
 
-const CARTER_MOVE_PACK_URL = new URL('../assets/animations/carter-movement.ara-pack.json', import.meta.url).href;
+const CARTER_MOVE_PACK_URL = new URL('../assets/animations/carter-movement.ara-pack.json?v=carter-unarmed-sprint-root-fix-20261127a', import.meta.url).href;
 const CARTER_MOVE_CLIPS = Object.freeze({
   sprintUnarmed: 'carter-moves/sprint_loop',
   sprintArmed: 'carter-moves/sprint_shield_loop',
@@ -418,6 +418,15 @@ export async function createCharacter({
       if (fade > 0) reverseAction.fadeIn(fade);
       reverseAction.play();
       actionSequence = { stop: () => reverseAction.stop() };
+    } else if (PACK_ACTION_ANIMATIONS.includes(id) && options.loop !== true) {
+      // Ara's playSequence loop table only contains built-in catalog IDs. Pack clips
+      // are unknown there and default to looping forever, so play our combat pack
+      // actions directly as a genuine Three.js one-shot.
+      mixer.stopAllAction();
+      actionSequence = createClampedAction(
+        clip,
+        Number.isFinite(options.fade) ? options.fade : 0.38
+      );
     } else {
       actionSequence = hero.playSequence(mixer, id, {
         repeat: options.loop === true,
@@ -676,6 +685,9 @@ export async function createCharacter({
   }
 
   function attack(armed = false) {
+    // Não reinicia nem empilha outro combo enquanto uma sequência de combate
+    // personalizada ainda está tocando.
+    if (currentAction && PACK_ACTION_ANIMATIONS.includes(currentAction)) return false;
     const id = armed ? CARTER_MOVE_CLIPS.swordHeavyCombo : CARTER_MOVE_CLIPS.meleeCombo;
     return playAction(id, { fade: 0.12, interruptOnMovement: false });
   }
@@ -697,6 +709,7 @@ export async function createCharacter({
     land,
     attack,
     setSprintArmed,
+    get isSprintArmed() { return sprintArmed; },
     playAction,
     sitDown,
     standFromSeat,

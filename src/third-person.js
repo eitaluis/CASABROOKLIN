@@ -419,7 +419,9 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       }
       // Inclinação frontal sutil no sprint e compensação lateral ao mudar de direção.
       const leanTarget = running && fallbackSpeed > 2.4 ? -0.12 : input.moving ? -0.022 : 0;
-      const bankTarget = input.moving ? THREE.MathUtils.clamp(-input.strafe * 0.035, -0.04, 0.04) : 0;
+      // O personagem não deve tombar para a direita/esquerda ao correr ou virar;
+      // a corrida usa apenas inclinação frontal, sem roll lateral do root.
+      const bankTarget = 0;
       character.model.rotation.x = THREE.MathUtils.damp(character.model.rotation.x, leanTarget, running ? 6.5 : 8, dt);
       character.model.rotation.z = THREE.MathUtils.damp(character.model.rotation.z, bankTarget, 7, dt);
       character.updateFallback(dt, fallbackSpeed);
@@ -439,6 +441,9 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
       if (inOpening && crossed && zones[portal.to]) {
         zoneName = portal.to;
         onZoneChange?.(zoneName, zones[zoneName]);
+        // Rebind the Ara locomotion after an automatic room transition. The old
+        // controller is stopped by resumeLocomotion() before a new one is created.
+        character.resumeLocomotion?.();
         break;
       }
     }

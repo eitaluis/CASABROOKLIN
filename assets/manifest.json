@@ -320,6 +320,18 @@
       "path": "SKILL.md + AGENTS.md",
       "role": "mandatory project-wide process: read book passages and separate canon from interpretation; inspect official author/publisher/illustrator imagery plus historical and fan-art references with proper attribution; search real open 3D/code/texture assets and verify license, dimensions, hierarchy, rig, formats, Three.js/mobile fit; present actual visual references/previews/comparison in chat; wait for explicit user approval before download, new modeling, replacement or integration; preserve desktop/mobile parity and run visual QA",
       "license": "project-original-documentation"
+    },
+    {
+      "id": "brooklyn-warehouse-brick-pbr-facade",
+      "path": "src/world.js + assets/textures/warehouse-brick/",
+      "role": "warehouse exterior uses Poly Haven Brick Wall 001 1K diffuse, OpenGL normal and roughness maps on the existing warehouse mass and side walls; BoxGeometry UVs are scaled in world metres to the 3 m scan; four small jagged ShapeGeometry overlays use Broken Brick Wall 1K diffuse + ORM for localized deterioration, reusing the main brick normal at 0.22 strength as an approximation; no architecture, silhouette or collider changed; shared desktop/mobile",
+      "license": "Poly Haven CC0-1.0 source maps; project-original Three.js material/UV/patch integration"
+    },
+    {
+      "id": "brooklyn-warehouse-brick-damage-patches",
+      "path": "src/world.js",
+      "role": "four irregular non-colliding ShapeGeometry overlays at lower frontage and side walls, clear of windows, boards, cargo gate and graffiti; Broken Brick Wall scan maps 1.8 m scale; shared material/texture instances",
+      "license": "Poly Haven CC0-1.0 maps; project-original geometry"
     }
   ],
   "openSourceReferences": [
@@ -527,15 +539,19 @@
       "id": "polyhaven-brick-wall-001-reference",
       "source": "https://polyhaven.com/a/brick_wall_001",
       "license": "CC0-1.0",
-      "role": "alternative aged industrial brick PBR reviewed; not loaded in runtime",
-      "runtimeImported": false
+      "role": "runtime 1K JPG PBR maps (diffuse, OpenGL normal, roughness) copied locally; applied to exterior warehouse brick faces with world-scaled UVs; source scan 3 × 3 m; CC0-1.0",
+      "runtimeImported": true,
+      "author": "Dimitrios Savva (photography), Rob Tuytel (processing)",
+      "mirrorSource": "https://github.com/Mastercyril/destinys-world-playcanvas/tree/2a3ff78a71ad6881476e6882b4e65aa02a2978fd/public/assets/textures"
     },
     {
       "id": "polyhaven-broken-brick-wall-reference",
       "source": "https://polyhaven.com/a/broken_brick_wall",
       "license": "CC0-1.0",
-      "role": "reference for localized brick damage; not loaded in runtime",
-      "runtimeImported": false
+      "role": "runtime 1K JPG diffuse and ORM (AO/roughness/metal) maps for four irregular localized damage patches; source scan 1.8 × 1.8 m; OpenGL normal is reused from Brick Wall 001 at reduced strength as a documented production approximation; CC0-1.0",
+      "runtimeImported": true,
+      "author": "Amal Kumar",
+      "mirrorSource": "https://github.com/Easier87/Dreamcatcher3D/tree/df9e07cef3f6f140159ab6cdb2486649172ced0c/assets/broken_brick_wall_1k/textures"
     },
     {
       "id": "quaternius-city-kit-not-used",

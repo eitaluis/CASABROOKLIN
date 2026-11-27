@@ -318,3 +318,11 @@ Estes três GLBs foram adicionados à cena a partir de versões otimizadas do pr
 
 - **ThreeJS VFX — https://github.com/majidmanzarpour/threejs-vfx — MIT.** O sistema de partículas do projeto usa silhuetas proceduralmente recortadas em GLSL (soft, smoke, streak, chip, ring), em vez de depender exclusivamente do alpha de sprites. Referência técnica para a máscara orgânica implementada em src/magic-system.js; nenhum código foi copiado e nenhuma dependência foi adicionada.
 - No CASABROOKLIN, máscaras originais com ruído FBM são injetadas em map_fragment via Material.onBeforeCompile: núcleo/fumaça orgânicos, faíscas e corte afilados e sigilo anelar. As texturas Kenney CC0 continuam como detalhes internos e são protegidas pela máscara adicional.
+
+## Alvenaria exterior da Brooklyn House — 27/11/2026
+
+- **Brick Wall 001** — Poly Haven, CC0-1.0, autores Dimitrios Savva (photography) e Rob Tuytel (processing). Página: https://polyhaven.com/a/brick_wall_001. Mapas locais 1K: diffuse, normal OpenGL e roughness. Cópia consultada: https://github.com/Mastercyril/destinys-world-playcanvas/tree/2a3ff78a71ad6881476e6882b4e65aa02a2978fd/public/assets/textures.
+- **Broken Brick Wall** — Poly Haven, CC0-1.0, autora Amal Kumar. Página: https://polyhaven.com/a/broken_brick_wall. Mapas locais 1K: diffuse e ARM/ORM (R=AO, G=roughness, B=metallic). Cópia consultada: https://github.com/Easier87/Dreamcatcher3D/tree/df9e07cef3f6f140159ab6cdb2486649172ced0c/assets/broken_brick_wall_1k/textures. O material local reaproveita o normal GL de Brick Wall 001 em intensidade baixa como aproximação; o normal original de Broken Brick Wall não está no pacote local.
+- Os mapas são cópias locais 1K para evitar hotlinks e reduzir consumo no navegador móvel. Consulte assets/textures/warehouse-brick/CREDITS.md para o mapeamento de arquivos e créditos CC0.
+
+Nenhum mesh de arquitetura foi importado: os materiais são aplicados à geometria original do galpão e a quatro sobreposições irregulares de alvenaria deteriorada.

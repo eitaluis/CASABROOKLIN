@@ -153,3 +153,16 @@ A inspeção do controlador encontrou uma falha de interação: a transição au
 **Correção técnica:** world.js registra um volume de colisão com as dimensões da folha (4,08 × 5,28 × 0,34 unidades). exterior.js atualiza os limites verticais desse volume a cada passo da animação, acompanhando a subida da porta. Como a verificação de colisão já é compartilhada pelo controlador, o comportamento é o mesmo em desktop e mobile. A porta, o portal, a escada e a fachada não foram redesenhados; nenhum asset visual foi baixado ou substituído.
 
 **Validação realizada:** comparação estática entre o volume, a posição da folha e a cápsula do personagem; conferência dos pontos de integração em buildWorld, buildExterior e no controlador compartilhado. **Não testado em navegador:** ainda falta percorrer o portal em runtime desktop e mobile, conferir abertura total, travessia e retorno ao cais.
+
+
+## Fachada de tijolo — materiais PBR locais e danos pontuais — 27/11/2026
+
+Após aprovação explícita, a fachada existente passou a usar **Brick Wall 001** da Poly Haven como revestimento geral, preservando massa, aberturas, tábuas das janelas, portão, graffiti, cobertura e colisores. Foram incorporados três mapas JPEG locais de 1K: diffuse/albedo em espaço sRGB, normal OpenGL e roughness. As UVs do BoxGeometry foram reescaladas em unidades de mundo para respeitar o scan de 3 × 3 m e evitar esticar uma única imagem por toda a parede.
+
+**Deterioração localizada:** quatro pequenas formas irregulares de ShapeGeometry recebem os mapas Broken Brick Wall (scan de 1,8 × 1,8 m): diffuse e ORM (R=AO, G=roughness, B=metallic). Para manter o pacote leve e porque o mapa normal separado do segundo asset não foi importado nesta etapa, essas peças reutilizam o normal OpenGL de Brick Wall 001 com intensidade reduzida (0,22). Essa aproximação está identificada no manifesto; não é apresentada como o normal original de Broken Brick Wall.
+
+**Escopo visual:** os quatro remendos ficam apenas em partes baixas do frontão e das laterais, fora das janelas, tábuas, portão e graffiti. Não foram criadas alas, volumes, rasgos na silhueta ou novas aberturas. Desktop e mobile carregam os mesmos cinco arquivos locais 1K e compartilham os mesmos materiais e geometrias.
+
+**Proveniência e licença:** Brick Wall 001 — Dimitrios Savva e Rob Tuytel, CC0-1.0, https://polyhaven.com/a/brick_wall_001. Broken Brick Wall — Amal Kumar, CC0-1.0, https://polyhaven.com/a/broken_brick_wall. Cópias locais e hashes Git são registrados em assets/manifest.json; créditos e composição dos mapas em assets/textures/warehouse-brick/CREDITS.md.
+
+**QA:** arquivos e referências locais integrados; sintaxe verificada estaticamente. A comparação visual em navegador desktop/mobile, leitura dos danos em ângulos 360°, desempenho/VRAM mobile e calibração artística fina ainda precisam de inspeção real.

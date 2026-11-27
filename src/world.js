@@ -2,6 +2,80 @@ export function buildWorld(ctx){
  const {THREE,scene,colliders,animated,box,cyl,line,texCanvas,addWindow,glyphPanel,addStatue,addColumn,makeGraffiti,addRoomLabel,canvasSign,rugTex,limestone,concrete,metal,gold,stone,brickMat,darkBrick,woodMat,cedarMat,darkGlass,plaster} = ctx;
  const groundSurfaces=[];
 
+ // PBR local do galpão: 1K para manter o custo do waterfront viável no mobile.
+ const pbrLoader = new THREE.TextureLoader();
+ function loadWarehouseMap(path, isColor = false) {
+   const texture = pbrLoader.load(new URL(path, import.meta.url).href, undefined, undefined,
+     error => console.warn('[Brooklyn warehouse] Falha ao carregar ' + path, error));
+   texture.wrapS = THREE.RepeatWrapping;
+   texture.wrapT = THREE.RepeatWrapping;
+   texture.anisotropy = 3;
+   texture.minFilter = THREE.LinearMipmapLinearFilter;
+   texture.magFilter = THREE.LinearFilter;
+   if (isColor) texture.colorSpace = THREE.SRGBColorSpace;
+   return texture;
+ }
+ const warehouseBrickDiffuse = loadWarehouseMap('../assets/textures/warehouse-brick/brick-wall-diffuse.jpg', true);
+ const warehouseBrickNormal = loadWarehouseMap('../assets/textures/warehouse-brick/brick-wall-normal.jpg');
+ const warehouseBrickRough = loadWarehouseMap('../assets/textures/warehouse-brick/brick-wall-roughness.jpg');
+ const brokenBrickDiffuse = loadWarehouseMap('../assets/textures/warehouse-brick/broken-brick-diffuse.jpg', true);
+ const brokenBrickOrm = loadWarehouseMap('../assets/textures/warehouse-brick/broken-brick-orm.jpg');
+
+ const warehouseBrickMaterial = new THREE.MeshStandardMaterial({
+   map: warehouseBrickDiffuse, normalMap: warehouseBrickNormal,
+   roughnessMap: warehouseBrickRough, color: 0xffffff, metalness: 0, roughness: 0.94
+ });
+ warehouseBrickMaterial.normalScale.set(0.52, 0.52);
+
+ // O Broken Brick usa diffuse e ORM próprios; o normal GL principal é reutilizado
+ // a baixa intensidade como aproximação, não como mapa normal original do asset.
+ const brokenBrickMaterial = new THREE.MeshStandardMaterial({
+   map: brokenBrickDiffuse, normalMap: warehouseBrickNormal, roughnessMap: brokenBrickOrm,
+   color: 0xffffff, metalness: 0, roughness: 0.98, side: THREE.DoubleSide,
+   polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1
+ });
+ brokenBrickMaterial.normalScale.set(0.22, 0.22);
+
+ function applyWarehouseBoxUV(mesh, tileSize = 3.0) {
+   const geometry = mesh.geometry;
+   const positions = geometry.getAttribute('position');
+   const normals = geometry.getAttribute('normal');
+   const uv = geometry.getAttribute('uv');
+   for (let i = 0; i < positions.count; i++) {
+     const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
+     const nx = Math.abs(normals.getX(i)), ny = Math.abs(normals.getY(i)), nz = Math.abs(normals.getZ(i));
+     if (nz >= nx && nz >= ny) uv.setXY(i, x / tileSize, y / tileSize);
+     else if (nx >= nz && nx >= ny) uv.setXY(i, z / tileSize, y / tileSize);
+     else uv.setXY(i, x / tileSize, z / tileSize);
+   }
+   uv.needsUpdate = true;
+ }
+
+ // Pequenas áreas irregulares de alvenaria deteriorada, sem perfurar a massa de colisão.
+ const brokenPatchOutlines = [
+   [[-.50,-.25],[-.42,-.46],[-.20,-.40],[-.08,-.50],[.17,-.43],[.34,-.48],[.50,-.24],[.44,-.04],[.50,.14],[.31,.27],[.25,.48],[.02,.42],[-.17,.50],[-.30,.33],[-.49,.28],[-.46,.02]],
+   [[-.50,-.18],[-.39,-.43],[-.12,-.46],[.04,-.37],[.25,-.50],[.46,-.28],[.42,-.04],[.50,.20],[.28,.31],[.18,.48],[-.06,.42],[-.25,.50],[-.35,.29],[-.50,.15]],
+   [[-.50,-.30],[-.33,-.48],[-.14,-.40],[.04,-.49],[.26,-.38],[.50,-.16],[.41,.08],[.48,.30],[.22,.42],[.02,.48],[-.16,.37],[-.36,.47],[-.49,.20]]
+ ];
+ function addBrokenBrickPatch(x, y, z, width, height, rotationY = 0, variant = 0) {
+   const outline = brokenPatchOutlines[variant % brokenPatchOutlines.length];
+   const shape = new THREE.Shape();
+   shape.moveTo(outline[0][0] * width, outline[0][1] * height);
+   for (let i = 1; i < outline.length; i++) shape.lineTo(outline[i][0] * width, outline[i][1] * height);
+   shape.closePath();
+   const geometry = new THREE.ShapeGeometry(shape, 10);
+   const positions = geometry.getAttribute('position'), uv = geometry.getAttribute('uv');
+   // Broken Brick Wall: scan físico de 1,8 × 1,8 m.
+   for (let i = 0; i < positions.count; i++) uv.setXY(i, (positions.getX(i) + 0.9) / 1.8, (positions.getY(i) + 0.9) / 1.8);
+   uv.needsUpdate = true;
+   geometry.computeVertexNormals();
+   const patch = new THREE.Mesh(geometry, brokenBrickMaterial);
+   patch.name = 'remendo irregular de tijolo deteriorado';
+   patch.position.set(x, y, z); patch.rotation.y = rotationY;
+   patch.castShadow = true; patch.receiveShadow = true; scene.add(patch);
+   return patch;
+ }
+
  // Caixas invisíveis simplificadas para a primeira camada de colisão.
  const registerCollider = (x,y,z,width,height,depth) => {
    colliders.push({
@@ -44,7 +118,8 @@ for(const z of [25.6,32.4]){
 }
 // Armazém, paredes de tijolo, janelas quebradas e portões.
 const WH={w:43,d:31,h:12,cx:0,cz:0};
-box('massa do armazém',[0,6,0],[43,12,31],brickMat,true);
+const warehouseBody = box('massa do armazém',[0,6,0],[43,12,31],warehouseBrickMaterial,true);
+applyWarehouseBoxUV(warehouseBody, 3.0);
 box('cobertura do armazém',[0,12.15,0],[44,.45,32],darkBrick,false);
 for(let x=-18;x<=18;x+=6){
   addWindow(x,8.2,15.62,3.0,3.0,'front');
@@ -52,11 +127,16 @@ for(let x=-18;x<=18;x+=6){
   box('tábua na janela',[x,9.25,15.83],[3.15,.14,.13],woodMat);
 }
 for(let x of [-14,-7,7,14]){box('viga vertical industrial',[x,6,15.9],[.32,12,.42],metal)}
-for(let x of [-20,20]){box('parede lateral armazém',[x,6,0],[.4,12,31],brickMat)}
+for(let x of [-20,20]){const sideWall=box('parede lateral armazém',[x,6,0],[.4,12,31],warehouseBrickMaterial);applyWarehouseBoxUV(sideWall,3.0)}
 for(let z of [-12,0,12]){box('viga de reforço lateral',[-20.3,6,z],[.3,12,.4],metal);box('viga de reforço lateral',[20.3,6,z],[.3,12,.4],metal)}
 box('portão de carga',[0,4.1,15.72],[9,7.6,.28],new THREE.MeshStandardMaterial({color:0x282f30,roughness:.8,metalness:.45}),false);
 for(let y=.7;y<7.7;y+=.55)box('ripas do portão',[0,y,15.9],[8.8,.07,.08],metal,false,false);
 makeGraffiti(-12,4.2,15.9);makeGraffiti(13,4.5,15.9);
+// Danos pontuais, recuados das tábuas, do portão e das duas pichações frontais.
+addBrokenBrickPatch(-16.5, 2.45, 15.535, 3.0, 2.05, 0, 0);
+addBrokenBrickPatch(16.9, 2.35, 15.535, 2.65, 1.8, 0, 1);
+addBrokenBrickPatch(21.535, 3.2, -6.8, 3.0, 2.0, Math.PI / 2, 2);
+addBrokenBrickPatch(-21.535, 3.8, -7.2, 2.65, 1.8, -Math.PI / 2, 1);
 for(let x of [-18,18]){box('tubo de drenagem',[x,6,15.95],[.2,11,.2],metal);cyl('lâmpada industrial',[x,10.8,16.4],.22,.22,.3,new THREE.MeshStandardMaterial({color:0xd8b77a,emissive:0xb07b36,emissiveIntensity:1.4}),12)}
 // Equipamento abandonado e pilhas de sucata.
 for(let i=0;i<15;i++){const x=-28+Math.random()*17,z=8+Math.random()*20,y=.55+Math.random()*1.4;const m=box('sucata metálica',[x,y,z],[1.5+Math.random()*2,.35+Math.random()*1.1,.7+Math.random()*1.8],i%2?metal:darkBrick);m.rotation.y=Math.random()*1.8;m.rotation.z=(Math.random()-.5)*.4}

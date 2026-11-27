@@ -234,3 +234,14 @@ A folha do portal já era animada verticalmente pelo módulo exterior e comparti
 | Elemento | Mudança técnica | Asset/licença | Estado |
 |---|---|---|---|
 | Folha do portal | Colisor 4,08 × 5,28 × 0,34 acompanha a folha; a passagem fica liberada quando a subida remove a sobreposição com a cápsula do personagem | Geometria e lógica originais do projeto; nenhum asset externo adicionado | Implementado no código; teste real de abertura, travessia e retorno em desktop/mobile pendente |
+
+
+## Fachada do armazém — Brick Wall 001 + danos localizados — 27/11/2026
+
+| Elemento | Asset / configuração | Integração e adaptação | Estado |
+|---|---|---|---|
+| Alvenaria principal do galpão | Poly Haven Brick Wall 001, CC0-1.0; Dimitrios Savva / Rob Tuytel; diffuse, nor_gl e roughness em JPEG 1K; scan 3 × 3 m | Mapas locais em assets/textures/warehouse-brick; UVs do box escaladas em metros; metalness 0; normalScale 0,52 | Integrado no código; inspeção visual em navegador pendente |
+| Danos pontuais | Poly Haven Broken Brick Wall, CC0-1.0; Amal Kumar; diffuse e ARM/ORM JPEG 1K; scan 1,8 × 1,8 m | Quatro ShapeGeometry irregulares nas áreas baixas da frente e laterais; roughness lê canal G do ORM; normal de Brick Wall 001 reutilizado com normalScale 0,22, adaptação identificada | Integrado no código; inspeção visual de bordas e escala pendente |
+| Silhueta e arquitetura | Geometria atual de src/world.js | Sem substituição da massa do galpão, janelas, tábuas, portão, graffiti, cobertura, escada, portal ou colisores | Preservado |
+
+**Orçamento mobile:** os cinco mapas locais são 1K; o conjunto é compartilhado por todos os remendos, sem duplicação de mapas ou carregamento remoto em runtime. Não há displacement map, tessellation ou novo mesh por textura. O ganho de qualidade precisa ser comparado em navegador com o custo real de memória e draw calls.

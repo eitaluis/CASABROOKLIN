@@ -266,11 +266,32 @@ function addBalconyDoorRows(scene,stone,wood,brass,colliders,interactables,groun
         floor.name='piso de calcário da sala lateral da galeria';
         floor.position.set(roomX,floorY-.11,z);floor.receiveShadow=true;floor.castShadow=true;scene.add(floor);
         groundSurfaces?.push(floor);
-        const back=new THREE.Mesh(new RoundedBoxGeometry(.22,roomHeight,roomDepth,8,.035),stone);
-        back.name='parede de fundo da sala lateral';
-        back.position.set(side*17.82,floorY+roomHeight/2,z);
-        back.castShadow=true;back.receiveShadow=true;scene.add(back);
-        addBoxCollider(colliders,side*17.82,floorY+roomHeight/2,z,.22,roomHeight,roomDepth);
+        // A sala do topo na ala leste abre para o corredor residencial.
+        // A circulação e a largura do vestíbulo são interpretação espacial;
+        // não existe uma planta cotada no romance.
+        const residentialExit = side===1 && Math.abs(floorY-24.375)<0.001 && Math.abs(z)<0.001;
+        if(!residentialExit) {
+          const back=new THREE.Mesh(new RoundedBoxGeometry(.22,roomHeight,roomDepth,8,.035),stone);
+          back.name='parede de fundo da sala lateral';
+          back.position.set(side*17.82,floorY+roomHeight/2,z);
+          back.castShadow=true;back.receiveShadow=true;scene.add(back);
+          addBoxCollider(colliders,side*17.82,floorY+roomHeight/2,z,.22,roomHeight,roomDepth);
+        } else {
+          for(const dz of [-1.92,1.92]) {
+            const jamb=new THREE.Mesh(new RoundedBoxGeometry(.34,2.82,.34,8,.045),stone);
+            jamb.name='ombreira do acesso à ala residencial';
+            jamb.position.set(17.82,floorY+1.41,dz);
+            jamb.castShadow=true;jamb.receiveShadow=true;scene.add(jamb);
+            addBoxCollider(colliders,17.82,floorY+1.41,dz,.34,2.82,.34);
+            const capital=new THREE.Mesh(new RoundedBoxGeometry(.52,.16,.52,8,.035),brass);
+            capital.position.set(17.82,floorY+2.79,dz);
+            scene.add(capital);
+          }
+          const lintel=new THREE.Mesh(new RoundedBoxGeometry(.4,.24,4.2,8,.035),stone);
+          lintel.name='lintel de calcário do corredor residencial';
+          lintel.position.set(17.82,floorY+2.92,0);
+          lintel.castShadow=true;lintel.receiveShadow=true;scene.add(lintel);
+        }
         for(const end of [-1,1]) {
           const partition=new THREE.Mesh(new RoundedBoxGeometry(roomWidth,roomHeight,.18,8,.03),stone);
           partition.name='parede divisória da sala lateral';

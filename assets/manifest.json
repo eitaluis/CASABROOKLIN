@@ -294,7 +294,7 @@
     {
       "id": "ha-di-pooled-vfx-fighting-point",
       "path": "src/magic-system.js + src/character.js + src/main.js",
-      "role": "HA-DI com explosão pré-alocada; 18 raios, 46 faíscas e 9 puffs agrupados em InstancedMesh; shaders pré-compilados; gesto de combate Ara fight_idle + point, com guarda esquerda preservada e dois dedos direitos; impacto diretamente no Shabti aos 0,82 s, sem projétil; glifo ḥḏ luminoso sem halo ou anéis externos; lógica compartilhada desktop/mobile",
+      "role": "HA-DI com explosão pré-alocada; 18 raios, 46 faíscas e 9 puffs agrupados em InstancedMesh; shaders pré-compilados; gesto de combate Ara fight_idle + point, com guarda esquerda preservada e dois dedos direitos; impacto diretamente no Shabti aos 0,82 s, sem projétil; glifo ḥḏ luminoso sem halo ou anéis externos; lógica compartilhada desktop/mobile; máscaras GLSL FBM animadas recortam o alpha dos sprites de núcleo, fumaça, faíscas, corte e sigilo para remover bordas quadradas sem dependência adicional",
       "license": "project-original-code; Ara/CMU animation data follows upstream terms"
     },
     {
@@ -620,7 +620,7 @@
       "id": "threejs-vfx-ha-di-study",
       "source": "https://github.com/majidmanzarpour/threejs-vfx",
       "license": "MIT",
-      "role": "visual/technical study for procedural spell VFX, particles and GLSL techniques; no code, textures or assets copied into the CASABROOKLIN runtime",
+      "role": "Referência MIT para silhuetas de VFX calculadas em GLSL (soft, smoke, streak, chip, ring) sem depender apenas de sprites; CASABROOKLIN implementa máscaras FBM próprias via onBeforeCompile; nenhum código importado ou copiado.",
       "runtimeImported": false
     },
     {
@@ -679,6 +679,17 @@
         "index.html"
       ],
       "summary": "HA-DI usa fight_idle + point, preserva a guarda esquerda, aplica uma base corporal de combate e aciona a explosão diretamente no Shabti sem projétil.",
+      "date": "2026-11-27"
+    },
+    {
+      "id": "ha-di-organic-impact-mask-20261127",
+      "scope": "runtime",
+      "files": [
+        "src/magic-system.js",
+        "src/main.js",
+        "index.html"
+      ],
+      "summary": "Máscaras GLSL FBM recortam o alpha dos sprites do impacto HA-DI em formas orgânicas, evitando placas quadradas; máscaras animadas com o tempo do impacto.",
       "date": "2026-11-27"
     }
   ]

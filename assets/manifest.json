@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.15",
+  "version": "0.4.16",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -199,6 +199,32 @@
       "version": "Three.js r165.0",
       "license": "MIT",
       "role": "KTX2Loader e transcoder Basis em https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/libs/basis/ para carregar texturas KTX2 dos GLBs Tevy; mesmo runtime Three.js do projeto."
+    },
+    {
+      "id": "kinemiq-carter-movement-pack",
+      "source": "https://kinemiq.app/animations/",
+      "directUrls": {
+        "araPack": "https://cdn.jsdelivr.net/gh/eitaluis/CASABROOKLIN@f77ad108a0e81f1ff50152842eb26ba8fa456eeb/assets/animations/carter-movement.ara-pack.json",
+        "credits": "assets/animations/carter-movement-source-credits.json"
+      },
+      "author": "Quaternius / ACCAD Open Motion Project / The 100STYLE Dataset, distributed by KinemIQ",
+      "version": "6 clips; Ara content pack carter-moves",
+      "license": "Mixed CC0-1.0 / CC-BY-3.0 / CC-BY-4.0; see per-source credits",
+      "format": "Ara pack JSON",
+      "runtimeImported": true,
+      "role": "Carter's sprint with/without object, ninja double jump, landing, unarmed melee combo and heavy armed combo; all retargeted to the Ara character rig. Shared desktop/mobile runtime; physical root motion remains controlled by src/third-person.js."
+    },
+    {
+      "id": "innerscene-cc0-carter-crossbody-bag",
+      "source": "https://www.innerscene.com/tools/library/3d-parts/crossbody-bag-42a4ebf2",
+      "directDownload": "https://files.innerscene.com/library/crossbody-bag-42a4ebf2/14c278501b0655fa74c6/crossbody-bag.glb",
+      "repositoryPath": "assets/models/carter/innerscene-crossbody-bag.glb",
+      "author": "Innerscene (original model)",
+      "version": "GLB 3,687,552 bytes",
+      "license": "CC0-1.0",
+      "format": "GLB",
+      "runtimeImported": true,
+      "role": "Compact cognac leather crossbody satchel. The GLB body, flap, stitching and hardware are preserved; only the original dangling shoulder-strap node is hidden and replaced by Carter's custom skinned-surface strap attached to torso/hip bones."
     }
   ],
   "localGeneratedAssets": [
@@ -556,6 +582,12 @@
       "id": "carter-bedroom-stereo-amplifier-20261127",
       "path": "src/bedroom.js",
       "role": "Receiver estéreo procedural original, com painel frontal, três controles de latão e LED de estado entre as duas caixas acústicas; representa o aparelho de som mencionado no romance sem alegar que o texto especifica este modelo.",
+      "license": "project-original-code"
+    },
+    {
+      "id": "carter-anatomical-satchel-strap-and-medallion",
+      "path": "src/character-accessories.js",
+      "role": "Custom crossbody strap projected onto Carter's skinned shirt surface and attached to chest/hip bones; necklace chain and medallion surface-fitted to the shirt and chest pivot. Shared desktop/mobile character runtime.",
       "license": "project-original-code"
     }
   ],

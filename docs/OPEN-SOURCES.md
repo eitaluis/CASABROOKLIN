@@ -435,3 +435,23 @@ A implementação aprovada foi construída com geometria e texturas originais do
 - O atlas mural contém composições originais. As sequências de hieróglifos são decoração interpretativa, não uma tradução acadêmica nem texto literal do romance.
 
 **QA:** os módulos passaram pela checagem estática de sintaxe e o manifest JSON foi validado. Ainda não houve inspeção visual em navegador real no desktop ou em celular paisagem.
+
+## Quarto de Carter — modelos CC0 e referência histórica — 27/11/2026
+
+| Fonte | Licença / dados | Uso e estado |
+|---|---|---|
+| [Tevy Double Bed](https://tevy.dev/models/double-bed) | CC0-1.0; v1 | GLB remoto, LOD1 desktop / LOD2 mobile; fallback local |
+| [Tevy Nightstand](https://tevy.dev/models/nightstand) | CC0-1.0; v2 | GLB remoto, LOD1 / LOD2; fallback local |
+| [Tevy TV Stand](https://tevy.dev/models/tv-stand) | CC0-1.0; v2 | GLB remoto; tela recebe conteúdo do jogo |
+| [Tevy Office Desk](https://tevy.dev/models/office-desk) | CC0-1.0; v2 | GLB remoto; estação de computador |
+| [Tevy Kitchen Sink Base](https://tevy.dev/models/kitchen-base-unit-sink) | CC0-1.0; v1 | GLB remoto; kitchenette |
+| [Tevy Kitchen Drawers](https://tevy.dev/models/kitchen-base-unit-drawers) | CC0-1.0; v1 | GLB remoto; kitchenette |
+| [Tevy Bathroom Vanity](https://tevy.dev/models/bathroom-vanity) | CC0-1.0; v1 | GLB remoto; banheiro privativo |
+| [Tevy Bathtub](https://tevy.dev/models/bathtub) | CC0-1.0; v1 | GLB remoto; banheiro privativo |
+| [Tevy Toilet](https://tevy.dev/models/toilet) | CC0-1.0; v1 | GLB remoto; banheiro privativo |
+| [Tevy Bookshelf Speaker](https://tevy.dev/models/bookshelf-speaker) | CC0-1.0; v1 | Duas instâncias no sistema de som |
+| [Innerscene Undercounter Fridge](https://www.innerscene.com/tools/library/3d-parts/undercounter-fridge-bef8ea56) | CC0-1.0; GLB 452 KB; 0,598 × 0,548 × 0,820 m | Carregamento direto tentado; CORS ainda não validado; fallback local |
+| [Grand Egyptian Museum — Lions Headrest #270](https://gem.eg/en/collection/artefacts/lions-headrest) | Referência histórica oficial | Orienta silhueta de marfim, Shu ajoelhado, leões e apoio curvo; nenhum modelo ou imagem do museu foi importado |
+| [Tevy asset documentation](https://tevy.dev/docs) | Documentação técnica do fornecedor | HTTPS, CORS aberto, GLB Meshopt + KTX2, loaders requeridos e versões fixadas |
+
+**Nota de entrega:** os GLBs Tevy permanecem hospedados nas URLs de origem e não foram copiados para assets/models. A implementação usa URLs versionadas e fallbacks locais. As fontes e licenças estão registradas em assets/manifest.json; a inspeção de rede e carregamento ainda depende de teste no navegador.

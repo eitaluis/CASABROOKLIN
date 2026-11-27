@@ -105,9 +105,17 @@ function createSurfaceProjector(characterRoot) {
       };
     }
 
-    const worldNormal = hit.face.normal.clone()
-      .applyMatrix3(normalMatrix.getNormalMatrix(hit.object.matrixWorld))
-      .normalize();
+    let worldNormal;
+    if (typeof hit.object.getVertexPosition === 'function') {
+      const a = hit.object.getVertexPosition(hit.face.a, new THREE.Vector3()).applyMatrix4(hit.object.matrixWorld);
+      const b = hit.object.getVertexPosition(hit.face.b, new THREE.Vector3()).applyMatrix4(hit.object.matrixWorld);
+      const c = hit.object.getVertexPosition(hit.face.c, new THREE.Vector3()).applyMatrix4(hit.object.matrixWorld);
+      worldNormal = b.sub(a).cross(c.sub(a)).normalize();
+    } else {
+      worldNormal = hit.face.normal.clone()
+        .applyMatrix3(normalMatrix.getNormalMatrix(hit.object.matrixWorld))
+        .normalize();
+    }
 
     inverseRoot.copy(characterRoot.matrixWorld).invert();
     const localNormal = worldNormal.clone().transformDirection(inverseRoot).normalize();

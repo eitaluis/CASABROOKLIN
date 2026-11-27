@@ -67,6 +67,9 @@ button.active,button:hover{background:#9b7542;color:#111}
   <button data-action="wave">ACENAR</button>
   <button data-action="point">APONTAR</button>
   <button data-action="use_press">ALCANÇAR O DUAT</button>
+  <button data-action="sword_idle">GUARDA KHOPESH</button>
+  <button data-action="sword_combo">COMBO KHOPESH</button>
+  <button data-action="sword_thrust">ESTOCADA</button>
   <button data-action="bow">SAUDAR</button>
   <button data-action="stop">RETOMAR</button>
   <button data-view="front">FRENTE</button>
@@ -81,8 +84,8 @@ button.active,button:hover{background:#9b7542;color:#111}
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createCharacter } from './src/character.js?v=injury-reaction-unlock-20261127a';
-import { createInventory } from './src/inventory.js?v=inventory-polyfork-quarterstaff-20261127a';
+import { createCharacter } from './src/character.js?v=carter-ara-weapons-duat-vortex-20261127a';
+import { createInventory } from './src/inventory.js?v=carter-ara-weapons-duat-vortex-20261127a';
 
 const canvas = document.getElementById('stage');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -217,8 +220,8 @@ function setMode(mode) {
   character.stopAction?.();
   document.querySelectorAll('[data-mode]').forEach(button => button.classList.toggle('active', button.dataset.mode === mode));
   if (mode === 'idle') speed = 0;
-  if (mode === 'walk') speed = 1.7;
-  if (mode === 'sprint') speed = 4.2;
+  if (mode === 'walk') speed = character.locomotion?.walkSpeed || 1.7;
+  if (mode === 'sprint') speed = character.locomotion?.runSpeed || 4.2;
   if (mode === 'jump') {
     speed = 0;
     if (character.jump()) previewJumpVelocity = 4.6;
@@ -241,7 +244,7 @@ document.querySelectorAll('[data-action]').forEach(button => {
       return;
     }
     speed = 0;
-    const loops = action === 'look_around' || action === 'talk_gestures';
+    const loops = action === 'look_around' || action === 'talk_gestures' || action === 'sword_idle';
     const played = character.playAction?.(action, { loop: loops });
     if (!played) {
       const status = document.getElementById('action-status');

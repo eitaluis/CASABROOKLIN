@@ -246,3 +246,30 @@ A leitura canônica permanece: câmara circular escavada na rocha; descida de tr
 **Implementação estrutural registrada:** painéis murais curvos com aberturas circulares reais e profundidade interna; cápsulas translúcidas com papiro interno; quatro estatuetas humanas; mesa de pedra e bolsa de Julius. As 48 cápsulas (16 por faixa em três faixas) são uma distribuição de produção, não uma contagem canônica.
 
 **Ainda provisório:** forma figurativa final de Nut e Geb, desenho da escada dos três andares e aprovação dos materiais. A escada helicoidal é uma decisão interpretativa, pois o romance fixa a descida de três andares, mas não sua planta. A implementação não deve ser marcada como aprovada sem inspeção real em desktop e celular paisagem.
+
+
+## Grande Salão — circulação, assentos e conexão ao terraço (27/11/2026)
+
+### Referências e decisões
+
+- Prancha da graphic novel *The Red Pyramid*, “First Floor — The Great Room” (Orpheus Collar): referência de composição para a estátua de Thoth sobre uma base monumental com assentos curvos integrados. Usar como referência de linguagem e composição, não reproduzir a ilustração: https://i.pinimg.com/736x/9b/de/c9/9bdec905a485554ed34aa38e2659c5a7.jpg
+- Referência de asset CC0 para assentos modulares curvos: Innerscene, “Curved modular seating, 3 modules”, GLB, aproximadamente 4,4 × 1,3 × 0,4 m. É uma referência de forma/escala; o arquivo binário não foi integrado ao projeto nesta etapa: https://www.innerscene.com/tools/library/3d-parts/curved-modular-seating-3-modules-1f4a9531
+- A base atual foi reconstruída proceduralmente como três arcos escalonados de calcário, madeira e couro, abertos no eixo de entrada. Essa implantação é uma interpretação artística da prancha; não é uma medida ou planta descrita no romance.
+
+### Cânone versus interpretação
+
+- **Canônico:** Grande Salão de quatro alturas; três níveis de galerias com portas voltadas ao salão; paredes de vidro para o terraço que contorna a casa, com piscina, jantar e fogueira; portas duplas marcadas pelo Olho de Hórus associadas à descida de três pavimentos até a biblioteca.
+- **Interpretação implementada:** janelas laterais fumê com peitoris de calcário e portas de vidro operáveis no centro de cada parede para o terraço; duas passagens inferiores posteriores alinhadas com o passeio perimetral do terraço; assentos curvos em anfiteatro ao redor do pedestal; percurso exato das escadas superiores.
+- O livro não especifica duas passagens inferiores laterais até o terraço. Elas são uma solução de circulação provisória, não um detalhe canônico.
+- A ligação vertical entre o Grande Salão e a descida de três pavimentos da biblioteca ainda precisa ser construída e validada. A posição atual do portal do Olho de Hórus também precisa ser revisada para respeitar a localização no extremo oposto descrita no livro; não considerar a ligação com a biblioteca concluída.
+
+### Correções de circulação e lookdev de 27/11
+
+- Ponto de entrada do Grande Salão reposicionado para a área livre diante do anfiteatro de assentos; atalho de teclado `2`/`Numpad2` chama a mesma transição.
+- Assentos antigos em oito módulos fechando um círculo foram substituídos por três fileiras curvas instanciadas, com abertura frontal e colisores segmentados. A estátua permanece preservada; somente o plinto inferior passou a ter planta circular.
+- As saídas inferiores agora atravessam a fachada posterior reconstruída e alcançam o terraço perimetral existente. O colisor antigo da fachada posterior é removido e a alvenaria é recomposta ao redor das aberturas.
+- Treliças e exaustores da cobertura industrial foram rebaixados para não atravessarem o piso do Grande Salão.
+- Janelas laterais deixaram de ser painéis totalmente transparentes: agora têm peitoril maciço, vidro fumê, montantes de bronze e pilares de calcário. As portas centrais continuam operáveis.
+- Luminárias de mesa cônicas foram substituídas por difusores cilíndricos opalinos com aros e nervuras de bronze.
+
+**QA pendente:** a validação realizada nesta etapa é estática (fonte, colisores e imports). Ainda é necessário testar a caminhada real, abertura das portas, degraus, passagens e renderização do material em navegador, desktop e celular em paisagem.

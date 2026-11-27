@@ -330,3 +330,35 @@ A leitura canônica permanece: câmara circular escavada na rocha; descida de tr
 - Colisão: o colisor das folhas foi alinhado ao novo plano; foi acrescentado um colisor para a alvenaria superior, impedindo atravessar ou subir pelo espaço acima da porta trancada.
 - Interação: o ponto de inspeção da porta foi aproximado da nova posição física.
 - Estado: geometria e colisores ajustados em código; renderização real e confirmação de que não há mais linha de visão para o rio aguardam teste no navegador, em desktop e celular paisagem.
+
+
+## Biblioteca subterrânea — revisão monumental integrada em 27/11/2026
+
+O setor da biblioteca foi ampliado após aprovação expressa da nova direção visual e de gameplay. O estudo de assets e licenças está em [BIBLIOTECA-STUDY.md](BIBLIOTECA-STUDY.md), e as referências/importações estão em [OPEN-SOURCES.md](OPEN-SOURCES.md).
+
+### Escala e organização
+
+- Diâmetro interno de aproximadamente 31 m.
+- Altura aproximada de 15,9 m do piso ao ápice da abóbada: parede cilíndrica de 10,4 m e cúpula que acrescenta cerca de 5,5 m.
+- Parede pintada com atlas original de 192 cenas diferentes e sequências hieroglíficas ornamentais variadas. As inscrições são interpretação gráfica e não devem ser apresentadas como tradução literal do romance.
+- 4.800 nichos de mão em uma disposição escalonada de 30 faixas × 160 posições angulares. Cada cavidade recebe uma cápsula de armazenamento pneumático com papiro.
+- 20 cápsulas inferiores recebem interação de abrir/fechar; a repetição visual das restantes usa InstancedMesh.
+
+### Escadaria e circulação
+
+A escada helicoidal estreita foi substituída por uma escadaria de pedra larga em três lances curvos: 90 degraus no total, 30 por lance, dois patamares intermediários, áreas terminais, corrimãos e balaústres. O caminho caminhável é calculado pelo mesmo conjunto de pontos que posiciona os degraus e é consumido pelo controlador de terceira pessoa em desktop e mobile. Sua forma circular é uma interpretação para materializar a descida de três andares descrita no romance.
+
+### Pequenos servos e estação de escrita
+
+- A estatueta de mãos vazias executa uma tarefa para procurar a versão em inglês do papiro e devolvê-la à mesa.
+- A estatueta com cajado em gancho executa uma tarefa para recuperar a Paleta de Narmer.
+- Os dois movimentos são procedural animation (deslocamento, oscilação e inclinação), não clips humanoides retargetados. O pack KinemIQ CC0 foi avaliado, mas não importado nesta etapa porque as estatuetas ainda não têm rig/skin weights.
+- A mesa longa de pedra tem agora paleta de escriba, pigmentos preto e vermelho, pincéis de junco, recipiente de tinta, folhas e rolos de papiro, cordão, pano de linho e bolsa de Julius com aba interativa.
+
+### Estado de Geb e Nut
+
+O piso de Geb e a abóbada de Nut foram redimensionados para a nova câmara, mas as pinturas figurativas finais foram adiadas conforme pedido. Os mapas existentes continuam provisórios; não confundir a ampliação da superfície com a finalização da imagem.
+
+### Validação
+
+A integração e a sintaxe foram verificadas estaticamente. A travessia, as cápsulas, as tarefas dos servos, a mesa, a leitura do mural, o enquadramento e o desempenho ainda precisam ser testados no navegador desktop e em celular paisagem. Não marcar este setor como visualmente aprovado antes dessa inspeção.

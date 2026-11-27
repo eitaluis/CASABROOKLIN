@@ -28,8 +28,8 @@ const CINEMATIC_ANIMATIONS = [
   'look_around',
   'talk_gestures',
   'wave',
+  'fight_idle',
   'point',
-  'throw_grenade',
   'bow'
 ];
 
@@ -88,6 +88,8 @@ export async function createCharacter({
   let castingHandPose = false;
   let castingBodyPose = false;
   let castingBodyWeight = 0;
+  let castingGuardPoseActive = false;
+  const castingGuardPose = [];
   const castingOffsets = [];
   let state = null;
 
@@ -128,6 +130,8 @@ export async function createCharacter({
     rightUpLeg: findRigBone(['RightUpLeg', 'mixamorigRightUpLeg']),
     leftLeg: findRigBone(['LeftLeg', 'mixamorigLeftLeg']),
     rightLeg: findRigBone(['RightLeg', 'mixamorigRightLeg']),
+    leftFoot: findRigBone(['LeftFoot', 'mixamorigLeftFoot']),
+    rightFoot: findRigBone(['RightFoot', 'mixamorigRightFoot']),
     spine: findRigBone(['Spine', 'mixamorigSpine']),
     spine1: findRigBone(['Spine1', 'mixamorigSpine1']),
     leftArm: findRigBone(['LeftArm', 'mixamorigLeftArm']),
@@ -261,11 +265,8 @@ export async function createCharacter({
       return;
     }
 
-    // A cabeça fica no eixo neutro do rig durante o feitiço: não acompanha
-    // a altura do Shabti e não inclina para baixo.
-    if (castingBodyWeight > 0.001 && neutralHeadWorldPose.size) {
-      // Compensa também a inclinação herdada do tronco: a cabeça conserva a
-      // orientação mundial neutra, mesmo quando o peito assume a postura de ataque.
+    // A cabeça permanece ereta no eixo mundial, mesmo com o tronco em ataque.
+    if (neutralHeadWorldPose.size) {
       root.updateMatrixWorld(true);
       root.getWorldQuaternion(rootWorldQuaternion);
       for (const [bone, neutralWorldQuaternion] of neutralHeadWorldPose) {
@@ -278,25 +279,57 @@ export async function createCharacter({
     }
 
     const w = castingBodyWeight;
+    const radians = Math.PI / 180;
+    const X = new THREE.Vector3(1, 0, 0);
+    const Y = new THREE.Vector3(0, 1, 0);
+    const Z = new THREE.Vector3(0, 0, 1);
+
+    // Base bladed stance transposta do Ara fight_idle:
+    // pé esquerdo à frente, pé direito atrás e os dois joelhos flexionados.
+    // O Point do Ara fornece o braço direito; a guarda esquerda é capturada
+    // diretamente do fight_idle antes da transição para não cair ao lado do corpo.
     const hips = castingBones.hips;
     if (hips) {
       const position = hips.position.clone();
-      hips.position.y -= 0.075 * w;
+      hips.position.y -= 0.055 * w;
+      hips.position.z -= 0.025 * w;
       castingOffsets.push({ bone: hips, position });
     }
 
-    // Agachamento curto, de combate: quadris e joelhos flexionam,
-    // tronco inclina poucos graus e o braço livre estabiliza o corpo.
-    const X = new THREE.Vector3(1, 0, 0);
-    const Z = new THREE.Vector3(0, 0, 1);
-    addCastingRotation(castingBones.leftUpLeg, X, -0.17 * w);
-    addCastingRotation(castingBones.rightUpLeg, X, -0.17 * w);
-    addCastingRotation(castingBones.leftLeg, X, 0.36 * w);
-    addCastingRotation(castingBones.rightLeg, X, 0.36 * w);
-    addCastingRotation(castingBones.spine, X, -0.045 * w);
-    addCastingRotation(castingBones.spine1, X, -0.055 * w);
-    addCastingRotation(castingBones.leftArm, Z, -0.10 * w);
-    addCastingRotation(castingBones.leftForeArm, X, -0.08 * w);
+    addCastingRotation(castingBones.leftUpLeg, X, 16 * radians * w);
+    addCastingRotation(castingBones.leftUpLeg, Z, 4 * radians * w);
+    addCastingRotation(castingBones.rightUpLeg, X, -12 * radians * w);
+    addCastingRotation(castingBones.rightUpLeg, Z, -6 * radians * w);
+    addCastingRotation(castingBones.leftLeg, X, -24 * radians * w);
+    addCastingRotation(castingBones.rightLeg, X, -14 * radians * w);
+    addCastingRotation(castingBones.leftFoot, X, 8 * radians * w);
+    addCastingRotation(castingBones.rightFoot, X, 4 * radians * w);
+
+    // Peito e cintura acompanham o ataque sem dobrar a cabeça para baixo.
+    addCastingRotation(castingBones.spine, X, 6 * radians * w);
+    addCastingRotation(castingBones.spine1, X, 4 * radians * w);
+    addCastingRotation(castingBones.spine1, Y, -10 * radians * w);
+  }
+
+  function captureCastingGuardPose() {
+    castingGuardPose.length = 0;
+    hero.scene.traverse((object) => {
+      if (!object.isBone) return;
+      const name = normalizedBoneName(object.name);
+      if (!/left(shoulder|arm|forearm|hand)/.test(name)) return;
+      castingGuardPose.push({
+        bone: object,
+        quaternion: object.quaternion.clone(),
+        position: object.position.clone()
+      });
+    });
+    castingGuardPoseActive = castingGuardPose.length > 0;
+    return castingGuardPoseActive;
+  }
+
+  function setCastingGuardPose(enabled) {
+    castingGuardPoseActive = Boolean(enabled) && castingGuardPose.length > 0;
+    if (!castingGuardPoseActive) castingGuardPose.length = 0;
   }
 
   function handBone(side = 'Right') {
@@ -366,6 +399,8 @@ export async function createCharacter({
     get movementMultiplier() { return injured ? 0.76 : 1; },
     setCastingHandPose,
     setCastingBodyPose,
+    captureCastingGuardPose,
+    setCastingGuardPose,
     getHandWorldPosition(side = 'Right', target = new THREE.Vector3()) {
       const hand = handBone(side);
       hero.scene.updateMatrixWorld(true);
@@ -415,6 +450,12 @@ export async function createCharacter({
       removeCastingBodyOffsets();
       mixer.update(dt);
       hero.update(dt);
+      if (castingGuardPoseActive) {
+        for (const entry of castingGuardPose) {
+          entry.bone.quaternion.copy(entry.quaternion);
+          entry.bone.position.copy(entry.position);
+        }
+      }
       // The movement root is yaw-only; no animation or camera-relative turn may
       // leave a residual pitch/roll after strafing or sprinting.
       root.rotation.x = 0;
@@ -434,6 +475,7 @@ export async function createCharacter({
       cancelAction();
       castingBodyPose = false;
       castingBodyWeight = 0;
+      setCastingGuardPose(false);
       removeCastingBodyOffsets();
       movementSpeed = 0;
       locomotion.speed = 0;
@@ -445,6 +487,7 @@ export async function createCharacter({
       disposed = true;
       castingHandPose = false;
       castingBodyPose = false;
+      setCastingGuardPose(false);
       removeCastingBodyOffsets();
       clearJumpListener();
       clearActionListener();

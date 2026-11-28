@@ -9,6 +9,7 @@ import { buildTrainingRoom } from './training-room.js?v=training-room-opaque-end
 import { buildBedroom } from './bedroom.js?v=carter-bedroom-asset-first-20261127a';
 import { createInventory } from './inventory.js?v=carter-combat-inputs-20261127a';
 import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
+import { createProtectionSystem } from './protection-system.js?v=ivory-ward-forcefield-20261128a';
 import { createCharacter } from './character.js?v=horus-independent-falcon-20261128a';
 import { createThirdPersonController } from './third-person.js?v=brooklyn-teleport-unlocked-20261128b';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -197,7 +198,9 @@ function flashPlayerDamage() {
   damageFlashTimer = setTimeout(() => { damageOverlay.style.opacity = '0.28'; }, 100);
   damageFadeTimer = setTimeout(() => { damageOverlay.style.opacity = '0'; }, 520);
 }
+let protectionSystem = null;
 function handlePlayerHit(hit) {
+  if (protectionSystem?.tryBlockHit(hit)) return;
   const damage = Math.round((playerVitals.maxHealth / (hit.maxHealth || 5)) * (hit.damage || 1));
   const previousHealth = playerVitals.health;
   playerVitals.health = Math.max(0, playerVitals.health - damage);
@@ -381,6 +384,34 @@ const magicSystem = createMagicSystem({
   },
   spellCost: 30
 });
+protectionSystem = createProtectionSystem({
+  THREE, scene, character, controller,
+  canSpendEnergy: (amount) => playerVitals.energy >= amount,
+  spendEnergy: (amount) => {
+    if (playerVitals.energy < amount) return false;
+    playerVitals.energy = Math.max(0, playerVitals.energy - amount);
+    return true;
+  },
+  energyCost: 18,
+  duration: 0.92
+});
+const protectionButton = document.getElementById('protectionButton');
+function activateProtection() {
+  const result = protectionSystem.activate();
+  if (result?.message) toast(result.message);
+}
+protectionButton?.addEventListener('click', event => {
+  event.preventDefault();
+  activateProtection();
+});
+document.addEventListener('keydown', event => {
+  if (event.code !== 'KeyQ' || event.repeat || event.ctrlKey || event.altKey || event.metaKey) return;
+  if (document.getElementById('startscreen').classList.contains('hidden') === false) return;
+  if (document.activeElement?.matches('input,textarea,[contenteditable="true"]')) return;
+  event.preventDefault();
+  activateProtection();
+}, true);
+
 const haDiButton = document.getElementById('haDiButton');
 function castHaDi() {
   const result = magicSystem.castHaDi();
@@ -639,6 +670,7 @@ function animate() {
   if (trainingMessage) toast(trainingMessage);
   // Atualiza a magia depois da simulação da sala: os 10 s dos fragmentos começam no impacto real.
   magicSystem.update(dt);
+  protectionSystem.update(dt);
   updateVitalsHud(dt);
   const trainingStatus = trainingRoom.getStatus();
   let nearbyTrainingItem=null, nearbyTrainingDistance=Infinity;

@@ -1,55 +1,57 @@
-
 # Avatar de Combate de Hórus
 
-Data: 27/11/2026  
+Data: 28/11/2026  
 Projeto: CASABROOKLIN  
-Status: primeira integração técnica; QA visual desktop/mobile pendente
+Status: reconstrução estrutural integrada; QA visual desktop/mobile pendente
 
-## Fonte canônica
+## Fonte canônica e limites da interpretação
 
-Em The Red Pyramid, capítulo 38, “The House Is in the House”, Carter e Hórus agem em uníssono no combate contra Set. O Avatar de Combate se forma ao redor de Carter, eleva-o do chão e o envolve em energia dourada. Um guerreiro com cabeça de falcão acompanha os movimentos de Carter, perfeitamente alinhado às suas intenções.
+Em *The Red Pyramid*, capítulo 38, “The House Is in the House”, Carter e Hórus agem em uníssono no combate contra Set. O Avatar de Combate envolve Carter, eleva-o do chão e manifesta a figura de um guerreiro com cabeça de falcão que acompanha os movimentos de Carter.
+
+A passagem não determina uma anatomia completa, dimensões exatas, armadura, joias, asas ou textura. O usuário aprovou a interpretação visual de um guerreiro-falcão humanoide, corpo inteiro dourado e translúcido, sem ornamentos, com Carter suspenso no centro do torso. A proporção de três alturas de Carter é uma decisão de escala de produção aprovada para esta reconstrução.
 
 Referência textual digital consultada:  
 https://www.jkmedina.com/uploads/1/3/2/3/13236122/rick_riordan_-_kane_chronicles_1_-_the_red_pyramid.pdf
 
-A passagem não descreve armadura completa, asas extensas, ornamentos ou dimensões exatas; esses detalhes não são assumidos como cânone.
+## Referências visuais e de movimento
 
-## Referência visual e assets
-
-- **Gor Game Ready**, RenderHub: https://www.renderhub.com/andryuha1981/gor-game-ready-1 — referência de proporção geral de guerreiro falconídeo. É um modelo pago e muito ornamentado para o objetivo; não foi comprado, baixado ou integrado.
-- A malha aprovada de Carter no Ara 3D Gen permanece intacta.
-- Nenhum modelo externo, textura ou rig foi importado para o Avatar.
+- **Gor Game Ready**, RenderHub: https://www.renderhub.com/andryuha1981/gor-game-ready-1 — referência de silhueta falconídea; pago e excessivamente ornamentado; não importado.
+- **KinemIQ animation library**: https://kinemiq.app/animations/ — biblioteca de animações com exportação GLB/glTF/FBX/BVH e permissão de uso comercial segundo a página do serviço. Referências selecionadas: “Idle - in the air”, “Move - launched into the air”, “Jump - take-off” e “Spell - start”.
+- A licença/crédito deve ser conferida na informação de cada entrada individual antes de redistribuir qualquer exportação. Nenhum arquivo de animação KinemIQ foi baixado ou integrado nesta etapa.
+- A malha humana aprovada de Carter no Ara 3D Gen permanece preservada.
 
 ## Direção aprovada
 
-- Carter é a figura humana central, visível no interior da manifestação.
-- O avatar é uma silhueta humanoide maior que o envolve, com proporção de guerreiro e cabeça de falcão.
-- O corpo inteiro é dourado e translúcido; não recebe placas de armadura, joias, ornamentos, asas ou texturas detalhadas.
-- A cabeça de falcão é uma interpretação geométrica simples: crânio, bico, olhos e penas curtas na nuca.
-- O Avatar não é um NPC separado e não tem IA, controlador de locomoção ou mixer próprio.
+- Avatar independente, com corpo humanoide falconídeo completo e cabeça de falcão.
+- Altura-alvo de 3× Carter, com pés ancorados ao piso.
+- Carter visível e suspenso no centro do torso/abdômen.
+- Corpo inteiro dourado, translúcido e emissivo, sem armadura, joias, asas ou ornamentos.
+- O guerreiro acompanha a orientação e a pose de Carter: locomoção, recuo, corrida e ações.
+- Mesmo runtime e mesma cena no desktop e no celular em paisagem.
 
-## Sincronização técnica
+## Implementação
 
-- SkeletonUtils.clone(hero.scene) duplica a estrutura SkinnedMesh/skeleton do Carter.
-- Depois de mixer.update(dt) e hero.update(dt), cada osso da cópia recebe posição, quaternion e escala do osso original.
-- Morph target weights também são copiados quando existem.
-- Como Carter e avatar compartilham CarterMovementRoot, direção e deslocamento são iguais. A cópia é ampliada suavemente e Carter recebe uma elevação visual discreta durante a manifestação.
-- O material usa emissão dourada, transparência aditiva e depthWrite desligado. A cabeça e os olhos têm emissão mais forte para preservar a leitura da forma.
+- A hierarquia óssea Ara é clonada para sincronizar transformações, mas as malhas humanas clonadas ficam ocultas.
+- Volumes anatômicos próprios (peitoral, abdômen, pelve, braços, antebraços, mãos, coxas, pernas, pés, pescoço e cabeça) são adicionados à hierarquia de ossos; cabeça falconídea recebe bico, olhos e crista curta. Não há armadura.
+- A escala do avatar é 3×, ancorada na origem do controlador. Carter permanece no root de movimento e sua malha sobe visualmente até a região abdominal.
+- A invocação usa duas fases: Carter começa a flutuar; em seguida, a forma dourada cresce do piso para cima. Ao desativar, a sequência reverte e Carter retorna ao chão.
+- As referências KinemIQ orientam a sequência; a animação de elevação e a flutuação são interpoladas proceduralmente no runtime. Um clip exportado ainda não foi retargetado ao rig Ara.
 
 ## Gameplay
 
-- Desktop: tecla H capturada na fase capture do documento para invocar/desfazer.
-- Mobile: botão HÓRUS separado dos comandos comuns e posicionado acima deles.
-- Custo inicial: 40 pontos de energia na invocação. Não há custo para desfazer. O custo e o toggle são adaptações de gameplay.
-- A habilidade está disponível nos ambientes jogáveis e não substitui Carter nem modifica os controles normais.
+- Desktop: tecla H capturada na fase capture do documento.
+- Mobile: botão HÓRUS separado dos comandos comuns.
+- Custo inicial: 40 pontos de energia; desativação sem custo.
+- A habilidade não altera o controlador nem a colisão do personagem.
 
 ## QA pendente
 
-- [ ] Confirmar Carter no centro do corpo ampliado, incluindo cabeça e pés.
-- [ ] Confirmar que a cabeça de falcão cobre a silhueta do avatar sem ocultar Carter.
-- [ ] Conferir sincronização em idle, caminhada para frente/trás, corrida, salto, socos e reações.
-- [ ] Verificar transparência dourada em fundos claros/escuros e ordenação de profundidade.
-- [ ] Testar tecla H e botão HÓRUS no mobile paisagem.
-- [ ] Medir desempenho em celular.
+- [ ] Confirmar no browser que o avatar tem 3× a altura do Carter e os pés permanecem no piso.
+- [ ] Confirmar Carter dentro do abdômen/centro do torso, sem clipping ou ocultação.
+- [ ] Conferir a anatomia falconídea e a cabeça em frontal, perfil e três-quartos.
+- [ ] Conferir a sincronização em idle, caminhada, corrida, recuo, salto, socos e reações.
+- [ ] Conferir a sequência: Carter sobe primeiro; o corpo dourado forma-se depois, dos pés à cabeça.
+- [ ] Verificar transparência, bloom, ordenação de profundidade e FPS no mobile.
+- [ ] Testar tecla H e botão HÓRUS em celular paisagem.
 
-A integração do código não significa aprovação visual. Marcar os itens somente após inspeção no navegador real.
+Código integrado não equivale a QA visual nem aprovação final. Esses itens só devem ser marcados após inspeção no navegador real.

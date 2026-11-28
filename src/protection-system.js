@@ -52,7 +52,7 @@ export function createProtectionSystem({
   grip.position.set(0.005, -0.12, 0.018);
   grip.rotation.z = -0.12;
   wand.add(grip);
-  root.add(wand);
+  scene.add(wand);
 
   const shieldMaterial = new Three.ShaderMaterial({
     transparent: true,
@@ -131,6 +131,7 @@ export function createProtectionSystem({
     active = true;
     elapsed = 0;
     root.visible = true;
+    wand.visible = true;
     shieldMaterial.uniforms.uAlpha.value = 0;
     shieldMaterial.uniforms.uPulse.value = 0.9;
     previousAction = character.action || null;
@@ -233,6 +234,7 @@ export function createProtectionSystem({
     get energyCost() { return energyCost; },
     dispose() {
       root.removeFromParent();
+      wand.removeFromParent();
       shield.geometry.dispose();
       shieldMaterial.dispose();
       rim.geometry.dispose();

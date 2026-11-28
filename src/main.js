@@ -10,7 +10,7 @@ import { buildBedroom } from './bedroom.js?v=carter-bedroom-asset-first-20261127
 import { createInventory } from './inventory.js?v=carter-combat-inputs-20261127a';
 import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
 import { createCharacter } from './character.js?v=carter-portrait-hud-20261127b';
-import { createThirdPersonController } from './third-person.js?v=carter-portrait-hud-20261127b';
+import { createThirdPersonController } from './third-person.js?v=brooklyn-camera-b-20261127a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
@@ -36,7 +36,7 @@ renderer.shadowMap.enabled=!isTouchDevice;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.18;
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x83949a);scene.fog=new THREE.FogExp2(0x87979a,.0048);
-const camera=new THREE.PerspectiveCamera(window.innerHeight > window.innerWidth ? 76 : 58,window.innerWidth/window.innerHeight,.1,1200);
+const camera=new THREE.PerspectiveCamera(window.innerHeight > window.innerWidth ? 70 : 58,window.innerWidth/window.innerHeight,.1,1200);
 
 camera.rotation.order='YXZ';
 
@@ -700,7 +700,7 @@ function animate() {
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
-  camera.fov = window.innerHeight > window.innerWidth ? 76 : 58;
+  camera.fov = window.innerHeight > window.innerWidth ? 70 : 58;
   camera.updateProjectionMatrix();
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isTouchDevice ? 0.85 : 1.45));
   renderer.setSize(window.innerWidth, window.innerHeight);

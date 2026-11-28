@@ -1,7 +1,7 @@
 # Carter — inventário, objetos do Duat e preparação para magia
 
 Data: 26/11/2026
-Status (27/11/2026): **12 objetos; quarterstaff Polyfork aprovado e integrado no runtime principal via GLTFLoader/WeaponR; fallback local; khopesh, locomoção armada, ataques F e efeito do Duat aguardam aprovação visual e QA**
+Status (27/11/2026): **12 objetos; quarterstaff Polyfork aprovado e integrado via GLTFLoader/WeaponR, agora monocromático bege; khopesh Vinish.dev aprovado e carregado em escala compacta (aprox. 42 cm), com lâmina estreitada/afinada; QA visual em navegador pendente**
 
 ## 1. Princípio de desenvolvimento
 
@@ -32,8 +32,8 @@ Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, páginas impres
 
 | ID | Objeto | Função / estado | Base |
 |---|---|---|---|
-| `staff` | Cajado mágico | Quarterstaff reto de madeira com ponteiras de ferro e duas faixas de tecido para empunhadura; preso à mão direita pelo eixo central | O livro estabelece a função ofensiva do cajado, mas não fixa a aparência exata do cajado de Carter; asset Polyfork aprovado pelo usuário e integrado |
-| `khopesh` | Khopesh | Arma corpo a corpo; empunhada na mão direita | Canônico; modelo procedural integrado |
+| `staff` | Cajado mágico | Quarterstaff reto monocromático bege, sem ponteiras cinzas ou faixas coloridas; GLB Polyfork com materiais uniformizados em bege; preso à mão direita pelo eixo central | O livro estabelece a função ofensiva do cajado, mas não fixa a aparência exata do cajado de Carter; asset Polyfork aprovado pelo usuário e integrado |
+| `khopesh` | Khopesh | Arma corpo a corpo; empunhada na mão direita | Canônico; GLB Vinish.dev aprovado, escala reduzida e lâmina estreita/fina |
 | `wax_shabti` | Shabti de cera | Miniatura transportável; futura invocação por magia | Canônico como objeto criado em cera; primeira geometria procedural integrada |
 | `papyrus` | Papiro | Suporte para escrever/desenhar feitiços | Canônico; primeira geometria/textura procedural integrada; escrita mágica real pendente |
 | `reed_pen` | Cálamo | Ferramenta de escrita e desenho mágico | Canônico; primeira geometria procedural integrada |
@@ -185,3 +185,11 @@ A bancada ajuda a revisar escala, orientação, clipping, posição do portal e 
 - **Khopesh:** modelo procedural antigo ainda é o que aparece na `main`; candidatos e direção visual aguardam aprovação do usuário.
 - **Locomoção e comando F:** código atual ainda não executa uma postura armada convincente; opções Ara/KinemIQ serão apresentadas antes da implementação.
 - **Retirada do Duat:** efeito antigo ainda está na `main`; novas propostas visuais foram apresentadas para escolha antes de qualquer alteração.
+
+
+## 4. Revisão de proporções e materiais — 28/11/2026
+
+- **Cajado:** o GLB aprovado da Polyfork continua sendo a geometria principal. Os materiais são clonados no carregamento e uniformizados em bege claro (`#CDBB98`), sem mapa de cor, metalizado ou diferenças cromáticas entre haste, ponteiras e faixas. O fallback procedural usa a mesma cor.
+- **Khopesh:** o GLB aprovado de Vinish.dev é carregado com o pivot `Sword` centralizado na empunhadura. Escala aplicada nos eixos locais do modelo: `0.70 × 0.58 × 0.50`, resultando em comprimento nominal aproximado de 42 cm, largura e espessura reduzidas. O fallback também foi redesenhado em proporção menor e lâmina fina.
+- A redução é uma interpretação visual solicitada para o Carter, não uma medida canônica do romance. O livro estabelece o khopesh como espada curva egípcia, mas não determina essas dimensões específicas.
+- A mesma implementação é compartilhada por desktop e mobile. Verificação visual real no navegador e inspeção da pegada no rig Ara ainda pendentes.

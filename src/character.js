@@ -144,45 +144,50 @@ export async function createCharacter({
     return found;
   }
 
-  // Avatar de Combate de Hórus: uma segunda pele dourada que envolve Carter.
-  // A cópia usa o mesmo rig Ara e recebe a pose dos ossos originais a cada frame.
+  // Avatar de Hórus: corpo falconídeo independente, construído sobre um rig
+  // espelhado do Carter. A malha humana duplicada é removida; só a hierarquia
+  // óssea é reaproveitada para sincronizar a pose sem duplicar a aparência humana.
   const horusAvatarRoot = new THREE.Group();
-  horusAvatarRoot.name = 'Avatar de Combate de Hórus · energia dourada';
+  horusAvatarRoot.name = 'Avatar de Combate de Hórus · guerreiro-falcão dourado';
   horusAvatarRoot.visible = false;
   root.add(horusAvatarRoot);
+
   const horusAvatarScene = cloneSkeleton(hero.scene);
-  horusAvatarScene.name = 'Silhueta sincronizada do guerreiro-falcão';
+  horusAvatarScene.name = 'Rig independente do guerreiro-falcão';
+  horusAvatarScene.position.set(0, 0, 0);
+  horusAvatarScene.rotation.copy(hero.scene.rotation);
+  horusAvatarScene.scale.copy(hero.scene.scale);
   horusAvatarRoot.add(horusAvatarScene);
 
   const horusAvatarBodyMaterial = new THREE.MeshStandardMaterial({
-    color: 0xe6ad45, emissive: 0xffa51e, emissiveIntensity: 1.15,
-    roughness: 0.34, metalness: 0.08, transparent: true, opacity: 0,
+    color: 0xe8ad45, emissive: 0xffa51e, emissiveIntensity: 1.25,
+    roughness: 0.38, metalness: 0.04, transparent: true, opacity: 0,
     blending: THREE.AdditiveBlending, depthWrite: false,
     side: THREE.DoubleSide, toneMapped: false
   });
   const horusAvatarHeadMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffd071, emissive: 0xffad34, emissiveIntensity: 1.55,
-    roughness: 0.3, metalness: 0.04, transparent: true, opacity: 0,
+    color: 0xffd27a, emissive: 0xffb43d, emissiveIntensity: 1.65,
+    roughness: 0.32, metalness: 0.02, transparent: true, opacity: 0,
     blending: THREE.AdditiveBlending, depthWrite: false,
     side: THREE.DoubleSide, toneMapped: false
   });
   const horusAvatarEyeMaterial = new THREE.MeshBasicMaterial({
-    color: 0xfff0ba, transparent: true, opacity: 0,
+    color: 0xfff4cf, transparent: true, opacity: 0,
     blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
-  });
-  horusAvatarScene.traverse((object) => {
-    if (!object.isMesh) return;
-    object.material = horusAvatarBodyMaterial;
-    object.castShadow = false;
-    object.receiveShadow = false;
-    object.frustumCulled = false;
   });
 
   const horusAvatarBoneLookup = new Map();
+  const horusAvatarMeshes = [];
   horusAvatarScene.traverse((object) => {
-    if (!object.isBone) return;
-    const key = normalizedBoneName(object.name);
-    if (key && !horusAvatarBoneLookup.has(key)) horusAvatarBoneLookup.set(key, object);
+    if (object.isBone) {
+      const key = normalizedBoneName(object.name);
+      if (key && !horusAvatarBoneLookup.has(key)) horusAvatarBoneLookup.set(key, object);
+    }
+    if (object.isMesh) {
+      object.visible = false;
+      object.castShadow = false;
+      object.receiveShadow = false;
+    }
   });
   const horusAvatarBonePairs = [];
   hero.scene.traverse((object) => {
@@ -191,85 +196,129 @@ export async function createCharacter({
     if (clone) horusAvatarBonePairs.push({ source: object, clone });
   });
 
-  const horusAvatarMeshLookup = new Map();
-  horusAvatarScene.traverse((object) => {
-    if (object.isMesh && object.name && !horusAvatarMeshLookup.has(object.name)) {
-      horusAvatarMeshLookup.set(object.name, object);
-    }
-  });
-  const horusAvatarMorphPairs = [];
-  hero.scene.traverse((object) => {
-    if (!object.isMesh || !object.morphTargetInfluences) return;
-    const clone = horusAvatarMeshLookup.get(object.name);
-    if (clone?.morphTargetInfluences) horusAvatarMorphPairs.push({ source: object, clone });
-  });
-
-  // Cabeça de falcão simplificada: crânio, bico, olhos e penas curtas na nuca.
-  const horusHeadBone = horusAvatarBoneLookup.get('head') || horusAvatarBoneLookup.get('mixamorighead');
-  function addHorusHeadPiece(name, geometry, material, position, scale, rotation = null) {
-    const mesh = new THREE.Mesh(geometry, material);
+  const horusHeight = Math.max(1.45, hero.height || 1.75);
+  const horusUnit = horusHeight / 1.75;
+  const horusSphere = new THREE.SphereGeometry(1, 20, 14);
+  const horusJointGeometry = new THREE.SphereGeometry(1, 14, 10);
+  function addHorusVolume(parent, name, position, scale, material = horusAvatarBodyMaterial, rotation = null) {
+    const mesh = new THREE.Mesh(horusSphere, material);
     mesh.name = name;
     mesh.position.copy(position);
-    if (scale) mesh.scale.copy(scale);
+    mesh.scale.set(scale.x, scale.y, scale.z);
     if (rotation) mesh.rotation.copy(rotation);
     mesh.castShadow = false;
     mesh.receiveShadow = false;
-    horusHeadBone?.add(mesh);
+    parent.add(mesh);
+    horusAvatarMeshes.push(mesh);
     return mesh;
   }
-  const horusHeadUnit = Math.max(0.7, hero.height || 1.75) / 1.75;
-  if (horusHeadBone) {
-    addHorusHeadPiece(
-      'Crânio translúcido de falcão',
-      new THREE.SphereGeometry(0.145 * horusHeadUnit, 24, 18),
-      horusAvatarHeadMaterial,
-      new THREE.Vector3(0, 0.028 * horusHeadUnit, 0.035 * horusHeadUnit),
-      new THREE.Vector3(0.98, 1.14, 1.12)
+  function addHorusLimb(boneName, radius, taper = 0.82) {
+    const bone = horusAvatarBoneLookup.get(normalizedBoneName(boneName));
+    if (!bone) return;
+    const child = bone.children.find(item => item.isBone);
+    if (!child) return;
+    const direction = child.position.clone();
+    const length = direction.length();
+    if (length < 0.025) return;
+    const geometry = new THREE.CylinderGeometry(
+      radius * taper, radius, length, 14, 1, false
     );
-    const beakRotation = new THREE.Euler(Math.PI / 2, 0, 0);
-    addHorusHeadPiece(
-      'Bico superior do avatar',
-      new THREE.ConeGeometry(0.082 * horusHeadUnit, 0.245 * horusHeadUnit, 8, 1),
-      horusAvatarHeadMaterial,
-      new THREE.Vector3(0, 0.01 * horusHeadUnit, 0.162 * horusHeadUnit),
-      new THREE.Vector3(1, 1, 1), beakRotation
-    );
-    addHorusHeadPiece(
-      'Bico inferior do avatar',
-      new THREE.ConeGeometry(0.048 * horusHeadUnit, 0.145 * horusHeadUnit, 8, 1),
-      horusAvatarHeadMaterial,
-      new THREE.Vector3(0, -0.055 * horusHeadUnit, 0.158 * horusHeadUnit),
-      new THREE.Vector3(1, 1, 1), beakRotation
-    );
+    const mesh = new THREE.Mesh(geometry, horusAvatarBodyMaterial);
+    mesh.name = 'Volume anatômico · ' + boneName;
+    mesh.position.copy(direction.multiplyScalar(0.5));
+    mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), child.position.clone().normalize());
+    mesh.castShadow = false;
+    mesh.receiveShadow = false;
+    bone.add(mesh);
+    horusAvatarMeshes.push(mesh);
+    addHorusVolume(bone, 'Articulação · ' + boneName, new THREE.Vector3(), new THREE.Vector3(radius * 1.04, radius * 1.04, radius * 1.04));
+  }
+
+  // Torso, cintura escapular e pelve: volumes anatômicos contínuos, sem placas.
+  const horusSpine = horusAvatarBoneLookup.get('spine2')
+    || horusAvatarBoneLookup.get('spine1')
+    || horusAvatarBoneLookup.get('spine')
+    || horusAvatarBoneLookup.get('mixamorigspine2')
+    || horusAvatarBoneLookup.get('mixamorigspine1')
+    || horusAvatarBoneLookup.get('mixamorigspine');
+  const horusHips = horusAvatarBoneLookup.get('hips') || horusAvatarBoneLookup.get('mixamorighips');
+  const horusNeck = horusAvatarBoneLookup.get('neck') || horusAvatarBoneLookup.get('mixamorigneck');
+  const horusHead = horusAvatarBoneLookup.get('head') || horusAvatarBoneLookup.get('mixamorighead');
+  if (horusSpine) {
+    addHorusVolume(horusSpine, 'Peitoral do guerreiro-falcão', new THREE.Vector3(0, 0.055 * horusUnit, 0), new THREE.Vector3(0.245 * horusUnit, 0.30 * horusUnit, 0.145 * horusUnit));
+    addHorusVolume(horusSpine, 'Linha abdominal do guerreiro-falcão', new THREE.Vector3(0, -0.20 * horusUnit, 0), new THREE.Vector3(0.17 * horusUnit, 0.20 * horusUnit, 0.12 * horusUnit));
+  }
+  if (horusHips) {
+    addHorusVolume(horusHips, 'Pelve do guerreiro-falcão', new THREE.Vector3(0, -0.015 * horusUnit, 0), new THREE.Vector3(0.19 * horusUnit, 0.13 * horusUnit, 0.13 * horusUnit));
+  }
+  if (horusNeck) {
+    addHorusVolume(horusNeck, 'Pescoço alongado de falcão', new THREE.Vector3(0, 0.045 * horusUnit, 0), new THREE.Vector3(0.095 * horusUnit, 0.16 * horusUnit, 0.10 * horusUnit));
+  }
+
+  // Segmentos cônicos acompanham diretamente os ossos do rig Ara.
+  [
+    ['leftarm', 0.082], ['rightarm', 0.082],
+    ['leftforearm', 0.067], ['rightforearm', 0.067],
+    ['lefthand', 0.052], ['righthand', 0.052],
+    ['leftupleg', 0.112], ['rightupleg', 0.112],
+    ['leftleg', 0.082], ['rightleg', 0.082],
+    ['leftfoot', 0.070], ['rightfoot', 0.070]
+  ].forEach(([name, radius]) => addHorusLimb(name, radius * horusUnit));
+
+  // Cabeça falconídea própria: crânio, bico curvo, olhos e crista curta.
+  if (horusHead) {
+    addHorusVolume(horusHead, 'Crânio falconídeo', new THREE.Vector3(0, 0.025 * horusUnit, 0.015 * horusUnit),
+      new THREE.Vector3(0.135 * horusUnit, 0.155 * horusUnit, 0.13 * horusUnit), horusAvatarHeadMaterial);
+    const beak = new THREE.Mesh(new THREE.ConeGeometry(0.067 * horusUnit, 0.19 * horusUnit, 18, 3), horusAvatarHeadMaterial);
+    beak.name = 'Bico curvo do guerreiro-falcão';
+    beak.position.set(0, -0.005 * horusUnit, 0.145 * horusUnit);
+    beak.rotation.x = Math.PI / 2;
+    beak.scale.set(0.82, 1.0, 1.18);
+    horusHead.add(beak);
+    horusAvatarMeshes.push(beak);
     for (const side of [-1, 1]) {
-      addHorusHeadPiece(
-        'Olho luminoso do falcão',
-        new THREE.SphereGeometry(0.018 * horusHeadUnit, 12, 10),
-        horusAvatarEyeMaterial,
-        new THREE.Vector3(side * 0.112 * horusHeadUnit, 0.045 * horusHeadUnit, 0.118 * horusHeadUnit),
-        new THREE.Vector3(1, 1, 0.72)
-      );
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.019 * horusUnit, 14, 10), horusAvatarEyeMaterial);
+      eye.name = 'Olho luminoso do falcão';
+      eye.position.set(side * 0.105 * horusUnit, 0.045 * horusUnit, 0.102 * horusUnit);
+      horusHead.add(eye);
+      horusAvatarMeshes.push(eye);
     }
-    for (const index of [-1, 0, 1]) {
-      const feather = addHorusHeadPiece(
-        'Pena curta da nuca',
-        new THREE.ConeGeometry(0.026 * horusHeadUnit, 0.135 * horusHeadUnit, 6, 1),
-        horusAvatarHeadMaterial,
-        new THREE.Vector3(index * 0.045 * horusHeadUnit, 0.162 * horusHeadUnit, -0.055 * horusHeadUnit),
-        new THREE.Vector3(1, 1, 1)
-      );
-      feather.rotation.z = -index * 0.22;
-      feather.rotation.x = -0.12;
+    for (let i = -1; i <= 1; i++) {
+      const crest = new THREE.Mesh(new THREE.ConeGeometry(0.022 * horusUnit, 0.115 * horusUnit, 10, 2), horusAvatarHeadMaterial);
+      crest.name = 'Pena da crista';
+      crest.position.set(i * 0.038 * horusUnit, 0.165 * horusUnit, -0.045 * horusUnit);
+      crest.rotation.z = -i * 0.18;
+      crest.rotation.x = -0.18;
+      horusHead.add(crest);
+      horusAvatarMeshes.push(crest);
     }
   } else {
-    console.warn('Avatar de Hórus: osso Head não encontrado; usando cabeça do rig Ara.');
+    console.warn('Avatar de Hórus: osso Head não encontrado no rig Ara.');
+  }
+
+  // Garras de falcão discretas, como prolongamento dos pés — sem joias ou armadura.
+  for (const side of [-1, 1]) {
+    const foot = horusAvatarBoneLookup.get(side < 0 ? 'leftfoot' : 'rightfoot')
+      || horusAvatarBoneLookup.get(side < 0 ? 'mixamorigleftfoot' : 'mixamorigrightfoot');
+    if (!foot) continue;
+    for (let toe = -1; toe <= 1; toe++) {
+      const claw = new THREE.Mesh(new THREE.ConeGeometry(0.018 * horusUnit, 0.105 * horusUnit, 9, 2), horusAvatarHeadMaterial);
+      claw.name = 'Garra de falcão';
+      claw.position.set(toe * 0.045 * horusUnit, -0.018 * horusUnit, 0.075 * horusUnit);
+      claw.rotation.x = Math.PI / 2;
+      foot.add(claw);
+      horusAvatarMeshes.push(claw);
+    }
   }
 
   let horusAvatarActive = false;
   let horusAvatarWeight = 0;
   let horusAvatarElapsed = 0;
   const horusAvatarBasePositionY = hero.scene.position.y;
-  const horusAvatarScale = new THREE.Vector3(1.52, 1.48, 1.46);
+  const horusAvatarHeightScale = 3.0;
+  const horusFloatHeight = horusHeight * 1.0;
+  const horusAvatarSourceQuaternion = new THREE.Quaternion();
+  const horusAvatarSourcePosition = new THREE.Vector3();
 
   function setHorusAvatarActive(enabled) {
     horusAvatarActive = Boolean(enabled);
@@ -279,13 +328,16 @@ export async function createCharacter({
 
   function updateHorusAvatar(dt) {
     horusAvatarElapsed += dt;
-    horusAvatarWeight = THREE.MathUtils.damp(
-      horusAvatarWeight, horusAvatarActive ? 1 : 0,
-      horusAvatarActive ? 5.4 : 7.2, dt
-    );
-    const hover = (0.12 + Math.sin(horusAvatarElapsed * 2.65) * 0.018) * horusAvatarWeight;
+    const target = horusAvatarActive ? 1 : 0;
+    horusAvatarWeight = THREE.MathUtils.damp(horusAvatarWeight, target, horusAvatarActive ? 2.4 : 4.2, dt);
+
+    // Primeiro Carter sobe. Só depois a forma de Hórus cresce do chão para cima.
+    const floatPhase = THREE.MathUtils.smoothstep(horusAvatarWeight, 0.0, 0.48);
+    const formationPhase = THREE.MathUtils.smoothstep(horusAvatarWeight, 0.28, 0.92);
+    const hover = (horusFloatHeight * floatPhase) + Math.sin(horusAvatarElapsed * 2.2) * 0.025 * floatPhase;
     hero.scene.position.y = horusAvatarBasePositionY + hover;
-    horusAvatarScene.position.copy(hero.scene.position);
+
+    horusAvatarScene.position.set(0, 0, 0);
     horusAvatarScene.quaternion.copy(hero.scene.quaternion);
     horusAvatarScene.scale.copy(hero.scene.scale);
     for (const pair of horusAvatarBonePairs) {
@@ -293,27 +345,23 @@ export async function createCharacter({
       pair.clone.quaternion.copy(pair.source.quaternion);
       pair.clone.scale.copy(pair.source.scale);
     }
-    for (const pair of horusAvatarMorphPairs) {
-      const sourceWeights = pair.source.morphTargetInfluences;
-      const cloneWeights = pair.clone.morphTargetInfluences;
-      for (let i = 0; i < Math.min(sourceWeights.length, cloneWeights.length); i++) {
-        cloneWeights[i] = sourceWeights[i];
-      }
-    }
-    const weight = horusAvatarWeight;
+
+    // O avatar mede três alturas de Carter e permanece ancorado no piso.
+    horusAvatarRoot.position.set(0, 0, 0);
     horusAvatarRoot.scale.set(
-      THREE.MathUtils.lerp(1, horusAvatarScale.x, weight),
-      THREE.MathUtils.lerp(1, horusAvatarScale.y, weight),
-      THREE.MathUtils.lerp(1, horusAvatarScale.z, weight)
+      horusAvatarHeightScale * formationPhase,
+      horusAvatarHeightScale * formationPhase,
+      horusAvatarHeightScale * formationPhase
     );
-    const pulse = 0.94 + Math.sin(horusAvatarElapsed * 4.8) * 0.06;
-    horusAvatarBodyMaterial.opacity = 0.265 * weight * pulse;
-    horusAvatarHeadMaterial.opacity = 0.52 * weight * pulse;
-    horusAvatarEyeMaterial.opacity = 0.88 * weight;
-    horusAvatarRoot.visible = horusAvatarActive || weight > 0.006;
+    const pulse = 0.95 + Math.sin(horusAvatarElapsed * 3.7) * 0.05;
+    horusAvatarBodyMaterial.opacity = 0.24 * formationPhase * pulse;
+    horusAvatarHeadMaterial.opacity = 0.39 * formationPhase * pulse;
+    horusAvatarEyeMaterial.opacity = 0.86 * formationPhase;
+    horusAvatarRoot.visible = horusAvatarActive || horusAvatarWeight > 0.004;
     horusAvatarScene.updateMatrixWorld(true);
     horusAvatarRoot.updateMatrixWorld(true);
-    if (!horusAvatarActive && weight < 0.001) {
+
+    if (!horusAvatarActive && horusAvatarWeight < 0.001) {
       horusAvatarRoot.visible = false;
       hero.scene.position.y = horusAvatarBasePositionY;
     }

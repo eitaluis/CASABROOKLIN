@@ -45,3 +45,10 @@ Validar em Safari no iPhone:
 5. A corrida aumenta progressivamente e não exige botão separado.
 6. Menu de ambientes, mapa, inventário, salto, ataque, interação e magias continuam acessíveis.
 7. Confirmar que desktop permanece visual e funcionalmente inalterado.
+
+
+## Correção de regressão — 2026-11-28
+- **Causa identificada:** uma media query antiga para orientação retrato aplicava `visibility:hidden` ao `#mobile` e a elementos do HUD. A regra responsiva mais nova definia `display:flex`, mas não anulava `visibility:hidden`; por isso os controles existiam no DOM, porém permaneciam invisíveis.
+- **Correção:** removida a regra obsoleta de ocultação para retrato. O retrato continua sendo a orientação principal; joystick e botões permanecem visíveis conforme o CSS mobile atual.
+- **Escopo:** nenhuma alteração na lógica do joystick, nos comandos, na câmera ou no desktop.
+- **QA:** inspeção estática do CSS e da estrutura; teste em iPhone/Safari ainda precisa ser confirmado pelo usuário.

@@ -88,15 +88,14 @@ export function createInventory({
     // Fallback de proporção/material próximo ao asset aprovado da Polyfork.
     // O asset principal é carregado abaixo: 1,8 m, madeira, ponteiras de ferro
     // e duas faixas de tecido na região de empunhadura.
-    const fallbackWood = new THREE.MeshStandardMaterial({
-      color: 0x805735, roughness: 0.78, metalness: 0.02
+    // O cajado inteiro segue a direção aprovada: bege monocromático,
+    // sem ponteiras metálicas cinzas nem faixas de outra cor.
+    const fallbackBeige = new THREE.MeshStandardMaterial({
+      color: 0xcdbb98, roughness: 0.86, metalness: 0
     });
-    const fallbackIron = new THREE.MeshStandardMaterial({
-      color: 0x6b6d69, roughness: 0.5, metalness: 0.72
-    });
-    const fallbackCloth = new THREE.MeshStandardMaterial({
-      color: 0xb9a27b, roughness: 0.96, metalness: 0
-    });
+    const fallbackWood = fallbackBeige;
+    const fallbackIron = fallbackBeige;
+    const fallbackCloth = fallbackBeige;
 
     const shaft = new THREE.Mesh(
       new THREE.CylinderGeometry(0.04, 0.04, 1.8, 16, 1),
@@ -140,41 +139,40 @@ export function createInventory({
 
   function buildKhopesh() {
     const group = new THREE.Group();
-    const pommel = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 8), brass);
-    pommel.position.y = -0.28;
+    const pommel = new THREE.Mesh(new THREE.SphereGeometry(0.032, 12, 10), brass);
+    pommel.position.y = -0.18;
     group.add(pommel);
-    const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.05, 0.34, 10), darkGrip);
-    grip.position.y = -0.08;
+    const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.024, 0.22, 12), darkGrip);
+    grip.position.y = -0.055;
     group.add(grip);
-    for (const y of [-0.2, 0.04]) metalBand(group, y, 0.06);
-    const guard = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.075, 0.12), brass);
-    guard.position.y = 0.13;
+    for (const y of [-0.14, 0.025]) metalBand(group, y, 0.028);
+    const guard = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.035, 0.045), brass);
+    guard.position.y = 0.09;
     group.add(guard);
 
     const bladeShape = new THREE.Shape();
-    bladeShape.moveTo(-0.055, 0.16);
-    bladeShape.lineTo(0.055, 0.16);
-    bladeShape.lineTo(0.12, 0.74);
-    bladeShape.quadraticCurveTo(0.18, 1.08, 0.48, 1.26);
-    bladeShape.quadraticCurveTo(0.72, 1.41, 0.79, 1.16);
-    bladeShape.quadraticCurveTo(0.7, 0.94, 0.51, 0.91);
-    bladeShape.quadraticCurveTo(0.32, 0.87, 0.27, 0.68);
-    bladeShape.lineTo(0.15, 0.16);
+    bladeShape.moveTo(-0.025, 0.11);
+    bladeShape.lineTo(0.025, 0.11);
+    bladeShape.lineTo(0.055, 0.48);
+    bladeShape.quadraticCurveTo(0.09, 0.68, 0.28, 0.79);
+    bladeShape.quadraticCurveTo(0.41, 0.88, 0.44, 0.72);
+    bladeShape.quadraticCurveTo(0.39, 0.59, 0.27, 0.57);
+    bladeShape.quadraticCurveTo(0.17, 0.55, 0.14, 0.43);
+    bladeShape.lineTo(0.07, 0.11);
     bladeShape.closePath();
     const bladeGeo = new THREE.ExtrudeGeometry(bladeShape, {
-      depth: 0.055, bevelEnabled: true, bevelSegments: 3,
-      steps: 1, bevelSize: 0.018, bevelThickness: 0.018, curveSegments: 12
+      depth: 0.018, bevelEnabled: true, bevelSegments: 2,
+      steps: 1, bevelSize: 0.004, bevelThickness: 0.004, curveSegments: 16
     });
     const blade = new THREE.Mesh(bladeGeo, bladeMat);
-    blade.name = 'KhopeshCurvedBlade';
-    blade.position.z = -0.0275;
+    blade.name = 'KhopeshCurvedBladeFallback';
+    blade.position.z = -0.009;
     blade.castShadow = true;
     group.add(blade);
-    const ridge = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.78, 0.018), brass);
-    ridge.position.set(0.14, 0.58, 0.035);
-    group.add(ridge);
     group.traverse(obj => { if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; } });
-    return registerItem('khopesh', group, 'weapon', 'Khopesh egípcio');
+    const item = registerItem('khopesh', group, 'weapon', 'Khopesh compacto de lâmina fina — fallback');
+    item.userData.assetState = 'loading-approved-vinish-glb';
+    return item;
   }
 
   function addRod(parent, start, end, radius, material, name) {
@@ -619,6 +617,22 @@ export function createInventory({
       model.scale.setScalar(1);
       model.traverse((node) => {
         if (!node.isMesh) return;
+        const sourceMaterials = Array.isArray(node.material) ? node.material : [node.material];
+        const beigeMaterials = sourceMaterials.map((source) => {
+          const material = source?.clone?.() || new THREE.MeshStandardMaterial();
+          material.color?.setHex(0xcdbb98);
+          material.emissive?.setHex(0x000000);
+          material.metalness = 0;
+          material.roughness = 0.86;
+          material.map = null;
+          material.normalMap = null;
+          material.roughnessMap = null;
+          material.metalnessMap = null;
+          material.vertexColors = false;
+          material.needsUpdate = true;
+          return material;
+        });
+        node.material = Array.isArray(node.material) ? beigeMaterials : beigeMaterials[0];
         node.castShadow = true;
         node.receiveShadow = true;
       });
@@ -638,6 +652,55 @@ export function createInventory({
     (error) => {
       approvedStaffItem.userData.assetState = 'fallback';
       console.warn('CASABROOKLIN: não foi possível carregar o GLB aprovado da Polyfork; mantendo o fallback local.', error);
+    }
+  );
+
+  // Khopesh A aprovado (Vinish.dev), redimensionado para a proporção pedida:
+  // comprimento geral aproximado de 42 cm; lâmina mais estreita e fina.
+  // O pivot Sword fica no centro da empunhadura; a orientação +90° Y aponta para -Z.
+  const approvedKhopeshLoader = new GLTFLoader();
+  const approvedKhopeshUrl = 'https://vinish-models.pages.dev/swords/khopesh.glb';
+  const approvedKhopeshItem = items.get('khopesh');
+  approvedKhopeshLoader.load(
+    approvedKhopeshUrl,
+    (gltf) => {
+      const model = gltf.scene;
+      model.name = 'VinishApprovedKhopeshModel';
+      const gripPivot = model.getObjectByName('Sword');
+      // O arquivo mede cerca de 60 cm. A escala final encurta o conjunto,
+      // estreita a silhueta da lâmina e reduz sua espessura sem mudar o desenho.
+      model.scale.set(0.70, 0.58, 0.50);
+      model.updateMatrixWorld(true);
+      // Recentraliza o pivot depois da escala para que a empunhadura permaneça
+      // exatamente no socket da mão, mesmo se o pivot original não for zero.
+      if (gripPivot) {
+        const gripOrigin = gripPivot.getWorldPosition(new THREE.Vector3());
+        model.position.sub(gripOrigin);
+        model.updateMatrixWorld(true);
+      }
+      const weaponPivot = new THREE.Group();
+      weaponPivot.name = 'VinishKhopeshGripPivot';
+      weaponPivot.rotation.y = Math.PI / 2;
+      weaponPivot.add(model);
+      model.traverse((node) => {
+        if (!node.isMesh) return;
+        node.castShadow = true;
+        node.receiveShadow = true;
+      });
+      for (const fallback of [...approvedKhopeshItem.children]) {
+        approvedKhopeshItem.remove(fallback);
+        fallback.traverse((node) => { if (node.isMesh) node.geometry?.dispose?.(); });
+      }
+      approvedKhopeshItem.add(weaponPivot);
+      approvedKhopeshItem.userData.assetState = 'loaded';
+      approvedKhopeshItem.userData.assetSource = approvedKhopeshUrl;
+      approvedKhopeshItem.userData.description =
+        'Khopesh Vinish.dev compacto (aprox. 42 cm), lâmina estreita e fina, pivot na empunhadura';
+    },
+    undefined,
+    (error) => {
+      approvedKhopeshItem.userData.assetState = 'fallback';
+      console.warn('CASABROOKLIN: falha ao carregar khopesh Vinish.dev; usando fallback compacto.', error);
     }
   );
 

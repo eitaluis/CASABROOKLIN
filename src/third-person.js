@@ -149,9 +149,17 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   }
 
   function teleport(name) {
-    if (controlsLocked) return;
     const zone = zones[name];
-    if (!zone) return;
+    if (!zone) return false;
+    // Trocar de ambiente é uma ação explícita do jogador e não pode ser
+    // descartada porque uma animação de inventário/interação bloqueou o movimento.
+    controlsLocked = false;
+    keys.clear();
+    touch.moveX = 0;
+    touch.moveY = 0;
+    touch.sprint = false;
+    resetJoystick();
+    character.resumeLocomotion?.();
     zoneName = name;
     cameraCue = null;
     airborne = false;
@@ -166,6 +174,7 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     cameraPitch = 0.24;
     firstCameraFrame = true;
     onZoneChange?.(name, zone);
+    return true;
   }
 
   // Place Carter at a precise interaction anchor (for example, a bench) without

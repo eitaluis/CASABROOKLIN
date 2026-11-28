@@ -53,6 +53,7 @@ export function createProtectionSystem({
   grip.rotation.z = -0.12;
   wand.add(grip);
   scene.add(wand);
+  wand.visible = false;
 
   const shieldMaterial = new Three.ShaderMaterial({
     transparent: true,

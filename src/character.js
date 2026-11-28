@@ -213,7 +213,10 @@ export async function createCharacter({
     return mesh;
   }
   function addHorusLimb(boneName, radius, taper = 0.82) {
-    const bone = horusAvatarBoneLookup.get(normalizedBoneName(boneName));
+    const normalized = normalizedBoneName(boneName);
+    const bone = horusAvatarBoneLookup.get(normalized)
+      || horusAvatarBoneLookup.get(normalizedBoneName('mixamorig' + boneName))
+      || [...horusAvatarBoneLookup.entries()].find(([key]) => key.endsWith(normalized))?.[1];
     if (!bone) return;
     const child = bone.children.find(item => item.isBone);
     if (!child) return;
@@ -317,8 +320,6 @@ export async function createCharacter({
   const horusAvatarBasePositionY = hero.scene.position.y;
   const horusAvatarHeightScale = 3.0;
   const horusFloatHeight = horusHeight * 1.0;
-  const horusAvatarSourceQuaternion = new THREE.Quaternion();
-  const horusAvatarSourcePosition = new THREE.Vector3();
 
   function setHorusAvatarActive(enabled) {
     horusAvatarActive = Boolean(enabled);

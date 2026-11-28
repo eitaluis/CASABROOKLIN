@@ -465,3 +465,17 @@ Estudo de referência: [TRAINING-ROOM-STUDY.md](TRAINING-ROOM-STUDY.md).
 - [ ] Testar o carregamento de GLBs e KTX2 no GitHub Pages.
 - [ ] Validar escala, orientação, encaixes, colisões e vista do deck em desktop.
 - [ ] Validar toque, paridade visual e desempenho em celular paisagem.
+
+
+## Avatar de Combate de Hórus — reconstrução falconídea e sequência de invocação (28/11/2026)
+
+- [x] Preservar a malha humana original de Carter e sua hierarquia de animação Ara.
+- [x] Substituir a cópia humana ampliada por volumes anatômicos falconídeos independentes ligados ao rig espelhado.
+- [x] Definir escala-alvo de 3× Carter, com origem do avatar ancorada no piso.
+- [x] Criar sequência em duas fases: Carter flutua primeiro; o corpo dourado forma-se depois a partir dos pés.
+- [x] Reposicionar Carter visualmente no centro do torso/abdômen durante a manifestação.
+- [x] Registrar referências KinemIQ e distinguir clips de referência da animação procedural efetivamente integrada.
+- [x] Atualizar cache-busters de character.js e main.js/index.html.
+- [ ] QA visual real: escala, proporção, posição de Carter, pés no piso, anatomia e transparência.
+- [ ] QA de sincronização em idle, walk, run, recuo, jump, socos e hit reactions.
+- [ ] QA de paridade e desempenho em desktop e celular paisagem.

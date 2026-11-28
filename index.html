@@ -115,10 +115,7 @@
  .startmeta{margin:10px 0;font-size:7px;gap:12px}
  #enter{padding:10px 14px;font-size:8px}
  #toast{bottom:75px}
- @media (orientation:portrait){
-   #rotateNotice{display:flex}
-   #topbar,#leftpanel,#minimap,#bottom,#mobile,#startscreen,#toast,#crosshair{visibility:hidden}
- }
+ /* Retrato é o modo principal do celular; não ocultar HUD nem controles. */
  @media (orientation:landscape) and (max-height:430px){
    #leftpanel{top:55px;left:8px;width:145px}
    #minimap{right:8px;top:55px;width:98px}
@@ -324,7 +321,7 @@
       enter.textContent = 'Preparando a Brooklyn House…';
       document.getElementById('loading').classList.remove('done');
       try {
-        await import('./src/main.js?v=brooklyn-cinematic-entry-20261127a');
+        await import('./src/main.js?v=brooklyn-cinematic-entry-20261128b');
       } catch (error) {
         console.error('[Brooklyn House] Falha ao carregar o jogo:', error);
         const panel = document.getElementById('loading');

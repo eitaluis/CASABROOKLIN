@@ -63,3 +63,12 @@ Correções integradas:
 - Os ataques do pack deixaram de usar `hero.playSequence()` do Ara, cuja tabela de loops só reconhece IDs nativos e tratava os IDs customizados como loops infinitos. `melee_combo` e `sword_heavy_combo` agora são tocados pelo Three.js com `LoopOnce`, `clampWhenFinished` e retorno à locomoção após o evento `finished`. Uma segunda chamada de ataque enquanto o combo está em execução é ignorada.
 
 O salto, a aterrissagem e a corrida com cajado não foram modificados. A verificação do pack confirma o track corrigido; ainda é necessária a inspeção visual no navegador para avaliar a cadência dos pés e a transição da câmera em movimento real.
+
+
+## 10. Correção da corrida com objeto e faixa do joystick mobile — 28/11/2026
+
+Após o teste do usuário, foi confirmado que a corrida sem objeto estava corrigida, mas a corrida com cajado ainda apresentava deslocamento longitudinal interno. O mesmo princípio foi aplicado ao track local de posição do osso `Hips` em `sprint_shield_loop`: somente o eixo longitudinal foi zerado em todos os frames. O balanço vertical/lateral e as rotações que formam a pose de corrida com objeto permanecem preservados. O clipe sem objeto, já corrigido, não foi alterado nesta etapa.
+
+No mobile, a faixa do joystick dedicada à caminhada foi ampliada: a transição progressiva para corrida agora começa em 70% do curso frontal do joystick e chega à corrida máxima nos 100%. Antes, a transição começava em 48%, fazendo o Carter correr com um deslocamento relativamente pequeno do controle. A velocidade continua sendo progressiva; não foi criado um botão adicional nem alterado o controle desktop.
+
+O script de build aplica a normalização longitudinal aos dois clipes de sprint para evitar regressão quando o pack for reconstruído. A mudança não altera salto, aterrissagem, combate, corrida sem objeto já corrigida ou a pose do cajado. A confirmação visual final ainda depende do teste no navegador, especialmente em mobile paisagem.

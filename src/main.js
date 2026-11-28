@@ -10,7 +10,7 @@ import { buildBedroom } from './bedroom.js?v=carter-bedroom-asset-first-20261127
 import { createInventory } from './inventory.js?v=carter-combat-inputs-20261127a';
 import { createMagicSystem } from './magic-system.js?v=ha-di-organic-impact-20261127a';
 import { createCharacter } from './character.js?v=carter-portrait-hud-20261127b';
-import { createThirdPersonController } from './third-person.js?v=brooklyn-camera-b-20261127a';
+import { createThirdPersonController } from './third-person.js?v=carter-mobile-walk-range-20261128a';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';

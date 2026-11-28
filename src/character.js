@@ -3,7 +3,7 @@ import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { createCharacter as createAraCharacter, ANIMATIONS } from 'ara3d';
 import { createCarterAccessories } from './character-accessories.js?v=carter-innerscene-bag-20261127c';
 
-const CARTER_MOVE_PACK_URL = new URL('../assets/animations/carter-movement.ara-pack.json?v=carter-unarmed-sprint-root-fix-20261127a', import.meta.url).href;
+const CARTER_MOVE_PACK_URL = new URL('../assets/animations/carter-movement.ara-pack.json?v=carter-sprint-both-root-fix-20261128a', import.meta.url).href;
 const CARTER_MOVE_CLIPS = Object.freeze({
   sprintUnarmed: 'carter-moves/sprint_loop',
   sprintArmed: 'carter-moves/sprint_shield_loop',

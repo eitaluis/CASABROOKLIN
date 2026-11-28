@@ -159,22 +159,24 @@ async function prepare() {
 
 async function publish() {
   const pack = JSON.parse(await readFile(generatedPack, 'utf8'));
-  // The unarmed KinemIQ sprint GLB contains a forward/backward Hips translation
-  // inside its cycle. The player controller already moves the character root,
-  // so retain the lateral weight shift and vertical bounce but flatten this
-  // clip's local forward axis to prevent a second, sawtooth root movement.
-  const unarmedSprint = pack.animations?.find((animation) => animation.id === 'sprint_loop');
-  if (!unarmedSprint?.motion?.hips || !Number.isInteger(unarmedSprint.motion.frames)) {
-    throw new Error('O pack Ara não contém o Hips track esperado de sprint_loop.');
+  // Both KinemIQ sprint clips contain forward/backward Hips translation
+  // inside their cycles. The player controller already moves the character root,
+  // so flatten only the local forward axis while retaining vertical bounce,
+  // lateral weight shifts, and the full upper/lower-body pose.
+  for (const sprintId of ['sprint_loop', 'sprint_shield_loop']) {
+    const sprint = pack.animations?.find((animation) => animation.id === sprintId);
+    if (!sprint?.motion?.hips || !Number.isInteger(sprint.motion.frames)) {
+      throw new Error('O pack Ara não contém o Hips track esperado de ' + sprintId + '.');
+    }
+    const hipsBuffer = Buffer.from(sprint.motion.hips, 'base64');
+    if (hipsBuffer.byteLength !== sprint.motion.frames * 6) {
+      throw new Error('O Hips track de ' + sprintId + ' tem tamanho inválido.');
+    }
+    for (let frame = 0; frame < sprint.motion.frames; frame++) {
+      hipsBuffer.writeInt16LE(0, frame * 6 + 4);
+    }
+    sprint.motion.hips = hipsBuffer.toString('base64');
   }
-  const hipsBuffer = Buffer.from(unarmedSprint.motion.hips, 'base64');
-  if (hipsBuffer.byteLength !== unarmedSprint.motion.frames * 6) {
-    throw new Error('O Hips track do sprint_loop tem tamanho inválido.');
-  }
-  for (let frame = 0; frame < unarmedSprint.motion.frames; frame++) {
-    hipsBuffer.writeInt16LE(0, frame * 6 + 4);
-  }
-  unarmedSprint.motion.hips = hipsBuffer.toString('base64');
   await writeFile(finalPack, JSON.stringify(pack, null, 2) + '\n');
   await copyFile(path.join(buildDir, 'source-credits.json'), finalCredits);
   await rm(buildDir, { recursive: true, force: true });

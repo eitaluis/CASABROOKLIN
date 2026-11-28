@@ -368,8 +368,11 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
     // No celular, empurrar o joystick progressivamente para frente aumenta a velocidade.
     // A corrida entra suavemente no trecho final do curso, sem botão separado.
     const forwardPush = Math.max(0, -touch.moveY);
+    // Reserve the first 70% of the forward joystick travel for walking.
+    // The final 30% progressively blends into a full sprint, giving mobile
+    // players a much wider, more controllable walking range.
     const analogSprintBlend = !injured
-      ? THREE.MathUtils.clamp((forwardPush - 0.48) / 0.48, 0, 1)
+      ? THREE.MathUtils.clamp((forwardPush - 0.70) / 0.30, 0, 1)
       : 0;
     const running = !controlsLocked && !injured && (keyboardSprint || touch.sprint || analogSprintBlend > 0.02);
     const injuryMultiplier = Number.isFinite(character.movementMultiplier) ? character.movementMultiplier : 1;

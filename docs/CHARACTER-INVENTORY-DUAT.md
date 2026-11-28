@@ -181,8 +181,8 @@ A bancada ajuda a revisar escala, orientação, clipping, posição do portal e 
 
 ### Estado por componente — 27/11/2026
 
-- **Cajado Polyfork:** asset aprovado; integrado na `main`; browser QA da empunhadura ainda pendente.
-- **Khopesh:** modelo procedural antigo ainda é o que aparece na `main`; candidatos e direção visual aguardam aprovação do usuário.
+- **Cajado Polyfork:** asset aprovado; materiais uniformizados em bege na branch de correção; browser QA da empunhadura ainda pendente.
+- **Khopesh:** GLB Vinish.dev aprovado carregado na branch de correção; escala compacta e lâmina afinada; QA visual no rig ainda pendente.
 - **Locomoção e comando F:** código atual ainda não executa uma postura armada convincente; opções Ara/KinemIQ serão apresentadas antes da implementação.
 - **Retirada do Duat:** efeito antigo ainda está na `main`; novas propostas visuais foram apresentadas para escolha antes de qualquer alteração.
 

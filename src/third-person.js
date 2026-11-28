@@ -8,8 +8,8 @@ export function createThirdPersonController({ THREE, camera, canvas, character, 
   let zoneName = 'dock';
   let cameraYaw = 0;
   let cameraPitch = 0.20;
-  let cameraDistance = window.innerHeight > window.innerWidth ? 4.0 : 3.2;
-  window.addEventListener('resize', () => { cameraDistance = window.innerHeight > window.innerWidth ? 4.0 : 3.2; });
+  let cameraDistance = window.innerHeight > window.innerWidth ? 3.35 : 3.2;
+  window.addEventListener('resize', () => { cameraDistance = window.innerHeight > window.innerWidth ? 3.35 : 3.2; });
   let pointerLocked = false;
   let controlsLocked = false;
   let firstCameraFrame = true;

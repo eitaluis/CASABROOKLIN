@@ -1,6 +1,6 @@
 {
   "project": "CASABROOKLIN",
-  "version": "0.4.17",
+  "version": "0.4.19",
   "runtimeAssets": [
     {
       "id": "three-js",
@@ -34,7 +34,7 @@
       "id": "polyfork-monk-quarterstaff",
       "source": "https://polyfork.dev/asset/monk-s-quarterstaff-cbdadd",
       "version": "GLB 57 KB; 496 triangles; 0.08 × 1.8 × 0.08 m",
-      "role": "approved Carter quarterstaff loaded at runtime through GLTFLoader from Polyfork CDN; original wood/iron/cloth material preserved; local WeaponR grip pivot is centered by offsetting origin -0.9m on Y",
+      "role": "approved Carter quarterstaff loaded through GLTFLoader from Polyfork CDN; all cloned runtime materials forced to uniform matte beige #CDBB98 (no textures, metalness or colored details); local fallback matches same beige; WeaponR grip pivot centered by offsetting source origin -0.9m on Y",
       "license": "commercial hotlink/use allowed without attribution; CC BY 4.0 if redistributing the mesh; direct CDN use is not redistribution"
     },
     {
@@ -234,6 +234,13 @@
       "format": "SVG 512×512",
       "license": "CC BY 3.0 (símbolo-base, atribuição preservada no SVG); adaptação cromática e composição original do projeto",
       "role": "Ícone da experiência e da tela de entrada: Olho de Hórus dourado com brilho turquesa sobre fundo escuro; referenciado pelo favicon, Apple touch icon e Web App Manifest."
+    },
+    {
+      "id": "vinish-khopesh-carter",
+      "source": "https://vinish.dev/free-3d-models/swords",
+      "version": "GLB 297 KB; 10,868 triangles; source dimensions 0.60 × 0.13 × 0.04 m; production scale 0.70 × 0.40 × 0.22",
+      "role": "user-approved Carter inventory khopesh; loaded via GLTFLoader from https://vinish-models.pages.dev/swords/khopesh.glb; Sword grip pivot centered; model scaled down to approx 42 cm nominal length and substantially narrowed/thinned; compact procedural fallback retained",
+      "license": "CC BY 4.0; attribution: “Khopesh” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0"
     }
   ],
   "localGeneratedAssets": [
@@ -1236,6 +1243,20 @@
       ],
       "summary": "Approved asset-first Carter bedroom on the third floor: open plan with no central partition, CC0 GLB furniture/tech, kitchenette and favourite snacks, ensuite, locked sliding deck doors towards the East River, locked connecting door to Sadie's adjacent room and a custom ivory lion headrest based on the novel and GEM historic reference. GLBs use pinned Tevy versions with LOD1 desktop/LOD2 mobile and local procedural fallbacks; same scene and interactions desktop/mobile. Static syntax checked; browser visual/network/performance QA pending.",
       "date": "2026-11-27"
+    },
+    {
+      "id": "carter-weapons-beige-staff-compact-khopesh-20261128",
+      "scope": "runtime",
+      "files": [
+        "src/inventory.js",
+        "src/main.js",
+        "index.html",
+        "docs/CHARACTER-INVENTORY-DUAT.md",
+        "docs/OPEN-SOURCES.md",
+        "assets/manifest.json"
+      ],
+      "summary": "Uniform matte beige Polyfork quarterstaff; approved Vinish.dev khopesh loaded at reduced 0.70 × 0.58 × 0.50 scale with compact thin fallback; shared desktop/mobile runtime.",
+      "date": "2026-11-28"
     }
   ]
 }

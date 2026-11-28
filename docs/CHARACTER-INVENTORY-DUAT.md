@@ -1,7 +1,7 @@
 # Carter — inventário, objetos do Duat e preparação para magia
 
 Data: 26/11/2026
-Status (27/11/2026): **12 objetos; quarterstaff Polyfork aprovado e integrado no runtime principal via GLTFLoader/WeaponR; fallback local; khopesh, locomoção armada, ataques F e efeito do Duat aguardam aprovação visual e QA**
+Status (27/11/2026): **12 objetos; quarterstaff Polyfork aprovado e integrado via GLTFLoader/WeaponR, agora monocromático bege; khopesh Vinish.dev aprovado e carregado em escala compacta (aprox. 42 cm), com lâmina significativamente estreitada/afinada; QA visual em navegador pendente**
 
 ## 1. Princípio de desenvolvimento
 
@@ -32,8 +32,8 @@ Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, páginas impres
 
 | ID | Objeto | Função / estado | Base |
 |---|---|---|---|
-| `staff` | Cajado mágico | Quarterstaff reto de madeira com ponteiras de ferro e duas faixas de tecido para empunhadura; preso à mão direita pelo eixo central | O livro estabelece a função ofensiva do cajado, mas não fixa a aparência exata do cajado de Carter; asset Polyfork aprovado pelo usuário e integrado |
-| `khopesh` | Khopesh | Arma corpo a corpo; empunhada na mão direita | Canônico; modelo procedural integrado |
+| `staff` | Cajado mágico | Quarterstaff reto monocromático bege, sem ponteiras cinzas ou faixas coloridas; GLB Polyfork com materiais uniformizados em bege; preso à mão direita pelo eixo central | O livro estabelece a função ofensiva do cajado, mas não fixa a aparência exata do cajado de Carter; asset Polyfork aprovado pelo usuário e integrado |
+| `khopesh` | Khopesh | Arma corpo a corpo; empunhada na mão direita | Canônico; GLB Vinish.dev aprovado, escala reduzida e lâmina estreita/fina |
 | `wax_shabti` | Shabti de cera | Miniatura transportável; futura invocação por magia | Canônico como objeto criado em cera; primeira geometria procedural integrada |
 | `papyrus` | Papiro | Suporte para escrever/desenhar feitiços | Canônico; primeira geometria/textura procedural integrada; escrita mágica real pendente |
 | `reed_pen` | Cálamo | Ferramenta de escrita e desenho mágico | Canônico; primeira geometria procedural integrada |
@@ -53,11 +53,11 @@ Referência: Rick Riordan, *The Kane Chronicles Survival Guide*, páginas impres
 
 Os links do British Museum são referências de estudo, não arquivos importados. Nenhum GLB externo foi incorporado nesta primeira rodada: caixa, papiro, cálamo, tinta, amuleto, shabti, cera, paleta, cordão e gato foram montados como geometria procedural em Three.js. A forma atual é uma primeira versão técnica; escala, acabamento e leitura precisam de QA visual antes de aprovação.
 
-**Cajado de Carter — direção aprovada:** foi selecionado o modelo **Monk's Quarterstaff**, de Polyfork / Lucas Martinic. A página do autor descreve um bastão de madeira de 1,8 m, ponteiras de ferro e duas faixas de tecido enroladas na empunhadura; 496 triângulos, 1 material, GLB de 57 KB. O usuário aprovou esta aparência. O asset é preservado sem retintura ou alteração de silhueta.
+**Cajado de Carter — direção aprovada:** foi selecionado o modelo **Monk's Quarterstaff**, de Polyfork / Lucas Martinic. A página do autor descreve um bastão de madeira de 1,8 m, ponteiras de ferro e duas faixas de tecido enroladas na empunhadura; 496 triângulos, 1 material, GLB de 57 KB. O usuário aprovou esta aparência. A geometria do asset é preservada; a produção uniformiza todos os materiais em bege monocromático, conforme correção solicitada e aprovada.
 
 **Canon textual e limite:** em *A Pirâmide Vermelha*, Zia entrega a Carter um novo cajado e explica a função ofensiva do bastão; o texto não determina a cor, a madeira, as ponteiras, as faixas ou a medida exata do cajado pessoal de Carter. A forma Polyfork é, portanto, uma direção de arte escolhida e aprovada, não uma descrição literal do romance. O texto oficial de Rick Riordan descreve o khopesh de Carter como arma usada pela guarda pessoal do faraó: https://rickriordan.com/extra/meet-the-kane-family/
 
-**Integração no runtime (27/11/2026):** o GLB é carregado pelo `GLTFLoader` diretamente da CDN oficial do autor. O modelo mantém 1,8 m e os materiais originais. O Ara Rigging define o osso `WeaponR` no centro da mão fechada; o eixo `+Y` sai do topo do punho. Como o GLB nasce no chão e é vertical, a malha recebe deslocamento local de `Y = -0.9 m`, colocando a mão no centro do bastão e alinhando seu comprimento ao socket. A integração é compartilhada por jogo e preview desktop/mobile.
+**Integração no runtime (27/11/2026):** o GLB é carregado pelo `GLTFLoader` diretamente da CDN oficial do autor. O modelo mantém 1,8 m e a geometria original; os materiais são uniformizados em bege monocromático. O Ara Rigging define o osso `WeaponR` no centro da mão fechada; o eixo `+Y` sai do topo do punho. Como o GLB nasce no chão e é vertical, a malha recebe deslocamento local de `Y = -0.9 m`, colocando a mão no centro do bastão e alinhando seu comprimento ao socket. A integração é compartilhada por jogo e preview desktop/mobile.
 
 **Fallback:** se a CDN falhar, o inventário mantém uma haste local com ponteiras metálicas e duas faixas de tecido na região de pega. O fallback protege a funcionalidade, mas não substitui visualmente o GLB aprovado. O asset externo permanece uma dependência de rede; a página Polyfork permite hotlink comercial sem atribuição para uso direto.
 
@@ -181,7 +181,15 @@ A bancada ajuda a revisar escala, orientação, clipping, posição do portal e 
 
 ### Estado por componente — 27/11/2026
 
-- **Cajado Polyfork:** asset aprovado; integrado na `main`; browser QA da empunhadura ainda pendente.
-- **Khopesh:** modelo procedural antigo ainda é o que aparece na `main`; candidatos e direção visual aguardam aprovação do usuário.
+- **Cajado Polyfork:** asset aprovado; materiais uniformizados em bege na branch de correção; browser QA da empunhadura ainda pendente.
+- **Khopesh:** GLB Vinish.dev aprovado carregado na branch de correção; escala compacta e lâmina afinada; QA visual no rig ainda pendente.
 - **Locomoção e comando F:** código atual ainda não executa uma postura armada convincente; opções Ara/KinemIQ serão apresentadas antes da implementação.
 - **Retirada do Duat:** efeito antigo ainda está na `main`; novas propostas visuais foram apresentadas para escolha antes de qualquer alteração.
+
+
+## 4. Revisão de proporções e materiais — 28/11/2026
+
+- **Cajado:** o GLB aprovado da Polyfork continua sendo a geometria principal. Os materiais são clonados no carregamento e uniformizados em bege claro (`#CDBB98`), sem mapas de cor, metalizado ou diferenças cromáticas entre haste, ponteiras e faixas. O fallback procedural usa a mesma cor.
+- **Khopesh:** o GLB aprovado de Vinish.dev é carregado com o pivot `Sword` centralizado na empunhadura. Escala aplicada nos eixos locais do modelo: `0.70 × 0.40 × 0.22`, resultando em comprimento nominal aproximado de 42 cm, largura e espessura bastante reduzidas. O fallback também foi redesenhado em proporção menor e lâmina fina.
+- A redução é uma interpretação visual solicitada para o Carter, não uma medida canônica do romance. O livro estabelece o khopesh como espada curva egípcia, mas não determina essas dimensões específicas.
+- A mesma implementação é compartilhada por desktop e mobile. Verificação visual real no navegador e inspeção da pegada no rig Ara ainda pendentes.

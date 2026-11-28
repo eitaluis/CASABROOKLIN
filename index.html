@@ -250,7 +250,7 @@
 <aside id="minimap"><div class="maptitle">PLANTA DE EXPLORAÇÃO</div><canvas id="map" width="264" height="216"></canvas><div class="mapfoot">NAVEGAÇÃO · ACESSO RÁPIDO</div></aside>
 <button id="mobileWorldMenu" type="button" aria-label="Abrir ambientes" title="Ambientes">𓂀</button><button id="mobileMapToggle" type="button" aria-label="Abrir mapa" title="Mapa">⌖</button>
 <div id="crosshair"></div>
-<div id="bottom"><div id="hint"><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> mover &nbsp; <span class="key">Mouse</span> orbitar câmera<br><span class="key">Shift</span> correr &nbsp; <span class="key">Espaço</span> saltar &nbsp; <span class="key">E</span> interagir &nbsp; <span class="key">I</span> inventário &nbsp; <span class="key">F</span> atacar &nbsp; <span class="key">G</span> HA-DI (Shabti) &nbsp; <span class="key">H</span> Avatar de Hórus</div><div id="status">TERCEIRA PESSOA<br>WASD · MOUSE · SHIFT</div></div>
+<div id="bottom"><div id="hint"><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> mover &nbsp; <span class="key">Mouse</span> orbitar câmera<br><span class="key">Shift</span> correr &nbsp; <span class="key">Espaço</span> saltar &nbsp; <span class="key">E</span> interagir &nbsp; <span class="key">I</span> inventário &nbsp; <span class="key">F</span> atacar &nbsp; <span class="key">G</span> HA-DI (Shabti) &nbsp; <span class="key">H</span> Avatar de Hórus &nbsp; <span class="key">Q</span> proteção</div><div id="status">TERCEIRA PESSOA<br>WASD · MOUSE · SHIFT</div></div>
 <div id="toast"></div>
 <div id="mobile" aria-label="Controles de toque">
   <div class="joystick" id="joystick" aria-label="Joystick de movimento">
@@ -262,6 +262,7 @@
     <button id="inventoryMobileToggle" aria-label="Abrir inventário">MOCHILA</button>
     <button id="inventoryMobileUse" aria-label="Atacar">ATACAR</button>
     <button id="interactButton" data-action="interact" aria-label="Interagir com objeto próximo">INTERAGIR</button>
+    <button id="protectionButton" type="button" aria-label="Ativar proteção com varinha" title="Proteção · Q">PROTEGER</button>
     <button id="haDiButton" type="button" hidden aria-label="Conjurar HA-DI no Shabti">HA-DI</button>
   </div>
 </div>
@@ -321,7 +322,7 @@
       enter.textContent = 'Preparando a Brooklyn House…';
       document.getElementById('loading').classList.remove('done');
       try {
-        await import('./src/main.js?v=horus-avatar-sequence-20261128a');
+        await import('./src/main.js?v=quick-protective-ward-20261128a');
       } catch (error) {
         console.error('[Brooklyn House] Falha ao carregar o jogo:', error);
         const panel = document.getElementById('loading');

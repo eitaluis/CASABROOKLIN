@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#111619">
+<link rel="icon" type="image/svg+xml" href="./assets/decor/game-icons/eye-of-horus-app.svg">
+<link rel="apple-touch-icon" href="./assets/decor/game-icons/eye-of-horus-app.svg">
+<link rel="manifest" href="./site.webmanifest">
 <title>Brooklyn House — As Crônicas dos Kane</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+Egyptian+Hieroglyphs:wght@400&display=swap');
@@ -51,8 +54,15 @@
 #enter:hover{filter:brightness(1.12);transform:translateY(-1px)}
 #toast{position:fixed;z-index:7;left:50%;bottom:88px;transform:translate(-50%,12px);padding:10px 16px;background:rgba(8,14,15,.9);border:1px solid var(--line);color:#e8ddc3;font:10px "DM Sans";letter-spacing:.08em;opacity:0;transition:.3s;pointer-events:none}
 #toast.show{opacity:1;transform:translate(-50%,0)}
-#loading{position:fixed;z-index:20;inset:0;background:#101719;display:grid;place-items:center;font:12px Cinzel;letter-spacing:.2em;color:var(--gold)}
+#loading{position:fixed;z-index:20;inset:0;background:radial-gradient(ellipse at 50% 42%,rgba(48,111,105,.22),transparent 44%),#101719;display:grid;place-items:center;font:15px "DM Sans",sans-serif;letter-spacing:.08em;color:#e9dfc9;text-align:center;padding:24px}
 #loading.done{display:none}
+.loading-card{display:grid;justify-items:center;gap:15px;max-width:340px}
+.loading-emblem{width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 0 18px rgba(65,218,202,.28))}
+.loading-title{font:600 19px Cinzel,serif;letter-spacing:.12em;color:#f0d7a0}
+.loading-message{font:500 15px/1.5 "DM Sans",sans-serif;color:#d3d5cc}
+.loading-track{width:min(220px,62vw);height:2px;background:#ffffff20;overflow:hidden}
+.loading-track:after{content:"";display:block;width:38%;height:100%;background:linear-gradient(90deg,#48cfc2,#e4c17c);animation:loadingSweep 1.6s ease-in-out infinite}
+@keyframes loadingSweep{from{transform:translateX(-110%)}to{transform:translateX(290%)}}
 #mobile{display:none;position:fixed;z-index:6;bottom:90px;left:18px;gap:5px;pointer-events:auto}
 #mobile button{width:42px;height:42px;background:#101719b8;color:#eee;border:1px solid var(--line);border-radius:4px}
 @media(max-width:700px){#topbar{padding:14px} .brand-mark{width:34px;height:34px}.brand h1{font-size:14px}#coordinates{font-size:8px}#leftpanel{top:auto;bottom:145px;left:12px;width:180px}#minimap{right:12px;top:84px;width:128px;padding:7px}#minimap canvas{width:112px;height:92px}#bottom{padding:10px 13px 14px}#hint{font-size:9px;max-width:62%}.startcard{padding:28px 24px}.startcard p{font-size:12px}#mobile{display:grid;grid-template-columns:repeat(3,42px)}}
@@ -156,6 +166,11 @@
 /* Brooklyn House · experiência mobile em retrato */
 #mobileWorldMenu,#mobileMapToggle{display:none}
 @media (max-width:900px) and (pointer:coarse) and (orientation:portrait){
+ #loading{font-size:16px;letter-spacing:.02em}
+ .loading-card{gap:18px;max-width:320px}
+ .loading-emblem{width:82px;height:82px}
+ .loading-title{font-size:21px}
+ .loading-message{font-size:16px}
  html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none}
  #rotateNotice{display:none!important}
  #topbar{padding:calc(8px + env(safe-area-inset-top)) 14px 6px;align-items:center}
@@ -203,19 +218,24 @@
  #toast{bottom:calc(112px + env(safe-area-inset-bottom));max-width:calc(100vw - 32px);text-align:center}
  #inventoryPanel{left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));width:auto;max-height:64dvh;padding:12px}
  #startscreen{visibility:visible!important;overflow-y:auto;align-items:center;padding:calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom))}
- .startcard{width:100%;max-width:440px;padding:24px 21px}
- .startcard h2{font-size:clamp(25px,7vw,34px);margin-bottom:8px}
- .startcard p{font-size:11px;line-height:1.55;margin:8px 0}
- .kicker{font-size:7px;margin-bottom:9px}
- .startmeta{margin:12px 0;gap:9px;font-size:7px}
- #enter{width:100%;padding:13px 12px;font-size:9px}
+ #startscreen{background:linear-gradient(180deg,rgba(5,12,14,.88),rgba(5,12,14,.96)),radial-gradient(ellipse at 50% 26%,rgba(57,153,145,.26),transparent 48%);backdrop-filter:blur(2px)}
+ .startcard{width:100%;max-width:440px;padding:28px 22px 25px;text-align:center;border-color:rgba(214,183,119,.48);background:linear-gradient(155deg,rgba(18,31,32,.92),rgba(7,13,15,.94));box-shadow:0 24px 90px #0009}
+ .start-symbol{display:block;width:76px;height:76px;object-fit:contain;margin:0 auto 17px;filter:drop-shadow(0 0 18px rgba(65,218,202,.24))}
+ .kicker{font-size:10px;line-height:1.4;letter-spacing:.18em;margin:0 auto 13px;max-width:300px;color:#dfc58f}
+ .startcard h2{font-size:clamp(30px,8.4vw,39px);line-height:1.12;letter-spacing:.025em;margin:0 0 13px}
+ .startcard h2 span{display:block;color:#f0d7a0}
+ .startcard p{font-size:14px;line-height:1.62;margin:0 auto;color:#d0d5cf;max-width:350px}
+ .startmeta{justify-content:center;margin:18px 0 20px;gap:9px 15px;font-size:9px;line-height:1.5;letter-spacing:.09em;color:#b9c2b9}
+ #enter{width:100%;min-height:52px;padding:15px 14px;font-size:13px;letter-spacing:.12em;border-radius:2px;box-shadow:0 8px 28px rgba(190,148,79,.18)}
+ #enter:disabled{opacity:.8;filter:saturate(.7)}
+
 }
 
 </style>
 </head>
 <body>
 <canvas id="scene"></canvas><div id="vignette"></div>
-<div id="loading" class="done">BROOKLYN HOUSE <span style="opacity:.45">—</span> CARREGANDO O AMBIENTE</div>
+<div id="loading" class="done"><div class="loading-card"><img class="loading-emblem" src="./assets/decor/game-icons/eye-of-horus-app.svg" alt=""><div class="loading-title">BROOKLYN HOUSE</div><div class="loading-message" id="loadingMessage">Preparando o ambiente…</div><div class="loading-track" aria-hidden="true"></div></div></div>
 <header id="topbar">
   <div class="brand"><div class="brand-mark">𓂀</div><div><div class="eyebrow">As Crônicas dos Kane · Livro I</div><h1>BROOKLYN HOUSE</h1><p>East River · Brooklyn, New York</p></div></div>
   <div id="coordinates"><strong id="zoneName">DOCA INDUSTRIAL</strong>FIM DE TARDE · 18:42</div>
@@ -268,7 +288,7 @@
   <div class="inventory-footer"><button id="inventoryUse" type="button">ATACAR · F</button><button id="inventoryUnequip" type="button">GUARDAR NO DUAT</button></div>
 </aside>
 <div id="rotateNotice"><div class="rotate-card"><span class="phone">▱</span><h2>Gire seu celular</h2><p>A Brooklyn House foi preparada para explorar em modo paisagem. Vire o aparelho de lado para continuar.</p></div></div>
-<div id="startscreen"><div class="startcard"><div class="kicker">Um lugar escondido à margem do East River</div><h2>A casa que os<br><span>olhos não veem.</span></h2><p>Chegue pelo East River, passe sob a Williamsburg Bridge e pare junto à doca do Brooklyn. À primeira vista existe apenas um galpão antigo. Use E ou INTERAGIR para olhar novamente para o telhado; a mansão e sua escada metálica se tornam perceptíveis. Os ambientes internos só são descobertos depois de atravessar o portal.</p><div class="startmeta"><span>Brooklyn, New York</span><span>Personagem articulado</span><span>Terceira pessoa</span><span>Desktop · Mobile</span></div><button id="enter">Explorar em terceira pessoa&nbsp; ↗</button>
+<div id="startscreen"><div class="startcard"><img class="start-symbol" src="./assets/decor/game-icons/eye-of-horus-app.svg" alt="Olho de Hórus"><div class="kicker">As Crônicas dos Kane · Uma experiência em terceira pessoa</div><h2>BROOKLYN<br><span>HOUSE</span></h2><p>À margem do East River, um antigo armazém esconde muito mais do que aparenta. Atravesse a doca, descubra a entrada e explore a casa dos Kane.</p><div class="startmeta"><span>Brooklyn, New York</span><span>Exploração · Mistério · Magia</span></div><button id="enter">Explorar em terceira pessoa&nbsp; ↗</button>
       </div></div>
 <script type="importmap">
 {
@@ -304,7 +324,7 @@
       enter.textContent = 'Preparando a Brooklyn House…';
       document.getElementById('loading').classList.remove('done');
       try {
-        await import('./src/main.js?v=portrait-mobile-hud-20261127b');
+        await import('./src/main.js?v=brooklyn-cinematic-entry-20261127a');
       } catch (error) {
         console.error('[Brooklyn House] Falha ao carregar o jogo:', error);
         const panel = document.getElementById('loading');
@@ -322,12 +342,12 @@
     if (!window.__brooklynStartRequested || document.documentElement.dataset.appReady === 'true') return;
     const panel = document.getElementById('loading');
     if (!panel || panel.classList.contains('done')) return;
-    panel.innerHTML = '<div style="max-width:460px;padding:28px;text-align:center;line-height:1.7;font:12px DM Sans,sans-serif;color:#eee"><div style="font:500 18px Cinzel,serif;color:#d0ad69;margin-bottom:12px">A cena ainda não iniciou</div>O motor 3D não respondeu. O problema pode ser o carregamento do Three.js pelo CDN ou um erro de inicialização. Recarregue a página; se continuar, abra o Console do navegador (F12) e envie a primeira mensagem vermelha.<div style="margin-top:18px"><button onclick="location.reload()" style="border:1px solid #d0ad69;background:#d0ad69;color:#111;padding:10px 18px;font-weight:700;cursor:pointer">RECARREGAR</button></div></div>';
+    panel.innerHTML = '<div style="max-width:460px;padding:28px;text-align:center;line-height:1.7;font:15px DM Sans,sans-serif;color:#eee"><div style="font:500 20px Cinzel,serif;color:#d0ad69;margin-bottom:12px">A cena ainda não iniciou</div>O motor 3D não respondeu. O problema pode ser o carregamento do Three.js pelo CDN ou um erro de inicialização. Recarregue a página; se continuar, abra o Console do navegador (F12) e envie a primeira mensagem vermelha.<div style="margin-top:18px"><button onclick="location.reload()" style="border:1px solid #d0ad69;background:#d0ad69;color:#111;padding:10px 18px;font-weight:700;cursor:pointer">RECARREGAR</button></div></div>';
   }, 12000);
   window.addEventListener('error', event => {
     if (document.documentElement.dataset.appReady === 'true') return;
     const panel = document.getElementById('loading');
-    if (panel) panel.innerHTML = '<div style="max-width:460px;padding:28px;text-align:center;line-height:1.7;font:12px DM Sans,sans-serif;color:#eee"><div style="font:500 18px Cinzel,serif;color:#d0ad69;margin-bottom:12px">Falha ao iniciar a cena 3D</div>' + String(event.message || 'Erro desconhecido') + '<div style="margin-top:18px"><button onclick="location.reload()" style="border:1px solid #d0ad69;background:#d0ad69;color:#111;padding:10px 18px;font-weight:700;cursor:pointer">RECARREGAR</button></div></div>';
+    if (panel) panel.innerHTML = '<div style="max-width:460px;padding:28px;text-align:center;line-height:1.7;font:15px DM Sans,sans-serif;color:#eee"><div style="font:500 20px Cinzel,serif;color:#d0ad69;margin-bottom:12px">Falha ao iniciar a cena 3D</div>' + String(event.message || 'Erro desconhecido') + '<div style="margin-top:18px"><button onclick="location.reload()" style="border:1px solid #d0ad69;background:#d0ad69;color:#111;padding:10px 18px;font-weight:700;cursor:pointer">RECARREGAR</button></div></div>';
   });
   window.addEventListener('unhandledrejection', event => {
     console.error('[Brooklyn House] Unhandled rejection:', event.reason);

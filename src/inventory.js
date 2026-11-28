@@ -666,15 +666,18 @@ export function createInventory({
     (gltf) => {
       const model = gltf.scene;
       model.name = 'VinishApprovedKhopeshModel';
-      model.updateMatrixWorld(true);
       const gripPivot = model.getObjectByName('Sword');
-      if (gripPivot) {
-        const gripOrigin = gripPivot.getWorldPosition(new THREE.Vector3());
-        model.position.sub(gripOrigin);
-      }
       // O arquivo mede cerca de 60 cm. A escala final encurta o conjunto,
       // estreita a silhueta da lâmina e reduz sua espessura sem mudar o desenho.
       model.scale.set(0.70, 0.58, 0.50);
+      model.updateMatrixWorld(true);
+      // Recentraliza o pivot depois da escala para que a empunhadura permaneça
+      // exatamente no socket da mão, mesmo se o pivot original não for zero.
+      if (gripPivot) {
+        const gripOrigin = gripPivot.getWorldPosition(new THREE.Vector3());
+        model.position.sub(gripOrigin);
+        model.updateMatrixWorld(true);
+      }
       const weaponPivot = new THREE.Group();
       weaponPivot.name = 'VinishKhopeshGripPivot';
       weaponPivot.rotation.y = Math.PI / 2;

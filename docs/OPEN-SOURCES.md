@@ -459,3 +459,13 @@ A implementação aprovada foi construída com geometria e texturas originais do
 
 
 **Amplificador/receiver estéreo:** geometria original de projeto em src/bedroom.js, CC0 não aplicável; o objeto é inteiramente modelado proceduralmente e completa as duas caixas acústicas Tevy CC0. O romance confirma o aparelho de som, sem especificar o design do receiver.
+
+
+## Avatar de Combate de Hórus — animação e reconstrução falconídea — 28/11/2026
+
+| Fonte | Licença / formato | Uso e estado |
+|---|---|---|
+| [KinemIQ animation library](https://kinemiq.app/animations/) | A página da biblioteca informa uso comercial gratuito; algumas entradas podem exigir crédito. Exportação GLB/glTF/FBX/BVH. | Referência para “Idle - in the air”, “Move - launched into the air”, “Jump - take-off” e “Spell - start”. Nenhum clip binário foi importado; a sequência atual é procedural. Conferir a informação de crédito na entrada individual antes de redistribuir qualquer exportação. |
+| [Gor Game Ready — RenderHub](https://www.renderhub.com/andryuha1981/gor-game-ready-1) | Modelo pago; licença de compra não adquirida. | Referência de silhueta falconídea apenas; modelo ornamentado demais e não integrado. |
+
+**Implementação:** o corpo dourado é geometria procedural original ligada à hierarquia óssea Ara clonada. As malhas humanas do clone ficam ocultas; Carter original é preservado. Não há novo modelo externo no runtime.

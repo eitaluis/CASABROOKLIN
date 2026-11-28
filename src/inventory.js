@@ -594,7 +594,7 @@ export function createInventory({
   // O rig Ara define WeaponR no centro da mão fechada; +Y sai do topo do punho.
   // O GLB tem 1,8 m, +Y vertical e origem no chão, portanto deslocamos 0,9 m
   // para baixo e deixamos o eixo do bastão coincidir com o eixo de WeaponR.
-  // A aparência original (madeira, ponteiras de ferro e faixas de tecido) é preservada.
+  // A geometria original é preservada; todos os materiais são uniformizados em bege.
   const approvedStaffLoader = new GLTFLoader();
   const approvedStaffUrl = 'https://polyfork.dev/cdn/monk-s-quarterstaff-cbdadd.glb';
   const approvedStaffItem = items.get('staff');
@@ -646,7 +646,7 @@ export function createInventory({
       approvedStaffItem.userData.assetState = 'loaded';
       approvedStaffItem.userData.assetSource = approvedStaffUrl;
       approvedStaffItem.userData.description =
-        "Monk's Quarterstaff da Polyfork, 1,8 m, madeira, ponteiras de ferro e duas faixas de tecido; mão no centro da empunhadura";
+        "Monk's Quarterstaff da Polyfork, 1,8 m, acabamento bege monocromático; mão no centro da empunhadura";
     },
     undefined,
     (error) => {
@@ -668,8 +668,8 @@ export function createInventory({
       model.name = 'VinishApprovedKhopeshModel';
       const gripPivot = model.getObjectByName('Sword');
       // O arquivo mede cerca de 60 cm. A escala final encurta o conjunto,
-      // estreita a silhueta da lâmina e reduz sua espessura sem mudar o desenho.
-      model.scale.set(0.70, 0.58, 0.50);
+      // reduz bastante a largura da lâmina e afina sua espessura sem mudar o desenho.
+      model.scale.set(0.70, 0.40, 0.22);
       model.updateMatrixWorld(true);
       // Recentraliza o pivot depois da escala para que a empunhadura permaneça
       // exatamente no socket da mão, mesmo se o pivot original não for zero.
@@ -695,7 +695,7 @@ export function createInventory({
       approvedKhopeshItem.userData.assetState = 'loaded';
       approvedKhopeshItem.userData.assetSource = approvedKhopeshUrl;
       approvedKhopeshItem.userData.description =
-        'Khopesh Vinish.dev compacto (aprox. 42 cm), lâmina estreita e fina, pivot na empunhadura';
+        'Khopesh Vinish.dev compacto (aprox. 42 cm), lâmina bem mais estreita e fina, pivot na empunhadura';
     },
     undefined,
     (error) => {
